@@ -6,6 +6,10 @@ Internal target: 11 September 2026 (IST), supplied by Francis. Official deadline
 
 ## Hosted website
 
+**Live:** https://francisreubenr-rvu.github.io/sih-2026/
+
+**Repository:** https://github.com/francisreubenr-rvu/sih-2026
+
 GitHub Pages publishes only the `Website` directory through `.github/workflows/pages.yml`. Pushes to `master` that change the website trigger deployment. The deployment result and verified URL are recorded in Docs/deployment-verification.md. Historical ZIP/PDF artifacts retain their original preparation status.
 
 ## Open first
@@ -27,7 +31,7 @@ GitHub Pages publishes only the `Website` directory through `.github/workflows/p
 | Prototype | Explicit implementation/build contract | No working domain application |
 | Docs/submission-blueprint.pptx and .pdf | Six-slide blueprint derived from supplied template | Not a completed idea; 2025 graphics inherited |
 | Docs/expanded-pitch-blueprint.pptx and .pdf | 15-slide editable pitch blueprint with speaker notes | Evidence slots pending; 700 seconds planned, not rehearsed |
-| Website | Responsive static preparation dossier with interactive architecture and timeline | Local preview; no real domain demo, team photos or contact endpoint |
+| Website | Responsive static preparation dossier with interactive architecture and timeline | Verified GitHub Pages hosting; no real domain demo, team photos or contact endpoint |
 | Docs | Process, design audit, architecture decisions, team plan, impact model and demo runbook | Planned work distinguished from performed work |
 
 ## Run the website
@@ -48,7 +52,7 @@ python3 scripts/run_lighthouse.py
 
 The release checker intentionally exits 1 while the entry is failed/unknown. It aggregates recorded reviews and evidence presence; it cannot certify correctness by itself. Artifact checks are structural. Lighthouse requires Node/npm and Chrome; it obtains pinned Lighthouse 12.8.2 from npm and uses the running local server. The domain under-200ms core-flow test has not run.
 
-Final local Lighthouse medians: performance 100, accessibility 100, best practices 100, SEO 100 on mobile and desktop. Human testing, full WCAG conformance, public deployment and benchmark saturation are not established.
+Final local Lighthouse medians: performance 100, accessibility 100, best practices 100, SEO 100 on mobile and desktop. GitHub Pages hosting was verified separately after these local audits. Human testing, full WCAG conformance and benchmark saturation are not established.
 
 ## Rebuild documents
 

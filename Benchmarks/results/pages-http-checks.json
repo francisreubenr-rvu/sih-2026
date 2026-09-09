@@ -1,0 +1,63 @@
+{
+  "url": "https://francisreubenr-rvu.github.io/sih-2026/",
+  "checks": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "bytes": 9198,
+      "matches_local": true
+    },
+    {
+      "path": "style.css",
+      "status": 200,
+      "bytes": 10334,
+      "matches_local": true
+    },
+    {
+      "path": "app.js",
+      "status": 200,
+      "bytes": 3632,
+      "matches_local": true
+    },
+    {
+      "path": "assets/gsap.min.js",
+      "status": 200,
+      "bytes": 72435,
+      "matches_local": true
+    },
+    {
+      "path": "assets/ScrollTrigger.min.js",
+      "status": 200,
+      "bytes": 44157,
+      "matches_local": true
+    },
+    {
+      "path": "assets/mark.svg",
+      "status": 200,
+      "bytes": 169,
+      "matches_local": true
+    },
+    {
+      "path": "downloads/preparation-brief.pdf",
+      "status": 200,
+      "bytes": 5762,
+      "matches_local": true
+    },
+    {
+      "path": "downloads/guardrails.json",
+      "status": 200,
+      "bytes": 15582,
+      "matches_local": true
+    }
+  ],
+  "verified_at": "2026-09-09T00:57:59.763701+00:00",
+  "deployed_source_commit": "2b17c5752dd8eee85bd2c5d8cd75d975df3fa505",
+  "browser_checks": [
+    "page identity",
+    "architecture selection",
+    "milestone navigation",
+    "public copy-link success",
+    "visual rendering",
+    "no observed console errors"
+  ]
+}
