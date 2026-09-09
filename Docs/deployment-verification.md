@@ -1,4 +1,18 @@
-# GitHub Pages deployment verification
+# Sightline candidate deployment — verified 9 September 2026
+
+- Public URL: https://francisreubenr-rvu.github.io/sih-2026/
+- Deployed source: `69188d797820519ce2e82361661dfe0b3c07714d` on `master`.
+- Successful workflow: https://github.com/francisreubenr-rvu/sih-2026/actions/runs/34379912074
+- Seven public resources returned HTTP 200 and matched local SHA-256: HTML, CSS, JavaScript, local font, prototype screenshot, evidence JSON and extension ZIP. Exact hashes: `Benchmarks/results/pages-sightline-v01.json`.
+- Live browser: verified Sightline title/hero, Protect architecture panel, local setup dialog and close action. The public page is marked as the deliverable in the in-app browser.
+- Six local Lighthouse runs of this Website scored 100 in performance, accessibility, best practices and SEO. These remain local measurements; they do not certify WCAG conformance or backend performance.
+
+GitHub Pages serves the static site and downloads. The real Node/Ollama prototype requires local setup; no hosted model backend is claimed. This is a published engineering candidate, with the failed latency target and remaining validation gates exposed in the evidence ledger.
+
+---
+
+## Historical preparation deployment
+
 
 Verified 9 September 2026.
 

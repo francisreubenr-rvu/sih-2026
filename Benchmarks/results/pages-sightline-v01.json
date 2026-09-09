@@ -1,0 +1,58 @@
+{
+  "verified_at": "2026-09-09T16:58:28.927515+00:00",
+  "deployed_commit": "69188d797820519ce2e82361661dfe0b3c07714d",
+  "workflow_run": 34379912074,
+  "url": "https://francisreubenr-rvu.github.io/sih-2026/",
+  "files": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "bytes": 15170,
+      "matches_local": true,
+      "sha256": "6c565d606af4a780cf6d7a5112f1e97a6fb490d4e254f38a02dee59287c59a4b"
+    },
+    {
+      "path": "style.css",
+      "status": 200,
+      "bytes": 22178,
+      "matches_local": true,
+      "sha256": "da89b3717c9c9195fa5af38cd185a73a89a31be7b7be0ccad687cd6d77674eb8"
+    },
+    {
+      "path": "app.js",
+      "status": 200,
+      "bytes": 4340,
+      "matches_local": true,
+      "sha256": "62cc24e31f86769d8178ba711986788e3599f3ab8b1b4d1281205e0f6e7d6f37"
+    },
+    {
+      "path": "assets/fonts/geist-latin.woff2",
+      "status": 200,
+      "bytes": 29400,
+      "matches_local": true,
+      "sha256": "19f9c92546aa300c312235e3125af1b81394d8db9a4bc4a425cd5b641d2d54e1"
+    },
+    {
+      "path": "assets/prototype-viewport-v01.png",
+      "status": 200,
+      "bytes": 78311,
+      "matches_local": true,
+      "sha256": "ed01ba4880ca3a1d26666b325dd45afc1abd5db4208b24a3f819dcc8760cf25f"
+    },
+    {
+      "path": "downloads/sightline-extension-v01.zip",
+      "status": 200,
+      "bytes": 5379599,
+      "matches_local": true,
+      "sha256": "e165671066f6423c158d7d3435ee1e3750942b0048701948eeddc7679ff0d6ef"
+    },
+    {
+      "path": "downloads/prototype-v01-browser.json",
+      "status": 200,
+      "bytes": 2857,
+      "matches_local": true,
+      "sha256": "eebf2fc47311097be3cfc21f230382c8b1a14e3497430b5032339f6d52823897"
+    }
+  ],
+  "scope": "static website and packaged download; not hosted backend"
+}

@@ -5,10 +5,10 @@ Updated 9 September 2026. Internal target: 11 September 2026. User supplied orga
 ## Requirements and evidence
 - [x] Read full user supplied objective and problem statement.
 - [x] Publish existing preparation website on GitHub Pages; verified remote commit and live bytes 9 September. This does not satisfy prototype requirements.
-- [ ] Replace unresolved identity/domain entries with attributed SIH26171 statement and cited technical/competitive research.
-- [ ] Compare Stitch design with current rendered website and implement stronger accessible design.
+- [x] Replace unresolved identity/domain entries with attributed SIH26171 statement and cited technical/competitive research.
+- [x] Compare Stitch design with current rendered website and implement stronger accessible design.
 - [ ] Browser extension/JS with actual local computer vision inference, dynamic PII identification, face/password/PII redaction before network, and a fail-closed outbound boundary.
-- [ ] Server integration with an offline-deployable open-weight model; interpret sanitized visual context and execute validated client actions in an end-to-end task.
+- [x] Server integration with an offline-deployable open-weight model; interpret sanitized visual context and execute validated client actions in an end-to-end task.
 - [ ] Versioned API, error handling, deployment package, complete README and local persistence only where justified.
 - [ ] Guardrails and official weighted benchmarks: visual context25%, PII detection20%, redaction20%, client resources20%, task latency15%. Actual tests and labeled datasets; no estimated persuasion probability presented as measurement.
 - [ ] Automated plus browser verification, adversarial audit, performance budgets, responsive/accessibility review; record failures and fixes.
@@ -45,3 +45,5 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Updated current methodology and preserved earlier preparation record separately. Rebuilt extension ZIP includes audited client code.
 - Release ledger: 2 pass, 1 fail, 17 unknown. No saturation or competition-readiness claim.
 - Next substantial work: native-browser extension run, labeled PII/redaction/utility cases, resource/model benchmarks, continuous recording with playback, real human evaluation. Continue the full objective after candidate publication.
+
+- Published candidate `69188d7`; Pages run34379912074 succeeded. Seven public file hashes matched local bytes and the live architecture/setup interactions passed. This completes this candidate publication, not the remaining full-entry audit.

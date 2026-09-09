@@ -76,7 +76,7 @@ A proposed institutional pilot would measure sensitive information excluded, use
 | Server reasoning and client action | Actual Qwen Pending/Review end-state | Broader workflows, native Chrome/Firefox validation |
 | Guardrails and benchmarks | Defined contracts, 37 tests, browser observations, six Lighthouse runs | Full-task latency target, resources, human metrics, saturation |
 | Presentation | Six-slide candidate, 15-slide talk, POTX and PDFs | Registered team details, timed rehearsal, independent judge review |
-| Website | Implemented design and local browser/Lighthouse checks | Final deployed identity and download verification after push |
+| Website | Local browser/Lighthouse checks plus successful Pages run34379912074; seven public file hashes and live interactions verified | Independent accessibility and human evaluation |
 | Demonstration fallback | Actual screenshots | Continuous screen recording and verified playback |
 | Team and impact | Supplied names, proposed roles and pilot metrics | Authentic consented photos, contribution evidence, measured impact |
 
