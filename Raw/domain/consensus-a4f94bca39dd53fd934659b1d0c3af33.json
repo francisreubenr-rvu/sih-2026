@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"a4f94bca39dd53fd934659b1d0c3af33\", \"title\": \"YuNet: A Tiny Millisecond-level Face Detector\", \"text\": \"Great progress has been made toward accurate face detection in recent years. However, the heavy model and expensive computation costs make it difficult to deploy many detectors on mobile and embedded devices where model size and latency are highly constrained. In this paper, we present a millisecond-level anchor-free face detector, YuNet, which is specifically designed for edge devices. There are several key contributions in improving the efficiency-accuracy trade-off. First, we analyse the influential state-of-the-art face detectors in recent years and summarize the rules to reduce the size of models. Then, a lightweight face detector, YuNet, is introduced. Our detector contains a tiny and efficient feature extraction backbone and a simplified pyramid feature fusion neck. To the best of our knowledge, YuNet has the best trade-off between accuracy and speed. It has only 75856 parameters and is less than 1/5 of other small-size detectors. In addition, a training strategy is presented for the tiny face detector, and it can effectively train models with the same distribution of the training set. The proposed YuNet achieves 81.1% mAP (single-scale) on the WIDER FACE validation hard track with a high inference efficiency (Intel i7-12700K: 1.6ms per frame at 320 × 320). Because of its unique advantages, the repository for YuNet and its predecessors has been popular at GitHub and gained more than 11K stars at https://github.com/ShiqiYu/libfacedetection\", \"url\": \"https://consensus.app/papers/yunet-a-tiny-millisecondlevel-face-detector-wu-peng/a4f94bca39dd53fd934659b1d0c3af33/?utm_source=chatgpt\", \"metadata\": {\"authors\": \"Wei Wu, Hanyang Peng, Shiqi Yu\", \"publish_year\": \"2023\", \"journal\": \"Machine Intelligence Research\", \"pages\": \"1-10\", \"citation_count\": \"103\"}}"
+      }
+    ],
+    "isError": false
+  }
+}

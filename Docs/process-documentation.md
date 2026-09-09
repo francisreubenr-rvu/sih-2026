@@ -1,100 +1,83 @@
-# SIH 2026 engineering process and readiness record
+# Sightline engineering methodology and evidence
 
-**Status: PREPARATION DELIVERY — NOT SUBMISSION READY.** Requested problem: SIH2171. Internal deadline: 11 September 2026, Asia/Kolkata. Prepared 8–9 September 2026 for Francis and the six-person RV University team. This records work performed and decisions taken; planned engineering is explicitly distinguished from completed implementation.
+9 September 2026 · SIH26171 · RV University · engineering candidate v0.1. **Not submission ready.** The internal delivery target is 11 September. The earlier unresolved SIH2171 preparation record is preserved in `process-preparation-history.md`; the supplied goal and retrieved official catalogue resolved the identity to SIH26171.
 
-## 1. Scope and outcome
+## Research and problem fit
 
-The requested complete entry consists of research, guardrails, measured benchmarks, a domain prototype, a submission presentation, a project website and process documentation. The authoritative identity of SIH2171 could not be established. The team therefore has a reusable preparation pack and a working static preparation website, not a verified solution to the requested statement. Domain literature, competitors, quantitative problem framing and application implementation remain blocked by that dependency.
+The ISRO statement requires browser-local computer vision, privacy filtering before outbound context, centralized open-weight reasoning and local execution of returned actions. Its five evaluation weights are visual-context accuracy 25%, sensitive-data detection 20%, redaction precision 20%, client resources 20% and end-to-end latency 15%. `Wiki/problem-statement.md`, the official extraction and `Benchmarks/official-rubric.json` retain the source and measurement boundaries. The displayed catalogue date does not replace the team's internal deadline.
 
-The known team facts are the six names, institution, degree and year supplied in the brief. Proposed responsibilities are recorded in team-plan.md. No team history, photographs, contact details, registered name, registration ID or accomplishments have been inferred.
+Research separates organizer facts, primary technical literature, institution-reported awards, participant anecdotes and our own observations. The 2022–2025 winner sample establishes recurring presentation patterns, not causal predictors of winning. WebPII/WebRedact, PrivWeb and Available but Invisible establish prior privacy-agent work; novelty is an integration hypothesis requiring comparative testing. Source registers retain URL, retrieval date, author/title when available, hashes, evidence type and limits. Full downloaded sources remain in Raw. Two Google documentation HTML originals containing embedded public-site API configuration stay local; shareable copies remove those strings and disclose the transformation and original hash.
 
-## 2. Intelligence collection and synthesis
+Public social discovery was bounded by access. No private WhatsApp channel, inbox or restricted group was harvested. Missing Instagram/Facebook evidence remains a coverage gap. Search snippets are discovery records, not substitutes for retrieved primary sources. SciSpace/Consensus discovery and primary-paper retrieval are recorded separately.
 
-Three research workstreams ran in parallel: statement identity and domain, historical competition intelligence, and design/evaluation standards. The main agent inspected the supplied PPTX, integrated the results, authored the preparation site and performed verification. Parallel scope was file-separated to avoid conflicting changes.
+## Guardrails and benchmark design
 
-Source hierarchy: organiser-issued records for eligibility and requirements; original research or official technical documentation for mechanisms; sponsor/institutional announcements for awards; public participant accounts for explicitly anecdotal observations. Search snippets are discovery evidence; if a primary page cannot be retrieved, the limitation remains in the source register. A college internal-round result is not a national win. A sponsor-hosted performance claim is not independent experimental validation.
+Mandatory gates use pass/fail/unknown. A failed or unmeasured mandatory gate blocks a readiness claim. Delivering an explicitly labeled engineering candidate does not establish competition readiness. Official weights are preserved without inventing unpublished normalization formulas. Judge persuasion probability remains null: neither a readiness score nor a polished deck is a calibrated probability of winning.
 
-Raw preserves downloaded source text, original supplied PPTX and attributed short excerpts. Wiki contains synthesis, confidence and claim-level source links. Source registers retain original URL, author/publisher where available, retrieval time, evidence type, access limit and archived-file hash when applicable. No private WhatsApp group, Facebook group, personal inbox or restricted profile was harvested. Instagram and Facebook research produced no usable competition evidence; these are coverage gaps, not proof of absence.
+Acceptance metrics define their denominator before measurement: scenario coverage, complete user tasks, recovery attempts, findability tasks, independent narrative ratings, client memory/load/CPU and full-task timing. Component latency is not full-flow latency. The original under-200 ms full-flow guardrail remains failed because actual model steps take seconds. Saturation requires two evaluated iterations with the declared marginal improvement limits and all gates passing; it has not occurred. Human validation and broad dataset results remain absent rather than simulated.
 
-Identity investigation covered official catalogue access and multiple 2024–2026 public archives, including 614 yearly statement paths in a multi-year repository. No exact SIH2171 match was found. Some official fetches were blocked; the 2025 page retrieved by the main agent had an empty statement table. Negative search evidence is bounded. A typo, internal identifier or inaccessible record remains possible, but no possibility was selected as fact. See Wiki/problem-statement.md and Raw/problem-research.json.
+## Architecture and technology decisions
 
-The winner sample spans 2022–2025 and six institution/sponsor-documented examples. It motivates inspectable workflows, demonstrations and bounded operational claims. It cannot establish what caused winning: discovery bias, publicity bias, small sample and absent losing-team controls prevent causal or predictive conclusions. See Wiki/competition-intelligence.md.
+| Choice | Reason against the problem | Alternative and trade-off |
+|---|---|---|
+| Native JavaScript web harness and extension | Same privacy and action code runs in browser; small framework overhead | React/TypeScript improves larger UI tooling but adds no necessary capability to this small surface |
+| UltraFace RFB-320, ONNX Runtime Web WASM | Actual packaged local CV, permissive upstream license, CPU-compatible inference | ViT/MediaPipe/WebGPU candidates need comparable accuracy/resource measurements; face-only CV does not solve general PII |
+| Reconstructed semantic scene | Original pixels, DOM, field values and URLs have no outbound schema field | Detected-only masking can retain more utility but risks missed sensitive pixels; requires labeled comparison |
+| Node.js, strict Zod schemas | Shared validation, bounded HTTP API, small operational surface | FastAPI offers broader scientific ecosystem but would duplicate schemas/runtime |
+| Qwen2.5:7B via Ollama | Actual offline-deployable open-weight server reasoning | Smaller model may reduce latency; a VLM may interpret richer protected images but must be evaluated |
+| SQLite metadata-only audit | Local persistence without retaining screen context | Multi-instance hosted service would require different storage/authentication and operational review |
+| Static GitHub Pages website | Existing user-authorized hosting, no server secrets or form database | It cannot host the Node/Ollama backend; local setup is explicit |
 
-## 3. Guardrails and benchmark philosophy
+The current request contains approved control IDs/labels, bounded geometry and opaque-region types. The server uses a text LLM interpreting this layout, not a pixel-reading VLM. The task vocabulary is restricted to three synthetic workflows. These constraints make the first integration inspectable but do not satisfy broad browser-agent utility by themselves.
 
-Guardrails are mandatory constraints with pass, fail or unknown status. Any failure rejects a release; any unknown blocks a readiness claim. An average benchmark score cannot compensate for an unverified problem, unsafe workflow or missing evidence. Preparation artifacts may still be handed over with visible labels.
+## Privacy and security design
 
-The guardrail set covers scope ceilings, complete workflows, baseline-tested differentiation, prototype capacity, request validation, data authorization, deployment controls, accessibility, responsiveness, latency, Lighthouse, recovery, fallback, impact integrity, format, maintainability, attribution and real human validation. These are self-imposed engineering standards, not official SIH numerical weights.
+Raw capture and model preprocessing stay in client memory. All unknown text/media are excluded independently of face-detection coverage. This avoids treating a missed face as permission to upload its pixels. The preview exposes residual geometry and allowed labels; structural context can still disclose information, so the design does not claim anonymity or zero leakage.
 
-Benchmarks define the denominator and collection method before a run. Functionality coverage is weighted acceptance-scenario completion, not code coverage. Human task completion and information findability need non-author participants. Narrative coherence needs independent ratings. API timing is separated from action-to-usable-result timing; neither a queued response nor a loading indicator counts as completion of a long task.
+A plan requires strict schemas, a current revision, an approved target and explicit confirmation. The client rechecks target identity, bounds, disabled/inert state and obstruction. Captures expire after 30 seconds. Arbitrary script, URL navigation, typing and form submission are outside the action schema or require manual handling. Open shadow roots have dedicated invalidation and hit testing. This limits action authority but does not certify prompt-injection resistance.
 
-Judge readiness can be rated as an uncalibrated proxy. Persuasion probability remains null because no comparable outcome-labelled dataset and held-out calibration exist. A readiness score of 85 is not an 85% chance of winning. Domain social-impact values also remain null until the beneficiary, baseline and observation unit are defined.
+The API requires an exact allowed origin and timing-safe bearer-token comparison; caps request size, rate and concurrency; and returns bounded errors without stack or provider secrets. Token bootstrap is restricted to loopback same-origin UI. Non-loopback configuration requires an explicit HTTPS public origin and secret. Audit persistence stores counts/timings/action type rather than screen contents. Runtime data, token files and environment secrets are ignored by Git. The Docker recipe exists, but no Docker runtime was available to validate it. No public backend is claimed.
 
-Saturation requires all mandatory gates to pass, objective targets to be met, human evidence to exist, and two evaluated iterations with marginal improvement below the declared thresholds. The deadline does not turn unknown into pass. Saturation has not been achieved.
+## Iterations and verification
 
-## 4. Technology selection and feasibility
+1. Corrected problem identity from the official catalogue and replaced generic domain placeholders with the actual privacy-agent scope.
+2. Built capture, real ONNX inference, protected-scene construction, Node API, real Ollama planning, local reviewed execution and metadata persistence.
+3. Fixed encoded-space bundling and static-root normalization failures. Added server entry and traversal tests.
+4. Replaced unconstrained model JSON with a full action-wrapper output schema after the real provider omitted the wrapper.
+5. Guarded iframe readiness after a real reload race; added proactive scene expiry.
+6. Removed redundant ONNX graph inputs and unused training counters while retaining active weights; browser face inference still worked. This is not a dataset-wide numerical-equivalence result.
+7. Audited shadow DOM, stale target meaning, malformed CV outputs and resource cleanup. The 37-test suite passes; details are in `decisions/client-audit.md`.
+8. Re-ran actual browser Pending → Review confirmations and observed the correct end-state. Model latency remains a failed requirement.
+9. Generated a Stitch design, rendered and compared it, rejected fabricated metrics/model claims, then implemented the selected optical composition with original CSS and local assets.
+10. Rendered both slide decks to PDF, inspected contact sheets and corrected cropped imagery and cramped text. The six-slide file preserves the supplied reference's content structure; the separate 15-slide talk has 700 seconds of planned slots, not a measured rehearsal.
 
-The conditional application architecture is one web interface, one API/domain service and at most one primary database. React/TypeScript plus Node can support a conventional web workflow with shared types and a simple development path. SQLite suits a single local demo instance; Postgres is more appropriate for a shared multi-instance deployment. Python/FastAPI may supersede this choice if scientific or ML libraries define the problem. Hardware requirements would invalidate a web-only plan.
+Unit tests use explicitly synthetic DOM/provider/runtime doubles. Browser evidence uses the actual local model on the synthetic service desk. Neither proves native-extension behavior or general PII accuracy. Dependencies and model/runtime licenses are recorded; a dependency audit is preserved separately.
 
-No stack is final until statement verification. No domain application, server API or persistence has been implemented. Prototype/README.md records the build contract, complete-flow requirements, error cases, deployment and fallback acceptance. Creating a generic dashboard would create code without proving problem fit.
+## Design and accessibility audit
 
-The actual website uses semantic HTML, local CSS and small JavaScript with optional locally served GSAP motion. There is no build dependency, external font request, database, analytics or personal-data form. It can run offline after local delivery. Decisions and alternatives are in architecture-decisions.md.
+The design uses a large asymmetric headline, optical boundary illustration, real prototype evidence, clear section hierarchy and proposed team responsibilities. Stitch supplied visual ideas; unsupported generated telemetry was discarded. No team portraits, awards, registered ID or contact address were invented. GitHub issues provide a real feedback destination. The local-demo dialog explains the operational prerequisite before linking to localhost.
 
-## 5. Design decision audit
+Semantic landmarks, skip navigation, named controls, visible focus, modal focus return, native keyboard behavior, local fonts and reduced-motion CSS are implemented. The architecture selector updates an announced panel. Desktop and 390px checks found no horizontal overflow on the new website. Six fresh Lighthouse 12.8.2 runs—three mobile and three desktop—scored 100 for performance, accessibility, best practices and SEO. These are local automated measurements, not WCAG 2.1 AA certification, a user study or deployed-backend evidence.
 
-The requested Taste skill and primary Awesome DESIGN.md collection informed a written design baseline. The original visual direction uses paper, ink and signal lime, large typography, chapter spacing, ruled evidence lists, an original abstract path illustration and typographic team monograms. Lando Norris's site was a reference for hierarchy and personality; no brand assets, photographs, signature or proprietary font were copied.
+## Performance and sustainable engineering
 
-The site's first screen explicitly says the ID is pending and the domain prototype is not built. This prevents the presentation style from implying implementation. The navigation leads to evidence, proposed architecture, team ownership, delivery milestones and downloads. Team initials remain honest placeholders for authentic portraits. A share action explains why a local preview is not publicly shareable. A contact channel is labelled pending; no message-success fiction is used.
+Packaged models/fonts eliminate runtime CDN dependencies. Shared browser modules reduce duplicated behavior, and the website needs no application framework or server. Local CV inference is single-thread WASM; its optimized model is small, but the generic WASM runtime is materially larger and must be included in load budgets. Canvas/tensor cleanup covers failure and disposal paths. Server reasoning currently dominates latency. Smaller-model, worker, cold-load, power and task-cost comparisons remain necessary before claiming optimization or energy savings.
 
-Taste suggestions for stock imagery, testimonials, always-on motion and rigid random components were subordinated to relevance, truthfulness, accessibility and performance. Real seeded selection guided layout exploration. Feedback carousel became a user-operated milestone carousel; no invented feedback was added. Animated content stays visible without JavaScript, and reduced motion disables the optional motion path.
+## Impact and operating model
 
-## 6. Iteration and correction log
+A proposed institutional pilot would measure sensitive information excluded, useful context retained, task completion, disclosure comprehension, review burden and cost per completed task. No pilot partner, revenue, savings, user count or avoided incident is established. Deploying on existing devices is a practical option, not proof of sustainability. Support ownership and a release/update process must accompany any real institutional rollout.
 
-Iteration 0 established empty workspace structure and source provenance. Template XML revealed six content slides and a seventh instruction slide. The requested 12–18-slide format was resolved into two separately named artifacts: a six-slide submission blueprint derived from the supplied file, and a 15-slide expanded pitch blueprint. Current-year validity is unverified because the supplied file is dated 2025.
+## Completion audit and remaining work
 
-Iteration 1 produced the static website with evidence disclosures, interactive proposed architecture and manual milestone controls. Desktop inspection at 1440 pixels showed no page-level horizontal overflow. Review identified that readiness status initially sat below the hero; explicit pending status was added inside the first-screen copy. Monograms received image roles and descriptive accessible names.
+| Requirement | Current evidence | Remaining gap |
+|---|---|---|
+| Correct domain and research | Official source and cited Wiki/Raw | Broader competition/social sample where accessible |
+| Browser-local CV and protected context | Actual WASM/fixture run; strict contract tests | Held-out PII/redaction/utility datasets |
+| Server reasoning and client action | Actual Qwen Pending/Review end-state | Broader workflows, native Chrome/Firefox validation |
+| Guardrails and benchmarks | Defined contracts, 37 tests, browser observations, six Lighthouse runs | Full-task latency target, resources, human metrics, saturation |
+| Presentation | Six-slide candidate, 15-slide talk, POTX and PDFs | Registered team details, timed rehearsal, independent judge review |
+| Website | Implemented design and local browser/Lighthouse checks | Final deployed identity and download verification after push |
+| Demonstration fallback | Actual screenshots | Continuous screen recording and verified playback |
+| Team and impact | Supplied names, proposed roles and pilot metrics | Authentic consented photos, contribution evidence, measured impact |
 
-Final local Lighthouse medians were 100 in every category on both profiles, across six runs. A visible-label mismatch was corrected and retested. Document exports and further browser checks are logged separately in verification.md. Any later correction must name the failed observation, changed file and retest. There is no fabricated domain prototype iteration history: implementation did not begin without a statement. Automated performance and browser results apply only to the preparation website.
-
-## 7. Accessibility review approach
-
-WCAG 2.1 AA is a target, not a certification. The preparation site uses semantic landmarks, a skip link, one primary heading, native expandable evidence sections, real buttons, visible focus, text-based statuses, descriptive image alternatives, and reduced-motion support. Architecture selection uses pressed states and a polite live region. Milestones do not auto-advance.
-
-Automated audits find only part of the criteria. Full conformance still needs criterion-level review, keyboard and screen-reader checks, 200% zoom/text-spacing review, contrast in all states and complete-process testing. No full conformance claim is made. Reference: https://www.w3.org/TR/WCAG21/ . Completed checks and remaining limitations are in verification.md.
-
-## 8. Performance and reliability
-
-The static site avoids remote runtime requests and large media. SVG art is original and small; scripts are local, deferred and optional for reading the content. Lighthouse measurements must retain every report and exact device profile. The declared gate uses three runs per profile, median strictly above 90 in all four categories. This is a website audit, not proof of a domain application meeting the under-200ms core-flow requirement.
-
-Domain performance requires at least 100 measured attempts after warmup, recorded environment and per-flow p95. Capacity requires the fixed-session/data-size test described in Guardrails. These domain tests have not run. For the eventual demo, freeze seed data, verify restart persistence, rehearse three complete runs and record the exact tested build. A local video and captions must be played without internet before being called a fallback.
-
-## 9. Security by design
-
-The delivered static website has no authenticated state or data collection. It does not contain API keys or an operational contact endpoint. Downloads are intentionally public preparation artifacts. The development server binds to loopback. Deployment instructions require HTTPS and suitable response headers, but public deployment has not been verified.
-
-The future API must validate all incoming fields, bound payloads and pagination, parameterise queries, control output encoding, authorize private records server-side and test cross-user access. Duplicate submissions need idempotent behavior when applicable. Store credentials only in local or host configuration; redact sensitive logs. Threat modelling must be tailored to the verified domain. This design contract is not security-testing evidence for an app that does not exist.
-
-## 10. Sustainability and social impact
-
-The engineering sustainability strategy favors few services, reproducible setup, local demo capability, explicit ownership and a documented recovery path. Small assets reduce transfer and dependency exposure, but no energy or carbon savings have been measured. Avoid custom model training unless a baseline comparison proves it necessary.
-
-Impact-model.md specifies a baseline, comparable task, unit, beneficiary, observation period, counterfactual and uncertainty approach. Operating cost must include hosting, storage, third-party usage and support effort under labelled workload assumptions. No purchaser, funding route, partnership, revenue estimate or adoption rate is claimed. The business model depends on the actual domain.
-
-## 11. Gap resolution and final self-evaluation
-
-Release is blocked by unresolved statement identity and missing domain implementation. Additional gaps are authentic team assets, registered details, contact destination, current-year submission instructions, measured domain performance, human user/reviewer studies, pilot validation and a real demo recording. These are not permission requests; they are facts about available evidence.
-
-The historical judging dimensions are only partially addressed. Clarity has a source ledger and blueprint; feasibility has a conditional architecture; UX has a functioning preparation website. Novelty, practicability, domain impact, sustainability validation and demonstrability remain unproved. No aggregate competition score or selection probability is assigned.
-
-To unblock: preserve an organiser-issued full problem statement with exact ID/year, sponsor, category, expected solution and constraints. Reassess the stack, freeze the primary journey, compare existing approaches, implement and test the vertical slice, then replace all blueprint evidence slots. Confirm registration and actual submission format before upload. This preparation pack reduces setup work; it does not substitute for those steps.
-
-## 12. Working reference
-
-- Start with Wiki/problem-statement.md for identity evidence and limitations.
-- Use Raw source registers to verify attribution; Wiki provides synthesis.
-- Read DESIGN.md before editing the interface.
-- Keep Guardrails authoritative; store run evidence under Benchmarks/results.
-- Run scripts/check_release.py to compute readiness; a nonzero exit is expected while blocked.
-- Run the website using the command in Website/README.md.
-- Edit the supplied-format submission blueprint separately from the expanded talk.
-- Present targets as targets, projections as projections and measured results with their test conditions.
+The full goal remains active. `PLAN.md`, `ROAST.md`, `Guardrails/guardrails.json` and `Benchmarks/release-status.json` are the continuing readiness ledger. Do not reinterpret a passing static website or a successful push as completion of the competition entry.

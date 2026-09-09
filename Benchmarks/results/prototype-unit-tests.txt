@@ -1,0 +1,49 @@
+
+> sightline-sih26171@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ fresh confirmed target executes once, with a unique revision per capture (5.658708ms)
+✔ unconfirmed and unknown actions never click (0.269917ms)
+✔ open shadow roots are observed and queued mutations revoke prior snapshots (0.2985ms)
+✔ attaching a shadow root without a mutation record revokes a snapshot (0.191625ms)
+✔ shadow-root targets resolve the actual inner hit, and reject inner overlays (0.295417ms)
+✔ nested shadow content within an approved control is a valid composed hit (0.133459ms)
+✔ label, role and size changes reject even without an observer record (0.4505ms)
+✔ clipped controls compare original bounds rather than clipped coordinates (0.130417ms)
+✔ disabled fieldsets, inert parents and hidden targets cannot authorize clicks (0.349334ms)
+✔ outer overlays, links and form submission require manual handling (0.361542ms)
+✔ a failed capture revokes earlier exported scene and disposal revokes all use (1.670333ms)
+✔ arbitrary text and closed-shadow secrets never enter the scene (0.185209ms)
+✔ invalid rectangle padding or dimensions cannot become exportable geometry (0.079041ms)
+✔ outbound schema refuses raw screenshots, DOM, URLs and arbitrary tasks (3.98275ms)
+✔ scene reconstruction drops untrusted object fields and rejects arbitrary labels (0.418875ms)
+✔ out of bounds, duplicate IDs and nonfinite coordinates are rejected (0.442291ms)
+✔ clipping handles negative edges, padding and offscreen pixels (0.4485ms)
+✔ arbitrary JS, unknown targets, payload fields and typing are rejected (0.469ms)
+✔ rendered wireframe contains allowed semantics but no arbitrary source content (0.257375ms)
+✔ PII detector identifies email and numeric IDs while export remains independent (0.470584ms)
+✔ requires authorization and exact allowed origin (29.185125ms)
+✔ rejects malformed, oversized and extra-field requests before provider (10.755291ms)
+✔ valid plan contains matching revision and audit stores no scene or PII (3.684917ms)
+✔ unsafe provider target is rejected without persistence (2.401792ms)
+✔ provider outage gives actionable error without stack or endpoint leakage (2.469084ms)
+✔ request rate cap returns 429 and retry-after (13.08425ms)
+✔ static server never exposes server source, pairing tokens or tests (3.895167ms)
+✔ real provider adapter submits only validated semantics and checks JSON (0.86575ms)
+✔ serves the real app entry and fixture (2.696792ms)
+✔ no-control scenes omit an impossible empty click enum (0.138792ms)
+✔ RGB preprocessing follows upstream channel order and normalization (1.984208ms)
+✔ face decoding thresholds, clips and suppresses duplicate boxes (0.253125ms)
+✔ invalid shapes, scores and box coordinates fail instead of reporting safe output (0.35725ms)
+✔ input/output tensors and owned bitmaps are released after every inference outcome (13.295125ms)
+✔ caller-owned bitmaps stay open and disposal is idempotent (1.848792ms)
+✔ overlapping inference rejects and session disposal waits for active inference (1.941209ms)
+✔ canvas initialization failure releases the already-created session (1.672791ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 182.350375

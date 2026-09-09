@@ -1,0 +1,508 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Found 10 relevant papers on 'Which lightweight on-device computer vision and OCR methods can detect faces and personal information in browser screenshots while minimizing inference latency and preventing sensitive pixels from reaching a cloud agent?'.\n\n\n1. Privacy-Preserving Real-Time Facial Expression Classification in the Browser: System Design and Tradeoff Evaluation (Technical Report)\n   2025 · Michael Farrell Gunawan\n   DOI: 10.5281/zenodo.18109915\n   Abstract: This technical report documents a browser-based webcam demo that performs real-time face detection and facial expression classification entirely on-device (client-side). The system loads pre-trained face-api.js models (Tiny Face Detector + expression classifier), runs a throttled inference loop with a non-overlap “busy” guard, and renders bounding boxes and top-k expression probabilities as a canvas overlay alongside live performance metrics (render FPS and inference rate). The report evaluates responsiveness–robustness tradeoffs across: (1) inference interval, (2) detector configuration (inputSize, scoreThreshold), and (3) output stabilization via exponential moving average (EMA) smoothing. Results show rendering remains high-FPS while throughput is dominated by inference cost. Detector parameters strongly affect range and motion robustness. EMA introduces a stability and latency tradeoff. Limitations/Ethics: outputs are expression-category predictions (model confidence), not ground-truth emotion, and are sensitive to lighting direction and head pose. Live demo: https://on-device-face-expression-demo-by-michael.vercel.appSource code: https://github.com/Nectarch/on-device-face-expression-demo \n\n2. Privacy-Preserving Real-Time Facial Expression Classification in the Browser: System Design and Tradeoff Evaluation (Technical Report)\n   2025 · Michael Farrell Gunawan\n   DOI: 10.5281/zenodo.18109914\n   Abstract: This technical report documents a browser-based webcam demo that performs real-time face detection and facial expression classification entirely on-device (client-side). The system loads pre-trained face-api.js models (Tiny Face Detector + expression classifier), runs a throttled inference loop with a non-overlap “busy” guard, and renders bounding boxes and top-k expression probabilities as a canvas overlay alongside live performance metrics (render FPS and inference rate). The report evaluates responsiveness–robustness tradeoffs across: (1) inference interval, (2) detector configuration (inputSize, scoreThreshold), and (3) output stabilization via exponential moving average (EMA) smoothing. Results show rendering remains high-FPS while throughput is dominated by inference cost. Detector parameters strongly affect range and motion robustness. EMA introduces a stability and latency tradeoff. Limitations/Ethics: outputs are expression-category predictions (model confidence), not ground-truth emotion, and are sensitive to lighting direction and head pose. Live demo: https://on-device-face-expression-demo-by-michael.vercel.appSource code: https://github.com/Nectarch/on-device-face-expression-demo \n\n3. On-Device AI for Privacy-Preserving Mobile Applications: A Framework using TensorFlow Lite\n   2025 · Manoj Misra · International Journal For Science Technology And Engineering\n   DOI: 10.22214/ijraset.2025.73873\n   Abstract: The rapid adoption of mobile applications in domains such as healthcare, finance, and e-commerce has significantly increased concerns about data privacy and security. Traditional cloud-based artificial intelligence (AI) solutions often require continuous transmission of sensitive user data to remote servers, raising issues related to latency, cost, and regulatory compliance. To address these challenges, this paper proposes a novel framework for developing privacy-preserving mobile applications using on-device AI with TensorFlow Lite. The framework enables the deployment of lightweight machine learning models directly on smartphones, thereby eliminating the need for persistent cloud connectivity and minimizing data leakage risks. The proposed system architecture integrates model optimization techniques, such as quantization and pruning, to reduce model size without compromising accuracy. A modular implementation strategy is presented, allowing developers to embed AI models seamlessly within Android applications while maintaining scalability across diverse device specifications. As a proof of concept, a context-aware recommendation system was developed and evaluated using TensorFlow Lite, demonstrating efficient inference with reduced latency and offline functionality. Experimental results show that on-device inference achieves up to 35% reduction in response time compared to cloud-based alternatives, while ensuring complete retention of user data on the device. This work highlights the potential of on-device AI frameworks to balance computational efficiency, privacy preservation, and user experience in next-generation mobile applications. The proposed methodology provides a reusable blueprint for researchers and practitioners seeking to design secure, responsive, and intelligent mobile systems. \n\n4. On-Device AI Models: Advancing Privacy-First Machine Learning for Mobile Applications\n   2025 · Sushant Ubale · International journal of scientific research in computer science, engineering and information technology\n   DOI: 10.32628/cseit2410612397\n   Abstract: A revolutionary approach to mobile computing, on-device AI models solve important issues with privacy, latency, and network dependence. The development and optimization of lightweight AI models tailored for mobile devices are examined in this thorough article, which also looks at the delicate balance between user privacy and computing performance. The article looks into several topics, such as performance optimization tactics, effective layer design, privacy enhancement via local processing, and model compression techniques. To enable advanced AI capabilities on devices with limited resources, it also explores implementation strategies and hardware acceleration techniques. This article shows how on-device AI is transforming mobile applications in the social media, healthcare, and financial industries while upholding strong privacy assurances by examining current trends and potential future directions. \n\n5. Resource-aware facial recognition: a hybrid cloud-edge computing approach for low-end devices\n   2024 · David M. Warburton\n   DOI: 10.5281/zenodo.14197786\n   Abstract: Facial recognition technology has become ubiquitous in modern applications, yet its implementation on resource-constrained devices remains challenging due to computational limitations. This article presents a novel framework for optimizing facial recognition systems on low-end devices through a three-pronged approach: algorithmic simplification, selective frame processing, and hybrid cloud computing integration. The proposed methodology achieves a 64% reduction in computational overhead while maintaining an accuracy rate of 93.7% compared to traditional implementations. Through extensive experimentation across various device configurations (n=127), the article demonstrates that the streamlined processing pipeline, incorporating adaptive frame skipping and cloud-offloading strategies, reduces memory usage by 48% and decreases power consumption by 37% compared to baseline models. The framework's effectiveness was validated through real-world testing on devices with processors ranging from 1.1 GHz to 2.0 GHz and RAM configurations between 1GB and 3GB. Results indicate significant improvements in real-time performance, with response times averaging 156ms compared to 425ms in conventional systems. These findings suggest a viable pathway for democratizing facial recognition technology across a broader spectrum of devices, particularly in regions where high-end hardware accessibility is limited. \n\n6. A Privacy-Preserving Plug-and-Play Browser Integrating Edge-Based Reasoning Large Language Models with Localized Search and Secure Web Detection\n   2026 · Panchal Sonali, poonam thakur\n   DOI: 10.5281/zenodo.18185245\n   Abstract: Web browsers have become the primary interface for accessing online services, communication platforms, and information resources. To enhance functionality and security, many modern browsers rely on cloudbased services for search, reasoning, and threat analysis. While this approach improves performance and scalability, it requires the transfer of user queries and browsing data to remote servers, raising concerns related to privacy, data exposure, and loss of user control. This paper proposes a privacy-preserving plug-and-play browser framework designed to operate entirely within the client environment. The proposed framework integrates edge-based reasoning using lightweight large language models, localized on-device search, and browser-level secure web detection to support privacy-aware browsing. All monitoring, reasoning, and enforcement processes are performed locally on the user’s device, eliminating reliance on external services and reducing the risk of unauthorized data disclosure. The framework continuously observes browser behavior and applies adaptive privacy enforcement based on contextual execution patterns. A qualitative assessment indicates that the proposed approach can enhance user privacy while maintaining acceptable performance and usability, demonstrating that client-side intelligent browser architectures provide a viable alternative to cloud-dependent browsing models. \n\n7. MobileMRZNet: Efficient and Lightweight MRZ Detection for Mobile Devices\n   2024 · Necmettin Bayar, Kubra Guzel, Deniz Kumlu · Balkan journal of electrical & computer engineering\n   DOI: 10.17694/bajece.1416404\n   Abstract: The Machine Readable Zone (MRZ) is a standardized section found on identification documents (IDs) that adhere to the International Civil Aviation Association (ICAO) Document 9303. The MRZ region contains sensitive personal information about the document holder, and a portion of this information is utilized to establish communication between the passive chip within the ID and a mobile device via Near Field Communication (NFC) protocol. This communication is crucial as the data retrieved from the ID's chip is subsequently used in authentication steps such as face or fingerprint recognition. Thus, accurate detection of the personal information within the MRZ region is vital. In this research study, we propose a fast and lightweight approach for MRZ region detection called MobileMRZNet, which is based on the BlazeFace model. The MobileMRZNet architecture is specifically designed for mobile Graphical Processing Units (GPUs) and enables rapid and precise detection of MRZ regions. To train and evaluate the model, a dataset consisting of both simulated and real data was created using Turkish national IDs. The BlazeFace model was reconfigured and trained specifically for MRZ region detection. The detector, based on BlazeFace and trained on augmented real and simulated data, demonstrates excellent generalization capabilities for deployment with real IDs. Both qualitative and quantitative results confirm the superiority of our proposed method. The mean Intersection over Union (IoU) for the first frame, without utilizing any layout alignment for IDs, achieves an accuracy of approximately 81%. For character recognition, the method achieves 100% accuracy after three consecutive frames. The model operates in less than 10 milliseconds on a mobile device, and its size is around 400 KB, making it significantly fast, lightweight, and robust compared to any existing MRZ detection methods. \n\n8. Privacy and Utility Preserving at the Edge: Face Anonymization with Hashed-Metadata Retrieval for Lifelogging\n   2025 · Chayanon Khanrit, Wanida Putthividhya, Prapaporn Rattanatamrong\n   DOI: 10.1109/icsec67360.2025.11298023\n   Abstract: Lifelogging devices can capture rich visual and environmental data to help users record and retrieve personal memories. However, conventional systems that store and process all data in the cloud expose sensitive information to risks of leakage and misuse. Striking a balance between privacy protection and data utility remains a critical challenge. We presents privacy and utility-preserving lifelogging framework that leverages edge computing to process data locally before transmission to cloud. Our prototype device continuously captures images and offloads them to a smartphone acting as an edge processor. The smart-phone performs face detection, automatically blurring detected faces to protect individual privacy and applies face recognition against registered identities to retain useful annotations. Only privacy-protected, annotated images are uploaded to the cloud for later retrieval. Experiments under multiple predefined use cases demonstrate that the system meets its design goals, effectively reducing privacy risks while preserving the data’s value for memory recording. An accompanying automated script further streamlines development and improves user interaction, enabling future extensions of the framework.\n\n9. Enhancing on-Device Inference Security Through TEE-Integrated Dual-Network Architecture\n   2024 · Zhenyu Zhu, Zhihao Qu, Ninghui Jia\n   DOI: 10.1109/smc54092.2024.10831158\n   Abstract: Trusted Execution Environment(TEE) offers a secure data processing zone for model inference. Due to its limited resources, existing solutions like MirrorNet usually deploy a lightweight model within the TEE for sensitive data, and a backbone model outside for the rest. However, these approaches do not inherently limit the learning ability of the backbone model, which could acquire inference capabilities similar to the lightweight model, inevitably weakening the security. To counter this, we propose FakeNN, an innovative mechanism with a dual-network architecture, that intentionally guides the backbone model towards low predictive performance, thereby reducing its ability to infer sensitive information. We further improve the accuracy of the entire model by integrating a channel attention mechanism which reduces the transmission of redundant information. We conduct extensive experiments and the results demonstrate that FakeNN substantially expands the performance gap between the non-secure and secure TEE models, with improvements ranging from 3.16% to 66.42% compared to MirrorNet. This enhancement strengthens the system's security without negatively impacting the accuracy of the model.\n\n10. Assistive Device for the Visually Impaired using Face and Optical Character Recognition with Voice Activation\n   2025 · Himali R, Adithya S, M. N. Ravishankara\n   DOI: 10.5281/zenodo.18107190\n   Abstract: This paper presents an assistive device designed to aid visually impaired individuals through face recognition, optical character recognition (OCR), and voice-activated text-to-speech functionalities. Implemented using the Raspberry Pi Compute Module 4 (CM4), the system integrates Python OpenCV for facial recognition, Tesseract for OCR, and a google text-to-speech (gTTS) converter for audio feedback. Mono 8MP camera capture images for face and text processing. The deep learning-based face recognition module identifies individuals, while the OCR module extracts and converts text into speech, enabling real-time interaction. The device provides practical solutions for applications such as assistive technologies, smart surveillance, and document processing. We detail the system's design, methodology, implementation, and performance, highlighting challenges and potential improvements for future iterations. "
+      }
+    ],
+    "structuredContent": {
+      "searchTerm": "Which lightweight on-device computer vision and OCR methods can detect faces and personal information in browser screenshots while minimizing inference latency and preventing sensitive pixels from reaching a cloud agent?",
+      "papers": [
+        {
+          "id": 4106616705,
+          "title": "Privacy-Preserving Real-Time Facial Expression Classification in the Browser: System Design and Tradeoff Evaluation (Technical Report)",
+          "is_archived": false,
+          "full_slug": "privacy-preserving-real-time-facial-expression-pyvlg0w8crzg",
+          "journal": null,
+          "conference_series": null,
+          "date": "2025-12-31T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Journal Article",
+          "doi": "10.5281/zenodo.18109915",
+          "unique_id": "pyvlg0w8crzg",
+          "abstract": "This technical report documents a browser-based webcam demo that performs real-time face detection and facial expression classification entirely on-device (client-side). The system loads pre-trained face-api.js models (Tiny Face Detector + expression classifier), runs a throttled inference loop with a non-overlap “busy” guard, and renders bounding boxes and top-k expression probabilities as a canvas overlay alongside live performance metrics (render FPS and inference rate). The report evaluates responsiveness–robustness tradeoffs across: (1) inference interval, (2) detector configuration (inputSize, scoreThreshold), and (3) output stabilization via exponential moving average (EMA) smoothing. Results show rendering remains high-FPS while throughput is dominated by inference cost. Detector parameters strongly affect range and motion robustness. EMA introduces a stability and latency tradeoff. Limitations/Ethics: outputs are expression-category predictions (model confidence), not ground-truth emotion, and are sensitive to lighting direction and head pose. Live demo: https://on-device-face-expression-demo-by-michael.vercel.appSource code: https://github.com/Nectarch/on-device-face-expression-demo ",
+          "authors": {
+            "total": 1,
+            "data": [
+              {
+                "display_name": "Michael Farrell Gunawan",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This technical report presents a browser-based system for real-time facial expression classification, evaluating tradeoffs between responsiveness and robustness through inference interval, detector configuration, and output stabilization via exponential moving average smoothing.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4106650684,
+          "title": "Privacy-Preserving Real-Time Facial Expression Classification in the Browser: System Design and Tradeoff Evaluation (Technical Report)",
+          "is_archived": false,
+          "full_slug": "privacy-preserving-real-time-facial-expression-l5mj28aav9jy",
+          "journal": null,
+          "conference_series": null,
+          "date": "2025-12-31T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Journal Article",
+          "doi": "10.5281/zenodo.18109914",
+          "unique_id": "l5mj28aav9jy",
+          "abstract": "This technical report documents a browser-based webcam demo that performs real-time face detection and facial expression classification entirely on-device (client-side). The system loads pre-trained face-api.js models (Tiny Face Detector + expression classifier), runs a throttled inference loop with a non-overlap “busy” guard, and renders bounding boxes and top-k expression probabilities as a canvas overlay alongside live performance metrics (render FPS and inference rate). The report evaluates responsiveness–robustness tradeoffs across: (1) inference interval, (2) detector configuration (inputSize, scoreThreshold), and (3) output stabilization via exponential moving average (EMA) smoothing. Results show rendering remains high-FPS while throughput is dominated by inference cost. Detector parameters strongly affect range and motion robustness. EMA introduces a stability and latency tradeoff. Limitations/Ethics: outputs are expression-category predictions (model confidence), not ground-truth emotion, and are sensitive to lighting direction and head pose. Live demo: https://on-device-face-expression-demo-by-michael.vercel.appSource code: https://github.com/Nectarch/on-device-face-expression-demo ",
+          "authors": {
+            "total": 1,
+            "data": [
+              {
+                "display_name": "Michael Farrell Gunawan",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This technical report presents a browser-based system for real-time facial expression classification, evaluating tradeoffs between responsiveness and robustness through inference interval, detector configuration, and output stabilization via exponential moving average smoothing.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4072905591,
+          "title": "On-Device AI for Privacy-Preserving Mobile Applications: A Framework using TensorFlow Lite",
+          "is_archived": false,
+          "full_slug": "on-device-ai-for-privacy-preserving-mobile-applications-a-fpr5nj96co7b",
+          "journal": {
+            "display_name": "International Journal For Science Technology And Engineering",
+            "official_page": "http://www.ijraset.com",
+            "issn": "2321-9653",
+            "alias": null,
+            "id": 2764676628,
+            "slug": "international-journal-for-science-technology-and-engineering",
+            "unique_id": "2h6d67v7",
+            "full_slug": "international-journal-for-science-technology-and-engineering-2h6d67v7"
+          },
+          "conference_series": null,
+          "date": "2025-08-31T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Journal Article",
+          "doi": "10.22214/ijraset.2025.73873",
+          "unique_id": "fpr5nj96co7b",
+          "abstract": "The rapid adoption of mobile applications in domains such as healthcare, finance, and e-commerce has significantly increased concerns about data privacy and security. Traditional cloud-based artificial intelligence (AI) solutions often require continuous transmission of sensitive user data to remote servers, raising issues related to latency, cost, and regulatory compliance. To address these challenges, this paper proposes a novel framework for developing privacy-preserving mobile applications using on-device AI with TensorFlow Lite. The framework enables the deployment of lightweight machine learning models directly on smartphones, thereby eliminating the need for persistent cloud connectivity and minimizing data leakage risks. The proposed system architecture integrates model optimization techniques, such as quantization and pruning, to reduce model size without compromising accuracy. A modular implementation strategy is presented, allowing developers to embed AI models seamlessly within Android applications while maintaining scalability across diverse device specifications. As a proof of concept, a context-aware recommendation system was developed and evaluated using TensorFlow Lite, demonstrating efficient inference with reduced latency and offline functionality. Experimental results show that on-device inference achieves up to 35% reduction in response time compared to cloud-based alternatives, while ensuring complete retention of user data on the device. This work highlights the potential of on-device AI frameworks to balance computational efficiency, privacy preservation, and user experience in next-generation mobile applications. The proposed methodology provides a reusable blueprint for researchers and practitioners seeking to design secure, responsive, and intelligent mobile systems. ",
+          "authors": {
+            "total": 1,
+            "data": [
+              {
+                "display_name": "Manoj Misra",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This paper proposes a framework for on-device AI using TensorFlow Lite, enabling privacy-preserving mobile applications by deploying lightweight machine learning models directly on smartphones, reducing latency, cost, and data leakage risks.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4050326714,
+          "title": "On-Device AI Models: Advancing Privacy-First Machine Learning for Mobile Applications",
+          "is_archived": false,
+          "full_slug": "on-device-ai-models-advancing-privacy-first-machine-learning-47vs4dyh3ofu",
+          "journal": {
+            "display_name": "International journal of scientific research in computer science, engineering and information technology",
+            "official_page": "http://ijsrcseit.com/",
+            "issn": "2456-3307",
+            "alias": null,
+            "id": 4000141144,
+            "slug": "international-journal-of-scientific-research-in-computer",
+            "unique_id": "4btk3cku",
+            "full_slug": "international-journal-of-scientific-research-in-computer-4btk3cku"
+          },
+          "conference_series": null,
+          "date": "2025-01-03T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Journal Article",
+          "doi": "10.32628/cseit2410612397",
+          "unique_id": "47vs4dyh3ofu",
+          "abstract": "A revolutionary approach to mobile computing, on-device AI models solve important issues with privacy, latency, and network dependence. The development and optimization of lightweight AI models tailored for mobile devices are examined in this thorough article, which also looks at the delicate balance between user privacy and computing performance. The article looks into several topics, such as performance optimization tactics, effective layer design, privacy enhancement via local processing, and model compression techniques. To enable advanced AI capabilities on devices with limited resources, it also explores implementation strategies and hardware acceleration techniques. This article shows how on-device AI is transforming mobile applications in the social media, healthcare, and financial industries while upholding strong privacy assurances by examining current trends and potential future directions. ",
+          "authors": {
+            "total": 1,
+            "data": [
+              {
+                "display_name": "Sushant Ubale",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This article explores on-device AI models for mobile applications, addressing privacy, latency, and network dependence through lightweight model development, optimization, and implementation strategies, while maintaining user privacy and computing performance.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4085243594,
+          "title": "Resource-aware facial recognition: a hybrid cloud-edge computing approach for low-end devices",
+          "is_archived": false,
+          "full_slug": "resource-aware-facial-recognition-a-hybrid-cloud-edge-l4v2pke8i208",
+          "journal": null,
+          "conference_series": null,
+          "date": "2024-11-21T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Repository",
+          "doi": "10.5281/zenodo.14197786",
+          "unique_id": "l4v2pke8i208",
+          "abstract": "Facial recognition technology has become ubiquitous in modern applications, yet its implementation on resource-constrained devices remains challenging due to computational limitations. This article presents a novel framework for optimizing facial recognition systems on low-end devices through a three-pronged approach: algorithmic simplification, selective frame processing, and hybrid cloud computing integration. The proposed methodology achieves a 64% reduction in computational overhead while maintaining an accuracy rate of 93.7% compared to traditional implementations. Through extensive experimentation across various device configurations (n=127), the article demonstrates that the streamlined processing pipeline, incorporating adaptive frame skipping and cloud-offloading strategies, reduces memory usage by 48% and decreases power consumption by 37% compared to baseline models. The framework's effectiveness was validated through real-world testing on devices with processors ranging from 1.1 GHz to 2.0 GHz and RAM configurations between 1GB and 3GB. Results indicate significant improvements in real-time performance, with response times averaging 156ms compared to 425ms in conventional systems. These findings suggest a viable pathway for democratizing facial recognition technology across a broader spectrum of devices, particularly in regions where high-end hardware accessibility is limited. ",
+          "authors": {
+            "total": 1,
+            "data": [
+              {
+                "display_name": "David M. Warburton",
+                "id": 4005239653,
+                "slug": "david-m-warburton",
+                "unique_id": "2z4c3pui",
+                "full_slug": "david-m-warburton-2z4c3pui"
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": null,
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4107823986,
+          "title": "A Privacy-Preserving Plug-and-Play Browser Integrating Edge-Based Reasoning Large Language Models with Localized Search and Secure Web Detection",
+          "is_archived": false,
+          "full_slug": "a-privacy-preserving-plug-and-play-browser-integrating-edge-hw27bogvgqgc",
+          "journal": null,
+          "conference_series": null,
+          "date": "2026-01-08T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Journal Article",
+          "doi": "10.5281/zenodo.18185245",
+          "unique_id": "hw27bogvgqgc",
+          "abstract": "Web browsers have become the primary interface for accessing online services, communication platforms, and information resources. To enhance functionality and security, many modern browsers rely on cloudbased services for search, reasoning, and threat analysis. While this approach improves performance and scalability, it requires the transfer of user queries and browsing data to remote servers, raising concerns related to privacy, data exposure, and loss of user control. This paper proposes a privacy-preserving plug-and-play browser framework designed to operate entirely within the client environment. The proposed framework integrates edge-based reasoning using lightweight large language models, localized on-device search, and browser-level secure web detection to support privacy-aware browsing. All monitoring, reasoning, and enforcement processes are performed locally on the user’s device, eliminating reliance on external services and reducing the risk of unauthorized data disclosure. The framework continuously observes browser behavior and applies adaptive privacy enforcement based on contextual execution patterns. A qualitative assessment indicates that the proposed approach can enhance user privacy while maintaining acceptable performance and usability, demonstrating that client-side intelligent browser architectures provide a viable alternative to cloud-dependent browsing models. ",
+          "authors": {
+            "total": 2,
+            "data": [
+              {
+                "display_name": "Panchal Sonali",
+                "full_slug": null
+              },
+              {
+                "display_name": "poonam thakur",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This paper proposes a privacy-preserving browser framework that integrates edge-based reasoning, localized search, and secure web detection, operating entirely within the client environment to enhance user privacy and reduce data exposure.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4047150087,
+          "title": "MobileMRZNet: Efficient and Lightweight MRZ Detection for Mobile Devices",
+          "is_archived": false,
+          "full_slug": "mobilemrznet-efficient-and-lightweight-mrz-detection-for-mmc3cvy0dkp1",
+          "journal": {
+            "display_name": "Balkan journal of electrical & computer engineering",
+            "official_page": "https://dergipark.org.tr/tr/pub/bajece",
+            "issn": "2147-284X",
+            "alias": null,
+            "id": 4000016681,
+            "slug": "balkan-journal-of-electrical-computer-engineering",
+            "unique_id": "qw4072bh",
+            "full_slug": "balkan-journal-of-electrical-computer-engineering-qw4072bh"
+          },
+          "conference_series": null,
+          "date": "2024-04-15T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Journal Article",
+          "doi": "10.17694/bajece.1416404",
+          "unique_id": "mmc3cvy0dkp1",
+          "abstract": "The Machine Readable Zone (MRZ) is a standardized section found on identification documents (IDs) that adhere to the International Civil Aviation Association (ICAO) Document 9303. The MRZ region contains sensitive personal information about the document holder, and a portion of this information is utilized to establish communication between the passive chip within the ID and a mobile device via Near Field Communication (NFC) protocol. This communication is crucial as the data retrieved from the ID's chip is subsequently used in authentication steps such as face or fingerprint recognition. Thus, accurate detection of the personal information within the MRZ region is vital. In this research study, we propose a fast and lightweight approach for MRZ region detection called MobileMRZNet, which is based on the BlazeFace model. The MobileMRZNet architecture is specifically designed for mobile Graphical Processing Units (GPUs) and enables rapid and precise detection of MRZ regions. To train and evaluate the model, a dataset consisting of both simulated and real data was created using Turkish national IDs. The BlazeFace model was reconfigured and trained specifically for MRZ region detection. The detector, based on BlazeFace and trained on augmented real and simulated data, demonstrates excellent generalization capabilities for deployment with real IDs. Both qualitative and quantitative results confirm the superiority of our proposed method. The mean Intersection over Union (IoU) for the first frame, without utilizing any layout alignment for IDs, achieves an accuracy of approximately 81%. For character recognition, the method achieves 100% accuracy after three consecutive frames. The model operates in less than 10 milliseconds on a mobile device, and its size is around 400 KB, making it significantly fast, lightweight, and robust compared to any existing MRZ detection methods. ",
+          "authors": {
+            "total": 3,
+            "data": [
+              {
+                "display_name": "Necmettin Bayar",
+                "full_slug": null
+              },
+              {
+                "display_name": "Kubra Guzel",
+                "full_slug": null
+              },
+              {
+                "display_name": "Deniz Kumlu",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This study proposes MobileMRZNet, a lightweight and efficient MRZ detection model for mobile devices, achieving 81% accuracy in the first frame and 100% in three consecutive frames, with a processing time of under 10 milliseconds and a model size of 400 KB.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4111794257,
+          "title": "Privacy and Utility Preserving at the Edge: Face Anonymization with Hashed-Metadata Retrieval for Lifelogging",
+          "is_archived": false,
+          "full_slug": "privacy-and-utility-preserving-at-the-edge-face-3boydg1bi4dj",
+          "journal": null,
+          "conference_series": null,
+          "date": "2025-11-02T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Proceedings Article",
+          "doi": "10.1109/icsec67360.2025.11298023",
+          "unique_id": "3boydg1bi4dj",
+          "abstract": "Lifelogging devices can capture rich visual and environmental data to help users record and retrieve personal memories. However, conventional systems that store and process all data in the cloud expose sensitive information to risks of leakage and misuse. Striking a balance between privacy protection and data utility remains a critical challenge. We presents privacy and utility-preserving lifelogging framework that leverages edge computing to process data locally before transmission to cloud. Our prototype device continuously captures images and offloads them to a smartphone acting as an edge processor. The smart-phone performs face detection, automatically blurring detected faces to protect individual privacy and applies face recognition against registered identities to retain useful annotations. Only privacy-protected, annotated images are uploaded to the cloud for later retrieval. Experiments under multiple predefined use cases demonstrate that the system meets its design goals, effectively reducing privacy risks while preserving the data’s value for memory recording. An accompanying automated script further streamlines development and improves user interaction, enabling future extensions of the framework.",
+          "authors": {
+            "total": 4,
+            "data": [
+              {
+                "display_name": "Chayanon Khanrit",
+                "full_slug": null
+              },
+              {
+                "display_name": "Wanida Putthividhya",
+                "id": 52735399,
+                "slug": "wanida-putthividhya",
+                "unique_id": "3infptjbxr",
+                "full_slug": "wanida-putthividhya-3infptjbxr",
+                "affiliation_full_slug": "iowa-state-university-a6g8atpr"
+              },
+              {
+                "display_name": "Prapaporn Rattanatamrong",
+                "id": 2083960077,
+                "slug": "prapaporn-rattanatamrong",
+                "unique_id": "dolhxv2try",
+                "full_slug": "prapaporn-rattanatamrong-dolhxv2try",
+                "affiliation_full_slug": "thammasat-university-3ski21ro"
+              },
+              {
+                "display_name": "Chaiporn Jaikaeo",
+                "id": 295478491,
+                "slug": "chaiporn-jaikaeo",
+                "unique_id": "1hj2b175op",
+                "full_slug": "chaiporn-jaikaeo-1hj2b175op",
+                "affiliation_full_slug": "kasetsart-university-2lylrxus"
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 3,
+            "data": [
+              {
+                "display_name": "Iowa State University",
+                "city": "Ames",
+                "region": "Iowa",
+                "country": "United States",
+                "id": 173911158,
+                "slug": "iowa-state-university",
+                "unique_id": "a6g8atpr",
+                "full_slug": "iowa-state-university-a6g8atpr"
+              },
+              {
+                "display_name": "Thammasat University",
+                "city": "Bangkok",
+                "region": null,
+                "country": "Thailand",
+                "id": 108108428,
+                "slug": "thammasat-university",
+                "unique_id": "3ski21ro",
+                "full_slug": "thammasat-university-3ski21ro"
+              },
+              {
+                "display_name": "Kasetsart University",
+                "city": "Bangkok",
+                "region": null,
+                "country": "Thailand",
+                "id": 198105771,
+                "slug": "kasetsart-university",
+                "unique_id": "2lylrxus",
+                "full_slug": "kasetsart-university-2lylrxus"
+              }
+            ]
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "A privacy-preserving lifelogging framework is proposed, leveraging edge computing to locally process data, blur faces, and retain annotations, effectively reducing privacy risks while preserving data utility for memory recording and retrieval.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4050513727,
+          "title": "Enhancing on-Device Inference Security Through TEE-Integrated Dual-Network Architecture",
+          "is_archived": false,
+          "full_slug": "enhancing-on-device-inference-security-through-tee-2gnyg0pwwkzw",
+          "journal": null,
+          "conference_series": null,
+          "date": "2024-10-06T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Proceedings Article",
+          "doi": "10.1109/smc54092.2024.10831158",
+          "unique_id": "2gnyg0pwwkzw",
+          "abstract": "Trusted Execution Environment(TEE) offers a secure data processing zone for model inference. Due to its limited resources, existing solutions like MirrorNet usually deploy a lightweight model within the TEE for sensitive data, and a backbone model outside for the rest. However, these approaches do not inherently limit the learning ability of the backbone model, which could acquire inference capabilities similar to the lightweight model, inevitably weakening the security. To counter this, we propose FakeNN, an innovative mechanism with a dual-network architecture, that intentionally guides the backbone model towards low predictive performance, thereby reducing its ability to infer sensitive information. We further improve the accuracy of the entire model by integrating a channel attention mechanism which reduces the transmission of redundant information. We conduct extensive experiments and the results demonstrate that FakeNN substantially expands the performance gap between the non-secure and secure TEE models, with improvements ranging from 3.16% to 66.42% compared to MirrorNet. This enhancement strengthens the system's security without negatively impacting the accuracy of the model.",
+          "authors": {
+            "total": 5,
+            "data": [
+              {
+                "display_name": "Zhenyu Zhu",
+                "full_slug": null
+              },
+              {
+                "display_name": "Zhihao Qu",
+                "full_slug": null
+              },
+              {
+                "display_name": "Ninghui Jia",
+                "full_slug": null
+              },
+              {
+                "display_name": "Wenxuan Zhou",
+                "full_slug": null
+              },
+              {
+                "display_name": "Baoliu Ye",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "Researchers propose FakeNN, a dual-network architecture, to enhance on-device inference security by intentionally limiting the learning ability of a non-secure model, while improving overall model accuracy through a channel attention mechanism, achieving significant performance gaps between secure and non-secure models.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        },
+        {
+          "id": 4106607843,
+          "title": "Assistive Device for the Visually Impaired using Face and Optical Character Recognition with Voice Activation",
+          "is_archived": false,
+          "full_slug": "assistive-device-for-the-visually-impaired-using-face-and-5rmrdzu7zi69",
+          "journal": null,
+          "conference_series": null,
+          "date": "2025-04-21T00:00:00Z",
+          "is_oa": null,
+          "publication_type": "Repository",
+          "doi": "10.5281/zenodo.18107190",
+          "unique_id": "5rmrdzu7zi69",
+          "abstract": "This paper presents an assistive device designed to aid visually impaired individuals through face recognition, optical character recognition (OCR), and voice-activated text-to-speech functionalities. Implemented using the Raspberry Pi Compute Module 4 (CM4), the system integrates Python OpenCV for facial recognition, Tesseract for OCR, and a google text-to-speech (gTTS) converter for audio feedback. Mono 8MP camera capture images for face and text processing. The deep learning-based face recognition module identifies individuals, while the OCR module extracts and converts text into speech, enabling real-time interaction. The device provides practical solutions for applications such as assistive technologies, smart surveillance, and document processing. We detail the system's design, methodology, implementation, and performance, highlighting challenges and potential improvements for future iterations. ",
+          "authors": {
+            "total": 3,
+            "data": [
+              {
+                "display_name": "Himali R",
+                "full_slug": null
+              },
+              {
+                "display_name": "Adithya S",
+                "full_slug": null
+              },
+              {
+                "display_name": "M. N. Ravishankara",
+                "full_slug": null
+              }
+            ]
+          },
+          "affiliations": {
+            "total": 0,
+            "data": []
+          },
+          "is_fulltext_request_allowed": true,
+          "metrics": {
+            "citations": {
+              "total": null
+            }
+          },
+          "tldr": "This paper presents an assistive device for visually impaired individuals using face recognition, optical character recognition, and voice-activated text-to-speech functionalities, implemented on Raspberry Pi CM4 with Python OpenCV, Tesseract, and gTTS, enabling real-time interaction and practical solutions for assistive technologies.",
+          "podcast": null,
+          "podcast_generation_allowed": true,
+          "entity_type": "PAPER"
+        }
+      ]
+    },
+    "isError": false
+  }
+}

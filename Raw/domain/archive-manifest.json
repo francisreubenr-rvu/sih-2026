@@ -1,0 +1,272 @@
+[
+  {
+    "id": "sih26171-community",
+    "url": "https://raw.githubusercontent.com/Vigneshrdy/sih-ps-archive/main/2026/SIH26171.md",
+    "final_url": "https://raw.githubusercontent.com/Vigneshrdy/sih-ps-archive/main/2026/SIH26171.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/sih26171-community.txt",
+    "bytes": 4070,
+    "sha256": "cf06c0acb6b36d2ab8b0d1a43a1b3e16cce3876ad4f2b6f8b18e3b52673ef1a7",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "blazeface-paper",
+    "url": "https://arxiv.org/abs/1907.05047",
+    "final_url": "https://arxiv.org/abs/1907.05047",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/blazeface-paper.html",
+    "bytes": 41421,
+    "sha256": "e3809116f48d749a1d5e89ccc47e78f806ac0a490e074961bf397842c4390d68",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "webpii-paper",
+    "url": "https://arxiv.org/abs/2603.17357",
+    "final_url": "https://arxiv.org/abs/2603.17357",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/webpii-paper.html",
+    "bytes": 40520,
+    "sha256": "65e9591139447b14d9d360e89fb004f049a3ed496aad0b9b0f82053671138dea",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "privweb-paper",
+    "url": "https://arxiv.org/abs/2509.11939",
+    "final_url": "https://arxiv.org/abs/2509.11939",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/privweb-paper.html",
+    "bytes": 41759,
+    "sha256": "4922aefa7bd4541ebf1e9d871f668f400a45e2967d343c28eeaeae2db8dc3881",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "gui-privacy-paper",
+    "url": "https://arxiv.org/abs/2602.10139",
+    "final_url": "https://arxiv.org/abs/2602.10139",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/gui-privacy-paper.html",
+    "bytes": 44630,
+    "sha256": "3a61155d7651f8a4ce55de9cd65091e82f38b4508a183ae21218adbe2277feff",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "fineprint-paper",
+    "url": "https://arxiv.org/abs/2504.11281",
+    "final_url": "https://arxiv.org/abs/2504.11281",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/fineprint-paper.html",
+    "bytes": 43934,
+    "sha256": "b5b8b2fcd503d0fb68815c104aff78d98b62edfe4bd71d7537d1a024d33c0424",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "mediapipe-face-web",
+    "url": "https://developers.google.com/edge/mediapipe/solutions/vision/face_detector/web_js",
+    "final_url": "https://developers.google.com/edge/mediapipe/solutions/vision/face_detector/web_js",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/mediapipe-face-web.html",
+    "bytes": 133200,
+    "sha256": "fb6ce50a57ffc39cdbb02636d0e261299bfb780f3c734ccc4c2a1b88dd0656b9",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "mediapipe-license",
+    "url": "https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE",
+    "final_url": "https://raw.githubusercontent.com/google-ai-edge/mediapipe/master/LICENSE",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/mediapipe-license.txt",
+    "bytes": 12331,
+    "sha256": "8707eef0533987efc5b155d64761eeb6e20793f50b9bd1a68dad1cf4719d0ed8",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "yunet-readme",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_zoo/main/models/face_detection_yunet/README.md",
+    "final_url": "https://raw.githubusercontent.com/opencv/opencv_zoo/main/models/face_detection_yunet/README.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/yunet-readme.txt",
+    "bytes": 3221,
+    "sha256": "a140c9e9574ff99d3dc1c435d5e8b5e60690dc91597e66387cbbb52be12cce4c",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "yunet-license",
+    "url": "https://raw.githubusercontent.com/opencv/opencv_zoo/main/models/face_detection_yunet/LICENSE",
+    "final_url": "https://raw.githubusercontent.com/opencv/opencv_zoo/main/models/face_detection_yunet/LICENSE",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/yunet-license.txt",
+    "bytes": 1085,
+    "sha256": "c83b8120c50ccbd4c4f96edf53141bdd566ebb8f8e9227e415326aa1b1aba958",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "onnx-web-docs",
+    "url": "https://onnxruntime.ai/docs/tutorials/web/",
+    "final_url": "https://onnxruntime.ai/docs/tutorials/web/",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/onnx-web-docs.html",
+    "bytes": 44678,
+    "sha256": "af3ff0d09e5adb474173454d42bfde124a4e260f6ebad16ad441d9ce1cffa8c6",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "onnx-license",
+    "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/main/LICENSE",
+    "final_url": "https://raw.githubusercontent.com/microsoft/onnxruntime/main/LICENSE",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/onnx-license.txt",
+    "bytes": 1073,
+    "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "tesseract-readme",
+    "url": "https://raw.githubusercontent.com/naptha/tesseract.js/master/README.md",
+    "final_url": "https://raw.githubusercontent.com/naptha/tesseract.js/master/README.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/tesseract-readme.txt",
+    "bytes": 11163,
+    "sha256": "ad7f6a92126e6995d8ce85f08b5010862e01d5938fb8539b7ed0711b687cda4b",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "tesseract-license",
+    "url": "https://raw.githubusercontent.com/naptha/tesseract.js/master/LICENSE",
+    "accessed": "2026-09-09",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "webpii-models-readme",
+    "url": "https://raw.githubusercontent.com/WebPII/models/main/README.md",
+    "final_url": "https://raw.githubusercontent.com/WebPII/models/main/README.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/webpii-models-readme.txt",
+    "bytes": 1160,
+    "sha256": "ccae6ab9e109a7aceb09ec6b253254008acc6527793116f750762a00290c4336",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "webpii-project",
+    "url": "https://webpii.github.io/",
+    "final_url": "https://webpii.github.io/",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/webpii-project.html",
+    "bytes": 11304,
+    "sha256": "467247f84e88228b93b8646ea8d0fb90273024121cf108230364eaef9ff9a3c1",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "omniparser-readme",
+    "url": "https://raw.githubusercontent.com/microsoft/OmniParser/master/README.md",
+    "final_url": "https://raw.githubusercontent.com/microsoft/OmniParser/master/README.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/omniparser-readme.txt",
+    "bytes": 5750,
+    "sha256": "f4ebaafcc0ab0b9e9cc55cb587678e5c83a5bbd64469fb2cc52bc63843c5cc6d",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "presidio-readme",
+    "url": "https://raw.githubusercontent.com/data-privacy-stack/presidio/main/README.MD",
+    "final_url": "https://raw.githubusercontent.com/data-privacy-stack/presidio/main/README.MD",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/presidio-readme.txt",
+    "bytes": 6722,
+    "sha256": "2c8d5de4dff3453f686e726ee79bdc4b87e01e3a2970a61159da9e7e0b407711",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "presidio-license",
+    "url": "https://raw.githubusercontent.com/data-privacy-stack/presidio/main/LICENSE",
+    "final_url": "https://raw.githubusercontent.com/data-privacy-stack/presidio/main/LICENSE",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/presidio-license.txt",
+    "bytes": 1084,
+    "sha256": "f3e86ee59a49bcfb0d9a9547484d55224ea7b2d04f95b1947b4d18d17f6de535",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "gui-privacy-readme",
+    "url": "https://raw.githubusercontent.com/one-step-beh1nd/gui_privacy_protection/main/README.md",
+    "final_url": "https://raw.githubusercontent.com/one-step-beh1nd/gui_privacy_protection/main/README.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/gui-privacy-readme.txt",
+    "bytes": 4904,
+    "sha256": "a62687554d46cfc96850031c5572d8cb03c1e29cdb678e0213fcb9db647857c8",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "webllm-readme",
+    "url": "https://raw.githubusercontent.com/mlc-ai/web-llm/main/README.md",
+    "final_url": "https://raw.githubusercontent.com/mlc-ai/web-llm/main/README.md",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/webllm-readme.txt",
+    "bytes": 25984,
+    "sha256": "17a771925ff58c144222415c813e3eb084aade8c2a8fc303fb79cb3eee8c768f",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "transformers-docs",
+    "url": "https://huggingface.co/docs/transformers.js/en/index",
+    "final_url": "https://huggingface.co/docs/transformers.js/en/index",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/transformers-docs.html",
+    "bytes": 243130,
+    "sha256": "5f40cfa91846cf27a991579e9466567d0143edad6220e5e87429a0ec114bd7c4",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "chrome-capture",
+    "url": "https://developer.chrome.com/docs/extensions/reference/api/tabs#method-captureVisibleTab",
+    "final_url": "https://developer.chrome.com/docs/extensions/reference/api/tabs#method-captureVisibleTab",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/chrome-capture.html",
+    "bytes": 336060,
+    "sha256": "18b920310d9b0079eb10b6fd4804915c30baa821fec4983e9141f03f63fc3ab3",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "firefox-capture",
+    "url": "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/captureVisibleTab",
+    "final_url": "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/captureVisibleTab",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/firefox-capture.html",
+    "bytes": 172328,
+    "sha256": "962d7ca222b5256c3693200934dba588a42a82f7ca63723425e867f54bb420cc",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  },
+  {
+    "id": "sih-official",
+    "url": "https://www.sih.gov.in/sih2026PS",
+    "final_url": "https://www.sih.gov.in/sih2026PS",
+    "accessed": "2026-09-09",
+    "status": 200,
+    "path": "Raw/domain/sih-official.txt",
+    "bytes": 2727309,
+    "sha256": "04ed9ddbcb9876a2918db6a0c8025034136a7cb29eeeadc175fbbfa03ed9261f",
+    "rights": "Original source rights retained; research archive only; inspect included license before reuse"
+  }
+]

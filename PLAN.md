@@ -1,0 +1,47 @@
+# SIH26171 delivery plan
+
+Updated 9 September 2026. Internal target: 11 September 2026. User supplied organizer statement resolves initial SIH2171 mismatch. Historical Raw records are preserved.
+
+## Requirements and evidence
+- [x] Read full user supplied objective and problem statement.
+- [x] Publish existing preparation website on GitHub Pages; verified remote commit and live bytes 9 September. This does not satisfy prototype requirements.
+- [ ] Replace unresolved identity/domain entries with attributed SIH26171 statement and cited technical/competitive research.
+- [ ] Compare Stitch design with current rendered website and implement stronger accessible design.
+- [ ] Browser extension/JS with actual local computer vision inference, dynamic PII identification, face/password/PII redaction before network, and a fail-closed outbound boundary.
+- [ ] Server integration with an offline-deployable open-weight model; interpret sanitized visual context and execute validated client actions in an end-to-end task.
+- [ ] Versioned API, error handling, deployment package, complete README and local persistence only where justified.
+- [ ] Guardrails and official weighted benchmarks: visual context25%, PII detection20%, redaction20%, client resources20%, task latency15%. Actual tests and labeled datasets; no estimated persuasion probability presented as measurement.
+- [ ] Automated plus browser verification, adversarial audit, performance budgets, responsive/accessibility review; record failures and fixes.
+- [ ] Reproducible demo recording, screenshots, offline fallback.
+- [ ] Six-slide supplied-format submission, 12–18-slide talk, reusable presentation template, visuals, notes, timing and citations. Validate rendered outputs.
+- [ ] Public website includes real prototype access, interactive architecture, timeline, team roles, contact infrastructure; photographs pending supplied consented assets, never fabricate identity photos.
+- [ ] Complete process documentation, source registry, raw archives, delivery manifest and fresh packaged artifacts.
+- [ ] Deploy/push final verified artifacts and inspect actual published behavior.
+
+## Current architecture direction (subject to measured validation)
+Local capture → local model + DOM bounds → opaque masks → strict sanitized context envelope → server VLM/LLM → schema-validated, revision-bound action → explicit client execution. Raw screenshots and DOM never leave the client. Synthetic fixtures are explicitly labeled and are not user-study evidence.
+
+## Goal-turn audit
+Previous turn verified existing GitHub deployment and byte identity; useful publication evidence, no domain implementation. This turn resumes the full build rather than repeating publication status. Goal remains active until all requirements are verified.
+
+## Verified build checkpoint — 9 September2026
+- Correct SIH26171 row retrieved from official catalogue; full source and extracted statement preserved. G01 now passes.
+- Prototype app, shared privacy schema, real ONNX/WASM face detector, Qwen2.5 server, SQLite audit counts, native extension source/build and deployment recipe written.
+- Real browser workflow reached Request ready for review after Pending and Review actions. Expired capture rejected. 390px/1440px payload/overflow checks and screenshots saved.
+- Automated tests pass (current count in Benchmarks/results/prototype-unit-tests.txt); dependency audit JSON preserved. These do not certify the native extension or broad privacy accuracy.
+- G11 remains failed: observed real model responses are seconds, not <200ms full-flow. Other unmeasured requirements remain unknown.
+- Stitch private project8506093195265701756 created. Landing generation invoked once; use its existing process/output, never restart merely because observation is slow.
+- Three subagents exhausted quota; main continued locally. Domain sources and synthesis retained.
+- Current public Pages site remains prior preparation design until comparison/implementation/validation.
+
+- Stitch landing generation completed: screen71600ce8d3cf4dc280c782e44b4a7e24. Raw HTML saved; fabricated generator metrics/configuration rejected in Docs/design-comparison.md. No replacement generation is pending.
+
+## Current candidate checkpoint — 9 September 2026, evening
+
+- Domain identity, technical literature and competitor synthesis now cite the retrieved official SIH26171 statement and primary papers.
+- Stitch comparison is complete and the selected Website implementation is built. Six fresh local Lighthouse runs score 100 in every category; architecture interaction, setup modal and 390px overflow checks completed.
+- Client audit changes persisted before agent quota exhaustion. Main verified all 37 tests, app build and extension build; repeated the real Pending → Review workflow after the changes.
+- Six-slide supplied-format candidate, 15-slide talk (700 seconds planned), reusable POTX and PDFs exist. Rendered review corrected title overlap, panel text sizing and screenshot crop. Registration details and timed rehearsal remain open.
+- Updated current methodology and preserved earlier preparation record separately. Rebuilt extension ZIP includes audited client code.
+- Release ledger: 2 pass, 1 fail, 17 unknown. No saturation or competition-readiness claim.
+- Next substantial work: native-browser extension run, labeled PII/redaction/utility cases, resource/model benchmarks, continuous recording with playback, real human evaluation. Continue the full objective after candidate publication.

@@ -1,42 +1,31 @@
-# SIH2171 — identity verification record
+# SIH26171 — verified problem identity
 
-- **Status:** UNRESOLVED — release-blocking dependency.
-- **Requested edition:** SIH 2026.
-- **Requested ID:** SIH2171 (preserved exactly).
-- **Verified title / sponsor / category / domain:** not established.
-- **Reviewed:** 8 September 2026.
-- **Owner:** research workstream.
+Verified 9 September 2026. The initial user shorthand SIH2171 is superseded by the complete statement supplied in the goal attachment, and by the retrieved organizer catalogue.
 
-## Finding
+| Field | Verified value |
+|---|---|
+| ID | SIH26171 (numeric 26171) |
+| Title | On-device Visual Perception for Light-weight Browser Agents |
+| Organization | Indian Space Research Organisation (ISRO) |
+| Department | Department of Space / Indian Space Research Organisation |
+| Category / theme | Software / Smart Automation |
+| Internal delivery target | 11 September 2026, user instruction |
+| Catalogue date shown | 30 September 2026; do not substitute this for the team's internal target |
 
-No authoritative or corroborated source retrieved in this research establishes the identity of **SIH2171**. The 2026 community datasets inspected use five-digit 26xxx identifiers; the multi-year archive has no SIH2171 file. This is evidence of an unresolved identifier, **not proof that the problem does not exist**. An internal college identifier, typo, historical record outside inspected coverage, or inaccessible official record remain possible explanations; none is established.
+Primary source: [SIH 2026 problem statements](https://www.sih.gov.in/sih2026PS), retrieved 9 September 2026, archived as `Raw/domain/sih-official.txt` (SHA256 `04ed9ddbcb9876a2918db6a0c8025034136a7cb29eeeadc175fbbfa03ed9261f`). Exact relevant text is extracted to `Raw/domain/sih26171-official-extract.txt`. This supersedes earlier retrieval failures; those historical records remain preserved.
 
-Do not silently replace this identifier with SIH26171, SIH25171, or another similar value. Domain-specific requirements, technical literature, competitors, quantified problem claims, and a submission-ready solution cannot be responsibly selected without the actual statement.
+Independent cross-check: [community archive of SIH26171](https://github.com/Vigneshrdy/sih-ps-archive/blob/main/2026/SIH26171.md), archived in `Raw/domain/sih26171-community.txt`. Community status is not organizer authority.
 
-## Evidence ledger
+## Required behavior
 
-| ID | Source | Verified observation | Confidence / limit |
-|---|---|---|---|
-| PR-01 | [Smart India Hackathon 2024 official catalogue](https://sih.gov.in/sih2024PS) | Direct HTTP 403; web tool exposes empty catalogue shell; identity cannot be checked. | Direct retrieval observation; archive authority is limited. |
-| PR-02 | [Smart India Hackathon 2025 official catalogue](https://sih.gov.in/sih2025PS) | Web view shows zero hardware/software and no table rows; direct HTTP 403. | Direct retrieval observation; archive authority is limited. |
-| PR-03 | [Smart India Hackathon 2026 official catalogue](https://sih.gov.in/sih2026PS) | Direct HTTP 403 and web tool internal error; no identity established. | Direct retrieval observation; archive authority is limited. |
-| PR-04 | [SIH 2024 Problems](https://raw.githubusercontent.com/Wraient/SIH-2024-Problems/main/README.md) | No 2171 substring. IDs parsed range 1524 to 1769; not proof of exhaustive official coverage. | Direct retrieval observation; archive authority is limited. |
-| PR-05 | [SIH 2026 Problem Statements](https://raw.githubusercontent.com/Rajkumar-Porandla/SIH-2026-Problem-Statements/main/sih2026_problem_statements.json) | 231 records, ID range 26001 to 26231. No 2171 substring. | Direct retrieval observation; archive authority is limited. |
-| PR-06 | [SIH 2025 problem statement gist](https://gist.githubusercontent.com/theprtsh/2dbccc7eb68340d35e4b187180fe5eda/raw) | No 2171 substring. Raw text archive available; incomplete/irregular formatting means not a completeness claim. | Direct retrieval observation; archive authority is limited. |
-| PR-07 | [SIH multi-year archive index](https://raw.githubusercontent.com/Vigneshrdy/sih-ps-archive/main/README.md) | Reports 2024 IDs SIH1524–SIH1782; 2025 SIH25001–SIH25142; 2026 SIH26001–SIH26233. Partial older-year coverage. | Direct retrieval observation; archive authority is limited. |
-| PR-08 | [SIH multi-year attribution](https://raw.githubusercontent.com/Vigneshrdy/sih-ps-archive/main/ATTRIBUTION.md) | Read before reuse. Repository software license does not relicense government statement text. Preserve source attribution. | Direct retrieval observation; archive authority is limited. |
-| PR-09 | [SIH multi-year file tree](https://api.github.com/repos/Vigneshrdy/sih-ps-archive/git/trees/main?recursive=1) | 614 yearly statement Markdown paths: 246 (2024), 135 (2025), 233 (2026). No SIH2171 path. Tree SHA 806b4d7fd6b2a19fdd3d92f08b42ae4d93464ac7. | Direct retrieval observation; archive authority is limited. |
+Run a local vision model (ViT or equivalent CV) in browser JavaScript/extension. Detect and redact sensitive visual/DOM content before network transmission. Send only sanitized context to a centralized LLM/VLM, which returns data or a browser action executed locally. Demonstrate a complete task and measure the latency/accuracy/resource trade-off. Open-source or open-weight server models are permitted. Any open-source dataset may be used; finale evaluation use cases will be supplied then.
 
-## Search coverage and rejected matches
+| Organizer metric | Weight |
+|---|---:|
+| Accuracy of visual context | 25% |
+| Sensitive/PII detection recall and precision | 20% |
+| Redaction precision | 20% |
+| Client resource utilization | 20% |
+| Overall task latency | 15% |
 
-Public indexed queries covered exact/space-separated IDs, broad web/news, GitHub, LinkedIn, Instagram, Facebook, Reddit, and WhatsApp references. No relevant exact identity match surfaced. Numeric coincidences in phone numbers, unrelated papers, project counts, and other hackathons were excluded. Search failure is not a statement about all content on these platforms. Private WhatsApp groups, private Facebook groups, account-restricted social posts, and personal profiles were not harvested.
-
-Raw query records, source author names, retrieval dates, archived-file hashes and access limitations are in [problem-research.json](../Raw/problem-research.json). Original raw records remain unedited in Raw; Wiki carries interpretation.
-
-## Execution consequence
-
-Continue independent preparation: team roles marked as proposed, official-template extraction, reusable infrastructure, research ledger, guardrail machinery, benchmark instrumentation, website shell, and clear release status. Keep domain-specific claims and submission status explicitly unresolved. A working evidence-management scaffold is not the SIH2171 solution.
-
-## Required evidence to resolve
-
-An official problem statement URL, authoritative downloaded record, or organiser-provided statement must establish ID, edition, title, sponsor, category, detailed description, expected solution, constraints, and any datasets. Record its provenance and re-evaluate the implementation before removing the block.
+The organizer supplies weights, not complete scoring formulas or numerical acceptance thresholds. Our local measurement contracts must remain explicitly self-imposed and cannot be represented as official score predictions.

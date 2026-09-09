@@ -1,0 +1,12 @@
+import { build } from '../Prototype/node_modules/esbuild/lib/main.js';
+import { mkdir,copyFile,cp,readFile,writeFile } from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+const root=new URL('../Prototype/',import.meta.url),out=new URL('extension-build/',root);
+await mkdir(out,{recursive:true});
+for(const name of ['manifest.json','popup.html','popup.css'])await copyFile(new URL(`extension/${name}`,root),new URL(name,out));
+for(const [source,dest,format] of [['popup.mjs','popup.js','esm'],['content.mjs','content.js','iife']])await build({entryPoints:[fileURLToPath(new URL(`extension/${source}`,root))],bundle:true,format,platform:'browser',outfile:fileURLToPath(new URL(dest,out)),minify:true,legalComments:'eof'});
+await cp(new URL('models/',root),new URL('models/',out),{recursive:true});
+const manifest=JSON.parse(await readFile(new URL('manifest.json',out),'utf8'));
+manifest.browser_specific_settings={gecko:{id:'sightline-sih26171@rvu.example',strict_min_version:'128.0'}};
+await writeFile(new URL('manifest.firefox.json',out),JSON.stringify(manifest,null,2));
+console.log('Built Prototype/extension-build. Chrome unpacked build; Firefox manifest provided for separate browser verification.');

@@ -1,0 +1,83 @@
+{
+  "version": "prototype-v0.1",
+  "date": "2026-09-09",
+  "environment": {
+    "browser": "Codex embedded Chromium",
+    "device": "Apple M1 Pro",
+    "systemMemoryGiB": 16,
+    "node": "26.7.0",
+    "model": "qwen2.5:7b-instruct",
+    "vision": "UltraFace RFB320 / ORT Web1.23.2 / WASM single thread"
+  },
+  "scope": "Manual browser integration observations, not a benchmark distribution or cross-browser certification",
+  "observations": [
+    {
+      "case": "Initial full fixture capture with reference portrait",
+      "facesDetected": 1,
+      "captureMs": 108,
+      "inferenceMs": 11.5,
+      "requestKiBDisplayed": 1.5
+    },
+    {
+      "case": "Real first model step",
+      "latencyMsDisplayed": 3029,
+      "result": "Pending action confirmed; fixture entered Pending requests"
+    },
+    {
+      "case": "Second model step",
+      "latencyMsDisplayed": 2276,
+      "result": "Review proposed; delayed confirmation rejected after capture expiry"
+    },
+    {
+      "case": "Recaptured second step",
+      "result": "Real Qwen Review action confirmed; fixture heading Request ready for review observed"
+    },
+    {
+      "case": "Desktop after graph cleanup",
+      "viewportWidth": 1440,
+      "documentScrollWidth": 1440,
+      "facesDetected": 1,
+      "captureMs": 92,
+      "inferenceMs": 9.6
+    },
+    {
+      "case": "390px after reload fix",
+      "viewportWidth": 390,
+      "documentScrollWidth": 390,
+      "captureMs": 106,
+      "syntheticEmailAbsentFromPayload": true,
+      "syntheticAccountNumberAbsentFromPayload": true,
+      "imageDataAbsentFromPayload": true
+    },
+    {
+      "case": "Proactive expiry after local wait",
+      "result": "Both plan and execute disabled; page-changed-or-review-expired message observed without an attempted submission"
+    }
+  ],
+  "screenshots": [
+    "Docs/prototype-desktop-v01.png",
+    "Docs/prototype-mobile-v01.png"
+  ],
+  "limits": [
+    "No precision/recall study",
+    "No repeated latency distribution",
+    "Model steps exceed full-flow200ms target",
+    "Extension packages built but not exercised in Chrome/Firefox",
+    "WASM CPU-vendor warning remains",
+    "Screenshots are synthetic-demo evidence only"
+  ],
+  "post_client_audit_recheck": {
+    "date": "2026-09-09",
+    "scope": "ordinary synthetic fixture in embedded Chromium; not native extension or shadow fixture",
+    "tests": 37,
+    "model_response_observed_ms": 3105,
+    "end_state": "Request ready for review",
+    "actions": "Capture, real Pending plan, confirm, recapture, real Review plan, confirm",
+    "automation_note": "3,000 ms locator timeout preceded a 3,105 ms model response; enabled confirmation was then used successfully",
+    "limitations": [
+      "Single observation, not p95",
+      "Shadow and overlay paths have unit doubles only",
+      "Full-flow latency gate still fails"
+    ]
+  }
+}

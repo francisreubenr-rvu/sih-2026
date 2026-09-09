@@ -1,26 +1,37 @@
-# Domain research — pending verified problem identity
+# Technical research — SIH26171
 
-**Status: deferred dependency, not completed research.** Reviewed 8 September 2026.
+Updated 9 September 2026. Sources below are technical literature and implementations, not evidence of our prototype's accuracy or winning probability. Raw page archives and retrieval hashes: `Raw/domain/archive-manifest.json`. SciSpace/Consensus discovery responses are preserved under `Raw/domain/discovery-*.json`; all six cited Consensus result fetches were archived before use.
 
-The supplied ID SIH2171 could not be mapped to an authoritative problem statement. See [identity evidence](problem-statement.md) and [raw provenance](../Raw/problem-research.json). Selecting technical literature or competitors now would manufacture relevance.
+## Privacy requirements extend beyond passwords
 
-## Prepared evidence matrix
+Nathan Zhao's **WebPII: Benchmarking Visual PII Detection for Computer-Use Agents** (18 March 2026, preprint) introduces a synthetic screenshot benchmark with PII categories including transaction identifiers and partially filled forms. This motivates typed detection evaluation beyond emails and obvious password fields. WebRedact's reported results are author measurements, not browser-WASM results; do not put them on our scorecard. [Primary paper](https://arxiv.org/abs/2603.17357), [released models](https://github.com/WebPII/models).
 
-| Research question | Required primary evidence | Acceptance rule | Current state |
-|---|---|---|---|
-| Who experiences the problem? | Sponsor brief, government report, field interviews with consent | Named population, geography, date and measurement method | Unresolved |
-| How large is the problem? | Official statistics or peer-reviewed measured study | Quantified denominator, period and scope; no extrapolated national claim | Unresolved |
-| What exists? | Product documentation, deployed government service, published repository | Feature verified from product/docs; maturity clearly separated | Unresolved |
-| What technical mechanism is feasible? | Original paper, benchmark dataset and official implementation docs | Method reproducible on available hardware/data | Unresolved |
-| What gap remains? | Side-by-side evidence tied to sponsor requirement | At least one measurable differentiation validated in a user flow | Unresolved |
-| What is the impact? | Pilot baseline and endline or explicit scenario model | Projections labelled; no invented users, adoption or outcome | Unresolved |
+Shuning Zhang et al.'s **PrivWeb** (15 September 2025, preprint) combines localized anonymization with privacy preferences and selective user intervention. This supports exposing the privacy decision to the user, while disproving a broad claim that local filtering plus user review is novel. Its reported user studies belong to that paper, not this team. [Primary paper](https://arxiv.org/abs/2509.11939).
 
-## Once identity is established
+Lepeng Zhao et al.'s **Available but Invisible** (8 February 2026, preprint) uses typed placeholders and a secure interaction proxy for mobile GUI agents. Our expiring browser references and strict egress scene are implementation choices in a related design space; placeholder anonymization itself is established prior work. [Primary paper](https://arxiv.org/abs/2602.10139).
 
-1. Extract actors, current workflow, constraints and expected outputs from the sponsor record.
-2. Find 3–5 primary technical sources and at least 3 materially adjacent solutions.
-3. Log source dates, authors, rights, claims, contradictions and transfer limits.
-4. Build the smallest complete workflow that tests a measurable gap.
-5. Validate using representative fixtures and distinguish synthetic demonstration data from operational data.
+## Local perception candidates
 
-No domain competitors, claimed innovations, outcome statistics or technical citations have been invented to fill this gap.
+| Candidate | Why consider it | Integration / evaluation limit |
+|---|---|---|
+| UltraFace RFB-320 | Small MIT-licensed face detector; direct ONNX model and upstream preprocessing | Selected for actual WASM prototype. Small/occluded faces need dataset testing; face-only model cannot detect textual PII |
+| BlazeFace / MediaPipe | Mobile-oriented face inference; documented web API | Device benchmarks in the paper are not transferable to our browser/hardware |
+| YuNet | Lightweight face model with official OpenCV ONNX release and license | Alternate baseline; tensor/output adapter differs |
+| WebRedact | Direct UI PII detector, paired with WebPII | Released model format and browser conversion must be checked; not a drop-in guarantee |
+| Tesseract.js | Local OCR can recover text in rasterized regions | More assets/latency; not part of current v0.1 export permission boundary |
+
+Sources: [UltraFace](https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB), [BlazeFace paper](https://arxiv.org/abs/1907.05047), [MediaPipe web guide](https://developers.google.com/edge/mediapipe/solutions/vision/face_detector/web_js), [YuNet](https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet), [Tesseract.js](https://github.com/naptha/tesseract.js). All accessed 9 September 2026; model/download provenance separately in `Prototype/models/manifest.json`.
+
+## Security implications
+
+Chaoran Chen et al.'s **The Obvious Invisible Threat** (15 April 2025, preprint) studies fine-print prompt injection against GUI agents and human reviewers. User confirmation alone is therefore not our security boundary. The protocol forbids arbitrary source text, executable code, URLs, typing and model-selected unknown targets; client checks page revision and current target before action. These checks reduce attack surface without proving complete adversarial safety. [Primary paper](https://arxiv.org/abs/2504.11281).
+
+## Experiment plan
+
+1. Freeze held-out pages and pixel/instance annotations, including unseen layouts, partial forms, canvas text, image faces, password fields, moving overlays and injected instructions.
+2. Compare DOM-only, face-only, detected-mask screenshot and conservative reconstruction. Score sensitive recall and precision separately from useful context retained.
+3. Record local cold load, warm inference, response completion, full task latency, original/outbound bytes, JS/WASM memory where available and long tasks. Do not substitute server GPU numbers for client costs.
+4. Pair every numeric result with hardware, browser, model hash, source version, denominator, matching rule and failure examples.
+5. Evaluate real user flow comprehension and review burden with participants; no simulated judge persuasion probability.
+
+The present single-reference face detections and synthetic service workflow validate integration only. No dataset-level accuracy, privacy guarantee or saturation is established.

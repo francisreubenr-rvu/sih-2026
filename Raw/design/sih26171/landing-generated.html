@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SIGHTLINE // SIH26171 — On-Device Visual Perception Runtime</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Typography: Geist and JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#f3f4ed",
+            "surface-container-high": "#e8e9e2",
+            "primary-fixed-dim": "#bbcac0",
+            "on-surface-variant": "#434844",
+            "primary": "#07140e",
+            "tertiary-fixed-dim": "#b7d086",
+            "primary-container": "#1c2922",
+            "secondary-fixed-dim": "#bbcabc",
+            "secondary-container": "#d7e7d7",
+            "on-primary-fixed": "#111e18",
+            "on-secondary-fixed": "#121e15",
+            "primary-fixed": "#d7e6db",
+            "error-container": "#ffdad6",
+            "tertiary-fixed": "#d3ec9f",
+            "on-background": "#1a1c18",
+            "on-primary-container": "#829187",
+            "surface-container": "#edeee7",
+            "on-tertiary-container": "#7f9652",
+            "surface-tint": "#546259",
+            "tertiary-container": "#1c2b00",
+            "on-primary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-secondary-container": "#5a685c",
+            "inverse-primary": "#bbcac0",
+            "on-surface": "#1a1c18",
+            "surface": "#f9faf3",
+            "background": "#f9faf3",
+            "secondary-fixed": "#d7e7d7",
+            "surface-variant": "#e2e3dc",
+            "surface-dim": "#d9dbd4",
+            "outline-variant": "#c3c8c3",
+            "surface-bright": "#f9faf3",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed-variant": "#3a4d12",
+            "outline": "#737874",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "inverse-surface": "#2f312d",
+            "inverse-on-surface": "#f0f1ea",
+            "tertiary": "#0c1400",
+            "on-secondary-fixed-variant": "#3c4a3f",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed": "#141f00",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#e2e3dc",
+            "secondary": "#546256",
+            "on-primary-fixed-variant": "#3c4a42"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-3xl": "4.5rem",
+            "space-2xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "margin-mobile": "1.25rem",
+            "space-xl": "2rem",
+            "margin-desktop": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-2xl": "3rem",
+            "space-xs": "0.5rem",
+            "space-sm": "0.75rem",
+            "space-4xl": "6rem",
+            "gutter-mobile": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Geist"],
+            "headline-lg-mobile": ["Geist"],
+            "label-mono-sm": ["JetBrains Mono"],
+            "metric-mono": ["JetBrains Mono"],
+            "body-md": ["Geist"],
+            "headline-lg": ["Geist"],
+            "display-xl": ["Geist"],
+            "label-mono-lg": ["JetBrains Mono"],
+            "display-xl-mobile": ["Geist"],
+            "body-lg": ["Geist"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "label-mono-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "400" }],
+            "metric-mono": ["20px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "body-md": ["15px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-lg": ["36px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+            "display-xl": ["64px", { "lineHeight": "68px", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+            "label-mono-lg": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "display-xl-mobile": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::selection {
+      background-color: #d3ec9f;
+      color: #07140e;
+    }
+    /* Hairline technical drafting grids */
+    .drafting-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(195, 200, 195, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(195, 200, 195, 0.25) 1px, transparent 1px);
+    }
+    .optical-reticle {
+      position: relative;
+    }
+    .optical-reticle::before, .optical-reticle::after {
+      content: '+';
+      position: absolute;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #737874;
+      line-height: 1;
+    }
+    .reticle-tl::before { top: -6px; left: -6px; }
+    .reticle-br::after { bottom: -6px; right: -6px; }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-tertiary-fixed selection:text-primary min-h-screen relative flex flex-col">
+<!-- TOP APP BAR / DESKTOP COMPACT (Derived from Shared Component JSON) -->
+<header class="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-3rem)] max-w-7xl z-50 rounded-none border border-outline-variant bg-surface-container-lowest/90 backdrop-blur-md">
+<div class="flex justify-between items-center px-space-md py-space-xs w-full">
+<!-- Brand & Telemetry Status -->
+<div class="flex items-center gap-space-sm">
+<a class="text-label-mono-lg font-label-mono-lg font-bold tracking-tight text-primary flex items-center gap-space-xs" href="#">
+<span>SIGHTLINE // SIH26171</span>
+</a>
+<div class="hidden sm:flex items-center gap-1.5 px-2 py-0.5 border border-outline-variant bg-surface-container-low text-label-mono-sm font-label-mono-sm text-secondary">
+<span class="w-1.5 h-1.5 bg-tertiary-fixed-dim rounded-none inline-block animate-pulse"></span>
+<span>WASM ON-DEVICE READY</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="text-label-mono-sm font-label-mono-sm text-primary font-medium border-b-2 border-primary pb-0.5 transition-colors" href="#architecture">01 Architecture</a>
+<a class="text-label-mono-sm font-label-mono-sm text-on-surface-variant hover:text-primary transition-colors" href="#pipeline">02 Pipeline</a>
+<a class="text-label-mono-sm font-label-mono-sm text-on-surface-variant hover:text-primary transition-colors" href="#validation">03 Validation</a>
+<a class="text-label-mono-sm font-label-mono-sm text-on-surface-variant hover:text-primary transition-colors" href="#roadmap">04 Roadmap</a>
+<a class="text-label-mono-sm font-label-mono-sm text-on-surface-variant hover:text-primary transition-colors" href="#team">05 Team</a>
+</nav>
+<!-- Primary Action CTA -->
+<div class="flex items-center gap-space-xs">
+<a class="group relative inline-flex items-center gap-2 px-3 py-1.5 bg-primary-container text-surface border border-primary-container text-label-mono-sm font-label-mono-sm uppercase hover:bg-secondary transition-all active:translate-y-[1px]" href="#inspection">
+<span class="w-1.5 h-1.5 bg-tertiary-fixed"></span>
+<span>Inspect the demo</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 w-full pt-28">
+<!-- HERO SECTION: ASYMMETRIC DRAFTING CANVAS -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-space-xl md:py-space-3xl border-b border-outline-variant drafting-grid relative">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-start">
+<!-- Left Editorial Narrative (7 Columns) -->
+<div class="lg:col-span-7 flex flex-col space-y-space-md">
+<!-- Problem Identification Header -->
+<div class="flex flex-wrap items-center gap-2 font-label-mono-sm text-label-mono-sm">
+<span class="px-2 py-0.5 bg-primary-container text-tertiary-fixed font-medium">PROBLEM SIH26171</span>
+<span class="text-secondary tracking-widest">// RV UNIVERSITY RESEARCH INITIATIVE 2026</span>
+<span class="text-on-surface-variant border-l border-outline-variant pl-2">ISRO COGNITIVE PAYLOAD</span>
+</div>
+<!-- Main Monumental Headline -->
+<h1 class="font-display-xl-mobile md:font-display-xl text-display-xl-mobile md:text-display-xl text-primary tracking-tight font-semibold pt-space-xs">
+            Let the agent see what it needs.
+          </h1>
+<!-- Technical Abstract -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl pt-space-xs">
+            Standard web agents feed raw viewport buffers to cloud models, exposing user credentials, Aadhaar IDs, and face biometric telemetry. Sightline introduces an on-device perception layer running compile-time WASM to redact sensitive visual primitives and emit compact semantic control graphs directly to local open weights.
+          </p>
+<!-- Instrument Primary Action Bar -->
+<div class="pt-space-md flex flex-wrap items-center gap-space-sm">
+<a class="px-space-md py-space-sm bg-primary-container text-surface hover:bg-secondary text-label-mono-lg font-label-mono-lg tracking-wide border-l-2 border-tertiary-fixed transition-colors flex items-center gap-3" href="#pipeline">
+<span>INITIALIZE PERCEPTION BUFFER</span>
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+</a>
+<a class="px-space-md py-space-sm bg-surface text-primary border border-primary hover:bg-surface-container-high text-label-mono-lg font-label-mono-lg tracking-wide transition-colors flex items-center gap-2" href="#validation">
+<span>VIEW BENCHMARK SUITE</span>
+<span class="text-secondary font-mono text-[12px]">[11-SEP TESTBED]</span>
+</a>
+</div>
+<!-- Strict Calibration Spec Badges -->
+<div class="pt-space-lg grid grid-cols-2 sm:grid-cols-4 gap-2 border-t border-outline-variant">
+<div class="p-2 border border-outline-variant bg-surface-container-low">
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">MODEL OVERHEAD</div>
+<div class="text-metric-mono font-metric-mono text-primary font-semibold">3.2 MB</div>
+<div class="text-label-mono-sm font-label-mono-sm text-on-surface-variant">UltraFace WASM</div>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container-low">
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">LOCAL HOST</div>
+<div class="text-metric-mono font-metric-mono text-primary font-semibold">Qwen2.5</div>
+<div class="text-label-mono-sm font-label-mono-sm text-on-surface-variant">4-bit VL-7B Engine</div>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container-low">
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">TELEMETRY</div>
+<div class="text-metric-mono font-metric-mono text-primary font-semibold">0.00 B</div>
+<div class="text-label-mono-sm font-label-mono-sm text-on-surface-variant">Outbound Vision Egress</div>
+</div>
+<div class="p-2 border border-outline-variant bg-surface-container-low">
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">MUTATION RECHECK</div>
+<div class="text-metric-mono font-metric-mono text-primary font-semibold">100%</div>
+<div class="text-label-mono-sm font-label-mono-sm text-on-surface-variant">DOM Hash Bound</div>
+</div>
+</div>
+</div>
+<!-- Right Asymmetric Optical Reticle HUD (5 Columns) -->
+<div class="lg:col-span-5 border border-primary-container bg-surface-container-lowest p-space-md optical-reticle reticle-tl reticle-br shadow-none">
+<div class="flex justify-between items-center pb-space-xs border-b border-outline-variant">
+<div class="text-label-mono-sm font-label-mono-sm text-primary font-semibold tracking-wider flex items-center gap-1.5">
+<span class="w-2 h-2 bg-primary-container inline-block"></span>
+              OPTICAL TELEMETRY // VIEWPORT_MONITOR
+            </div>
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">FOV: 1440x900@1.00x</div>
+</div>
+<!-- Technical Schematic SVG: Reticle & Bounding Masks -->
+<div class="relative w-full aspect-[4/3] bg-surface-container my-space-sm border border-outline-variant overflow-hidden flex items-center justify-center">
+<svg class="w-full h-full text-primary" fill="none" stroke="currentColor" viewbox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+<!-- Coordinate Grid System -->
+<line stroke="#c3c8c3" stroke-dasharray="2 4" stroke-width="0.75" x1="0" x2="400" y1="150" y2="150"></line>
+<line stroke="#c3c8c3" stroke-dasharray="2 4" stroke-width="0.75" x1="200" x2="200" y1="0" y2="300"></line>
+<!-- Reticle Concentric Targets -->
+<circle cx="200" cy="150" r="100" stroke="#c3c8c3" stroke-width="0.75"></circle>
+<circle cx="200" cy="150" r="40" stroke="#1c2922" stroke-width="1"></circle>
+<circle cx="200" cy="150" fill="#1c2922" r="2"></circle>
+<!-- Calibrated Angular Marks -->
+<path d="M 200 45 L 200 55 M 200 245 L 200 255 M 95 150 L 105 150 M 295 150 L 305 150" stroke="#1c2922" stroke-width="1"></path>
+<!-- Redacted Target Masks (Simulated PII detection) -->
+<!-- Facial Mask Rect -->
+<rect fill="#1c2922" fill-opacity="0.95" height="95" stroke="#1c2922" stroke-width="1" width="80" x="50" y="45"></rect>
+<text fill="#b7d086" font-family="JetBrains Mono" font-size="8" font-weight="600" x="54" y="60">[MASK:FACE_01]</text>
+<text fill="#d7e6db" font-family="JetBrains Mono" font-size="7" x="54" y="72">CONF: 0.942</text>
+<line stroke="#b7d086" stroke-width="1" x1="50" x2="130" y1="140" y2="140"></line>
+<!-- Aadhaar / Numerical Mask -->
+<rect fill="#1c2922" fill-opacity="0.95" height="32" stroke="#1c2922" stroke-width="1" width="170" x="180" y="70"></rect>
+<text fill="#b7d086" font-family="JetBrains Mono" font-size="8" font-weight="600" x="186" y="84">[MASK:PII_NUM_REG]</text>
+<text fill="#d7e6db" font-family="JetBrains Mono" font-size="7" x="186" y="94">SHA256: 8f4e2...c01</text>
+<!-- Approved Action Node (Interactive Anchor) -->
+<rect fill="none" height="38" stroke="#1c2922" stroke-dasharray="4 2" stroke-width="1.5" width="150" x="180" y="210"></rect>
+<rect fill="#1c2922" height="8" width="8" x="180" y="210"></rect>
+<text fill="#1c2922" font-family="JetBrains Mono" font-size="9" font-weight="600" x="194" y="226">INPUT#submit_query</text>
+<text fill="#526054" font-family="JetBrains Mono" font-size="7" x="194" y="238">AFFORDANCE: MUTABLE_ACTION</text>
+<!-- Degree Readouts -->
+<text fill="#737874" font-family="JetBrains Mono" font-size="8" x="204" y="38">000° LAT</text>
+<text fill="#737874" font-family="JetBrains Mono" font-size="8" x="360" y="145">090°</text>
+<text fill="#737874" font-family="JetBrains Mono" font-size="8" x="204" y="275">180°</text>
+<text fill="#737874" font-family="JetBrains Mono" font-size="8" x="15" y="145">270°</text>
+</svg>
+<!-- Calibration Reticle Corner Markers -->
+<div class="absolute top-2 left-2 text-label-mono-sm font-label-mono-sm text-secondary">XY: [0341, 0188]</div>
+<div class="absolute bottom-2 right-2 text-label-mono-sm font-label-mono-sm text-secondary">BUFF_FPS: 28.4</div>
+</div>
+<!-- Telemetry Metadata Footer -->
+<div class="space-y-1 font-label-mono-sm text-label-mono-sm pt-2">
+<div class="flex justify-between text-secondary">
+<span>WASM Pipeline Status:</span>
+<span class="text-primary font-medium">LOCKED // COMPILED</span>
+</div>
+<div class="flex justify-between text-secondary">
+<span>DOM Hash Verification:</span>
+<span class="text-primary font-medium">CRC32_MATCH (0x7F18C9)</span>
+</div>
+<div class="flex justify-between text-secondary">
+<span>Local Model Bridge:</span>
+<span class="text-primary font-medium">UNIX_SOCKET://LOCALHOST:11434</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 02: THE CORE INNOVATION (SPLIT RUNTIME COMPARISON) -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-space-2xl md:py-space-3xl border-b border-outline-variant bg-surface" id="inspection">
+<div class="max-w-7xl mx-auto space-y-space-lg">
+<!-- Header & Thesis Statement -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-outline-variant pb-space-md">
+<div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary uppercase tracking-wider">02 // Real-time Ingestion Filter</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mt-1">
+              Raw Viewport vs. Redacted Agent Control Graph
+            </h2>
+</div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary max-w-sm">
+            Untrusted web pages contain sensitive visual PII. Sightline performs deterministic redaction before semantic representation leaves the browser process.
+          </div>
+</div>
+<!-- Split Comparative Viewport -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-md">
+<!-- LEFT: Raw Viewport with Insecurity Highlights -->
+<div class="border border-outline-variant bg-surface-container-low p-space-md flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center pb-space-xs border-b border-outline-variant mb-space-sm">
+<span class="text-label-mono-sm font-label-mono-sm font-bold text-error uppercase flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                  RAW DOM &amp; SCREEN RENDER (UNTRUSTED VIEWPORT)
+                </span>
+<span class="text-label-mono-sm font-label-mono-sm text-secondary">UNENCRYPTED_PII_PRESENT</span>
+</div>
+<!-- Synthetic Public Portal Simulation -->
+<div class="border border-outline-variant bg-surface-container-lowest p-space-sm space-y-3 relative overflow-hidden">
+<!-- Red Inspection Scanline Indicator -->
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-error opacity-75"></div>
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<span class="font-label-mono-sm text-label-mono-sm text-primary font-bold">STATE REVENUE &amp; LAND PORTAL</span>
+<span class="text-label-mono-sm font-label-mono-sm text-secondary">SESSION_TOKEN: 98a3ff210b</span>
+</div>
+<!-- Personal Info Box -->
+<div class="grid grid-cols-3 gap-2 items-center bg-surface-container p-2 border border-outline-variant">
+<div class="col-span-1 border border-outline-variant aspect-square bg-surface-dim flex flex-col items-center justify-center text-center p-1 relative">
+<span class="material-symbols-outlined text-secondary text-[36px]">account_box</span>
+<span class="text-label-mono-sm font-label-mono-sm text-secondary mt-1">CITIZEN_PHOTO</span>
+<span class="absolute top-0.5 right-0.5 px-1 bg-error text-surface text-[9px] font-mono">UNMASKED</span>
+</div>
+<div class="col-span-2 space-y-1">
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">CITIZEN NAME &amp; UID:</div>
+<div class="text-body-md font-body-md font-semibold text-primary">Dr. Ramesh Chandra Verma</div>
+<div class="text-label-mono-sm font-label-mono-sm text-error bg-error-container/50 px-1 py-0.5 inline-block">
+                      AADHAAR: 4920-1823-9912 (CRITICAL LEAK)
+                    </div>
+</div>
+</div>
+<!-- Form Attributes -->
+<div class="space-y-2 pt-1">
+<div>
+<label class="block text-label-mono-sm font-label-mono-sm text-secondary">PARCEL REGISTRATION ID</label>
+<input class="w-full bg-surface text-primary border-b border-secondary font-label-mono-sm text-label-mono-sm p-1" disabled="" type="text" value="IND-KA-BLR-2026-9042"/>
+</div>
+<div>
+<label class="block text-label-mono-sm font-label-mono-sm text-secondary">REGISTERED MOBILE NUMBER</label>
+<input class="w-full bg-surface text-primary border-b border-secondary font-label-mono-sm text-label-mono-sm p-1" disabled="" type="text" value="+91 98450 21984"/>
+</div>
+</div>
+<div class="flex justify-end pt-2">
+<button class="px-4 py-2 bg-primary text-surface text-label-mono-sm font-label-mono-sm font-bold uppercase">EXECUTE TITLE SEARCH</button>
+</div>
+</div>
+</div>
+<!-- Vulnerability Diagnostics -->
+<div class="mt-space-md pt-space-xs border-t border-outline-variant font-label-mono-sm text-label-mono-sm text-secondary space-y-1">
+<div class="flex justify-between">
+<span>Direct Frame Egress to Cloud API:</span>
+<span class="text-error font-semibold">REJECTED BY RUNTIME</span>
+</div>
+<div class="flex justify-between">
+<span>Leaked Biometrics Exposure:</span>
+<span class="text-error font-semibold">HIGH EXPOSURE RISK</span>
+</div>
+</div>
+</div>
+<!-- RIGHT: Redacted Semantic Control Graph -->
+<div class="border border-primary-container bg-surface-container-lowest p-space-md flex flex-col justify-between optical-reticle reticle-tl">
+<div>
+<div class="flex justify-between items-center pb-space-xs border-b border-primary-container mb-space-sm">
+<span class="text-label-mono-sm font-label-mono-sm font-bold text-primary uppercase flex items-center gap-1.5">
+<span class="w-2 h-2 bg-tertiary-fixed-dim inline-block"></span>
+                  REDACTED CONTROL GRAPH (AGENT INPUT EMBEDDING)
+                </span>
+<span class="text-label-mono-sm font-label-mono-sm text-secondary">SANITIZED // ZERO_LEAK</span>
+</div>
+<!-- Synthesized Model View -->
+<div class="border border-primary-container bg-surface-container p-space-sm space-y-3 font-label-mono-sm text-label-mono-sm relative">
+<!-- Approved Header node -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-2 text-secondary">
+<span>ROOT_CONTAINER[#land-records]</span>
+<span class="text-primary font-mono text-[10px]">HASH: 0x81FA2</span>
+</div>
+<!-- Sanitized Photo & Data Box -->
+<div class="grid grid-cols-3 gap-2 items-center bg-surface-container-high p-2 border border-outline-variant">
+<div class="col-span-1 aspect-square bg-primary-container flex flex-col items-center justify-center text-center p-1 text-tertiary-fixed">
+<span class="text-[9px] font-mono leading-tight">[WASM_MASK]</span>
+<span class="text-[8px] font-mono text-primary-fixed-dim mt-1">BLACKOUT</span>
+<span class="text-[7px] text-tertiary-fixed-dim">0x000000</span>
+</div>
+<div class="col-span-2 space-y-1">
+<div class="text-secondary text-[10px]">DOM_NODE: CITIZEN_ENTITY</div>
+<div class="bg-primary-container text-tertiary-fixed px-2 py-0.5 text-[10px] font-mono">
+                      TEXT_HASH: SHA256_SALTED(0x42)
+                    </div>
+<div class="bg-primary-container text-tertiary-fixed px-2 py-0.5 text-[10px] font-mono">
+                      PII_MASK: [REDACTED_NUMERIC_UID]
+                    </div>
+</div>
+</div>
+<!-- Approved Interactable Nodes with Affordances -->
+<div class="space-y-2 pt-1">
+<div class="p-1.5 border border-primary-container bg-surface-container-lowest flex justify-between items-center">
+<span class="font-bold text-primary">NODE_REF [01]: INPUT#parcel_id</span>
+<span class="px-1.5 py-0.5 bg-secondary-container text-on-secondary-fixed text-[9px]">READ_ONLY</span>
+</div>
+<div class="p-1.5 border border-primary-container bg-surface-container-lowest flex justify-between items-center">
+<span class="font-bold text-primary">NODE_REF [02]: INPUT#contact_reg</span>
+<span class="px-1.5 py-0.5 bg-secondary-container text-on-secondary-fixed text-[9px]">READ_ONLY</span>
+</div>
+</div>
+<div class="p-2 border-2 border-primary-container bg-tertiary-fixed/20 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-primary inline-block"></span>
+<span class="font-bold text-primary">TARGET [03]: BUTTON#execute_search</span>
+</div>
+<span class="px-2 py-0.5 bg-primary text-tertiary-fixed text-[10px] font-bold">DISPATCH_ACTION</span>
+</div>
+</div>
+</div>
+<!-- Redaction Telemetry Strip -->
+<div class="mt-space-md pt-space-xs border-t border-primary-container font-label-mono-sm text-label-mono-sm flex flex-wrap justify-between text-secondary gap-2">
+<div>LATENCY: <span class="text-primary font-bold">42.4ms WASM pass</span></div>
+<div>LOCALE: <span class="text-primary font-bold">100% Client-side inference</span></div>
+<div>OUTBOUND: <span class="text-primary font-bold">0 Frame offload</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 03: FOUR-STAGE PIPELINE ARCHITECTURE -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-space-2xl md:py-space-3xl border-b border-outline-variant bg-surface-container-low" id="pipeline">
+<div class="max-w-7xl mx-auto space-y-space-xl">
+<!-- Header -->
+<div class="border-b border-outline-variant pb-space-sm flex flex-col md:flex-row justify-between items-start md:items-baseline gap-2">
+<div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary uppercase tracking-wider">03 // Sequential Runtime Execution</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">
+              Four-Stage Perception Architecture
+            </h2>
+</div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary">
+            STRICT AIR-GAPPED BOUNDARY BETWEEN RENDER AND REASONING
+          </div>
+</div>
+<!-- 4 Sequential Instrument Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-desktop">
+<!-- Stage 01: Capture -->
+<div class="p-space-md border border-outline-variant bg-surface flex flex-col justify-between">
+<div class="space-y-space-sm">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary">PHASE 01</span>
+<span class="text-secondary">0.8 ms</span>
+</div>
+<div class="text-metric-mono font-metric-mono font-semibold text-primary">CAPTURE</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Headless DOM mutation interceptor synchronizes with sub-millisecond OffscreenCanvas raster buffers. Bypasses standard CDP bloat.
+              </p>
+</div>
+<div class="pt-space-md border-t border-outline-variant mt-space-md font-label-mono-sm text-label-mono-sm text-secondary space-y-1">
+<div>HOOK: <code class="text-primary font-mono">MutationObserver</code></div>
+<div>BUFFER: <code class="text-primary font-mono">Uint8ClampedArray</code></div>
+</div>
+</div>
+<!-- Stage 02: Protect -->
+<div class="p-space-md border border-primary-container bg-surface-container-lowest flex flex-col justify-between">
+<div class="space-y-space-sm">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-primary-container pb-2">
+<span class="font-bold text-primary">PHASE 02</span>
+<span class="text-primary font-mono">42.4 ms</span>
+</div>
+<div class="text-metric-mono font-metric-mono font-semibold text-primary">PROTECT</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Client-side UltraFace WASM executes face landmark identification. High-confidence text patterns (Aadhaar, PAN, Card Tokens) are pixel-blacked on-device.
+              </p>
+</div>
+<div class="pt-space-md border-t border-primary-container mt-space-md font-label-mono-sm text-label-mono-sm text-secondary space-y-1">
+<div>ENGINE: <code class="text-primary font-mono">UltraFace (ONNX WASM)</code></div>
+<div>REDACTION: <code class="text-primary font-mono">Zero Alpha Overwrite</code></div>
+</div>
+</div>
+<!-- Stage 03: Reason -->
+<div class="p-space-md border border-outline-variant bg-surface flex flex-col justify-between">
+<div class="space-y-space-sm">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary">PHASE 03</span>
+<span class="text-secondary">310 ms</span>
+</div>
+<div class="text-metric-mono font-metric-mono font-semibold text-primary">REASON</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Synthesizes the sanitized semantic graph into a minimal token prompt ingested by a quantized local Qwen2.5-VL instance hosted on the user's hardware.
+              </p>
+</div>
+<div class="pt-space-md border-t border-outline-variant mt-space-md font-label-mono-sm text-label-mono-sm text-secondary space-y-1">
+<div>HOST: <code class="text-primary font-mono">Localhost:11434 / llama.cpp</code></div>
+<div>WEIGHTS: <code class="text-primary font-mono">Qwen2.5-VL-7B-Q4_K_M</code></div>
+</div>
+</div>
+<!-- Stage 04: Act -->
+<div class="p-space-md border border-outline-variant bg-surface flex flex-col justify-between">
+<div class="space-y-space-sm">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary">PHASE 04</span>
+<span class="text-secondary">1.2 ms</span>
+</div>
+<div class="text-metric-mono font-metric-mono font-semibold text-primary">ACT</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                Human-in-the-loop revision gating. Prior to synthetic event dispatch, the targeted DOM node's cryptographic hash is re-verified against mutation drift.
+              </p>
+</div>
+<div class="pt-space-md border-t border-outline-variant mt-space-md font-label-mono-sm text-label-mono-sm text-secondary space-y-1">
+<div>VERIFIER: <code class="text-primary font-mono">DOM Tree Checksum</code></div>
+<div>SAFETY: <code class="text-primary font-mono">Click-Interlock Armed</code></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 04: RIGOROUS BENCHMARK EVIDENCE & KNOWN LIMITATIONS -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-space-2xl md:py-space-3xl border-b border-outline-variant bg-surface" id="validation">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop">
+<!-- Left: Verified Benchmarks (7 Cols) -->
+<div class="lg:col-span-7 space-y-space-md">
+<div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary uppercase tracking-wider">04 // Empirical Telemetry</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">
+              Tested Architecture Benchmarks
+            </h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">
+              Metrics profiled on Apple Silicon M2 (16GB) &amp; Intel i7-12700H running Chrome 128 and Firefox Gecko 130 runtimes. No hypothetical projections.
+            </p>
+</div>
+<!-- Benchmark Table -->
+<div class="border border-outline-variant overflow-x-auto">
+<table class="w-full text-left font-label-mono-sm text-label-mono-sm border-collapse">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant text-secondary">
+<th class="p-3 font-semibold">TEST PARAMETER</th>
+<th class="p-3 font-semibold">CHROME 128 (V8)</th>
+<th class="p-3 font-semibold">FIREFOX 130 (SPIDERMONKEY)</th>
+<th class="p-3 font-semibold">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-medium text-primary">UltraFace WASM Ingestion Latency</td>
+<td class="p-3 text-primary">38.2 ms</td>
+<td class="p-3 text-primary">53.6 ms</td>
+<td class="p-3 text-on-tertiary-container font-semibold">VERIFIED</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-medium text-primary">Peak Memory Overhead (WASM Heap)</td>
+<td class="p-3 text-primary">118.4 MB</td>
+<td class="p-3 text-primary">124.1 MB</td>
+<td class="p-3 text-on-tertiary-container font-semibold">VERIFIED</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-medium text-primary">Outbound Network Telemetry (Frames)</td>
+<td class="p-3 text-primary">0.00 Bytes</td>
+<td class="p-3 text-primary">0.00 Bytes</td>
+<td class="p-3 text-on-tertiary-container font-semibold">AIR-GAPPED</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-medium text-primary">DOM Hash Checksum Verification</td>
+<td class="p-3 text-primary">1.1 ms</td>
+<td class="p-3 text-primary">1.4 ms</td>
+<td class="p-3 text-on-tertiary-container font-semibold">DETERMINISTIC</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-medium text-primary">Local Qwen Prompt Token Reduction</td>
+<td class="p-3 text-primary">-84.2% vs Raw HTML</td>
+<td class="p-3 text-primary">-84.2% vs Raw HTML</td>
+<td class="p-3 text-on-tertiary-container font-semibold">MEASURED</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">
+            * All benchmark traces are archived in the RV University ground verification artifact registry under build hash <code class="text-primary font-mono">c7810f9a</code>.
+          </div>
+</div>
+<!-- Right: Explicit Engineering Limitations (5 Cols) -->
+<div class="lg:col-span-5 border border-primary-container bg-surface-container-low p-space-md space-y-space-sm">
+<div class="flex items-center gap-2 text-label-mono-sm font-label-mono-sm font-bold text-primary uppercase border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-[16px]">build</span>
+            Active Engineering Constraints &amp; Known Limits
+          </div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Scientific precision requires absolute honesty about boundaries. Sightline does not claim universal coverage. The following vectors are active testbed priorities:
+          </p>
+<div class="space-y-space-xs font-label-mono-sm text-label-mono-sm">
+<div class="p-2 border border-outline-variant bg-surface">
+<span class="font-bold text-primary">1. Adversarial CSS De-synchronization:</span>
+<span class="text-on-surface-variant block mt-0.5">Elements hidden via zero-opacity pointer pseudo-layers can cause coordinate misalignment during the ACT stage.</span>
+</div>
+<div class="p-2 border border-outline-variant bg-surface">
+<span class="font-bold text-primary">2. Canvas-Rendered Custom Fonts:</span>
+<span class="text-on-surface-variant block mt-0.5">Custom WebGL/Canvas UI controls without accessible DOM trees require secondary OCR passes, degrading latency by ~85ms.</span>
+</div>
+<div class="p-2 border border-outline-variant bg-surface">
+<span class="font-bold text-primary">3. Closed Shadow Roots:</span>
+<span class="text-on-surface-variant block mt-0.5">Browser runtime extensions cannot inspect closed shadow trees without explicit browser instrumentation flags enabled.</span>
+</div>
+</div>
+<div class="pt-2 text-label-mono-sm font-label-mono-sm text-secondary">
+            Target resolution scheduled for <strong class="text-primary">11 September Milestone</strong> testbed lock.
+          </div>
+</div>
+</div>
+</section>
+<!-- SECTION 05: TEAM & RV UNIVERSITY GOVERNANCE -->
+<section class="w-full px-margin-mobile md:px-margin-desktop py-space-2xl md:py-space-3xl border-b border-outline-variant bg-surface-container-low" id="team">
+<div class="max-w-7xl mx-auto space-y-space-lg">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-baseline border-b border-outline-variant pb-space-sm">
+<div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary uppercase tracking-wider">05 // Research Cadre</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">
+              RV University Engineering Team
+            </h2>
+</div>
+<div class="font-label-mono-sm text-label-mono-sm text-secondary">
+            RVU CSE // SMART INDIA HACKATHON 2026 // ISRO TRACK
+          </div>
+</div>
+<!-- Team Functional Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-gutter-desktop">
+<!-- Contributor F -->
+<div class="border border-outline-variant bg-surface p-space-md hover:border-primary transition-colors">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary text-metric-mono font-metric-mono">F.</span>
+<span class="text-secondary font-mono">LEAD_01</span>
+</div>
+<div class="mt-space-sm">
+<div class="text-body-md font-body-md font-semibold text-primary">Perception &amp; WASM Pipeline Lead</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Engineered the UltraFace C++ to WebAssembly compilation pipeline and memory ring buffer on OffscreenCanvas.
+              </p>
+</div>
+</div>
+<!-- Contributor G -->
+<div class="border border-outline-variant bg-surface p-space-md hover:border-primary transition-colors">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary text-metric-mono font-metric-mono">G.</span>
+<span class="text-secondary font-mono">LEAD_02</span>
+</div>
+<div class="mt-space-sm">
+<div class="text-body-md font-body-md font-semibold text-primary">Model Quantization &amp; Local Server</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Optimized Qwen2.5-VL-7B 4-bit AWQ matrix kernels for low-spec on-device inference via local daemon socket.
+              </p>
+</div>
+</div>
+<!-- Contributor H -->
+<div class="border border-outline-variant bg-surface p-space-md hover:border-primary transition-colors">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary text-metric-mono font-metric-mono">H.</span>
+<span class="text-secondary font-mono">SECURITY_03</span>
+</div>
+<div class="mt-space-sm">
+<div class="text-body-md font-body-md font-semibold text-primary">Extension &amp; DOM Security Boundary</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Authored the Manifest V3 content isolation layers and deterministic PII pattern detection regularizers.
+              </p>
+</div>
+</div>
+<!-- Contributor V -->
+<div class="border border-outline-variant bg-surface p-space-md hover:border-primary transition-colors">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary text-metric-mono font-metric-mono">V.</span>
+<span class="text-secondary font-mono">INTERACTION_04</span>
+</div>
+<div class="mt-space-sm">
+<div class="text-body-md font-body-md font-semibold text-primary">Human-in-the-Loop Revision Architecture</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Designed the cryptographic mutation-interlock that suspends autonomous action if user viewport shifts.
+              </p>
+</div>
+</div>
+<!-- Contributor K -->
+<div class="border border-outline-variant bg-surface p-space-md hover:border-primary transition-colors">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary text-metric-mono font-metric-mono">K.</span>
+<span class="text-secondary font-mono">SYS_05</span>
+</div>
+<div class="mt-space-sm">
+<div class="text-body-md font-body-md font-semibold text-primary">System Profiling &amp; Latency Benchmarks</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Built telemetry logging harnesses profiling memory page faults and V8 execution spikes across real web apps.
+              </p>
+</div>
+</div>
+<!-- Contributor N -->
+<div class="border border-outline-variant bg-surface p-space-md hover:border-primary transition-colors">
+<div class="flex justify-between items-center text-label-mono-sm font-label-mono-sm border-b border-outline-variant pb-2">
+<span class="font-bold text-primary text-metric-mono font-metric-mono">N.</span>
+<span class="text-secondary font-mono">EVAL_06</span>
+</div>
+<div class="mt-space-sm">
+<div class="text-body-md font-body-md font-semibold text-primary">Evaluation Suite &amp; Ground-Truth Testbed</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+                Curated 140 synthetic enterprise web flows simulating ISRO internal portal logistics and public utilities.
+              </p>
+</div>
+</div>
+</div>
+<!-- Target Milestone Banner -->
+<div class="p-space-md border border-primary-container bg-surface-container flex flex-col md:flex-row justify-between items-start md:items-center gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 bg-tertiary-fixed-dim inline-block"></span>
+<div>
+<div class="text-label-mono-sm font-label-mono-sm font-bold text-primary">NEXT RIGOROUS TESTBED LOCK: 11 SEPTEMBER 2026</div>
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">System Freeze &amp; Ground Truth Dataset Evaluation under ISRO SIH Review</div>
+</div>
+</div>
+<div class="text-label-mono-sm font-label-mono-sm font-mono text-primary px-3 py-1 bg-surface border border-outline-variant">
+            TARGET // ISRO_SIH26171_PASS
+          </div>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER (Derived from Shared Component JSON) -->
+<footer class="w-full px-margin-desktop py-space-xl border-t border-outline-variant bg-surface flex flex-col md:flex-row justify-between items-start md:items-center gap-space-lg">
+<!-- Brand / Problem Identifier -->
+<div class="space-y-1">
+<div class="text-label-mono-lg font-label-mono-lg font-bold text-primary tracking-tight">
+        SIGHTLINE // SIH26171
+      </div>
+<div class="text-label-mono-sm font-label-mono-sm text-secondary">
+        RV UNIVERSITY // ISRO SIH26171 PROBLEM STATEMENT // ON-DEVICE VISUAL PERCEPTION
+      </div>
+</div>
+<!-- Navigation Anchors from JSON -->
+<div class="flex flex-wrap items-center gap-space-md text-label-mono-sm font-label-mono-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#architecture">Source Architecture (11-Sep Milestone)</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#validation">WASM Benchmarks</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#pipeline">Model Verification</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="https://github.com" rel="noreferrer" target="_blank">Open Weights</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#inspection">Security Specification</a>
+</div>
+<!-- Compile Checksum -->
+<div class="text-label-mono-sm font-label-mono-sm text-secondary font-mono">
+      BUILD_REF: SIH-26171-REV42.09
+    </div>
+</footer>
+</body></html>

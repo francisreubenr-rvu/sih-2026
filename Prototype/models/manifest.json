@@ -1,0 +1,69 @@
+{
+  "accessed": "2026-09-09",
+  "faceModel": {
+    "repository": "https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB",
+    "commit": "dffdddda9794a50607cba8f318507a28c1c27cab",
+    "upstreamPath": "models/onnx/version-RFB-320.onnx",
+    "license": "MIT, Copyright 2019 linzai",
+    "transform": "scripts/optimize-vision-model.py removes 244 redundant initializer inputs and 35 unused training counters; active weights unchanged"
+  },
+  "runtime": {
+    "package": "onnxruntime-web",
+    "version": "1.23.2",
+    "license": "MIT",
+    "execution": "WASM single thread; assets local"
+  },
+  "referenceImage": {
+    "url": "https://raw.githubusercontent.com/scikit-image/scikit-image/v0.25.2/skimage/data/astronaut.png",
+    "documentation": "https://scikit-image.org/docs/stable/api/skimage.data.html#skimage.data.astronaut",
+    "subject": "NASA astronaut Eileen Collins",
+    "rights": "NASA public domain; reference face detection test, not team identity or endorsement"
+  },
+  "files": [
+    {
+      "path": "Prototype/models/ultraface-rfb320.original.onnx",
+      "bytes": 1270727,
+      "sha256": "34cd7e60aeff28744c657de7a3dc64e872d506741de66987f3426f2b79f88017"
+    },
+    {
+      "path": "Prototype/models/ultraface-rfb320.onnx",
+      "bytes": 1257907,
+      "sha256": "22bd2fbe053a8e54d54b44b25901f0f6260059ac9ae7d3cc8720f5f7c0d936fa"
+    },
+    {
+      "path": "Prototype/models/ULTRAFACE-LICENSE.txt",
+      "bytes": 1063,
+      "sha256": "21f0df2b54c9fef1b4f4061dd0b153bc72f071b5ce9fc04234f13ebfd093b44c"
+    },
+    {
+      "path": "Prototype/models/ORT-README.md",
+      "bytes": 5284,
+      "sha256": "3089f92ffb02d63365f05d870df5c6ac9bbaed096943b5b4fe55afd9b7a624f8"
+    },
+    {
+      "path": "Prototype/models/ORT-LICENSE.txt",
+      "bytes": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    {
+      "path": "Prototype/models/ort/ort-wasm-simd-threaded.wasm",
+      "bytes": 11905541,
+      "sha256": "45eaee27761ad883742a8d4b8fce1538d60ce43b51adf1726fafccc59b8c1a15"
+    },
+    {
+      "path": "Prototype/models/ort/ort.wasm.min.mjs",
+      "bytes": 49856,
+      "sha256": "69751720f611e37d1ce2fa3c6ebaa80f949014752636c5f8887a63d40feadcc7"
+    },
+    {
+      "path": "Prototype/models/ort/ort-wasm-simd-threaded.mjs",
+      "bytes": 20321,
+      "sha256": "90a557d15c02bac4504d95b67f431d8594635ed2a0a62a7f2cd83d090ff91d3e"
+    },
+    {
+      "path": "Prototype/app/assets/astronaut.png",
+      "bytes": 791555,
+      "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5"
+    }
+  ]
+}

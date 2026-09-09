@@ -21,7 +21,7 @@ try:
   if status=='pass' and missing:status='unknown'
   results.append({'id':rule['id'],'name':rule['name'],'status':status,'reason':rule['reason'],'missing_evidence':missing})
  overall='fail' if any(x['status']=='fail' for x in results) else ('unknown' if any(x['status']=='unknown' for x in results) else 'pass')
- record={'timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'complete SIH2171 competition entry','status':overall,'submission_ready':overall=='pass','saturation_achieved':False,'counts':{s:sum(x['status']==s for x in results) for s in ['pass','fail','unknown']},'rules':results,'limitations':['This aggregator checks recorded review states and evidence presence; it does not execute or authenticate all tests.','Website-only measurements do not validate the domain prototype.']}
+ record={'timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'complete SIH26171 competition entry','status':overall,'submission_ready':overall=='pass','saturation_achieved':False,'counts':{s:sum(x['status']==s for x in results) for s in ['pass','fail','unknown']},'rules':results,'limitations':['This aggregator checks recorded review states and evidence presence; it does not execute or authenticate all tests.','Website-only measurements do not validate the domain prototype.']}
  (R/'Benchmarks/release-status.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps({k:record[k] for k in ['status','submission_ready','counts']},indent=2));sys.exit(0 if overall=='pass' else 1)
 except (KeyError,ValueError,AssertionError,OSError) as e:
  print('Invalid evaluation configuration:',e,file=sys.stderr);sys.exit(2)

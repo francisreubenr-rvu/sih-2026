@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"acfab347e6835935bd9197bba9c5866f\", \"title\": \"BlazeFace: Sub-millisecond Neural Face Detection on Mobile GPUs\", \"text\": \"We present BlazeFace, a lightweight and well-performing face detector tailored for mobile GPU inference. It runs at a speed of 200-1000+ FPS on flagship devices. This super-realtime performance enables it to be applied to any augmented reality pipeline that requires an accurate facial region of interest as an input for task-specific models, such as 2D/3D facial keypoint or geometry estimation, facial features or expression classification, and face region segmentation. Our contributions include a lightweight feature extraction network inspired by, but distinct from MobileNetV1/V2, a GPU-friendly anchor scheme modified from Single Shot MultiBox Detector (SSD), and an improved tie resolution strategy alternative to non-maximum suppression.\", \"url\": \"https://consensus.app/papers/blazeface-submillisecond-neural-face-detection-on-mobile-bazarevsky-kartynnik/acfab347e6835935bd9197bba9c5866f/?utm_source=chatgpt\", \"metadata\": {\"authors\": \"Valentin Bazarevsky, Y. Kartynnik, Andrey Vakunov, Karthik Raveendran, Matthias Grundmann\", \"publish_year\": \"2019\", \"journal\": \"ArXiv\", \"volume\": \"abs/1907.05047\", \"citation_count\": \"389\"}}"
+      }
+    ],
+    "isError": false
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "status": "fulfilled",
+  "value": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"id\": \"6826df087f0c5dc8882d1e713f999dda\", \"title\": \"WebPII: Benchmarking Visual PII Detection for Computer-Use Agents\", \"text\": \"Computer use agents create new privacy risks: training data collected from real websites inevitably contains sensitive information, and cloud-hosted inference exposes user screenshots. Detecting personally identifiable information in web screenshots is critical for privacy-preserving deployment, but no public benchmark exists for this task. We introduce WebPII, a fine-grained synthetic benchmark of 44,865 annotated e-commerce UI images designed with three key properties: extended PII taxonomy including transaction-level identifiers that enable reidentification, anticipatory detection for partially-filled forms where users are actively entering data, and scalable generation through VLM-based UI reproduction. Experiments validate that these design choices improve layout-invariant detection across diverse interfaces and generalization to held-out page types. We train WebRedact to demonstrate practical utility, more than doubling text-extraction baseline accuracy (0.753 vs 0.357 mAP@50) at real-time CPU latency (20ms). We release the dataset and model to support privacy-preserving computer use research.\", \"url\": \"https://consensus.app/papers/webpii-benchmarking-visual-pii-detection-for-computeruse-zhao/6826df087f0c5dc8882d1e713f999dda/?utm_source=chatgpt\", \"metadata\": {\"authors\": \"Nathan Zhao\", \"publish_year\": \"2026\", \"journal\": \"ArXiv\", \"volume\": \"abs/2603.17357\", \"citation_count\": \"2\"}}"
+      }
+    ],
+    "isError": false
+  }
+}

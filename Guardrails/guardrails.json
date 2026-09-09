@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "created_at": "2026-09-08T18:18:59.042063+00:00",
-  "scope": "SIH2171 preparation; problem identity unverified",
+  "scope": "SIH26171 privacy-preserving visual browser agent; prototype v0.1 in validation",
   "deadline": {
     "date": "2026-09-11",
     "timezone": "Asia/Kolkata",
@@ -26,14 +26,15 @@
       "category": "eligibility",
       "name": "Verified problem identity",
       "mandatory": true,
-      "acceptance": "Exact SIH2171 identifier, year, issuing organization, full problem text and official source captured; otherwise domain work and submission blocked.",
+      "acceptance": "Exact corrected SIH26171 identifier, 2026 year, issuing organization, full statement and official source captured.",
       "verification_method": "Inspect official problem page or organizer-issued record and preserve provenance.",
       "required_evidence": [
         "Wiki/problem-statement.md",
-        "Raw/official-problem-source"
+        "Raw/domain/sih-official.txt",
+        "Raw/domain/sih26171-official-extract.txt"
       ],
-      "status": "fail",
-      "reason": "SIH2171 has not been verified in the current research. No domain is assumed."
+      "status": "pass",
+      "reason": "Full user supplied statement cross-checked against retrieved organizer catalogue on 9 September 2026. Initial SIH2171 shorthand superseded."
     },
     {
       "id": "G02",
@@ -47,7 +48,7 @@
         "Docs/scope.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G03",
@@ -61,7 +62,7 @@
         "Prototype/README.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G04",
@@ -75,7 +76,7 @@
         "Benchmarks/results/differentiation.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G05",
@@ -88,7 +89,7 @@
         "Benchmarks/results/load.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G06",
@@ -101,7 +102,7 @@
         "Benchmarks/results/security.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G07",
@@ -115,7 +116,7 @@
         "Benchmarks/results/security.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G08",
@@ -129,7 +130,7 @@
         "Benchmarks/results/dependency-audit.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G09",
@@ -143,7 +144,7 @@
         "Docs/accessibility-review.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G10",
@@ -156,7 +157,7 @@
         "Benchmarks/results/browser-review.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G11",
@@ -168,8 +169,8 @@
       "required_evidence": [
         "Benchmarks/results/core-latency.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "fail",
+      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms. Full workflow exceeds 200ms; a 108ms local capture does not satisfy this rule."
     },
     {
       "id": "G12",
@@ -179,10 +180,10 @@
       "acceptance": "For both mobile and desktop, median of 3 runs is strictly >90 in performance, accessibility, best-practices and SEO; no category omitted. Record all runs and environment.",
       "verification_method": "Run production build in clean Chrome profile; preserve JSON/HTML reports and exact URL/version. A rounded 90 fails.",
       "required_evidence": [
-        "Benchmarks/results/lighthouse/"
+        "Benchmarks/results/lighthouse-sightline-v01-summary.json"
       ],
       "status": "pass",
-      "reason": "Local preparation website only: 3 runs per profile; all category medians 100; raw Lighthouse reports preserved. Does not establish domain application or public deployment readiness."
+      "reason": "Six fresh Lighthouse 12.8.2 runs of the Sightline site on local loopback: three mobile and three desktop, 100 in all four categories. Automated site scores only; not WCAG conformance or prototype performance."
     },
     {
       "id": "G13",
@@ -195,7 +196,7 @@
         "Benchmarks/results/recovery.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G14",
@@ -210,7 +211,7 @@
         "Benchmarks/results/demo-rehearsal.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G15",
@@ -223,7 +224,7 @@
         "Docs/claim-ledger.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G16",
@@ -236,7 +237,7 @@
         "Docs/impact-model.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G17",
@@ -251,7 +252,7 @@
         "Docs/presentation-render/"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G18",
@@ -265,7 +266,7 @@
         "Docs/deployment-verification.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G19",
@@ -279,7 +280,7 @@
         "Wiki/source-index.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     },
     {
       "id": "G20",
@@ -292,7 +293,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
     }
   ],
   "iteration_policy": {

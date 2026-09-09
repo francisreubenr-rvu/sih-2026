@@ -1,0 +1,14 @@
+*.pdf binary
+*.pptx binary
+*.potx binary
+*.png binary
+*.jpg binary
+*.zip binary
+*.onnx binary
+*.wasm binary
+*.woff2 binary
+# Preserve upstream archives and generated reports without whitespace rewriting.
+Raw/** -whitespace
+Benchmarks/results/lighthouse*/** -whitespace
+
+Prototype/models/ort/** -whitespace

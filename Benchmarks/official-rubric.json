@@ -1,0 +1,46 @@
+{
+  "problem": "SIH26171",
+  "source": "https://www.sih.gov.in/sih2026PS",
+  "accessed": "2026-09-09",
+  "weightSource": "Organizer statement",
+  "formulaSource": "Self-imposed measurement contracts; organizer did not publish complete scoring formulas",
+  "metrics": [
+    {
+      "id": "visual-context",
+      "weightPercent": 25,
+      "measurement": "Correct task-relevant controls/structure divided by annotated controls/structure; report precision and recall separately.",
+      "observed": null,
+      "status": "not_evaluated"
+    },
+    {
+      "id": "pii-detection",
+      "weightPercent": 20,
+      "measurement": "Instance precision TP/(TP+FP) and recall TP/(TP+FN), by email/name/number/password/face; frozen IoU and matching rules.",
+      "observed": null,
+      "status": "not_evaluated"
+    },
+    {
+      "id": "redaction",
+      "weightPercent": 20,
+      "measurement": "PII pixel coverage and non-PII preservation reported separately; conservative reconstruction must count useful removed pixels as utility loss.",
+      "observed": null,
+      "status": "not_evaluated"
+    },
+    {
+      "id": "client-resources",
+      "weightPercent": 20,
+      "measurement": "Cold/warm WASM load, inference p50/p95, downloaded bytes, JS/WASM memory where measurable, CPU/long tasks on recorded device.",
+      "observed": null,
+      "status": "not_evaluated"
+    },
+    {
+      "id": "task-latency",
+      "weightPercent": 15,
+      "measurement": "User trigger to verified correct end-state, including capture, model, network and action; report human review separately without omitting it from full time.",
+      "observed": null,
+      "status": "not_evaluated"
+    }
+  ],
+  "score": null,
+  "scoreReason": "No authoritative normalization and no complete dataset measurements. Do not estimate judge probability."
+}

@@ -1,4 +1,4 @@
-name: Deploy preparation website to Pages
+name: Deploy Sightline website to Pages
 on:
   push:
     branches: [master]

@@ -6,3 +6,11 @@ node_modules/
 *.sqlite
 *.sqlite3
 __pycache__/
+Prototype/data/
+Prototype/dist/
+Prototype/extension-build/
+Prototype/.tools-venv/
+
+# Unprocessed public HTML with embedded documentation-site API configuration.
+Raw/domain/chrome-capture.html
+Raw/domain/mediapipe-face-web.html

@@ -1,0 +1,365 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Sightline sanitized-context API",
+    "version": "0.1.0",
+    "description": "SIH26171 candidate. Dynamic rectangle/viewport consistency and target-membership validation supplement JSON Schema. No image, raw DOM, free text, URL or field-value input exists."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:9041"
+    }
+  ],
+  "security": [
+    {
+      "pairingToken": []
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Service process reachable; provider is checked only on inference request"
+          }
+        }
+      }
+    },
+    "/api/v1/plans": {
+      "post": {
+        "summary": "Plan a reviewed action from a protected scene",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProtectedRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validated action with matching revision, provider model/mode, latencyMs and expiry"
+          },
+          "400": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "401": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "403": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "413": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "415": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "422": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "429": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "502": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "503": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          }
+        }
+      }
+    },
+    "/api/v1/audits": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Latest100 metadata-only audit records; id, time, model/mode, counts, latency, action type"
+          },
+          "401": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "403": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          }
+        }
+      }
+    },
+    "/api/v1/session": {
+      "get": {
+        "security": [],
+        "description": "Loopback demo only: requires same-origin Fetch Metadata and expected Host. Returns local pairing token; disabled on public origins.",
+        "responses": {
+          "200": {
+            "description": "Ephemeral client bootstrap of private local token"
+          },
+          "403": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "pairingToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Local pairing token; not a JWT. Never place in URL."
+      }
+    },
+    "schemas": {
+      "ProtectedRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "string",
+            "enum": [
+              "review-pending",
+              "show-completed",
+              "next-page"
+            ]
+          },
+          "scene": {
+            "type": "object",
+            "properties": {
+              "scheme": {
+                "type": "string",
+                "const": "sightline-semantic-v1"
+              },
+              "revision": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "viewport": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 8192
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 8192
+                  }
+                },
+                "required": [
+                  "width",
+                  "height"
+                ],
+                "additionalProperties": false
+              },
+              "controls": {
+                "maxItems": 200,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^c\\d{1,4}$"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "button",
+                        "link"
+                      ]
+                    },
+                    "label": {
+                      "type": "string",
+                      "enum": [
+                        "Pending",
+                        "Completed",
+                        "Review",
+                        "Details",
+                        "Next",
+                        "Previous",
+                        "Back",
+                        "Close",
+                        "Search",
+                        "Help",
+                        "Cancel"
+                      ]
+                    },
+                    "rect": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "width": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "role",
+                    "label",
+                    "rect"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "regions": {
+                "maxItems": 2000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "private",
+                        "media",
+                        "face",
+                        "field"
+                      ]
+                    },
+                    "rect": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "width": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "rect"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "scheme",
+              "revision",
+              "viewport",
+              "controls",
+              "regions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "task",
+          "scene"
+        ],
+        "additionalProperties": false
+      },
+      "Action": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "click"
+              },
+              "targetId": {
+                "type": "string",
+                "pattern": "^c\\d{1,4}$"
+              }
+            },
+            "required": [
+              "type",
+              "targetId"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "scroll"
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "up",
+                  "down"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "direction"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "done"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  }
+}

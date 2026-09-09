@@ -35,3 +35,8 @@ Each row points to the original attribution record. See Wiki entries for claim-l
 | STD01 | [WCAG 2.1](https://www.w3.org/TR/WCAG21/) | main-agent |
 | STD02 | [Lighthouse overview](https://developer.chrome.com/docs/lighthouse/overview) | main-agent |
 | STD03 | [GSAP standard license](https://gsap.com/community/standard-license/) | main-agent |
+
+
+## SIH26171 domain update — 9 September2026
+
+[Domain sources](../Raw/domain-sources.json) adds25 archived source records, including the retrieved organizer catalogue. [Domain synthesis](domain-research.md) and [competitor comparison](competitors.md) use primary papers and official repositories. Earlier unavailable-SIH2171 evidence remains historical.

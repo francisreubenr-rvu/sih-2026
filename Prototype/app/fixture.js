@@ -1,0 +1,5 @@
+const content=document.querySelector('#content');
+const render=(title,text,button)=>{content.replaceChildren();const heading=document.createElement('h2');heading.textContent=title;const p=document.createElement('p');p.textContent=text;const b=document.createElement('button');b.type='button';b.textContent=button;content.append(heading,p,b);return b;};
+document.querySelector('#pending').addEventListener('click',()=>{const b=render('Pending requests','Synthetic request SR-204 · Equipment access','Review');b.addEventListener('click',()=>render('Request ready for review','The agent opened the pending request. No form was submitted.','Back').addEventListener('click',()=>location.reload()));});
+document.querySelector('#completed').addEventListener('click',()=>render('Completed requests','Synthetic request SR-103 · Closed','Back').addEventListener('click',()=>location.reload()));
+document.querySelector('#next').addEventListener('click',()=>render('Page 2','Synthetic requests on the next page.','Previous').addEventListener('click',()=>location.reload()));
