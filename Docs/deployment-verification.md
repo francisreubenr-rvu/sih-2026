@@ -1,3 +1,17 @@
+# Latest video checkpoint — 10 September 2026
+
+Published commit `7e9b692a04c4e69003397dc6acb6c630e25e8b7e` through successful [Pages run34418979547](https://github.com/francisreubenr-rvu/sih-2026/actions/runs/34418979547).
+
+- Live page: https://francisreubenr-rvu.github.io/sih-2026/#demo
+- HTML, CSS, JS and MP4 returned HTTPS200 and matched local SHA256 hashes.
+- Actual public Chrome playback reached 37.907 seconds with ended=true, readyState4 and no media error. The transcript and download are available below the player.
+- Local 390px review found document width390 and video width338, with native controls and no horizontal overflow.
+- Six fresh local Lighthouse runs: mobile performance99, desktop performance100; accessibility, best practices and SEO100 on both profiles. This does not certify WCAG conformance or prototype performance.
+
+Evidence: `Benchmarks/results/pages-sightline-v02.json`, `Benchmarks/results/lighthouse-sightline-v02-summary.json` and `Docs/demo-recording/manifest.json`. The deployed site is static; the working Node/Ollama backend still requires local setup. Full-entry readiness remains failed/unverified.
+
+---
+
 # Sightline candidate deployment — verified 9 September 2026
 
 - Public URL: https://francisreubenr-rvu.github.io/sih-2026/

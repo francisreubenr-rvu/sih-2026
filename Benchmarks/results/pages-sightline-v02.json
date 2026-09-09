@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-09-09T23:55:28.740559+00:00",
+  "url": "https://francisreubenr-rvu.github.io/sih-2026/",
+  "commit": "7e9b692a04c4e69003397dc6acb6c630e25e8b7e",
+  "pages_run": 34418979547,
+  "pages_conclusion": "success",
+  "resources": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "bytes": 15771,
+      "sha256": "1b52adac439f7faa3b36765a6ef10ecab78e8c7e359c9aeb9a1e54f9afbe2457",
+      "matches_local": true
+    },
+    {
+      "path": "style.css",
+      "status": 200,
+      "bytes": 22484,
+      "sha256": "3e2d69be6cfd5c76c97cb9b00f5461dfdeb16788d53010ae6ef7ab3128d9d73b",
+      "matches_local": true
+    },
+    {
+      "path": "app.js",
+      "status": 200,
+      "bytes": 4340,
+      "sha256": "62cc24e31f86769d8178ba711986788e3599f3ab8b1b4d1281205e0f6e7d6f37",
+      "matches_local": true
+    },
+    {
+      "path": "assets/sightline-browser-v02.mp4",
+      "status": 200,
+      "bytes": 761436,
+      "sha256": "4c83d2849d95ba60758e07ed545b733b82a458b8e7c7dfae2d6de7dc7b47c29d",
+      "matches_local": true
+    }
+  ],
+  "local_video_playback": {
+    "ended": true,
+    "duration": 37.907087,
+    "readyState": 4,
+    "error": null
+  },
+  "local_mobile": {
+    "viewport_width": 390,
+    "document_width": 390,
+    "video_width": 338,
+    "video_height": 190.125,
+    "controls": true
+  },
+  "public_video_playback": {
+    "url": "https://francisreubenr-rvu.github.io/sih-2026/#demo",
+    "source": "https://francisreubenr-rvu.github.io/sih-2026/assets/sightline-browser-v02.mp4",
+    "currentTime": 37.907087,
+    "duration": 37.907087,
+    "ended": true,
+    "readyState": 4,
+    "error": null
+  }
+}

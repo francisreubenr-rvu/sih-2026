@@ -56,3 +56,5 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - The earlier legacy screencast failed; partial frames are not used as demo evidence.
 - Native extension installation remains unavailable through the browser automation surface: chrome://extensions/ was blocked by browser URL policy. No alternate installation path was attempted. Shared-JS tests do not close that gate.
 - Remaining priority: held-out visual utility/PII/redaction dataset, client resource/full-task timing, broader task reliability, native extension validation and human review. Full goal remains active.
+
+- Video checkpoint `7e9b692` is live; Pages run34418979547 succeeded. Four public resource hashes matched and the live MP4 played to completion. Updated delivery status corrects the stale preparation-only inventory while retaining historical records.

@@ -1,43 +1,34 @@
 {
-  "date": "2026-09-09",
-  "requested_problem": "SIH2171",
+  "date": "2026-09-10",
+  "requested_problem_original": "SIH2171",
+  "resolved_problem": "SIH26171",
+  "identity_basis": "User-supplied statement and retrieved official SIH2026 catalogue",
   "competition_entry_complete": false,
   "submission_ready": false,
-  "deadline": "2026-09-11 Asia/Kolkata (user-supplied)",
+  "deadline": "2026-09-11 Asia/Kolkata (team internal target)",
   "delivered": [
-    "Cited historical competition research and bounded identity investigation",
-    "Raw source archive and 31-record attribution index",
-    "20 mandatory guardrails",
-    "11 KPI definitions",
-    "Six local Lighthouse reports and browser verification",
-    "Six-slide supplied-template blueprint in PPTX/PDF",
-    "15-slide expanded blueprint in PPTX/PDF with 700-second planned notes",
-    "Responsive static preparation website",
-    "Process documentation in Markdown/PDF",
-    "Conditional architecture, team, impact and demo runbooks",
-    "Structural validation and fail-closed release checker",
-    "Verified public GitHub Pages preparation website"
+    "Cited official domain, technical and competitor research with Raw archives",
+    "20 guardrails and 11 KPI definitions with explicit unknown/fail states",
+    "Browser JS prototype with real UltraFace WASM, protected scene, Node API, Ollama Qwen and confirmed actions",
+    "39 passing automated tests and 18 passing actual Chrome boundary checks",
+    "Preserved real-provider development pilot: latest Qwen7B 22/24, two remaining semantic errors",
+    "Six-slide supplied-format candidate, 15-slide talk, POTX, PDFs and speaker notes",
+    "Continuous synthetic-fixture browser recording, compatible MP4, verified playback and text description",
+    "Responsive Sightline site published on GitHub Pages",
+    "Current methodology Markdown/PDF and deployment evidence"
   ],
-  "not_delivered": [
-    "Verified SIH2171 problem interpretation",
-    "Domain literature and competitor analysis",
-    "Full-stack domain prototype",
-    "Domain functionality, latency, scalability and security evidence",
-    "Actual prototype demo recording",
-    "Authentic team photographs and configured contact channel",
-    "Independent human usability and narrative studies",
-    "Submission-ready presentation",
+  "remaining": [
+    "Held-out visual utility and PII detection/redaction datasets",
+    "Native Chrome/Firefox extension validation; browser automation blocks extension-manager URL",
+    "Client resource and full-task measurements; under-200ms target remains failed",
+    "Broader task reliability and error recovery",
+    "Authentic consented team photographs and contribution evidence",
+    "Independent usability/accessibility/narrative review and measured impact",
+    "Registered team details, timed rehearsal and submission-ready approval",
     "Benchmark saturation"
   ],
-  "blocker": "Authoritative problem statement identity and full text unavailable in examined sources; no nearby ID substituted.",
-  "unlock_evidence": [
-    "Official or organiser-issued source",
-    "Exact ID and year",
-    "Full statement title and description",
-    "Sponsor and software/hardware category",
-    "Expected outputs, constraints and data requirements"
-  ],
   "website_url": "https://francisreubenr-rvu.github.io/sih-2026/",
-  "website_url_scope": "public GitHub Pages; verified HTTPS and browser interactions",
-  "repository": "https://github.com/francisreubenr-rvu/sih-2026"
+  "repository": "https://github.com/francisreubenr-rvu/sih-2026",
+  "candidate_commit": "7e9b692a04c4e69003397dc6acb6c630e25e8b7e",
+  "history": "Docs/history/preparation-delivery-status.json"
 }
