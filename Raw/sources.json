@@ -1,0 +1,534 @@
+{
+  "created_at": "2026-09-08T21:16:19.003366+00:00",
+  "sources": [
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-01",
+        "title": "Smart India Hackathon 2024 official catalogue",
+        "author": "Smart India Hackathon / Ministry of Education Innovation Cell",
+        "url": "https://sih.gov.in/sih2024PS",
+        "accessed_date": "2026-09-08",
+        "source_type": "Official source",
+        "local_path": null,
+        "finding": "Direct HTTP 403; web tool exposes empty catalogue shell; identity cannot be checked.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-02",
+        "title": "Smart India Hackathon 2025 official catalogue",
+        "author": "Smart India Hackathon / Ministry of Education Innovation Cell",
+        "url": "https://sih.gov.in/sih2025PS",
+        "accessed_date": "2026-09-08",
+        "source_type": "Official source",
+        "local_path": null,
+        "finding": "Web view shows zero hardware/software and no table rows; direct HTTP 403.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-03",
+        "title": "Smart India Hackathon 2026 official catalogue",
+        "author": "Smart India Hackathon / Ministry of Education Innovation Cell",
+        "url": "https://sih.gov.in/sih2026PS",
+        "accessed_date": "2026-09-08",
+        "source_type": "Official source",
+        "local_path": null,
+        "finding": "Direct HTTP 403 and web tool internal error; no identity established.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-04",
+        "title": "SIH 2024 Problems",
+        "author": "Wraient; underlying statements attributed to SIH and issuing organisations",
+        "url": "https://raw.githubusercontent.com/Wraient/SIH-2024-Problems/main/README.md",
+        "accessed_date": "2026-09-08",
+        "source_type": "Community archive",
+        "local_path": "Raw/sih2024-readme.txt",
+        "finding": "No 2171 substring. IDs parsed range 1524 to 1769; not proof of exhaustive official coverage.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted",
+        "sha256": "3be96893fa2d20c027114776d551b936b640aaa72a0a83f2a683a5ca6d2ae9de"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-05",
+        "title": "SIH 2026 Problem Statements",
+        "author": "Rajkumar Porandla; underlying statements attributed to SIH and issuing organisations",
+        "url": "https://raw.githubusercontent.com/Rajkumar-Porandla/SIH-2026-Problem-Statements/main/sih2026_problem_statements.json",
+        "accessed_date": "2026-09-08",
+        "source_type": "Community archive",
+        "local_path": "Raw/sih2026-community.txt",
+        "finding": "231 records, ID range 26001 to 26231. No 2171 substring.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted",
+        "sha256": "b2944d58a16e1baf64a339521b24ca34bdd0c5b9b9142d19c89cbf5b79ff4f4d"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-06",
+        "title": "SIH 2025 problem statement gist",
+        "author": "theprtsh; underlying statements attributed to SIH and issuing organisations",
+        "url": "https://gist.githubusercontent.com/theprtsh/2dbccc7eb68340d35e4b187180fe5eda/raw",
+        "accessed_date": "2026-09-08",
+        "source_type": "Community archive",
+        "local_path": "Raw/sih2025-gist.txt",
+        "finding": "No 2171 substring. Raw text archive available; incomplete/irregular formatting means not a completeness claim.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted",
+        "sha256": "247b168c53c0e73f77a4053b0e409507fb29d8d4d0f2c27ad30f2ac78162efba"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-07",
+        "title": "SIH multi-year archive index",
+        "author": "Vigneshrdy",
+        "url": "https://raw.githubusercontent.com/Vigneshrdy/sih-ps-archive/main/README.md",
+        "accessed_date": "2026-09-08",
+        "source_type": "Community archive",
+        "local_path": "Raw/sih-multiyear-index.txt",
+        "finding": "Reports 2024 IDs SIH1524\u2013SIH1782; 2025 SIH25001\u2013SIH25142; 2026 SIH26001\u2013SIH26233. Partial older-year coverage.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted",
+        "sha256": "e2762b37526ddf2d3b1a5b56e4bc49b4e42edf63db1cb4f19a0304b02796207e"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-08",
+        "title": "SIH multi-year attribution",
+        "author": "Vigneshrdy; Vedant Chalke credited for underlying 2026 data",
+        "url": "https://raw.githubusercontent.com/Vigneshrdy/sih-ps-archive/main/ATTRIBUTION.md",
+        "accessed_date": "2026-09-08",
+        "source_type": "Attribution record",
+        "local_path": "Raw/sih-multiyear-attribution.txt",
+        "finding": "Read before reuse. Repository software license does not relicense government statement text. Preserve source attribution.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted",
+        "sha256": "250c377b83d32fe65cf540671f9e6f212c0121d584e808fd4e642145b21d471a"
+      }
+    },
+    {
+      "register": "Raw/problem-research.json",
+      "record": {
+        "id": "PR-09",
+        "title": "SIH multi-year file tree",
+        "author": "GitHub API / Vigneshrdy",
+        "url": "https://api.github.com/repos/Vigneshrdy/sih-ps-archive/git/trees/main?recursive=1",
+        "accessed_date": "2026-09-08",
+        "source_type": "Repository metadata",
+        "local_path": "Raw/sih-multiyear-tree.json",
+        "finding": "614 yearly statement Markdown paths: 246 (2024), 135 (2025), 233 (2026). No SIH2171 path. Tree SHA 806b4d7fd6b2a19fdd3d92f08b42ae4d93464ac7.",
+        "processed": true,
+        "publication_date": "not established",
+        "rights": "Original authors retain rights; local research archive, no new license asserted",
+        "sha256": "b557f4a73abac26b5dc39c32912b20293b6744e6495ba37956d0fb31c4842b86"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-001",
+        "title": "SIH 2024 Guidelines for College SPOC",
+        "url": "https://sih.gov.in/letters/Guidelines-College-SPOC.pdf",
+        "publisher": "Smart India Hackathon",
+        "author": "Institutional author",
+        "publication_date": null,
+        "event_year": 2024,
+        "source_type": "official_historical_guideline",
+        "access_status": "Official search-index excerpt retrieved; direct PDF open returned HTTP 403",
+        "locator": "IDEA SELECTION CRITERIA, printed page 13",
+        "raw_excerpt": "Evaluation criteria will include novelty of the idea, complexity, clarity and details in the prescribed format",
+        "annotation": "Additional listed dimensions: feasibility, practicability, sustainability, impact, user experience and future progression. No weights verified. Not a current 2026 rulebook.",
+        "confidence": "high for historical indexed wording; current applicability unverified"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-002",
+        "title": "MEXPRESS Volume 6 Issue 1",
+        "url": "https://kct.ac.in/wp-content/uploads/2023/12/Vol.-06-No.-01.pdf",
+        "publisher": "Kumaraguru College of Technology",
+        "author": "Institutional newsletter",
+        "publication_date": null,
+        "event_year": 2022,
+        "source_type": "institutional_primary_award_report",
+        "access_status": "PDF opened and matching text located",
+        "locator": "Printed page 21; zero-based PDF page 20",
+        "raw_excerpt": "TEAM ELLERGY FROM OUR INSTITUTION WON IN SMART INDIA HACKATHON 2022 HARDWARE EDITION",
+        "annotation": "Reports an electrical-energy-storage project under a Rajasthan government problem statement. No independently validated technical outcomes.",
+        "confidence": "high for award"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-003",
+        "title": "VESIT Newsletter January\u2013March 2024, Issue 92",
+        "url": "https://vesit.ves.ac.in/storage/updates/1724168594January-March%202024%20Newsletter.pdf",
+        "publisher": "Vivekanand Education Society's Institute of Technology",
+        "author": "Institutional newsletter",
+        "publication_date": "2024-Q1",
+        "event_year": 2023,
+        "source_type": "institutional_primary_award_report",
+        "access_status": "Relevant indexed excerpt retrieved; later PDF extraction and screenshot inconsistent",
+        "locator": "Issue 92, printed page 6, SIH 2023 report",
+        "raw_excerpt": "Their project focused on developing a mobile application that crowd-sources water-related problems from communities",
+        "annotation": "Reports Hash Coders' Jalshakti award and an open-data/map workflow. Treat technical detail as institutional report, not independently tested performance.",
+        "confidence": "medium-high for reported award; extraction limitation retained"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-004",
+        "title": "SIH Grand Finale 2023 Winners",
+        "url": "https://www.djsce.ac.in/docs/SIH%20GRAND%20FINALE%202023_Winners.pdf",
+        "publisher": "D. J. Sanghvi College of Engineering",
+        "author": "Institutional author",
+        "publication_date": null,
+        "event_year": 2023,
+        "source_type": "institutional_primary_award_report",
+        "access_status": "Indexed PDF text and image description retrieved",
+        "locator": "Code Omega entry",
+        "raw_excerpt": "Problem Statement ID: SIH1283",
+        "annotation": "Explicit first-prize statement and winner-certificate photograph. Project functionality not inferred.",
+        "confidence": "high for award"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-005",
+        "title": "Hackathon Winners Archive",
+        "url": "https://www.mathworks.com/academia/students/competitions/hackathons/winners.html",
+        "publisher": "MathWorks",
+        "author": "MathWorks student competitions team",
+        "publication_date": null,
+        "event_year": [
+          2024,
+          2025
+        ],
+        "source_type": "problem_sponsor_primary_award_record",
+        "access_status": "Page opened",
+        "locator": "Smart India Hackathon 2024 and 2025 sections",
+        "raw_excerpt": "1st Place, MathWorks Problem Statement: Team TwinX",
+        "annotation": "Names TwinX for 2025 traffic-scenario generation and Solar Masters for 2024 single-axis solar tracking.",
+        "confidence": "high for sponsor award record"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-006",
+        "title": "Innovation Meets Excellence: Solar Masters\u2019 Winning Journey at Smart India Hackathon 2024",
+        "url": "https://blogs.mathworks.com/student-lounge/2025/06/13/innovation-meets-excellence-solar-masters-winning-journey-at-smart-india-hackathon-2024/?from=en",
+        "publisher": "MathWorks Student Lounge",
+        "author": "Tanya Kuruvilla; first-person account by Team Solar Masters",
+        "publication_date": "2025-06-13",
+        "event_year": 2024,
+        "source_type": "sponsor_hosted_winner_interview",
+        "access_status": "Full page opened",
+        "locator": "Internal Hackathon & Selection for SIH; Grand Finale & Winning the Competition",
+        "raw_excerpt": "A detailed project PPT explaining our methodology.",
+        "annotation": "Describes integrated simulation, hardware, apps, a video and technical documents. Reported performance is team-reported; no independent verification undertaken.",
+        "confidence": "high for attributed account; causal winning lessons are inference"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-007",
+        "title": "First Place National Level Grand Finale SIH 2025",
+        "url": "https://www.somaiya.edu/en/view-announcement/1026",
+        "publisher": "Somaiya Vidyavihar University",
+        "author": "Institutional announcement",
+        "publication_date": "2025-12-09",
+        "event_year": 2025,
+        "source_type": "institutional_primary_award_report",
+        "access_status": "Page opened",
+        "locator": "Team NYX announcement",
+        "raw_excerpt": "Team NYX from K J Somaiya School of Engineering has WON the Smart India Hackathon 2025 Grand Finale",
+        "annotation": "Railway section-throughput problem PS25022. Award is not evidence of operational railway deployment.",
+        "confidence": "high for award"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-008",
+        "title": "Solar Masters SIH 2024 participant post",
+        "url": "https://www.linkedin.com/posts/harshita-maratha-1122hm_solarmasters-sih2024-solarmasters-activity-7274448361305309184-NUi9",
+        "publisher": "LinkedIn",
+        "author": "Harshita Maratha",
+        "publication_date": null,
+        "event_year": 2024,
+        "source_type": "public_participant_account",
+        "access_status": "Public post opened",
+        "locator": "Post body; displayed relative timestamp not converted into an exact date",
+        "raw_excerpt": "Transitioned to hardware implementation and rigorous testing for efficiency and reliability.",
+        "annotation": "Corroborates sponsor-confirmed project journey. No participant photographs downloaded.",
+        "confidence": "medium for attributed process account"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-009",
+        "title": "EdRank - Improving the standard of learning",
+        "url": "https://github.com/edrank",
+        "publisher": "GitHub",
+        "author": "EdRank project maintainers",
+        "publication_date": null,
+        "event_year": 2022,
+        "source_type": "team_owned_repository_metadata",
+        "access_status": "Public organization indexed; web repository opened",
+        "locator": "Organization description; https://github.com/edrank/edrank_web",
+        "raw_excerpt": "Our winning project for Smart India Hackathon 2022, Problem Statement VS938 by University Grants Commission.",
+        "annotation": "Self-reported win; code was not executed, audited, or copied. Repository visibility is not a license grant.",
+        "confidence": "high for repository existence; award self-reported"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-010",
+        "title": "I am going to take part in Smart India Hackathon 2024",
+        "url": "https://www.reddit.com/r/developersIndia/comments/1ev3y2r/",
+        "publisher": "Reddit r/developersIndia",
+        "author": "Thread by Vikram_00; relevant comment by Careful_Ad7420",
+        "publication_date": "2024-08-18",
+        "event_year": 2024,
+        "source_type": "public_anecdote",
+        "access_status": "Thread opened and comment located",
+        "locator": "Careful_Ad7420 reply about presentation",
+        "raw_excerpt": "focused more on flowcharts and diagrams rather than paragraphs for explaining the working of our project",
+        "annotation": "Anecdotal diagram advice. Separate ATS-screening speculation explicitly rejected; identity and finalist claims unverified.",
+        "confidence": "low as generalizable evidence"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-011",
+        "title": "Standard Hackathon Rules",
+        "url": "https://github.com/MLH/mlh-policies/blob/main/standard-hackathon-rules.md",
+        "publisher": "Major League Hacking",
+        "author": "MLH",
+        "publication_date": null,
+        "event_year": null,
+        "source_type": "organizer_primary_policy_other_competition",
+        "access_status": "Policy text retrieved through public search",
+        "locator": "Demos",
+        "raw_excerpt": "You are strongly encouraged to present a demo of what you have built.",
+        "annotation": "Supports demonstration-first presentation practice only. MLH's rubric, time limits and prior-work restrictions are not SIH rules.",
+        "confidence": "high for MLH policy; transfer to SIH is authored inference"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-012",
+        "title": "PM addresses Grand Finale of Smart India Hackathon 2022",
+        "url": "https://www.pib.gov.in/Pressreleaseshare.aspx?PRID=1854518&lang=2&reg=48",
+        "publisher": "Press Information Bureau, Government of India",
+        "author": "Prime Minister's Office",
+        "publication_date": "2022-08-25",
+        "event_year": 2022,
+        "source_type": "government_press_release",
+        "access_status": "Public indexed release retrieved",
+        "locator": "Participant interactions and SIH Junior winner",
+        "raw_excerpt": "The Prime Minister interacted with the participants.",
+        "annotation": "Does not establish all featured senior teams as winners. SIH Junior dementia-game award is a different track from this entry.",
+        "confidence": "high for government event report"
+      }
+    },
+    {
+      "register": "Raw/competition-sources.json",
+      "record": {
+        "id": "COMP-013",
+        "title": "SIH 2025 Pre-Qualifier Evaluation Criteria",
+        "url": "https://www.scribd.com/document/923519337/Rubrics-SIH-2025",
+        "publisher": "Scribd third-party upload",
+        "author": "Unverified uploader",
+        "publication_date": null,
+        "event_year": 2025,
+        "source_type": "unverified_document_upload",
+        "access_status": "Search result reviewed; not accepted as authoritative",
+        "locator": "Indexed rubric text",
+        "raw_excerpt": "Novelty (20 Marks) Clarity (20 Marks)",
+        "annotation": "Rejected as an official national weighted rubric because provenance/current applicability are unverified.",
+        "confidence": "insufficient"
+      }
+    },
+    {
+      "register": "Raw/design-sources.json",
+      "record": {
+        "id": "DES01",
+        "title": "Awesome DESIGN.md",
+        "publisher": "VoltAgent",
+        "author": "VoltAgent contributors",
+        "url": "https://github.com/VoltAgent/awesome-design-md",
+        "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+        "evidence_type": "primary repository documentation",
+        "publication_date": null,
+        "raw_path": "Raw/design/voltagent-readme.md",
+        "use": "Structured design system documentation approach",
+        "license": "MIT; archived license accompanies research",
+        "limitations": "Community analysis is not each brand official guidance."
+      }
+    },
+    {
+      "register": "Raw/design-sources.json",
+      "record": {
+        "id": "DES02",
+        "title": "Lando Norris official homepage",
+        "publisher": "Lando Norris",
+        "author": null,
+        "url": "https://landonorris.com/",
+        "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+        "evidence_type": "primary website HTML and public CSS",
+        "publication_date": null,
+        "raw_path": "Raw/design/lando-home.html",
+        "use": "Page structure, restrained palette and type scale reference",
+        "license": "All rights reserved; research reference only",
+        "limitations": "No browser motion audit; no assets authorized for reuse."
+      }
+    },
+    {
+      "register": "Raw/design-sources.json",
+      "record": {
+        "id": "DES03",
+        "title": "Web Content Accessibility Guidelines 2.1",
+        "publisher": "W3C",
+        "author": "W3C Accessibility Guidelines Working Group",
+        "url": "https://www.w3.org/TR/WCAG21/",
+        "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+        "evidence_type": "primary standard",
+        "publication_date": null,
+        "raw_path": null,
+        "use": "Accessibility review scope",
+        "license": "See original W3C terms",
+        "limitations": "Link reviewed through web tool; full standard not archived in this file."
+      }
+    },
+    {
+      "register": "Raw/design-sources.json",
+      "record": {
+        "id": "DES04",
+        "title": "Lighthouse performance scoring",
+        "publisher": "Google Chrome for Developers",
+        "author": null,
+        "url": "https://developer.chrome.com/docs/lighthouse/performance/performance-scoring",
+        "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+        "evidence_type": "primary product documentation",
+        "publication_date": null,
+        "raw_path": null,
+        "use": "Record scoring environment and variation; preserve raw runs",
+        "license": "See original page terms",
+        "limitations": "Performance score is not proof of usability or accessibility conformance."
+      }
+    },
+    {
+      "register": "Raw/design-sources.json",
+      "record": {
+        "id": "DES05",
+        "title": "OWASP Application Security Verification Standard",
+        "publisher": "OWASP Foundation",
+        "author": "OWASP ASVS contributors",
+        "url": "https://owasp.org/www-project-application-security-verification-standard/",
+        "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+        "evidence_type": "primary security standard overview",
+        "publication_date": null,
+        "raw_path": null,
+        "use": "Security verification basis; project-specific control subset",
+        "license": "See original project terms",
+        "limitations": "Selected project controls do not constitute ASVS certification or full conformance."
+      }
+    },
+    {
+      "register": "main-agent",
+      "record": {
+        "id": "MAIN-2025",
+        "title": "SIH 2025 official catalogue shell",
+        "publisher": "Smart India Hackathon",
+        "url": "https://sih.gov.in/sih2025PS",
+        "retrieved_at": "2026-09-08",
+        "evidence_type": "HTTP HTML response",
+        "raw_path": "Raw/sih2025-page.html",
+        "sha256": "e5e978536a84f74e0b75a4737ebb028b13ac6af3035b315fb7fb7961c084c8f2",
+        "finding": "Main agent retrieved HTML successfully with an empty statement table. Other requests in the research workstream returned 403. This does not establish SIH2171 identity."
+      }
+    },
+    {
+      "register": "main-agent",
+      "record": {
+        "id": "STD01",
+        "title": "WCAG 2.1",
+        "url": "https://www.w3.org/TR/WCAG21/",
+        "publisher": "W3C",
+        "retrieved_at": "2026-09-09",
+        "evidence_type": "primary web documentation",
+        "use": "Accessibility, performance audit interpretation or bundled motion library provenance",
+        "raw_path": null,
+        "limitation": "Source accessed; full document not archived"
+      }
+    },
+    {
+      "register": "main-agent",
+      "record": {
+        "id": "STD02",
+        "title": "Lighthouse overview",
+        "url": "https://developer.chrome.com/docs/lighthouse/overview",
+        "publisher": "Google Chrome Developers",
+        "retrieved_at": "2026-09-09",
+        "evidence_type": "primary web documentation",
+        "use": "Accessibility, performance audit interpretation or bundled motion library provenance",
+        "raw_path": null,
+        "limitation": "Source accessed; full document not archived"
+      }
+    },
+    {
+      "register": "main-agent",
+      "record": {
+        "id": "STD03",
+        "title": "GSAP standard license",
+        "url": "https://gsap.com/community/standard-license/",
+        "publisher": "GSAP",
+        "retrieved_at": "2026-09-09",
+        "evidence_type": "primary web documentation",
+        "use": "Accessibility, performance audit interpretation or bundled motion library provenance",
+        "raw_path": null,
+        "limitation": "Source accessed; full document not archived"
+      }
+    }
+  ],
+  "policy": "Registers are cross-references, not independent duplicate evidence; original record metadata retained."
+}

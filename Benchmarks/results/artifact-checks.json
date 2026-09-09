@@ -1,0 +1,206 @@
+{
+  "scope": "structural integrity only",
+  "checks": [
+    {
+      "name": "All JSON parses",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint: 6 slides",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint/ppt/slides/slide2.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint/ppt/slides/slide6.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint/ppt/slides/slide1.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint/ppt/slides/slide5.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint/ppt/slides/slide4.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint/ppt/slides/slide3.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "submission-blueprint: PDF signature",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint: 15 slides",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide1.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide2.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide3.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide4.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide5.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide6.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide7.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide8.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide9.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide10.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide11.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide12.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide13.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide14.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint/ppt/slides/slide15.xml: visible notice",
+      "pass": true
+    },
+    {
+      "name": "All expanded slides have notes",
+      "pass": true
+    },
+    {
+      "name": "expanded-pitch-blueprint: PDF signature",
+      "pass": true
+    },
+    {
+      "name": "process-documentation: PDF signature",
+      "pass": true
+    },
+    {
+      "name": "preparation-brief: PDF signature",
+      "pass": true
+    },
+    {
+      "name": "Website has one h1",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: assets/mark.svg",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: style.css",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: assets/gsap.min.js",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: assets/ScrollTrigger.min.js",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: app.js",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: main",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: main",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: evidence",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: team",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: delivery",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: evidence",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: downloads/preparation-brief.pdf",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: downloads/guardrails.json",
+      "pass": true
+    },
+    {
+      "name": "Local resource exists: downloads/preparation-brief.pdf",
+      "pass": true
+    },
+    {
+      "name": "Anchor exists: main",
+      "pass": true
+    },
+    {
+      "name": "HTTP 200 /",
+      "pass": true
+    },
+    {
+      "name": "HTTP 200 /app.js",
+      "pass": true
+    },
+    {
+      "name": "HTTP 200 /style.css",
+      "pass": true
+    },
+    {
+      "name": "HTTP 200 /downloads/preparation-brief.pdf",
+      "pass": true
+    },
+    {
+      "name": "HTTP 200 /downloads/guardrails.json",
+      "pass": true
+    }
+  ],
+  "passed": 50
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/VoltAgent/awesome-design-md/main/README.md",
+    "path": "Raw/design/voltagent-readme.md",
+    "sha256": "3f60b909bf66f844a0d122b45c3e39eaaffc43bfcf3c8717e9bc6b47c781457b",
+    "bytes": 16023,
+    "status": "retrieved"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/VoltAgent/awesome-design-md/main/LICENSE",
+    "path": "Raw/design/voltagent-license.txt",
+    "sha256": "6d4bdc9a9cf30e7beb593475fdcdbf29f981ea6bd7923f202866145409f87b44",
+    "bytes": 1066,
+    "status": "retrieved"
+  },
+  {
+    "url": "https://landonorris.com/",
+    "path": "Raw/design/lando-home.html",
+    "sha256": "a3ed9db67b4fb147dad2758bf049c07ce27ef1146a25974f87c9d45aeea8e56f",
+    "bytes": 218897,
+    "status": "retrieved"
+  },
+  {
+    "url": "https://cdn.prod.website-files.com/67b5a02dc5d338960b17a7e9/css/lando-offbrand.shared.5b4e934f7.css",
+    "path": "Raw/design/lando-style-0.css",
+    "sha256": "48304ba3095eab701006df879ae68373c131d169869d4b4ebc2a41d6f639c35d",
+    "bytes": 188318,
+    "status": "retrieved"
+  },
+  {
+    "url": "https://cdn.prod.website-files.com/67b5a02dc5d338960b17a7e9/css/lando-offbrand.shared.4f53262f0.css",
+    "path": "Raw/design/lando-style-1.css",
+    "sha256": "0e291506215a0e8d63b89f57cae9075c81e56136c66d6e3d4b7648c8aa5f5988",
+    "bytes": 186727,
+    "status": "retrieved"
+  }
+]

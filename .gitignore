@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite3
+__pycache__/

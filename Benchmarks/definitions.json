@@ -1,0 +1,176 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-09-08T18:18:59.042063+00:00",
+  "all_values_are_unmeasured": false,
+  "metrics": [
+    {
+      "id": "B01",
+      "name": "Prototype functionality coverage",
+      "unit": "percent",
+      "formula": "100 * sum(weights of passed acceptance scenarios) / sum(weights of all frozen acceptance scenarios)",
+      "target": "100% critical; >=95% weighted total",
+      "method": "Freeze scenarios and weights before coding: critical=3, supporting=1. A scenario passes only with executed evidence. Code line coverage is not functionality coverage.",
+      "minimum_sample": "All frozen scenarios",
+      "kind": "objective",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B02",
+      "name": "User flow completion rate",
+      "unit": "percent",
+      "formula": "100 * independently completed tasks / attempted tasks",
+      "target": "100% automated critical journeys; >=90% human task attempts",
+      "method": "Separate automated completion from human usability; use 5 predefined tasks and record success without facilitator rescue.",
+      "minimum_sample": ">=5 non-author representative participants * 5 tasks",
+      "kind": "mixed",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B03",
+      "name": "Error recovery success rate",
+      "unit": "percent",
+      "formula": "100 * faults recovered correctly / injected fault scenarios",
+      "target": "100% critical faults; >=95% all faults",
+      "method": "Require preserved committed data, no duplicate effect and a clear next action. Report omitted/non-applicable scenarios explicitly.",
+      "minimum_sample": "All critical fault classes; >=20 attempts",
+      "kind": "objective",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B04",
+      "name": "Website information architecture clarity",
+      "unit": "score_0_100",
+      "formula": "100 * tasks found correctly within 30 seconds without hints / all findability tasks",
+      "target": ">=90",
+      "method": "Five prompts: identify problem/status, find demo/status, find evidence, find technical approach and find responsible team member. Log each response and time; report small-sample uncertainty.",
+      "minimum_sample": ">=5 non-author participants * 5 prompts",
+      "kind": "human",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B05",
+      "name": "Slide narrative coherence index",
+      "unit": "score_0_100",
+      "formula": "100 * mean(anchored ratings) / 4",
+      "target": ">=85 and no dimension <2",
+      "method": "Three reviewers independently score problem clarity, evidence, problem-solution link, architecture/demo linkage, feasibility and closing. 0=missing, 1=contradictory, 2=present but weak, 3=clear, 4=clear with evidence and transitions. Preserve individual ratings.",
+      "minimum_sample": ">=3 non-author reviewers * 6 dimensions",
+      "kind": "human",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B06",
+      "name": "Judge readiness proxy",
+      "unit": "score_0_100",
+      "formula": "100 * mean(problem relevance, differentiation, feasibility, demonstrability, impact evidence, delivery clarity ratings) / 4",
+      "target": ">=85 proxy target; no win-probability target",
+      "method": "Use anchored 0\u20134 rubric as a preparation score only. Score after verified domain and working demo. It is not an official SIH score or a calibrated prediction.",
+      "minimum_sample": ">=3 non-author reviewers * 6 dimensions",
+      "kind": "uncalibrated_proxy",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B07",
+      "name": "Judge persuasion probability",
+      "unit": "probability",
+      "formula": "Not defined until outcome-labeled historical data and held-out calibration exist",
+      "target": "No target; must remain null without calibration",
+      "method": "Fit and validate only on comparable labeled judging outcomes; disclose sample, selection bias, reliability curve and Brier score. Do not map readiness score to a probability.",
+      "minimum_sample": "Not available",
+      "kind": "unavailable_prediction",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B08",
+      "name": "Core flow p95 latency",
+      "unit": "milliseconds",
+      "formula": "Nearest-rank p95 of elapsed action-to-usable-result durations for each flow",
+      "target": "<200 for every frozen core flow",
+      "method": "Record browser event start, render completion, environment and samples. Keep API, UI, cold-start and internet latency distinct.",
+      "minimum_sample": ">=100 measured attempts per flow + 10 warmups",
+      "kind": "objective",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B09",
+      "name": "Website Lighthouse scores",
+      "unit": "score_0_100",
+      "formula": "Median of 3 raw category scores * 100 per device profile",
+      "target": ">90 in all four categories on mobile and desktop",
+      "method": "Production build, clean browser profile, exact URL, Chrome/Lighthouse versions and config. Store each JSON report, not only summary.",
+      "minimum_sample": "3 runs * 2 profiles * 4 categories",
+      "kind": "objective",
+      "value": {
+        "mobile": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        },
+        "desktop": {
+          "performance": 100,
+          "accessibility": 100,
+          "best-practices": 100,
+          "seo": 100
+        }
+      },
+      "status": "pass_local_preparation_website",
+      "evidence_path": "Benchmarks/results/lighthouse-summary.json"
+    },
+    {
+      "id": "B10",
+      "name": "Concurrent prototype reliability",
+      "unit": "percent",
+      "formula": "100 * unexpected failed requests / total requests",
+      "target": "<1% error; zero lost committed writes",
+      "method": "20 sessions/1000 synthetic records for 5 minutes; classify expected validation errors separately before run.",
+      "minimum_sample": "5 minutes at 20 sessions; >=1000 requests",
+      "kind": "objective",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    },
+    {
+      "id": "B11",
+      "name": "Social impact outcome",
+      "unit": "domain_specific",
+      "formula": "Pending verified problem and impact model",
+      "target": "Baseline and target must be explicit; no measured value yet",
+      "method": "Specify beneficiary, counterfactual, denominator, observation period and uncertainty. Track adoption, outcome and harms separately.",
+      "minimum_sample": "Pending problem verification",
+      "kind": "domain_pending",
+      "value": null,
+      "status": "not_measured",
+      "evidence_path": null
+    }
+  ],
+  "measurement_record_required_fields": [
+    "metric_id",
+    "build_or_commit",
+    "timestamp",
+    "environment",
+    "instrument_version",
+    "sample_count",
+    "raw_samples_or_report_path",
+    "computed_value",
+    "status",
+    "limitations"
+  ],
+  "interpretation": "Targets are self-imposed preparation criteria, not official SIH evaluation weights. Null means no measurement, never zero. Readiness score is not judge persuasion probability. B07 remains null unless a defensible calibration study is supplied; its null state is expected, not a permission to invent a probability."
+}

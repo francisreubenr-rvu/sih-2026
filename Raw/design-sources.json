@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+  "sources": [
+    {
+      "id": "DES01",
+      "title": "Awesome DESIGN.md",
+      "publisher": "VoltAgent",
+      "author": "VoltAgent contributors",
+      "url": "https://github.com/VoltAgent/awesome-design-md",
+      "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+      "evidence_type": "primary repository documentation",
+      "publication_date": null,
+      "raw_path": "Raw/design/voltagent-readme.md",
+      "use": "Structured design system documentation approach",
+      "license": "MIT; archived license accompanies research",
+      "limitations": "Community analysis is not each brand official guidance."
+    },
+    {
+      "id": "DES02",
+      "title": "Lando Norris official homepage",
+      "publisher": "Lando Norris",
+      "author": null,
+      "url": "https://landonorris.com/",
+      "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+      "evidence_type": "primary website HTML and public CSS",
+      "publication_date": null,
+      "raw_path": "Raw/design/lando-home.html",
+      "use": "Page structure, restrained palette and type scale reference",
+      "license": "All rights reserved; research reference only",
+      "limitations": "No browser motion audit; no assets authorized for reuse."
+    },
+    {
+      "id": "DES03",
+      "title": "Web Content Accessibility Guidelines 2.1",
+      "publisher": "W3C",
+      "author": "W3C Accessibility Guidelines Working Group",
+      "url": "https://www.w3.org/TR/WCAG21/",
+      "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+      "evidence_type": "primary standard",
+      "publication_date": null,
+      "raw_path": null,
+      "use": "Accessibility review scope",
+      "license": "See original W3C terms",
+      "limitations": "Link reviewed through web tool; full standard not archived in this file."
+    },
+    {
+      "id": "DES04",
+      "title": "Lighthouse performance scoring",
+      "publisher": "Google Chrome for Developers",
+      "author": null,
+      "url": "https://developer.chrome.com/docs/lighthouse/performance/performance-scoring",
+      "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+      "evidence_type": "primary product documentation",
+      "publication_date": null,
+      "raw_path": null,
+      "use": "Record scoring environment and variation; preserve raw runs",
+      "license": "See original page terms",
+      "limitations": "Performance score is not proof of usability or accessibility conformance."
+    },
+    {
+      "id": "DES05",
+      "title": "OWASP Application Security Verification Standard",
+      "publisher": "OWASP Foundation",
+      "author": "OWASP ASVS contributors",
+      "url": "https://owasp.org/www-project-application-security-verification-standard/",
+      "retrieved_at": "2026-09-08T18:18:59.042063+00:00",
+      "evidence_type": "primary security standard overview",
+      "publication_date": null,
+      "raw_path": null,
+      "use": "Security verification basis; project-specific control subset",
+      "license": "See original project terms",
+      "limitations": "Selected project controls do not constitute ASVS certification or full conformance."
+    }
+  ],
+  "archive_manifest": "Raw/design/archive-manifest.json",
+  "notes": "Unknown author or publication dates remain null. No platform access or visual browser evidence is inferred."
+}

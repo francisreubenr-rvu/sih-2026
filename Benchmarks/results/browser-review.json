@@ -1,0 +1,31 @@
+{
+  "scope": "preparation website",
+  "date": "2026-09-09",
+  "viewports": [
+    1440,
+    390,
+    320
+  ],
+  "horizontal_overflow": false,
+  "tested_actions": [
+    "architecture click",
+    "architecture Enter",
+    "milestone forward/back",
+    "local share fallback",
+    "evidence disclosure Enter"
+  ],
+  "reduced_motion": {
+    "viewport": 1440,
+    "media_query": true,
+    "smooth_scroll": false,
+    "pin_spacers": 0
+  },
+  "observed_console_errors": 0,
+  "full_WCAG_review": "not_performed",
+  "domain_workflows": "not_implemented",
+  "evidence": [
+    "Docs/verification.md",
+    "Docs/website-desktop.jpg",
+    "Docs/website-mobile.jpg"
+  ]
+}

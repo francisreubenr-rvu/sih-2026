@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-09",
+  "requested_problem": "SIH2171",
+  "competition_entry_complete": false,
+  "submission_ready": false,
+  "deadline": "2026-09-11 Asia/Kolkata (user-supplied)",
+  "delivered": ["Cited historical competition research and bounded identity investigation", "Raw source archive and 31-record attribution index", "20 mandatory guardrails", "11 KPI definitions", "Six local Lighthouse reports and browser verification", "Six-slide supplied-template blueprint in PPTX/PDF", "15-slide expanded blueprint in PPTX/PDF with 700-second planned notes", "Responsive static preparation website", "Process documentation in Markdown/PDF", "Conditional architecture, team, impact and demo runbooks", "Structural validation and fail-closed release checker"],
+  "not_delivered": ["Verified SIH2171 problem interpretation", "Domain literature and competitor analysis", "Full-stack domain prototype", "Domain functionality, latency, scalability and security evidence", "Actual prototype demo recording", "Authentic team photographs and configured contact channel", "Independent human usability and narrative studies", "Submission-ready presentation", "Verified public deployment", "Benchmark saturation"],
+  "blocker": "Authoritative problem statement identity and full text unavailable in examined sources; no nearby ID substituted.",
+  "unlock_evidence": ["Official or organiser-issued source", "Exact ID and year", "Full statement title and description", "Sponsor and software/hardware category", "Expected outputs, constraints and data requirements"],
+  "website_url": "http://127.0.0.1:4173",
+  "website_url_scope": "local preview only"
+}

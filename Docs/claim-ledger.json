@@ -1,0 +1,13 @@
+{
+  "scope": "Preparation artifact claims only; no domain results",
+  "claims": [
+    {"claim": "Six named RV University second-year B.Tech CSE team members", "type": "user_supplied", "source": "Francis original task brief", "limit": "Not independent enrollment verification; proposed roles do not establish expertise"},
+    {"claim": "SIH2171 remains unresolved in examined sources", "type": "research_finding", "source": "Wiki/problem-statement.md", "limit": "Bounded negative evidence; does not prove nonexistent"},
+    {"claim": "Six documented winner examples span 2022-2025", "type": "source_synthesis", "source": "Wiki/competition-intelligence.md", "limit": "Purposive sample; no causal or winning-probability inference"},
+    {"claim": "20 guardrails and 11 KPI definitions", "type": "local_artifact_count", "source": "Guardrails/guardrails.json and Benchmarks/definitions.json"},
+    {"claim": "Lighthouse median 100 all four categories on mobile and desktop", "type": "measured_local_preparation_site", "source": "Benchmarks/results/lighthouse-summary.json", "limit": "Six local runs; not full WCAG conformance or production/domain performance"},
+    {"claim": "Core flows under 200ms", "type": "target_only", "value": null, "source": "User requirement; Guardrails G11", "limit": "No domain application implemented or measured"},
+    {"claim": "Judge persuasion probability", "type": "not_estimable", "value": null, "source": "Benchmarks B07", "limit": "No comparable calibrated judging dataset"},
+    {"claim": "Internal deadline 11 September 2026", "type": "user_supplied", "source": "Francis original task brief", "limit": "Not verified national or institutional submission cutoff"}
+  ]
+}

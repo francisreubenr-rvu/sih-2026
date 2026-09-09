@@ -1,0 +1,314 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-09-08T18:18:59.042063+00:00",
+  "scope": "SIH2171 preparation; problem identity unverified",
+  "deadline": {
+    "date": "2026-09-11",
+    "timezone": "Asia/Kolkata",
+    "source": "user instruction; not verified as official SIH deadline"
+  },
+  "status_vocabulary": [
+    "pass",
+    "fail",
+    "unknown"
+  ],
+  "release_policy": {
+    "all_rules_mandatory": true,
+    "fail": "Reject candidate; repair and retest affected criteria.",
+    "unknown": "Block release readiness claim until evidence is collected.",
+    "pass": "Evidence matches current build, environment and rule.",
+    "overall": "PASS only if every mandatory rule is pass; otherwise FAIL if any fail exists, else UNKNOWN. No score averages can override a failed guardrail.",
+    "artifact_delivery": "Preparation artifacts may be delivered with conspicuous NOT SUBMISSION READY labels; delivery is not release approval."
+  },
+  "rules": [
+    {
+      "id": "G01",
+      "category": "eligibility",
+      "name": "Verified problem identity",
+      "mandatory": true,
+      "acceptance": "Exact SIH2171 identifier, year, issuing organization, full problem text and official source captured; otherwise domain work and submission blocked.",
+      "verification_method": "Inspect official problem page or organizer-issued record and preserve provenance.",
+      "required_evidence": [
+        "Wiki/problem-statement.md",
+        "Raw/official-problem-source"
+      ],
+      "status": "fail",
+      "reason": "SIH2171 has not been verified in the current research. No domain is assumed."
+    },
+    {
+      "id": "G02",
+      "category": "feasibility",
+      "name": "Six-person delivery ceiling",
+      "mandatory": true,
+      "acceptance": "One bounded primary user journey, <=2 application services, <=1 primary database, <=1 optional external provider; no new custom-model training, mandatory specialized hardware or unsupported integration before 11 September.",
+      "verification_method": "Review architecture and dependency inventory; any justified exception must include measured time and fallback.",
+      "required_evidence": [
+        "Docs/architecture.md",
+        "Docs/scope.md"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G03",
+      "category": "feasibility",
+      "name": "Reproducible complete workflow",
+      "mandatory": true,
+      "acceptance": "Every frozen critical acceptance scenario passes from clean setup to persisted result and reload; no mocked action presented as live.",
+      "verification_method": "Run end-to-end tests against a clean database and verify restart persistence.",
+      "required_evidence": [
+        "Benchmarks/results/e2e.json",
+        "Prototype/README.md"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G04",
+      "category": "innovation",
+      "name": "Evidence-backed differentiation",
+      "mandatory": true,
+      "acceptance": "At least 3 relevant adjacent solutions compared; >=1 domain-relevant differentiator implemented and demonstrated against a baseline; global first/unique claims forbidden without evidence.",
+      "verification_method": "Source-backed feature comparison plus reproducible baseline demonstration.",
+      "required_evidence": [
+        "Wiki/competitors.md",
+        "Benchmarks/results/differentiation.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G05",
+      "category": "scalability",
+      "name": "Prototype capacity floor",
+      "mandatory": true,
+      "acceptance": "At least 20 concurrent sessions and 1000 synthetic records for 5 minutes; <1% unexpected request failures; no lost writes. Capacity is a prototype target, not national-scale proof.",
+      "verification_method": "Run fixed-seed local load scenario on recorded hardware, check data counts and error classes.",
+      "required_evidence": [
+        "Benchmarks/results/load.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G06",
+      "category": "security",
+      "name": "Validated requests and safe output",
+      "mandatory": true,
+      "acceptance": "Server validates types, lengths, bounds and allowed fields; queries parameterized; HTML output safely encoded; malformed payload returns controlled 4xx; no stack traces or secrets returned.",
+      "verification_method": "Negative API cases, injection strings, overlong input and source review.",
+      "required_evidence": [
+        "Benchmarks/results/security.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G07",
+      "category": "security",
+      "name": "Access and data boundaries",
+      "mandatory": true,
+      "acceptance": "Any private record requires server authorization and ownership checks. Public demo uses synthetic, non-sensitive data and is explicitly labeled. No real personal data or credentials in fixtures, logs or client bundles.",
+      "verification_method": "Unauthenticated and cross-user access tests where applicable; inspect environment handling and demo data.",
+      "required_evidence": [
+        "Docs/security.md",
+        "Benchmarks/results/security.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G08",
+      "category": "security",
+      "name": "Deployment controls",
+      "mandatory": true,
+      "acceptance": "HTTPS on public deployments; origin policy and CSRF defenses appropriate to auth model; bounded request bodies and write rate limits; production debug off; dependency/secret scans with no unresolved critical or high findings.",
+      "verification_method": "Inspect headers, negative origin/write tests and locked dependency scans.",
+      "required_evidence": [
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/dependency-audit.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G09",
+      "category": "accessibility",
+      "name": "WCAG 2.1 AA review",
+      "mandatory": true,
+      "acceptance": "All applicable WCAG 2.1 A/AA criteria documented and checked; no known blocker. Automated checks plus manual keyboard, screen-reader, contrast, reflow, zoom, labels and status review.",
+      "verification_method": "Record criterion-level pass/fail/not-applicable with evidence. No blanket conformance claim from Lighthouse or axe alone.",
+      "required_evidence": [
+        "Benchmarks/results/accessibility.json",
+        "Docs/accessibility-review.md"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G10",
+      "category": "accessibility",
+      "name": "Responsive and motion safety",
+      "mandatory": true,
+      "acceptance": "No essential content lost at 320px/390px/1440px, 200% zoom or reduced motion; all actions keyboard-accessible with visible focus; no forced orientation, autoplay audio or animation-only information.",
+      "verification_method": "Browser review at declared viewports and preferences with screenshots.",
+      "required_evidence": [
+        "Benchmarks/results/browser-review.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G11",
+      "category": "performance",
+      "name": "Core response time",
+      "mandatory": true,
+      "acceptance": "Each frozen core user flow has p95 end-to-end completion <200ms on the declared local reference environment, with at least 100 measured attempts per flow after 10 warmups. Long external tasks cannot be relabeled core completion; report job acceptance and full completion separately.",
+      "verification_method": "Measure action event to visible usable result including backend/persistence; record cold startup and remote-network measurements separately.",
+      "required_evidence": [
+        "Benchmarks/results/core-latency.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G12",
+      "category": "performance",
+      "name": "Website Lighthouse quality",
+      "mandatory": true,
+      "acceptance": "For both mobile and desktop, median of 3 runs is strictly >90 in performance, accessibility, best-practices and SEO; no category omitted. Record all runs and environment.",
+      "verification_method": "Run production build in clean Chrome profile; preserve JSON/HTML reports and exact URL/version. A rounded 90 fails.",
+      "required_evidence": [
+        "Benchmarks/results/lighthouse/"
+      ],
+      "status": "pass",
+      "reason": "Local preparation website only: 3 runs per profile; all category medians 100; raw Lighthouse reports preserved. Does not establish domain application or public deployment readiness."
+    },
+    {
+      "id": "G13",
+      "category": "resilience",
+      "name": "Error recovery",
+      "mandatory": true,
+      "acceptance": "All frozen critical fault scenarios recover without lost committed data, duplicate submission or unexplained dead-end; timeouts and validation errors offer usable next steps.",
+      "verification_method": "Inject malformed input, offline/failed fetch, duplicate submit, unavailable provider and server restart as applicable.",
+      "required_evidence": [
+        "Benchmarks/results/recovery.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G14",
+      "category": "demo",
+      "name": "Live and recorded fallback",
+      "mandatory": true,
+      "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; local offline-safe demonstration or labeled prerecorded fallback exists, opens independently and matches the tested version.",
+      "verification_method": "Record browser flow, replay file, verify narration/captions and list external dependencies.",
+      "required_evidence": [
+        "Docs/demo-runbook.md",
+        "Docs/demo-fallback.webm",
+        "Benchmarks/results/demo-rehearsal.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G15",
+      "category": "evidence",
+      "name": "Honest impact and capability",
+      "mandatory": true,
+      "acceptance": "Every empirical numeric claim has source, date, denominator and scope. Projections list assumptions/range; user studies, team experience and deployments are never invented.",
+      "verification_method": "Audit website, slides, Wiki and README against claim ledger.",
+      "required_evidence": [
+        "Docs/claim-ledger.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G16",
+      "category": "impact",
+      "name": "Measurable social impact framework",
+      "mandatory": true,
+      "acceptance": "At least one domain-relevant outcome, baseline method, unit/denominator, comparison and collection plan exists; projected results are not reported as observed outcomes.",
+      "verification_method": "Check impact model and sensitivity table after problem verification.",
+      "required_evidence": [
+        "Docs/impact-model.md"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G17",
+      "category": "presentation",
+      "name": "Submission format and narrative",
+      "mandatory": true,
+      "acceptance": "Official deck preserves supplied template structure; longer 12\u201318-slide talk deck is separate if it would violate template length. All source and problem-status caveats visible; no unsupported competition eligibility.",
+      "verification_method": "Inspect actual PPTX XML, render all slides and verify against user-supplied format.",
+      "required_evidence": [
+        "Docs/template-audit.md",
+        "Docs/submission-deck.pptx",
+        "Docs/presentation-render/"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G18",
+      "category": "operations",
+      "name": "Deployable and maintainable handoff",
+      "mandatory": true,
+      "acceptance": "README includes install, config, migrate/seed, run, test, build, deploy, backup/restore and known limits. No unconfigured contact or demo link implies a functioning service.",
+      "verification_method": "Independent clean-start check and verify all advertised URLs/functions.",
+      "required_evidence": [
+        "Prototype/README.md",
+        "Docs/deployment-verification.md"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G19",
+      "category": "research",
+      "name": "Attribution and channel integrity",
+      "mandatory": true,
+      "acceptance": "Each cited source has title, publisher/author when known, original URL, access time, evidence type and claim mapping. Failed/private channels recorded as inaccessible, never described as scraped.",
+      "verification_method": "Audit source registry and match raw evidence to Wiki synthesis.",
+      "required_evidence": [
+        "Raw/sources.json",
+        "Wiki/source-index.md"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    },
+    {
+      "id": "G20",
+      "category": "readiness",
+      "name": "Real human validation",
+      "mandatory": true,
+      "acceptance": "At least 5 representative non-author participants perform frozen navigation tasks; at least 3 non-author reviewers score narrative with anchored rubric. If unavailable, report unknown and do not claim benchmark saturation.",
+      "verification_method": "Retain anonymized task-level responses and reviewer scores; team-only rehearsal reported separately.",
+      "required_evidence": [
+        "Benchmarks/results/human-evaluation.json"
+      ],
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+    }
+  ],
+  "iteration_policy": {
+    "freeze_before_testing": [
+      "official problem identity",
+      "critical scenarios",
+      "metric definitions and weights",
+      "reference environment"
+    ],
+    "saturation_requires": [
+      "Every mandatory guardrail passes.",
+      "Every objective benchmark meets target with preserved evidence.",
+      "Two consecutive full evaluated iterations show <2 percentage points improvement in each composite quality score and <5% relative latency improvement.",
+      "No new critical failure, unresolved blocker or missing human evaluation."
+    ],
+    "deadline_policy": "If the deadline arrives first, retain failed/unknown status and ship an honest gap list. Do not weaken thresholds, treat timeout as saturation, or fabricate results.",
+    "retest_policy": "Rerun affected tests after a change; rerun final acceptance only when release candidate changes."
+  }
+}

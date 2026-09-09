@@ -1,0 +1,165 @@
+{
+  "metric_id": "B09",
+  "scope": "local preparation website only",
+  "timestamp": "2026-09-08T21:16:05.224199+00:00",
+  "instrument_version": "Lighthouse 12.8.2",
+  "build_or_commit": "9d6e54aa99f34a8cc658998e3d90169160eb7c93f39edb44a95ac29b05df3a8d",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "url": "http://127.0.0.1:4173",
+    "server": "Python static HTTP; loopback",
+    "browser": "Chrome launched by Lighthouse in clean temporary profile"
+  },
+  "sample_count": 6,
+  "computed_value": {
+    "mobile": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "desktop": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    }
+  },
+  "status": "pass",
+  "runs": [
+    {
+      "profile": "mobile",
+      "run": 1,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "report": "Benchmarks/results/lighthouse/mobile-1.report.json",
+      "fetchTime": "2026-09-08T21:15:02.080Z",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "environment": {
+        "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+        "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "benchmarkIndex": 2981.5,
+        "credits": {
+          "axe-core": "4.13.0"
+        }
+      }
+    },
+    {
+      "profile": "mobile",
+      "run": 2,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "report": "Benchmarks/results/lighthouse/mobile-2.report.json",
+      "fetchTime": "2026-09-08T21:15:12.994Z",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "environment": {
+        "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+        "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "benchmarkIndex": 3023.5,
+        "credits": {
+          "axe-core": "4.13.0"
+        }
+      }
+    },
+    {
+      "profile": "mobile",
+      "run": 3,
+      "scores": {
+        "performance": 99.0,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "report": "Benchmarks/results/lighthouse/mobile-3.report.json",
+      "fetchTime": "2026-09-08T21:15:23.984Z",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "environment": {
+        "networkUserAgent": "Mozilla/5.0 (Linux; Android 11; moto g power (2022)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+        "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "benchmarkIndex": 2968.5,
+        "credits": {
+          "axe-core": "4.13.0"
+        }
+      }
+    },
+    {
+      "profile": "desktop",
+      "run": 1,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "report": "Benchmarks/results/lighthouse/desktop-1.report.json",
+      "fetchTime": "2026-09-08T21:15:34.926Z",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "environment": {
+        "networkUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+        "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "benchmarkIndex": 2906,
+        "credits": {
+          "axe-core": "4.13.0"
+        }
+      }
+    },
+    {
+      "profile": "desktop",
+      "run": 2,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "report": "Benchmarks/results/lighthouse/desktop-2.report.json",
+      "fetchTime": "2026-09-08T21:15:46.184Z",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "environment": {
+        "networkUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+        "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "benchmarkIndex": 3013.5,
+        "credits": {
+          "axe-core": "4.13.0"
+        }
+      }
+    },
+    {
+      "profile": "desktop",
+      "run": 3,
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "report": "Benchmarks/results/lighthouse/desktop-3.report.json",
+      "fetchTime": "2026-09-08T21:15:57.169Z",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+      "environment": {
+        "networkUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36",
+        "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/152.0.0.0 Safari/537.36",
+        "benchmarkIndex": 3001,
+        "credits": {
+          "axe-core": "4.13.0"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Not public deployment evidence",
+    "Not domain prototype performance",
+    "Automated accessibility is not WCAG conformance",
+    "Human evaluation and saturation not established"
+  ],
+  "whole_site_fingerprint_at_measurement": "5855a025ad6924f133a3268054b00f7588010aff30104a54315e7eb8111425ad",
+  "fingerprint_scope": "HTML, CSS, JS, SVG frontend assets; unchanged since final runs. Guardrails download subsequently updated with result."
+}

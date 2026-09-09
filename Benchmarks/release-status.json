@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-09-08T21:17:54.754268+00:00",
+  "scope": "complete SIH2171 competition entry",
+  "status": "fail",
+  "submission_ready": false,
+  "saturation_achieved": false,
+  "counts": {
+    "pass": 1,
+    "fail": 1,
+    "unknown": 18
+  },
+  "rules": [
+    {
+      "id": "G01",
+      "name": "Verified problem identity",
+      "status": "fail",
+      "reason": "SIH2171 has not been verified in the current research. No domain is assumed.",
+      "missing_evidence": [
+        "Raw/official-problem-source"
+      ]
+    },
+    {
+      "id": "G02",
+      "name": "Six-person delivery ceiling",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Docs/architecture.md",
+        "Docs/scope.md"
+      ]
+    },
+    {
+      "id": "G03",
+      "name": "Reproducible complete workflow",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/e2e.json"
+      ]
+    },
+    {
+      "id": "G04",
+      "name": "Evidence-backed differentiation",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Wiki/competitors.md",
+        "Benchmarks/results/differentiation.json"
+      ]
+    },
+    {
+      "id": "G05",
+      "name": "Prototype capacity floor",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/load.json"
+      ]
+    },
+    {
+      "id": "G06",
+      "name": "Validated requests and safe output",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/security.json"
+      ]
+    },
+    {
+      "id": "G07",
+      "name": "Access and data boundaries",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Docs/security.md",
+        "Benchmarks/results/security.json"
+      ]
+    },
+    {
+      "id": "G08",
+      "name": "Deployment controls",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/dependency-audit.json"
+      ]
+    },
+    {
+      "id": "G09",
+      "name": "WCAG 2.1 AA review",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/accessibility.json"
+      ]
+    },
+    {
+      "id": "G10",
+      "name": "Responsive and motion safety",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": []
+    },
+    {
+      "id": "G11",
+      "name": "Core response time",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/core-latency.json"
+      ]
+    },
+    {
+      "id": "G12",
+      "name": "Website Lighthouse quality",
+      "status": "pass",
+      "reason": "Local preparation website only: 3 runs per profile; all category medians 100; raw Lighthouse reports preserved. Does not establish domain application or public deployment readiness.",
+      "missing_evidence": []
+    },
+    {
+      "id": "G13",
+      "name": "Error recovery",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/recovery.json"
+      ]
+    },
+    {
+      "id": "G14",
+      "name": "Live and recorded fallback",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Docs/demo-fallback.webm",
+        "Benchmarks/results/demo-rehearsal.json"
+      ]
+    },
+    {
+      "id": "G15",
+      "name": "Honest impact and capability",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Docs/claim-ledger.json"
+      ]
+    },
+    {
+      "id": "G16",
+      "name": "Measurable social impact framework",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": []
+    },
+    {
+      "id": "G17",
+      "name": "Submission format and narrative",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Docs/submission-deck.pptx"
+      ]
+    },
+    {
+      "id": "G18",
+      "name": "Deployable and maintainable handoff",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": []
+    },
+    {
+      "id": "G19",
+      "name": "Attribution and channel integrity",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": []
+    },
+    {
+      "id": "G20",
+      "name": "Real human validation",
+      "status": "unknown",
+      "reason": "Not yet evaluated against a verified SIH2171 implementation.",
+      "missing_evidence": [
+        "Benchmarks/results/human-evaluation.json"
+      ]
+    }
+  ],
+  "limitations": [
+    "This aggregator checks recorded review states and evidence presence; it does not execute or authenticate all tests.",
+    "Website-only measurements do not validate the domain prototype."
+  ]
+}
