@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-09T16:55:45.040202+00:00",
+  "timestamp": "2026-09-09T23:54:21.851615+00:00",
   "scope": "complete SIH26171 competition entry",
   "status": "fail",
   "submission_ready": false,
@@ -111,7 +111,7 @@
       "id": "G12",
       "name": "Website Lighthouse quality",
       "status": "pass",
-      "reason": "Six fresh Lighthouse 12.8.2 runs of the Sightline site on local loopback: three mobile and three desktop, 100 in all four categories. Automated site scores only; not WCAG conformance or prototype performance.",
+      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance.",
       "missing_evidence": []
     },
     {

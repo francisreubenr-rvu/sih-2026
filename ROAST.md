@@ -31,3 +31,11 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [x] Web capture: release screenshot canvas in finally, including failed inference.
 - [x] Website GitHub source links used nonexistent main branch; changed to verified default master.
 - [x] Presentation render: corrected title/subtitle overlap, dense panel body size and cropped screenshot. Current PDFs and contact sheets regenerated.
+
+## Round 3 — measured model behavior and recording
+
+- [x] Shared page-agent browser tests now exercise the actual DOM, shadow roots, overlays, CSSOM movement and expiry: 18/18 pass. This closes the synthetic Chrome harness gap only.
+- [x] Model benchmark output could overwrite previous evidence. Runs now require a fresh directory and default to frozen first-run cases. Historical runs and failures are preserved.
+- [x] Legacy screencast dropped events. Replaced it with a real browser recording stream; verified final frame and MP4 playback. No fabricated video frames.
+- [ ] Qwen7B latest adapter still selects the wrong action in 2/24 authored development cases. Smaller models also fail; strict JSON is not semantic correctness. See Docs/decisions/model-pilot.md.
+- [ ] Native extension installation was blocked by browser URL policy. Respect that boundary; no cross-browser extension readiness claim.

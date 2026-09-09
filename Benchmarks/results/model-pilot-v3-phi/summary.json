@@ -1,0 +1,304 @@
+{
+  "timestamp": "2026-09-09T23:37:46.046Z",
+  "scope": "real Ollama provider-only pilot; excludes browser capture, network deployment, review and execution",
+  "provider_sha256": "6362e5e8d1e019ea768026299bcb17fca7bb565b4e51df61ae55def8dbe52c07",
+  "environment": {
+    "os": "darwin",
+    "release": "25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M1 Pro",
+    "total_system_bytes": 17179869184
+  },
+  "limitations": [
+    "Authored synthetic cases follow the declared 3-task policy; not unseen tasks or PII accuracy",
+    "Two layouts share each semantic state, so samples are not independent",
+    "Two warmup calls excluded; 24 measured calls per model, below the full-flow gate sample minimum",
+    "Server residency is not client memory; model-only latency is not full-task latency"
+  ],
+  "results": [
+    {
+      "model": "phi4-mini:latest",
+      "installed": {
+        "name": "phi4-mini:latest",
+        "model": "phi4-mini:latest",
+        "modified_at": "2026-07-28T17:13:03.272639193+05:30",
+        "size": 2491876774,
+        "digest": "78fad5d182a7c33065e153a5f8ba210754207ba9d91973f57dffa7f487363753",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "phi3",
+          "families": [
+            "phi3"
+          ],
+          "parameter_size": "3.8B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 131072,
+          "embedding_length": 3072
+        },
+        "capabilities": [
+          "completion",
+          "tools"
+        ]
+      },
+      "warmups": [
+        {
+          "ms": 4171.988625,
+          "ok": true
+        },
+        {
+          "ms": 931.0342919999994,
+          "ok": true
+        }
+      ],
+      "sample_count": 24,
+      "correct": 20,
+      "schema_valid": 24,
+      "accuracy": 0.8333333333333334,
+      "latency_ms": {
+        "p50": 1152.2771250000005,
+        "p95": 1514.5488750000004,
+        "max": 1574.6601249999985
+      },
+      "server_residency": [
+        {
+          "name": "phi4-mini:latest",
+          "model": "phi4-mini:latest",
+          "size": 3087615917,
+          "digest": "78fad5d182a7c33065e153a5f8ba210754207ba9d91973f57dffa7f487363753",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "phi3",
+            "families": [
+              "phi3"
+            ],
+            "parameter_size": "3.8B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-09-10T05:12:46.043055+05:30",
+          "size_vram": 3087615917,
+          "context_length": 4096
+        }
+      ],
+      "rows": [
+        {
+          "case_id": "pending-queue-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Pending",
+          "ms": 389.6284999999998,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-queue-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Pending",
+          "ms": 375.9865410000002,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-review-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Review",
+          "ms": 995.619541,
+          "actual": "Review",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-review-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Review",
+          "ms": 1007.3074580000002,
+          "actual": "Review",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-details-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Details",
+          "ms": 997.6117499999991,
+          "actual": "Details",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-details-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Details",
+          "ms": 999.4106250000004,
+          "actual": "Details",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-finished-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "done",
+          "ms": 961.2150829999991,
+          "actual": "Back",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-finished-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "done",
+          "ms": 1176.841958000001,
+          "actual": "Back",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-queue-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Completed",
+          "ms": 1239.4131669999988,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-queue-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Completed",
+          "ms": 1221.8402079999996,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-finished-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "done",
+          "ms": 1134.9713330000013,
+          "actual": "Back",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-finished-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "done",
+          "ms": 1118.9863750000022,
+          "actual": "Help",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-control-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Next",
+          "ms": 1308.2998750000006,
+          "actual": "Next",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-control-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Next",
+          "ms": 1186.2622499999998,
+          "actual": "Next",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-scroll-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "scroll-down",
+          "ms": 1165.7305839999972,
+          "actual": "scroll-down",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-scroll-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "scroll-down",
+          "ms": 1162.1796250000007,
+          "actual": "scroll-down",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-finished-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "done",
+          "ms": 1141.7905839999985,
+          "actual": "done",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-finished-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "done",
+          "ms": 1122.6022919999996,
+          "actual": "done",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-scroll-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "scroll-down",
+          "ms": 1174.887125000001,
+          "actual": "scroll-down",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-scroll-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "scroll-down",
+          "ms": 1152.2771250000005,
+          "actual": "scroll-down",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-priority-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Pending",
+          "ms": 1413.9676670000008,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-priority-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Pending",
+          "ms": 1401.6977920000027,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-distractors-layout0",
+          "model": "phi4-mini:latest",
+          "expected": "Completed",
+          "ms": 1574.6601249999985,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-distractors-layout1",
+          "model": "phi4-mini:latest",
+          "expected": "Completed",
+          "ms": 1514.5488750000004,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        }
+      ]
+    }
+  ]
+}

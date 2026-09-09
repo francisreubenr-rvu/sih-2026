@@ -1,0 +1,49 @@
+{
+  "recorded_at": "2026-09-10",
+  "scope": "continuous real Chrome web-JS synthetic fixture demonstration; not native extension or performance benchmark",
+  "actions": [
+    "capture with real UltraFace WASM",
+    "real Qwen2.5:7b-instruct proposes Pending",
+    "operator confirms Pending",
+    "fresh capture",
+    "real Qwen proposes Review",
+    "operator confirms Review",
+    "Request ready for review observed"
+  ],
+  "raw_container": "AV1 WebM",
+  "raw_duration_seconds": 37.366,
+  "distribution_container": "H264 MP4",
+  "distribution_duration_seconds": 37.907087,
+  "resolution": [
+    1440,
+    810
+  ],
+  "audio": false,
+  "capture": "Chrome Page.startScreenRecording / stopScreenRecording, IO.read",
+  "processing": "ffmpeg H264/yuv420p transcode with variable frame timestamps and faststart; no cuts or speed-up",
+  "files": {
+    "sightline-browser-v02.webm": {
+      "bytes": 389930,
+      "sha256": "eda7efcdfc2a38ea224bcc63db53bbe1a34358dfab22b332d2d0a0362020c792"
+    },
+    "sightline-browser-v02.mp4": {
+      "bytes": 761436,
+      "sha256": "4c83d2849d95ba60758e07ed545b733b82a458b8e7c7dfae2d6de7dc7b47c29d"
+    }
+  },
+  "limitations": [
+    "Only the synthetic fixture is shown; all account details are invented test data",
+    "Public-domain NASA reference image is a face-detection fixture, not a team portrait",
+    "Recorder requested 15 fps but emitted variable frames on content updates; not a constant-frame-rate capture",
+    "Video includes operator and tool pauses; duration is not task latency",
+    "First legacy screencast failed with truncated events; its seven partial frames are excluded from the demo"
+  ],
+  "local_playback": {
+    "url": "http://127.0.0.1:4173/#demo",
+    "currentTime": 37.907087,
+    "duration": 37.907087,
+    "ended": true,
+    "readyState": 4,
+    "error": null
+  }
+}

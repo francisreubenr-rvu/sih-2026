@@ -47,7 +47,7 @@ test('static server never exposes server source, pairing tokens or tests',()=>fi
 }));
 test('real provider adapter submits only validated semantics and checks JSON',async()=>{
  let sent;
- const infer=ollamaProvider({fetchImpl:async(url,options)=>{sent=JSON.parse(options.body);return {ok:true,json:async()=>({message:{content:'{"action":{"type":"done"}}'}})};}});
+ const infer=ollamaProvider({fetchImpl:async(url,options)=>{sent=JSON.parse(options.body);return {ok:true,json:async()=>({message:{content:'{"choice":"done"}'}})};}});
  const r=await infer(body());assert.equal(r.action.type,'done');assert.equal(sent.stream,false);assert.doesNotMatch(JSON.stringify(sent),/screenshot|private@example/);
  const broken=ollamaProvider({fetchImpl:async()=>({ok:true,json:async()=>({message:{content:'not json'}})})});
  await assert.rejects(broken(body()),/provider_invalid/);
@@ -55,4 +55,4 @@ test('real provider adapter submits only validated semantics and checks JSON',as
 
 test("serves the real app entry and fixture",()=>fixture(async url=>{for(const path of ["/","/app/fixture.html"]) {const r=await fetch(url+path);assert.equal(r.status,200);assert.match(r.headers.get("content-type"),/text\/html/);}}));
 
-test("no-control scenes omit an impossible empty click enum",()=>{const schema=outputSchema([]);assert.equal(schema.properties.action.anyOf.length,2);assert.ok(schema.properties.action.anyOf.every(x=>x.properties.type.const!=="click"));});
+test("no-control scenes omit an impossible empty click enum",()=>{const schema=outputSchema([]);assert.deepEqual(schema.properties.choice.enum,["done","scroll-down","scroll-up"]);});

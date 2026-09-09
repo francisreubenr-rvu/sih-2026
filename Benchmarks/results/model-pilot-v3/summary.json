@@ -1,0 +1,304 @@
+{
+  "timestamp": "2026-09-09T17:09:14.778Z",
+  "scope": "real Ollama provider-only pilot; excludes browser capture, network deployment, review and execution",
+  "provider_sha256": "6362e5e8d1e019ea768026299bcb17fca7bb565b4e51df61ae55def8dbe52c07",
+  "environment": {
+    "os": "darwin",
+    "release": "25.6.0",
+    "arch": "arm64",
+    "cpu": "Apple M1 Pro",
+    "total_system_bytes": 17179869184
+  },
+  "limitations": [
+    "Authored synthetic cases follow the declared 3-task policy; not unseen tasks or PII accuracy",
+    "Two layouts share each semantic state, so samples are not independent",
+    "Two warmup calls excluded; 24 measured calls per model, below the full-flow gate sample minimum",
+    "Server residency is not client memory; model-only latency is not full-task latency"
+  ],
+  "results": [
+    {
+      "model": "qwen2.5:7b-instruct",
+      "installed": {
+        "name": "qwen2.5:7b-instruct",
+        "model": "qwen2.5:7b-instruct",
+        "modified_at": "2026-07-29T13:38:49.976015133+05:30",
+        "size": 4683087332,
+        "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen2",
+          "families": [
+            "qwen2"
+          ],
+          "parameter_size": "7.6B",
+          "quantization_level": "Q4_K_M",
+          "context_length": 32768,
+          "embedding_length": 3584
+        },
+        "capabilities": [
+          "completion",
+          "tools"
+        ]
+      },
+      "warmups": [
+        {
+          "ms": 2857.8049159999996,
+          "ok": true
+        },
+        {
+          "ms": 1993.0943330000005,
+          "ok": true
+        }
+      ],
+      "sample_count": 24,
+      "correct": 19,
+      "schema_valid": 24,
+      "accuracy": 0.7916666666666666,
+      "latency_ms": {
+        "p50": 2555.7468339999978,
+        "p95": 3612.8615419999987,
+        "max": 3930.0962079999954
+      },
+      "server_residency": [
+        {
+          "name": "qwen2.5:7b-instruct",
+          "model": "qwen2.5:7b-instruct",
+          "size": 4740716952,
+          "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "qwen2",
+            "families": [
+              "qwen2"
+            ],
+            "parameter_size": "7.6B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-09-09T22:44:14.762997+05:30",
+          "size_vram": 4740716952,
+          "context_length": 4096
+        }
+      ],
+      "rows": [
+        {
+          "case_id": "pending-queue-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Pending",
+          "ms": 681.3414170000005,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-queue-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Pending",
+          "ms": 722.9058340000001,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-review-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Review",
+          "ms": 2119.715833,
+          "actual": "Review",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-review-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Review",
+          "ms": 2118.2237080000014,
+          "actual": "Review",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-details-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Details",
+          "ms": 2192.9501249999994,
+          "actual": "Details",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-details-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Details",
+          "ms": 2144.9915419999998,
+          "actual": "Details",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-finished-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "done",
+          "ms": 2090.911957999999,
+          "actual": "Back",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-finished-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "done",
+          "ms": 2074.805625000001,
+          "actual": "Back",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-queue-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Completed",
+          "ms": 2730.7744999999995,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-queue-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Completed",
+          "ms": 2487.632540999999,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-finished-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "done",
+          "ms": 2491.2473750000026,
+          "actual": "Back",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-finished-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "done",
+          "ms": 2411.5029590000013,
+          "actual": "done",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-control-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Next",
+          "ms": 3214.1402500000004,
+          "actual": "Next",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-control-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Next",
+          "ms": 3156.4730420000014,
+          "actual": "Next",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-scroll-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "scroll-down",
+          "ms": 2912.663959000005,
+          "actual": "Previous",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "next-scroll-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "scroll-down",
+          "ms": 2874.902041000001,
+          "actual": "Previous",
+          "correct": false,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-finished-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "done",
+          "ms": 2593.679167000002,
+          "actual": "done",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-finished-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "done",
+          "ms": 2555.7468339999978,
+          "actual": "done",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-scroll-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "scroll-down",
+          "ms": 2695.4106669999965,
+          "actual": "scroll-down",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "empty-scroll-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "scroll-down",
+          "ms": 2663.6037499999948,
+          "actual": "scroll-down",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-priority-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Pending",
+          "ms": 3296.098957999995,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "pending-priority-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Pending",
+          "ms": 3321.8755410000012,
+          "actual": "Pending",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-distractors-layout0",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Completed",
+          "ms": 3612.8615419999987,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        },
+        {
+          "case_id": "completed-distractors-layout1",
+          "model": "qwen2.5:7b-instruct",
+          "expected": "Completed",
+          "ms": 3930.0962079999954,
+          "actual": "Completed",
+          "correct": true,
+          "schema_valid": true
+        }
+      ]
+    }
+  ]
+}

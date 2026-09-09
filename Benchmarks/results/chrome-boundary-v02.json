@@ -1,0 +1,115 @@
+{
+  "scope": "actual browser DOM on authored synthetic fixtures; no native extension, provider or population privacy claim",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "checks": [
+    {
+      "name": "confirmed target executes once",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 210.5
+    },
+    {
+      "name": "confirmation is required",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 33.60000002384186
+    },
+    {
+      "name": "new capture revokes previous revision",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 32.300000071525574
+    },
+    {
+      "name": "queued document mutation revokes action",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 31.5
+    },
+    {
+      "name": "open shadow target executes",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 22.600000023841858
+    },
+    {
+      "name": "queued open-shadow mutation revokes action",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 53.799999952316284
+    },
+    {
+      "name": "newly attached shadow root revokes action",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 31.399999976158142
+    },
+    {
+      "name": "document overlay prevents click",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 28
+    },
+    {
+      "name": "shadow overlay prevents click",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 33.300000071525574
+    },
+    {
+      "name": "CSSOM geometry change revokes action",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 31.899999976158142
+    },
+    {
+      "name": "clipped target uses original bounds",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 39.60000002384186
+    },
+    {
+      "name": "disabled fieldset excludes child button",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 42.89999997615814
+    },
+    {
+      "name": "inert ancestor excludes child button",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 129.20000004768372
+    },
+    {
+      "name": "navigation target requires manual handling",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 74.09999990463257
+    },
+    {
+      "name": "form submission requires manual handling",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 53.5
+    },
+    {
+      "name": "source PII and closed shadow text excluded",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 36.5
+    },
+    {
+      "name": "failed collection revokes earlier authority",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 103.89999997615814
+    },
+    {
+      "name": "31-second capture expiry",
+      "pass": true,
+      "detail": "Expected browser behavior observed",
+      "ms": 31102.299999952316
+    }
+  ],
+  "finishedAt": "2026-09-09T23:41:36.486Z"
+}

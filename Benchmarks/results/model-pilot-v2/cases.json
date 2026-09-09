@@ -1,0 +1,3465 @@
+{
+  "scope": "authored synthetic semantic-layout pilot; 12 states in 2 layouts; not held-out browser pages",
+  "cases": [
+    {
+      "id": "pending-queue-layout0",
+      "task": "review-pending",
+      "expected": "Pending",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "04afec10-fed4-4378-94c5-604e8d887688",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c11",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 30,
+              "y": 60,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c14",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 180,
+              "y": 60,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c17",
+            "role": "button",
+            "label": "Next",
+            "rect": {
+              "x": 330,
+              "y": 60,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-queue-layout1",
+      "task": "review-pending",
+      "expected": "Pending",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "669044c9-07e8-484b-a798-ae0b453740f0",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c12",
+            "role": "button",
+            "label": "Next",
+            "rect": {
+              "x": 30,
+              "y": 60,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c15",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 180,
+              "y": 60,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c18",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 330,
+              "y": 60,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-review-layout0",
+      "task": "review-pending",
+      "expected": "Review",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "727e0106-7e66-4a84-9da1-729773daf593",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c22",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 30,
+              "y": 68,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c25",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 180,
+              "y": 68,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c28",
+            "role": "button",
+            "label": "Cancel",
+            "rect": {
+              "x": 330,
+              "y": 68,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-review-layout1",
+      "task": "review-pending",
+      "expected": "Review",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "83d35f74-3367-417b-aad5-51039036ff84",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c23",
+            "role": "button",
+            "label": "Cancel",
+            "rect": {
+              "x": 30,
+              "y": 68,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c26",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 180,
+              "y": 68,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c29",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 330,
+              "y": 68,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-details-layout0",
+      "task": "review-pending",
+      "expected": "Details",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "85aedd3e-02fa-49cf-9b7f-cab8b952f70d",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c33",
+            "role": "button",
+            "label": "Help",
+            "rect": {
+              "x": 30,
+              "y": 76,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c36",
+            "role": "button",
+            "label": "Details",
+            "rect": {
+              "x": 180,
+              "y": 76,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-details-layout1",
+      "task": "review-pending",
+      "expected": "Details",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "47e1a683-c17b-409d-8127-b57cf80cfe56",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c34",
+            "role": "button",
+            "label": "Details",
+            "rect": {
+              "x": 30,
+              "y": 76,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c37",
+            "role": "button",
+            "label": "Help",
+            "rect": {
+              "x": 180,
+              "y": 76,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-finished-layout0",
+      "task": "review-pending",
+      "expected": "done",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "056abda7-6c1d-40d3-88b7-15c776ba4428",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c44",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 30,
+              "y": 84,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-finished-layout1",
+      "task": "review-pending",
+      "expected": "done",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "7ba0f424-7267-43d5-8263-fb329bfeb9c7",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c45",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 30,
+              "y": 84,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "completed-queue-layout0",
+      "task": "show-completed",
+      "expected": "Completed",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "042ab665-e4b6-4c7f-b40f-bc0565c73ae8",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c55",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 30,
+              "y": 92,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c58",
+            "role": "button",
+            "label": "Next",
+            "rect": {
+              "x": 180,
+              "y": 92,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c61",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 330,
+              "y": 92,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "completed-queue-layout1",
+      "task": "show-completed",
+      "expected": "Completed",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2ed9110f-a6c2-4000-be06-cde46e5b4f80",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c56",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 30,
+              "y": 92,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c59",
+            "role": "button",
+            "label": "Next",
+            "rect": {
+              "x": 180,
+              "y": 92,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c62",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 330,
+              "y": 92,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "completed-finished-layout0",
+      "task": "show-completed",
+      "expected": "done",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "3e023b40-e2d1-4aea-a9dd-9420407cc8c4",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c66",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 30,
+              "y": 100,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c69",
+            "role": "button",
+            "label": "Help",
+            "rect": {
+              "x": 180,
+              "y": 100,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "completed-finished-layout1",
+      "task": "show-completed",
+      "expected": "done",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "bcb28c04-8724-4534-b7cf-77b7edc3aba4",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c67",
+            "role": "button",
+            "label": "Help",
+            "rect": {
+              "x": 30,
+              "y": 100,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c70",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 180,
+              "y": 100,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "next-control-layout0",
+      "task": "next-page",
+      "expected": "Next",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "0cf7543c-8f5e-4fc5-8e18-2ca633d822d2",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c77",
+            "role": "button",
+            "label": "Previous",
+            "rect": {
+              "x": 30,
+              "y": 108,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c80",
+            "role": "button",
+            "label": "Next",
+            "rect": {
+              "x": 180,
+              "y": 108,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c83",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 330,
+              "y": 108,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "next-control-layout1",
+      "task": "next-page",
+      "expected": "Next",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "c5ef5aec-87ec-413a-94b5-3c08b85123c8",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c78",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 30,
+              "y": 108,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c81",
+            "role": "button",
+            "label": "Next",
+            "rect": {
+              "x": 180,
+              "y": 108,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c84",
+            "role": "button",
+            "label": "Previous",
+            "rect": {
+              "x": 330,
+              "y": 108,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "next-scroll-layout0",
+      "task": "next-page",
+      "expected": "scroll-down",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "d5222090-d347-4ce7-a31f-0014611b6ee3",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c88",
+            "role": "button",
+            "label": "Previous",
+            "rect": {
+              "x": 30,
+              "y": 116,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c91",
+            "role": "button",
+            "label": "Help",
+            "rect": {
+              "x": 180,
+              "y": 116,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "next-scroll-layout1",
+      "task": "next-page",
+      "expected": "scroll-down",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "26807be4-b281-4645-b556-09bf16e03d81",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c89",
+            "role": "button",
+            "label": "Help",
+            "rect": {
+              "x": 30,
+              "y": 116,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c92",
+            "role": "button",
+            "label": "Previous",
+            "rect": {
+              "x": 180,
+              "y": 116,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-finished-layout0",
+      "task": "review-pending",
+      "expected": "done",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "68928f31-760e-47a0-ab0a-dc32da79a8c5",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-finished-layout1",
+      "task": "review-pending",
+      "expected": "done",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "d8a27d9e-cba3-42db-87fc-f80332b3475b",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-scroll-layout0",
+      "task": "next-page",
+      "expected": "scroll-down",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e0cbe6a3-37c2-4128-810f-8506841ad341",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-scroll-layout1",
+      "task": "next-page",
+      "expected": "scroll-down",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "dca847e3-c8e3-4fd2-b77f-945543239de2",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-priority-layout0",
+      "task": "review-pending",
+      "expected": "Pending",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2c0430ef-6bf6-4132-a543-9e039858c347",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c121",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 30,
+              "y": 140,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c124",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 180,
+              "y": 140,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c127",
+            "role": "button",
+            "label": "Details",
+            "rect": {
+              "x": 330,
+              "y": 140,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 370,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pending-priority-layout1",
+      "task": "review-pending",
+      "expected": "Pending",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "66d97740-4f8f-4a24-bf80-420d4c5e1060",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c122",
+            "role": "button",
+            "label": "Details",
+            "rect": {
+              "x": 30,
+              "y": 140,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c125",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 180,
+              "y": 140,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c128",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 330,
+              "y": 140,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 370,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "completed-distractors-layout0",
+      "task": "show-completed",
+      "expected": "Completed",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "739734f8-27b6-4e72-baa8-aae45c131243",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c132",
+            "role": "button",
+            "label": "Details",
+            "rect": {
+              "x": 30,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c135",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 180,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c138",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 330,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c141",
+            "role": "button",
+            "label": "Cancel",
+            "rect": {
+              "x": 480,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 370,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 370,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "completed-distractors-layout1",
+      "task": "show-completed",
+      "expected": "Completed",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a40a3adc-bda3-4d2a-a7de-fb4a45911112",
+        "viewport": {
+          "width": 960,
+          "height": 600
+        },
+        "controls": [
+          {
+            "id": "c133",
+            "role": "button",
+            "label": "Cancel",
+            "rect": {
+              "x": 30,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c136",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 180,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c139",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 330,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          },
+          {
+            "id": "c142",
+            "role": "button",
+            "label": "Details",
+            "rect": {
+              "x": 480,
+              "y": 148,
+              "width": 120,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 250,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 274,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 298,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 460,
+              "y": 322,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 240,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 460,
+              "y": 346,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 370,
+              "width": 180,
+              "height": 18
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 240,
+              "y": 370,
+              "width": 180,
+              "height": 18
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

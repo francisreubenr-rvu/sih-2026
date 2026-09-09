@@ -14,3 +14,6 @@ Prototype/.tools-venv/
 # Unprocessed public HTML with embedded documentation-site API configuration.
 Raw/domain/chrome-capture.html
 Raw/domain/mediapipe-face-web.html
+
+# Incomplete legacy screencast frames; failure documented in recording README.
+Docs/demo-recording/frames/

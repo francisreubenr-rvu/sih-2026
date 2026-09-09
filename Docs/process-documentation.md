@@ -1,6 +1,6 @@
 # Sightline engineering methodology and evidence
 
-9 September 2026 · SIH26171 · RV University · engineering candidate v0.1. **Not submission ready.** The internal delivery target is 11 September. The earlier unresolved SIH2171 preparation record is preserved in `process-preparation-history.md`; the supplied goal and retrieved official catalogue resolved the identity to SIH26171.
+10 September 2026 · SIH26171 · RV University · engineering candidate v0.1. **Not submission ready.** The internal delivery target is 11 September. The earlier unresolved SIH2171 preparation record is preserved in `process-preparation-history.md`; the supplied goal and retrieved official catalogue resolved the identity to SIH26171.
 
 ## Research and problem fit
 
@@ -57,7 +57,7 @@ Unit tests use explicitly synthetic DOM/provider/runtime doubles. Browser eviden
 
 The design uses a large asymmetric headline, optical boundary illustration, real prototype evidence, clear section hierarchy and proposed team responsibilities. Stitch supplied visual ideas; unsupported generated telemetry was discarded. No team portraits, awards, registered ID or contact address were invented. GitHub issues provide a real feedback destination. The local-demo dialog explains the operational prerequisite before linking to localhost.
 
-Semantic landmarks, skip navigation, named controls, visible focus, modal focus return, native keyboard behavior, local fonts and reduced-motion CSS are implemented. The architecture selector updates an announced panel. Desktop and 390px checks found no horizontal overflow on the new website. Six fresh Lighthouse 12.8.2 runs—three mobile and three desktop—scored 100 for performance, accessibility, best practices and SEO. These are local automated measurements, not WCAG 2.1 AA certification, a user study or deployed-backend evidence.
+Semantic landmarks, skip navigation, named controls, visible focus, modal focus return, native keyboard behavior, local fonts and reduced-motion CSS are implemented. The architecture selector updates an announced panel. Desktop and 390px checks found no horizontal overflow on the new website. The 9 September Lighthouse runs scored 100 in all categories. Six fresh 10 September runs after adding the video score mobile performance 99, desktop performance 100, and accessibility, best practices and SEO 100. These are local automated measurements, not WCAG 2.1 AA certification, a user study or deployed-backend evidence.
 
 ## Performance and sustainable engineering
 
@@ -74,10 +74,18 @@ A proposed institutional pilot would measure sensitive information excluded, use
 | Correct domain and research | Official source and cited Wiki/Raw | Broader competition/social sample where accessible |
 | Browser-local CV and protected context | Actual WASM/fixture run; strict contract tests | Held-out PII/redaction/utility datasets |
 | Server reasoning and client action | Actual Qwen Pending/Review end-state | Broader workflows, native Chrome/Firefox validation |
-| Guardrails and benchmarks | Defined contracts, 37 tests, browser observations, six Lighthouse runs | Full-task latency target, resources, human metrics, saturation |
+| Guardrails and benchmarks | Defined contracts, 39 tests, 18 Chrome boundary checks, preserved model pilots and Lighthouse runs | Full-task latency target, resources, human metrics, saturation |
 | Presentation | Six-slide candidate, 15-slide talk, POTX and PDFs | Registered team details, timed rehearsal, independent judge review |
 | Website | Local browser/Lighthouse checks plus successful Pages run34379912074; seven public file hashes and live interactions verified | Independent accessibility and human evaluation |
-| Demonstration fallback | Actual screenshots | Continuous screen recording and verified playback |
+| Demonstration fallback | Continuous actual-browser recording, original WebM, MP4 and verified local playback | Native-extension recording and timed team rehearsal |
 | Team and impact | Supplied names, proposed roles and pilot metrics | Authentic consented photos, contribution evidence, measured impact |
 
 The full goal remains active. `PLAN.md`, `ROAST.md`, `Guardrails/guardrails.json` and `Benchmarks/release-status.json` are the continuing readiness ledger. Do not reinterpret a passing static website or a successful push as completion of the competition entry.
+
+## 10 September: model and recording follow-up
+
+The provider adapter now requests one enumerated choice and decodes it to the unchanged browser action contract. Qwen7B improves from 16/24 to 22/24 on authored development cases; two semantic errors remain. Phi4 mini reaches 21/24 and Qwen0.5B 7/24 in the latest run. All earlier results remain available, including regressions. These policy-aligned synthetic cases are not held-out task accuracy. See decisions/model-pilot.md for methodology, exact inputs and limits.
+
+The real Chrome boundary harness passes 18 checks, including 31-second expiry and shadow/overlay cases. The automated suite passes 39 tests. Native extension installation was blocked by the browser automation URL policy; no alternate installation route was attempted. Native Chrome/Firefox operation remains unverified.
+
+A continuous browser recording now shows actual WASM face inference, real Qwen Pending and Review proposals, explicit confirmations and the final review screen. The original stream and compatible MP4 are preserved under demo-recording, with hashes and a text description. Local playback reaches readyState 4 without a media error. A failed earlier screencast remains documented separately and contributes no frames to the recording. Runtime observations and video duration are not benchmark latency distributions.

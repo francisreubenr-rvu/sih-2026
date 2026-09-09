@@ -65,3 +65,9 @@ The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min
 - Three task intents and an approved control vocabulary bound the current workflow. Arbitrary navigation, typing and irreversible submissions are not implemented.
 - Initial live server steps took seconds, so the original <200ms full-flow guardrail is not passed. A fast local capture observation does not replace that requirement.
 - No representative-user study, broad WCAG conformance, benchmark saturation, final pitch deck, final Stitch comparison, public backend deployment or screen-recording fallback is claimed yet.
+
+## Additional validation evidence — 10 September
+
+Run `npm test` for the current 39 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
+
+`Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/sightline-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.

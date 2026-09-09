@@ -180,10 +180,10 @@
       "acceptance": "For both mobile and desktop, median of 3 runs is strictly >90 in performance, accessibility, best-practices and SEO; no category omitted. Record all runs and environment.",
       "verification_method": "Run production build in clean Chrome profile; preserve JSON/HTML reports and exact URL/version. A rounded 90 fails.",
       "required_evidence": [
-        "Benchmarks/results/lighthouse-sightline-v01-summary.json"
+        "Benchmarks/results/lighthouse-sightline-v02-summary.json"
       ],
       "status": "pass",
-      "reason": "Six fresh Lighthouse 12.8.2 runs of the Sightline site on local loopback: three mobile and three desktop, 100 in all four categories. Automated site scores only; not WCAG conformance or prototype performance."
+      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance."
     },
     {
       "id": "G13",

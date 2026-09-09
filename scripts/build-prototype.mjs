@@ -7,3 +7,4 @@ await mkdir(new URL('models/ort/',root),{recursive:true});
 for(const file of ['ort.wasm.min.mjs','ort-wasm-simd-threaded.mjs','ort-wasm-simd-threaded.wasm']) await copyFile(new URL(`node_modules/onnxruntime-web/dist/${file}`,root),new URL(`models/ort/${file}`,root));
 await copyFile(new URL('node_modules/onnxruntime-web/README.md',root),new URL('models/ORT-README.md',root));
 await build({entryPoints:[fileURLToPath(new URL('app/main.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/app.js',root)),minify:true,legalComments:'eof'});
+await build({entryPoints:[fileURLToPath(new URL('app/validation.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/validation.js',root)),minify:true,legalComments:'eof'});

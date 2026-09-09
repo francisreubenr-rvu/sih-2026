@@ -47,3 +47,12 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Next substantial work: native-browser extension run, labeled PII/redaction/utility cases, resource/model benchmarks, continuous recording with playback, real human evaluation. Continue the full objective after candidate publication.
 
 - Published candidate `69188d7`; Pages run34379912074 succeeded. Seven public file hashes matched local bytes and the live architecture/setup interactions passed. This completes this candidate publication, not the remaining full-entry audit.
+
+## Validation checkpoint — 10 September 2026
+
+- Real Chrome shared-JS boundary harness passed 18/18 checks, including actual 31-second expiry, open shadow roots, overlays, CSSOM movement, disabled/inert targets and manual-only submissions/links. Saved exact results; native extension remains separate.
+- Compared three real Ollama models across four adapter designs; all development runs and failures preserved. Qwen7B single-choice adapter reaches 22/24 authored cases, with two semantic failures still open. Current suite: 39 passing tests.
+- Recorded continuous real-browser Pending → Review completion with actual WASM/Qwen. Original WebM and compatible MP4 retained, decoded and visually inspected. Website playback advances without media errors; public verification follows publication.
+- The earlier legacy screencast failed; partial frames are not used as demo evidence.
+- Native extension installation remains unavailable through the browser automation surface: chrome://extensions/ was blocked by browser URL policy. No alternate installation path was attempted. Shared-JS tests do not close that gate.
+- Remaining priority: held-out visual utility/PII/redaction dataset, client resource/full-task timing, broader task reliability, native extension validation and human review. Full goal remains active.
