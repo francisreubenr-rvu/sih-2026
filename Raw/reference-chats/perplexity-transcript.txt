@@ -1,0 +1,717 @@
+--- ## name: autoresearch description: Orchestrates end-to-end autonomous AI research using a two-loop architecture (rapid experiment iterations + periodic synthesis). Operates continuously via Claude Code /loop or OpenClaw cron, routing tasks to domain skills and producing presentations and papers. version: 1.0.0 author: Orchestra Research license: MIT tags: [Autonomous Research, Two-Loop Architecture, Experiment Orchestration, Research Synthesis, Project Management]  # Autoresearch  Autonomous research orchestrator for AI coding agents. Manages the complete research lifecycle autonomously without waiting for human approval, driving execution from literature review to final paper writing.  ## 1. Agent Continuity (Mandatory Step 0)  Set up a wall-clock continuity loop before starting any research. Without this, execution stops after one cycle.  ### Claude Code  Run immediately:  ``` /loop 20m Continue autoresearch. Read research-state.yaml and findings.md. Re-read the autoresearch SKILL.md occasionally to stay aligned. Step back and reflect holistically — is the research making real progress? Are you deepening understanding or just running experiments? If stalling, pivot or search literature for new ideas. Keep making research progress — never idle, never stop. Update findings.md, research-log.md, and research-state.yaml when there's new progress. Git commit periodically and clean up the repo if needed. Show the human your research progress with key plots and findings by preparing a report in to_human/ and opening the HTML/PDF. Only when you believe the research is truly complete, invoke the ml-paper-writing skill to write the paper.  ```  ### OpenClaw  Execute `cron.add` bound to the current session:  ```json { "name": "autoresearch-loop", "schedule": { "kind": "every", "everyMs": 1200000 }, "sessionTarget": "current", "payload": { "kind": "agentTurn", "message": "Continue autoresearch. Read research-state.yaml and findings.md. Re-read the autoresearch SKILL.md occasionally to stay aligned. Step back and reflect holistically — is the research making real progress? Are you deepening understanding or just running experiments? If stalling, pivot or search literature for new ideas. Keep making research progress — never idle, never stop. Update findings.md, research-log.md, and research-state.yaml when there's new progress. Git commit periodically and clean up the repo if needed. Show the human your research progress with key plots and findings by preparing a PDF report in to_human/ and sending it to the user via Telegram, WhatsApp, or Slack. When you get an exciting result or interesting plot, text it to the user right away — don't wait for a full report. Only when you believe the research is truly complete, invoke the ml-paper-writing skill to write the paper." } }  ```  ---  ## 2. Workspace Setup & Entry Points  ### User State Routing  | User State | Action | | --- | --- | | Vague idea | Clarify briefly, then bootstrap | | Clear question | Bootstrap directly | | Existing plan | Review plan, set up workspace, enter loops | | Resuming state | Load `research-state.yaml`, resume execution |  ### Directory Layout  ``` {project}/ ├── research-state.yaml # Central state tracking ├── research-log.md # Decision timeline ├── findings.md # Knowledge base & evolving research story ├── literature/ # Paper summaries & survey.md ├── src/ # Reusable code (plotting, data loaders, utils) ├── data/ # Raw outputs (CSVs, JSONs, logs; exclude large model checkpoints) ├── experiments/ # Per-hypothesis work ({hypothesis-slug}/ protocol, code, results, analysis) ├── to_human/ # Progress presentations (HTML/PDF) └── paper/ # Paper draft workspace (via ml-paper-writing)  ```  ---  ## 3. Two-Loop Architecture  ### Workflow Cycle  ``` BOOTSTRAP (Lit Search → Form Hypotheses → Set Metrics/Baselines) │ ▼ INNER LOOP ◄─────► OUTER LOOP ────► FINALIZE (Experiment) (Synthesis) (Paper & Presentation)  ```  1. **Bootstrap**: Search literature (Exa MCP, Semantic Scholar, arXiv, CrossRef) and record summaries in `literature/`. Identify gaps, form hypotheses via `21-research-ideation/` skills, lock proxy metrics and baselines upfront, and initialize state files. 2. **Inner Loop (Optimization or Discovery)**: * Select highest-priority hypothesis. * Write protocol and **commit to git first** to create temporal proof. * Run experiment using relevant domain skill. * Perform sanity check (convergence, NaN/Inf, baseline reproducibility, data loading). * Measure metric, record results under `experiments/{hypothesis-slug}/`, and tag as `CONFIRMATORY` or `EXPLORATORY`. * Track metrics in trajectory logs; update `research-state.yaml`.   3. **Outer Loop (Reflection & Synthesis)**: * Periodically (every 5–10 experiments or when stalled) evaluate accumulated results. * Cluster findings, identify mechanisms ("WHY"), and update `findings.md`. * Generate progress reports in `to_human/` (HTML/PDF). * Decide direction: * **DEEPEN**: Form sub-hypotheses ($H_{1.1}, H_{1.2}$) to explore mechanisms or conditions. * **BROADEN**: Generate new root hypotheses for adjacent questions. * **PIVOT**: Re-query literature and re-bootstrap if core assumptions break. * **CONCLUDE**: Move to paper writing when findings are solid and ablations are complete.     4. **Finalize**: Generate paper via `20-ml-paper-writing` with verified citations and output final presentations.  ---  ## 4. Domain Skill Routing  | Research Activity | Skill Directory | | --- | --- | | Data Processing | `05-data-processing/` | | Training / Fine-Tuning / Post-Training | `01-model-architecture/`, `03-fine-tuning/`, `06-post-training/` | | Distributed Training | `08-distributed-training/` | | Optimization / Quantization | `10-optimization/` | | Evaluation / Benchmarks | `11-evaluation/` | | Inference / Serving | `12-inference-serving/` | | Interpretability | `04-mechanistic-interpretability/` | | MLOps / Experiment Tracking | `13-mlops/` | | Infrastructure / Cloud Compute | `09-infrastructure/` |  ---  ## 5. Git Protocol & Standards  ### Commit Rules  * **Hard Rule**: Protocol commits MUST precede execution result commits. Never combine them.  | Stage | Message Pattern | | --- | --- | | Workspace Initialized | `research(init): {project} — {question}` | | Protocol Locked | `research(protocol): {hypothesis}` | | Experiment Finished | `research(results): {hypothesis} — {outcome}` | | Direction Change | `research(reflect): {direction} — {reason}` | | Paper Draft Complete | `research(paper): {title}` |  ### Core Disciplines  * **`findings.md` Structure**: Maintain four mandatory sections: *Current Understanding*, *Patterns and Insights*, *Lessons and Constraints*, and *Open Questions*. * **Negative Results**: Record negative results explicitly; treating invalidated hypotheses as progress. * **Compute Adaptability**: Scale experiments to fit available environment (CPU vs. multi-GPU) without blocking execution.  ---  ## 6. Troubleshooting  | Issue | Resolution | | --- | --- | | **Inner loop stalls** | Trigger an outer loop. Evaluate metric validity, expand search space, or re-query literature. | | **Agent stuck** | Avoid random parameter tweaks. Step back, use `21-research-ideation/`, or search literature. | | **Baseline mismatch** | Investigate root cause before proceeding. Check code, data splits, and paper details. | | **Context loss across ticks** | Read `research-state.yaml` and `findings.md` at the start of every interval turn. | | **Paper API search failures** | Cycle through search tools in order: Exa MCP $\rightarrow$ Semantic Scholar $\rightarrow$ arXiv $\rightarrow$ CrossRef. | | **No GPU available** | Scale down model/data sizes and execute experiments on CPU. | | **Long-running jobs** | Check status on subsequent continuity loop ticks; update log notes while waiting. |     RESEARCH ON Problem Statement Details Problem Statement ID 26171 Problem Statement Title On-device Visual Perception for Light-weight Browser Agents Description Background AI agents are becoming omnipresent in the current era and can play an important role in our digital interactions. If an agentic AI pipeline has access to our visual context, screen states, they can assist users in complex workflows and automate many tasks. Most of the agentic AI pipelines are deployed on server side which limits the type to data that a user can share with it. It would open a new dimension of possibilities, if a local agent is deployed on user machine particularly browser which can eliminate the need to share the sensitive data with the server. Local system generally has fewer resources than server and is unable to host a full-fledged pipeline therefore only the non-sensitive data such as structure of the screen, application fields etc can be sent to server for processing.  Modern browser APIs (such as WebGPU and WebAssembly) and local inference libraries (like ONNX Runtime Web and Transformers.js) have unlocked the ability to run lightweight machine learning models directly on the client. The aim is to bridge these two environments: leveraging the reasoning power of cloud or server based AI while strictly enforcing data privacy at the client side.  Description Participants are required to build a privacy-preserving vision agent which runs on browser. This involves implementing a client-side architecture where a local Vision Transformer (ViT) or equivalent computer vision model 'reads' the user's screen and takes decision based on that. If it requires the visual context to be sent to server, it shall sanitize the sensitive/PII data using DOM tags or any other method, before any network request is made. It should dynamically detect and redact sensitive elements. For example, blurring faces, blacking out passwords, and masking PII etc. Only this anonymized, unidentifiable data should be transmitted to the central server which should be aware for this redaction scheme and can process data accordingly. The server will then process the sanitized context and return actionable commands for the browser agent to execute. Participants must balance the trade-offs between inference latency and the accuracy.  Expected Solution A successful submission should include a working prototype consisting of client side extension and server that demonstrates the following:  Client-side (extension/JS) running in popular browsers (chrome, Firefox) components:  • Local Vision Processing: Implementation of a client-side vision model running in the browser (e.g., via WebGPU) that evaluates the current screen state. • Privacy Preserving Filter: A mechanism for sanitizing sensitive or personal visual data. This can be achieved through local bounding-box redaction, semantic obfuscation, masking etc. This should be clearly demonstrated.  Server-side implementation components:  • Server Side Integration: The transmission of the anonymized visual context to a centralized LLM/VLM, which successfully interprets the sanitized data and returns the response which may be processed data to be again ingested by local client or an UI action (e.g., 'click the submit button,' 'scroll down') that the local client executes. • Participants are free to use any offline deployable (open-source/open-weights) model on server side. During SIH they can use cloud hosted version of these. An end-to-end task assisting the user should be demonstrated.  Evaluation will be done on the following metrics:  1-Accuracy of visual context from screen â€“ 25% 2-Recall and precision for detection of sensitive/PII data â€“ 20% 3-Precision of redaction â€“ 20% 4-Client side resource utilization â€“ 20% 5-Overall end-to-end latency of the provided task -15% Organization Indian Space Research Organisation(ISRO) Department Department of Space / Indian Space Research Organisation Category Software Theme Smart Automation Youtube LinkDataset Link Any open-source data can be used. Use cases for evaluation will provided during finale Contact info
+
+
+
+You should build a browser extension that combines DOM-based PII detection with a lightweight WebGPU‑accelerated vision model (via Transformers.js or ONNX Runtime Web) to sanitize the screen locally, then send only a structured, anonymized representation to a server‑side LLM/VLM that returns actions for the agent to execute. This fits perfectly with an autoresearch workflow: use the autoresearch skill to iterate on model choice, redaction strategies, and latency/accuracy trade‑offs in a disciplined two‑loop research process.
+
+Problem recap
+The SIH problem asks for a privacy-preserving visual browser agent: local on-device vision model reads the screen, automatically detects and redacts sensitive/PII elements, and only then sends sanitized context to a server which produces UI actions or processed data.
+
+Modern browser tooling makes this feasible: WebGPU and WebAssembly now allow running ML models client-side, and libraries like ONNX Runtime Web and Transformers.js expose simple JS APIs for computer vision tasks such as image classification and object detection directly in the browser.
+
+High-level architecture
+Design the system as a browser extension + server with a well-defined contract for “sanitized context”:
+
+Browser side (extension):
+
+Content script + background/service worker.
+
+Local vision pipeline using WebGPU/WebAssembly.
+
+DOM + regex PII detection + CSS/canvas masking.
+
+Sanitized context encoder (JSON / low-res image / feature map).
+
+Server side:
+
+LLM/VLM endpoint that consumes sanitized context.
+
+Planner that outputs UI actions (click, type, scroll) or structured assistance.
+
+Existing extensions such as ScreenMask and BlurIt already show that fully local PII detection and masking is viable and practical in real-time extensions, using DOM observers and pattern matching combined with on-page blurs or redaction before screenshots or sharing.
+
+Client-side vision stack
+Use Transformers.js or ONNX Runtime Web to run a compact CV model with WebGPU acceleration, falling back to WASM if GPU is unavailable.
+
+Transformers.js supports image classification, object detection, and segmentation tasks out-of-the-box, and can load ONNX models for browser inference.
+
+ONNX Runtime Web provides onnxruntime-web with device options webgpu, webgl, wasm, and webnn, so you can target GPU or CPU depending on the user’s hardware, which is critical for the “client side resource utilization” evaluation metric.
+
+For your use case:
+
+Face & avatar detection: small face detection/segmentation model on ONNX, run via ONNX Runtime Web with deviceType: 'webgpu' when available.
+
+Screen region understanding: lightweight object detection (buttons, form fields, panels) or vision-language model (e.g., Florence-2 in ONNX) via Transformers.js v3 with WebGPU.
+
+There are live demos of running image classification models like MobileNetV4 and Florence‑2 directly on WebGPU using Transformers.js pipelines, indicating that your architecture is realistic for current browsers.
+
+Privacy-preserving PII redaction
+For PII detection and redaction, combine DOM-level semantics with vision-level bounding boxes:
+
+Existing tools like ScreenMask and BlurIt detect emails, phone numbers, credit cards, IDs, and other PII using regex + DOM observers and then blur or replace them before screenshots or screen sharing.
+
+Extensions such as Cloak and Redact & Snap show auto-redaction workflows that blur or black out sensitive fields in screenshots and web pages entirely locally without sending data to servers, aligning perfectly with your privacy requirement.
+
+Concretely on the client:
+
+DOM-based filters:
+
+Identify input[type=password], fields with autocomplete hints (email, name, phone), credit card patterns, and IDs using regex similar to ScreenMask’s pattern-matching approach.
+
+Apply CSS masks (blur, pixelate, overlay rectangles), or replace text content with asterisks before rendering a screenshot or serializing context.
+
+Vision-based filters:
+
+Capture the viewport via tabs.captureVisibleTab or draw into an offscreen canvas.
+
+Run vision model; get bounding boxes for faces, avatars, or sensitive widgets.
+
+Paint over those regions (black boxes, heavy blur) in the canvas before encoding to PNG/WebP and sending to the server.
+
+Your “sanitized context” payload can then be:
+
+A redacted screenshot (faces and PII masked), plus metadata about element roles (button, input, etc.).
+
+Or a structured JSON with layout (bounding boxes, element types, partial masked text), which minimises visual content while still giving the server enough state to reason and plan.
+
+Server-side reasoning and actions
+On the server, you can use any open-weights LLM/VLM running in the cloud during SIH, as long as it only sees anonymized data.
+
+Design the server with:
+
+Input schema:
+
+Sanitized screenshot (optional).
+
+Structured layout: list of elements with roles, positions, redaction flags, and masked text snippets.
+
+Reasoning engine:
+
+VLM (if using images) to interpret layout and visual cues.
+
+LLM to read the structured layout and task description (“fill this form”, “navigate to X”, etc.), and produce a sequence of high-level UI actions.
+
+The server returns actions like click(element_id), type(element_id, "value"), or scroll(direction="down"), which the extension executes using standard WebExtension APIs and DOM events.
+
+Metrics and evaluation mapping
+The SIH evaluation criteria map neatly onto measurable components of your architecture:
+
+Accuracy of visual context (25%):
+
+Measure how well the local vision model and DOM parser reconstruct the screen state into the structured context seen by the server (e.g., recall of buttons, inputs, visible text regions).
+
+Recall/precision for PII detection (20%) & precision of redaction (20%):
+
+Adopt the approach of extensions like ScreenMask and BlurIt that already track detection patterns for emails, phones, and credit cards using regex and validation (e.g., Luhn check for card numbers) to achieve high precision.
+
+Client-side resource utilization (20%):
+
+Use ONNX Runtime Web’s webgpu where available and fall back to wasm for users without GPU support, leveraging the documented guidance on WebGPU flags and adoption (~70% support in late 2024).
+
+Keep models small (tiny/“n” variants), quantized (int8/fp16) as in Florence‑2 WebGPU demos to reduce VRAM and CPU usage.
+
+End-to-end latency (15%):
+
+Real-time WebGPU vision pipelines have already been demonstrated for per-frame processing in browsers, showing that with small models and caching, you can stay within real-time constraints.
+
+Pipeline design: capture → local redaction → encode → send to server → receive actions → execute, with each segment timed and logged.
+
+Autoresearch and AI Research Skills alignment
+The autoresearch skill is built to orchestrate exactly this kind of multi-component AI pipeline development: it sets up continuous loops, runs experiments via domain skills, and synthesizes findings into reports and papers.
+
+Per the AI Research Skills welcome instructions:
+
+First, install all skills (once) via npx @orchestra-research/ai-research-skills install --all, restart your agent if needed, then load the autoresearch skill.
+
+Autoresearch will bootstrap by doing literature search (e.g., for browser vision, WebGPU ML, PII redaction), then route to relevant skills like fine-tuning, optimization, inference-serving, and evaluation as you iterate on model size, redaction patterns, and latency tradeoffs.
+
+For this SIH project, you can:
+
+Treat each design choice (e.g., “ViT vs MobileNet for screen understanding”, “regex-only vs vision+regex for PII detection”) as hypotheses, implement protocols, run experiments, and log metrics in experiments/ and findings.md as suggested in the autoresearch spec you pasted.
+
+Use the outer loop to periodically step back and decide whether to deepen (e.g., refine redaction for new PII types), broaden (new tasks like form-filling or dashboard summarization), or pivot (e.g., switch models when latency is too high).
+
+Practical implementation plan for SIH
+For hackathon-speed execution, here’s a concrete path you can follow:
+
+Set up the extension skeleton
+
+Chrome (Manifest V3) + WebExtension-compatible structure so it runs on Firefox too.
+
+Content script that can read DOM, inject CSS, and capture screenshots via the browser APIs.
+
+Integrate ONNX Runtime Web / Transformers.js
+
+Load a small ONNX face-detection or object-detection model using onnxruntime-web with deviceType: 'webgpu', falling back to wasm.
+
+Alternatively, use Transformers.js pipeline("image-classification" | "object-detection", model, { device: "webgpu" }) with a compact model like MobileNetV4 or Florence‑2 base quantized, as in public demos.
+
+Implement DOM-based PII detection and masking
+
+Borrow patterns from ScreenMask: regex for emails, phone numbers, card numbers (with Luhn check), plus detection of common ID formats.
+
+Apply CSS blur/overlay or text replacement before encoding screenshots.
+
+Implement canvas-based redaction from vision model
+
+Capture screen to canvas, run model, mask bounding boxes (faces, profile pictures, sensitive panels), similar to how BlurIt and Cloak redact screenshots.
+
+Define and implement sanitized context schema
+
+JSON: elements {id, role, bbox, masked_text?, redacted?}, plus optional low-res sanitized image.
+
+Send this to a simple FastAPI/Node server with a VLM/LLM that returns [{action: "click", targetId: "..."}] style commands.
+
+Measure and log metrics
+
+Log detection counts, true/false positives for PII on a small evaluation set you construct.
+
+Measure latency at each stage and resource usage (approximate via performance APIs and WebGPU timing).
+
+Use autoresearch to manage experiments and reporting
+
+Maintain research-state.yaml, findings.md, and experiments/ as per the autoresearch spec you already included, so you can show judges an AI-driven, disciplined research process behind your prototype.
+
+If you tell me your preferred stack (pure JS vs TypeScript, FastAPI vs Node, Transformers.js vs ONNX Runtime Web), I can give you a copy-pasteable minimal skeleton for the extension content script plus server endpoint that matches this architecture.
+Context: "Problem Statement Details Problem Statement ID 26171 Problem Statement Title On-device Visual Perception for Light-weight Browser Agents Description Background AI agents are becoming omnipresent in the current era and can play an important role in our digital interactions. If an agentic AI pipeline has access to our visual context, screen states, they can assist users in complex workflows and automate many tasks. Most of the agentic AI pipelines are deployed on server side which limits the type to data that a user can share with it. It would open a new dimension of possibilities, if a local agent is deployed on user machine particularly browser which can eliminate the need to share the sensitive data with the server. Local system generally has fewer resources than server and is unable to host a full-fledged pipeline therefore only the non-sensitive data such as structure of the screen, application fields etc can be sent to server for processing.  Modern browser APIs (such as WebGPU and WebAssembly) and local inference libraries (like ONNX Runtime Web and Transformers.js) have unlocked the ability to run lightweight machine learning models directly on the client. The aim is to bridge these two environments: leveraging the reasoning power of cloud or server based AI while strictly enforcing data privacy at the client side.  Description Participants are required to build a privacy-preserving vision agent which runs on browser. This involves implementing a client-side architecture where a local Vision Transformer (ViT) or equivalent computer vision model 'reads' the user's screen and takes decision based on that. If it requires the visual context to be sent to server, it shall sanitize the sensitive/PII data using DOM tags or any other method, before any network request is made. It should dynamically detect and redact sensitive elements. For example, blurring faces, blacking out passwords, and masking PII etc. Only this anonymized, unidentifiable data should be transmitted to the central server which should be aware for this redaction scheme and can process data accordingly. The server will then process the sanitized context and return actionable commands for the browser agent to execute. Participants must balance the trade-offs between inference latency and the accuracy.  Expected Solution A successful submission should include a working prototype consisting of client side extension and server that demonstrates the following:  Client-side (extension/JS) running in popular browsers (chrome, Firefox) components:  • Local Vision Processing: Implementation of a client-side vision model running in the browser (e.g., via WebGPU) that evaluates the current screen state. • Privacy Preserving Filter: A mechanism for sanitizing sensitive or personal visual data. This can be achieved through local bounding-box redaction, semantic obfuscation, masking etc. This should be clearly demonstrated.  Server-side implementation components:  • Server Side Integration: The transmission of the anonymized visual context to a centralized LLM/VLM, which successfully interprets the sanitized data and returns the response which may be processed data to be again ingested by local client or an UI action (e.g., 'click the submit button,' 'scroll down') that the local client executes. • Participants are free to use any offline deployable (open-source/open-weights) model on server side. During SIH they can use cloud hosted version of these. An end-to-end task assisting the user should be demonstrated.  Evaluation will be done on the following metrics:  1-Accuracy of visual context from screen â€“ 25% 2-Recall and precision for detection of sensitive/PII data â€“ 20% 3-Precision of redaction â€“ 20% 4-Client side resource utilization â€“ 20% 5-Overall end-to-end latency of the provided task -15% Organization Indian Space Research Organisation(ISRO) Department Department of Space / Indian Space Research Organisation Category Software Theme Smart Automation Youtube LinkDataset Link Any open-source data can be used. Use cases for evaluation will provided during finale."  Tasks: 1. Literature survey. --> Parallel 2. Outreach. --> Parallel 3. Problem definition. --> Sequential after 1 and 2 4. Benchmark definition. --> Parallel after 3 5. Guardrails test. --> Parallel after 3
+
+
+
+You can treat those five tasks as your project spine: use 1–2 for exploration and external input, then lock the problem in 3, and use 4–5 to turn the SIH metrics into concrete tests on your prototype.
+
+Overall task flow
+Task	When	Purpose
+Literature survey	Start immediately	Map existing work and tech stack options
+Outreach	Start immediately	Clarify constraints, gather domain input
+Problem definition	After 1 & 2	Fix scope, assumptions, core use-cases
+Benchmark definition	After 3 (parallel)	Turn SIH metrics into measurable tests
+Guardrails test	After 3 (parallel)	Prove privacy + safety concretely
+The dependencies you listed (3 after 1+2, 4 and 5 after 3) are exactly right: define the problem only after you’ve seen prior art and talked to people, then design benchmarks and guardrails around that definition.
+
+1. Literature survey
+Goal: understand how others solved similar problems in browser-based privacy-preserving vision and pick your baseline tech stack.
+
+Focus areas:
+
+Browser PII redaction & privacy tools:
+
+Academic: systems like PII Shield that perform local entity recognition and anonymization in the browser before sending prompts or files to an LLM, replacing names and institutions with placeholders while keeping original content only client-side.
+
+Extensions: ScreenMask, BlurIt, Cloak, etc., which use DOM observers + regex + overlays to auto-detect emails, phone numbers, credit cards, Aadhaar/PAN, then blur or mask them fully locally before screenshots or sharing.
+
+Browser ML stack for vision:
+
+WebGPU for accelerated compute; Transformers.js pipelines for image classification/object detection/segmentation with device: 'webgpu'.
+
+ONNX Runtime Web backends (WebGPU, WASM) and how they’re used to run generative and vision models directly in the browser.
+
+Output: a short survey doc (sections: “PII Redaction Approaches”, “Browser Vision & WebGPU”, “Design Patterns for Privacy‑First Agents”), plus a shortlist of candidate models and libraries you’ll evaluate.
+
+2. Outreach
+Goal: validate assumptions and discover practical constraints that won’t appear in papers.
+
+Who to talk to:
+
+Extension builders: authors/maintainers of tools like ScreenMask or similar local‑first redaction extensions (they’ve solved real-time masking across arbitrary pages and tuned regex + validation like Luhn).
+
+Research authors: contacts from PII Shield or related browser privacy papers; they can share failure modes and user acceptance issues in real deployments.
+
+Domain stakeholders: SIH organizers/ISRO mentors and possibly browser security/privacy engineers, to clarify acceptable trade-offs between privacy, UX, and latency for evaluation.
+
+Output: a notes file with key answers: “what breaks in practice?”, “what PII types really matter in Indian contexts?”, “what’s an acceptable latency budget for ‘assistive agent’?”, “what data is absolutely forbidden to leave the device?”.
+
+3. Problem definition
+Once you have 1 and 2, you can write a precise problem definition tailored to SIH26171.
+
+Anchor it on the official statement: a browser vision agent with a local ViT (or equivalent) that reads the screen, automatically redacts faces, passwords, and PII using DOM tags and vision, and only sends anonymised structure to a server‑side LLM/VLM that returns actions like “click submit” or “scroll down”.
+
+Concrete outputs:
+
+Scope document:
+
+Target browsers (Chrome, Firefox), minimum version and WebGPU/WASM assumptions.
+
+Supported PII types (emails, phones, cards, government IDs like Aadhaar/PAN) and visual elements (faces/avatars).
+
+Example tasks for the demo (e.g., “fill login form and submit”, “triage an email dashboard without seeing raw messages”), drawn from SIH use-case hints.
+
+Non-goals: what you deliberately won’t do (e.g., no full-document OCR, no keyboard logging).
+
+This document becomes the reference for judges and for you when you decide whether any future idea fits or not.
+
+4. Benchmark definition
+Now turn the SIH evaluation metrics into concrete benchmarks that you can implement and test against:
+
+Accuracy of visual context (25%):
+
+Define: fraction of relevant elements (buttons, form fields, labels) correctly represented in your “sanitized context” (JSON layout + optional redacted image).
+
+Build: a small labelled set of pages where you know ground truth layout and compare it to what your agent sends to the server.
+
+Recall & precision for PII detection (20%) and precision of redaction (20%):
+
+Use patterns from ScreenMask as inspiration: emails, phones, credit cards (with Luhn validation), Aadhaar, PAN.
+
+Build evaluation pages that contain controlled PII strings plus non‑PII decoys; compute TP/FP/FN on detection and verify that every detected item is fully masked in screenshots/DOM.
+
+Client-side resource utilization (20%):
+
+Decide metrics: max CPU %, memory footprint, GPU usage, and acceptable latency per frame or per “agent cycle”.
+
+Use WebGPU/WASM backends with small/quantized models as recommended by ONNX Runtime Web and Transformers.js docs, and log performance on typical laptops.
+
+End-to-end latency (15%):
+
+Define: time from “user requests help” → local analysis + redaction → server response → action applied.
+
+Instrument each stage and set target thresholds (e.g., <1–2 seconds for typical tasks).
+
+Output: a benchmark spec that you can hand to judges and use internally to decide when an approach is “good enough” or needs optimisation.
+
+5. Guardrails test
+Finally, design guardrail tests to prove that privacy and safety claims hold in edge cases.
+
+Inspired by PII Shield and local‑first extensions, define tests such as:
+
+No raw PII leaves the device: capture HTTP traces and prove that passwords, card numbers, Aadhaar/PAN, emails, and faces never appear in outbound payloads, only placeholders or masked structures.
+
+Redaction before network: verify ordering: DOM + vision redaction is completed before any network call; create tests where network calls are blocked until masking flags are set.
+
+Adversarial / unusual formats: inject PII in weird formats (spaces, hyphens, unicode digits) and see whether detection still works; document limitations explicitly.
+
+Fallback scenarios: check behaviour when WebGPU is unavailable (WASM only) or when detection fails; ensure the agent errs on the side of not sending context rather than leaking it.
+
+Output: a guardrails test plan with cases, expected outcomes, and how you’ll automate or semi‑automate them (e.g., unit tests + integration tests + manual checklist).
+
+If you want, next step I can help you turn this into a one-page “work plan” with dates and owners for your SIH team, or into an autoresearch research-state.yaml + initial findings.md structure that you can drop into your repo.
+describe the PS SOLUTION as a workflow for Zap in zappier
+
+
+
+Think of the PS solution as a single multi-step Zap that orchestrates your browser agent + server, with all privacy handled before the Zap trigger fires.
+
+Trigger: browser agent sends sanitized context
+App: Webhooks by Zapier or Zapier Chrome Extension.
+
+Trigger event:
+
+Either “Catch Hook” (webhook) where your browser extension posts a JSON payload containing sanitized screen context (layout, redaction metadata, optional redacted screenshot).
+
+Or “New push in Zapier Chrome Extension” that posts a webhook whenever the user clicks your agent’s button in the browser.
+
+Trigger payload fields (examples):
+
+task_type (e.g., "fill_form", "summarize_dashboard").
+
+screen_layout (elements, roles, bounding boxes).
+
+pii_redaction_status (true/false, counts, pass/fail).
+
+sanitized_image_url or base64 (redacted screenshot).
+
+This trigger only fires after local ViT + DOM redaction finished, so Zapier never sees raw PII or faces.
+
+Step 1: Guardrail filter (PII + quality)
+Step type: Filter by Zapier (“Only continue if…”).
+
+Conditions (examples):
+
+pii_redaction_status equals "ok".
+
+screen_layout.elements_count greater than 0.
+
+Optionally: task_type is in allowed set ("fill_form", "navigate", etc.).
+
+If the filter fails, the Zap stops and no server call is made, enforcing “redaction before network” at the workflow level.
+
+Step 2: Call server-side LLM/VLM
+Step type: Webhooks by Zapier → “POST” or “Custom request”.
+
+Request body:
+
+Pass task_type, screen_layout, and sanitized_image_url (if you use a VLM).
+
+Include any user instruction or agent state needed for planning.
+
+The server hosts your open‑weights LLM/VLM, interprets the sanitized context, and returns a planned action list, e.g.:
+
+json
+[
+  {"action": "click", "target_id": "submit_button"},
+  {"action": "type", "target_id": "email_input", "value": "MASKED_EMAIL"},
+  {"action": "scroll", "direction": "down"}
+]
+Zapier gets this JSON as the output of the webhook step.
+
+Step 3: Branching on response type (Paths)
+Step type: Paths by Zapier.
+
+Paths logic:
+
+Path A – UI actions: runs when response_type equals "ui_actions".
+
+Path B – Processed data: runs when response_type equals "summary" or "analysis".
+
+Each path can have its own follow-up actions:
+
+Path A: send actions back to the browser.
+
+Path B: log to Notion/Sheet, send email to user, etc.
+
+Paths let you implement “If response is actions, then do X; if response is data, then do Y” cleanly.
+
+Step 4A: Return UI actions to browser agent
+Step type: Webhooks by Zapier → POST to your agent backend or to a URL the extension polls.
+
+Payload: the planned action list and any metadata (confidence, explanations).
+
+Your browser extension then:
+
+Receives this payload.
+
+Maps target_id to DOM elements.
+
+Executes click, type, scroll using standard DOM events.
+
+From Zapier’s perspective, this is just “send JSON to an API”; your extension handles actual browser automation.
+
+Step 4B: Deliver processed data / assistance
+If the LLM/VLM response is a summary or analysis instead of UI actions:
+
+Action apps on this path (examples):
+
+Email: send a summary of the page to the user.
+
+Docs: store an anonymized report in Google Docs/Notion.
+
+Chat: push a message to Slack/Discord with recommendations.
+
+Zapier simply routes the sanitized, non‑PII output to wherever the user wants it, leveraging normal Zap “action” steps.
+
+Optional: Logging & observability steps
+You can add extra actions after Paths for:
+
+Metrics logging: append to Google Sheets / Airtable rows for latency, detection counts, and agent success.
+
+Alerts: if pii_redaction_status is "failed", create a separate Zap or path to log the incident and notify the team, while still dropping the main workflow.
+
+These are standard multi-step Zap patterns (trigger → filter → paths → actions) and give you a simple way to instrument the SIH metrics in production‑like conditions.
+
+In summary: the PS solution becomes a Zap that’s triggered by your local, privacy-preserving browser agent, gated by filters that ensure redaction succeeded, calls your server LLM/VLM via webhook, then uses paths and actions to either send back UI commands to the agent or deliver processed, anonymized insights to the user.
+this is what n8n replied, we're building it on n8n, what should our next steps be if this the workflow we created.
+
+Attachment
+image.jpg
+
+Attachment
+image-2.jpg
+
+
+
+Correct, Francis: drop n8n completely. The final solution should be a standalone, deployable local system: a browser extension plus a local agent runtime installed on the same workstation, or hosted inside an isolated/private ISRO network. No cloud endpoint, no hosted orchestration, and no external model inference.
+
+This is a stronger interpretation of the PS’s privacy objective: the screen stays local, the models stay local, and only the agent’s browser actions affect the target portal.
+
+Final system design
+text
+┌───────────────────────────────────────────────────────────────┐
+│ User workstation / ISRO private network                        │
+│                                                               │
+│  Chrome / Firefox                                             │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │ Privacy Vision Agent Extension                           │ │
+│  │                                                         │ │
+│  │  1. Read DOM, accessibility tree, visible controls      │ │
+│  │  2. Capture viewport                                    │ │
+│  │  3. Local PII + sensitive-region detection              │ │
+│  │  4. Local canvas masking / blur / semantic obfuscation  │ │
+│  │  5. Receive validated action plan                        │ │
+│  │  6. Execute allowed browser actions                     │ │
+│  └───────────────────┬─────────────────────────────────────┘ │
+│                      │ native messaging or loopback API       │
+│                      ▼                                        │
+│  ┌─────────────────────────────────────────────────────────┐ │
+│  │ Local Agent Runtime                                      │ │
+│  │                                                         │ │
+│  │  FastAPI / Node local daemon                             │ │
+│  │  Local open-weight LLM or VLM                            │ │
+│  │  Action planner + schema validator                       │ │
+│  │  Policy engine + audit logs                              │ │
+│  │  Local SQLite database                                   │ │
+│  └───────────────────┬─────────────────────────────────────┘ │
+│                      │                                       │
+│                      ▼                                       │
+│      Ollama / llama.cpp / local ONNX Runtime                 │
+│      Open-weight models stored locally                        │
+└───────────────────────────────────────────────────────────────┘
+For the strongest isolation posture, use Chrome Native Messaging rather than a public local HTTP port. Native Messaging lets an extension communicate with a registered native application through stdin/stdout with structured JSON; the extension invokes it from its service worker or extension page, not from the content script.
+
+For hackathon speed, use a loopback-only FastAPI service at 127.0.0.1:8000, then migrate to Native Messaging if you need a stronger security story. Ollama itself exposes its local API at http://localhost:11434/api, and its local endpoint does not require authentication by default—so do not bind it broadly to the network unless ISRO’s internal deployment team adds access control.
+
+Recommended deployment modes
+Mode	Use case	Components	Security posture
+Standalone laptop	Your SIH final demo	Extension + FastAPI + Ollama + local model files	Everything runs on localhost; Wi‑Fi can be disabled after initial setup
+ISRO workstation mode	Sensitive internal portal workflows	Extension + signed native host + local model runtime	No local TCP dependency; extension communicates only with a registered native app
+Private-network appliance	Team/shared deployment inside ISRO network	Internal server running open-weight model + internal API gateway	Nothing reaches the public internet; screen context remains inside ISRO-controlled network
+Air-gapped mode	Highest confidentiality	Extension + local runtime + preloaded model weights	Internet disabled; models and dependencies preinstalled
+Your best final hackathon story is: “Works air-gapped on a laptop, and can optionally be deployed within an ISRO private network without changing the privacy model.”
+
+Recommended implementation
+1. Browser extension: local perception and execution
+
+The extension does four jobs:
+
+Extract safe structural context from the DOM and accessibility attributes.
+
+Capture the viewport.
+
+Detect/redact PII and sensitive visual areas locally.
+
+Execute only validated, allowlisted actions returned by the local runtime.
+
+Use DOM extraction first because it is faster and more accurate for standard browser controls than forcing a vision model to understand every button, input, heading, and form field.
+
+text
+DOM / ARIA structure = primary source of UI meaning
+Local vision model   = visual fallback and face/region detection
+Redaction policy     = security gate before model reasoning
+Local LLM / VLM      = task planning
+Extension            = trusted execution layer
+2. Local vision engine
+
+Run a small ONNX model inside the extension’s offscreen document using WebGPU where available, with WebAssembly as fallback. ONNX Runtime Web supports both WebGPU and WASM/CPU execution; WebGPU is available in modern Chromium browsers, while Firefox compatibility is less uniform and requires validation on your exact target build.
+
+Use the model only for tasks where DOM inspection is insufficient:
+
+Detection target	Implementation	Need a vision model?
+Password inputs	input[type=password], autocomplete=current-password	No
+Email, phone, cards, PAN/Aadhaar-like IDs	Regex + validators + text-node bounding boxes	No
+API keys, tokens, internal URLs	Regex, keyword policy, high-entropy token heuristic	No
+Employee IDs / project codes	Configurable regex and DOM-label policy	No
+Faces and profile photos	Local face detector in ONNX	Yes
+Sensitive map/image regions	On-device segmentation/detection or user-defined region policy	Sometimes
+Canvas-only screens / remote desktops	Local OCR + vision detector	Yes
+Buttons, forms, labels on ordinary web pages	DOM/ARIA extraction	Usually no
+This hybrid design is more lightweight than trying to run a full visual browser agent model for every screen. It also directly improves the resource-utilization metric.
+
+3. Local reasoning engine
+
+Use a local FastAPI runtime that receives only the redacted context and produces a constrained UI action plan.
+
+text
+agent-runtime/
+├── app.py                 # localhost-only API
+├── planner.py             # local model prompt + response parsing
+├── policy.py              # privacy and action policy
+├── schema.py              # Pydantic action schema
+├── audit.py               # SQLite/JSON logs
+├── models/                # pre-downloaded model metadata
+└── logs/                  # local-only event logs
+The extension calls:
+
+text
+POST http://127.0.0.1:8000/v1/plan
+The runtime calls Ollama locally:
+
+text
+POST http://127.0.0.1:11434/api/chat
+Ollama documents its default local API endpoint as http://localhost:11434/api.
+
+Your local agent must return JSON only:
+
+json
+{
+  "status": "continue",
+  "actions": [
+    {
+      "action": "click",
+      "target_id": "el_12",
+      "confidence": 0.94
+    },
+    {
+      "action": "select",
+      "target_id": "el_27",
+      "option_label": "Latest Observation",
+      "confidence": 0.89
+    },
+    {
+      "action": "click",
+      "target_id": "el_31",
+      "confidence": 0.92
+    }
+  ]
+}
+The model must never be allowed to return:
+
+Arbitrary JavaScript.
+
+Browser DevTools instructions.
+
+Raw CSS selector strings that bypass your target map.
+
+Shell commands.
+
+Arbitrary URLs.
+
+Credentials or secret values.
+
+Direct filesystem access.
+
+Unreviewed submit, delete, upload, or external-send actions.
+
+Private ISRO network option
+If ISRO needs more capable models than an individual laptop can host, deploy the local agent runtime as an internal service inside a private network:
+
+text
+ISRO browser workstation
+       │
+       │ encrypted internal-network request only
+       ▼
+ISRO private inference server
+       │
+       ├── Open-weight VLM / LLM
+       ├── Policy enforcement proxy
+       ├── Organisation-managed audit store
+       └── No route to public internet
+This still satisfies the “no cloud” / “local deployment” intent if the inference server is controlled by ISRO and isolated from the public internet. However, phrase this carefully in your pitch:
+
+“The agent is deployable either entirely on-device for air-gapped use, or inside an organisation-controlled private network. No captured screen, DOM context, model prompt, or user data is sent to a public cloud service.”
+
+For the SIH prototype, demonstrate the on-device mode because it is easy to prove: disable Wi‑Fi and show the workflow still completes.
+
+Security guardrails
+Network policy
+
+Your extension should permit only loopback communication:
+
+json
+{
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ]
+}
+Do not include:
+
+json
+"<all_urls>"
+under host_permissions unless strictly needed for webpage content-script injection. If you need broad website access for the browser agent, distinguish between:
+
+content_scripts.matches: websites the extension can inspect.
+
+host_permissions: endpoints to which the extension can send network requests.
+
+The former can be broad; the latter should remain local-only.
+
+Fail-closed privacy
+
+text
+PII detector succeeds       → redact → local planner may receive sanitized context
+PII detector uncertain      → halt workflow → show user a warning
+Vision model unavailable    → use DOM-only redaction if policy permits
+No safe redaction possible  → do not capture/send the page to the planner
+Planner response malformed  → reject actions
+Action is high risk         → ask user for confirmation
+Action allowlist
+
+Action	Default policy
+Scroll	Automatic
+Read visible non-sensitive page structure	Automatic
+Click a safe navigation/filter control	Automatic
+Select a map layer / date / filter	Automatic
+Type into ordinary non-sensitive search field	Require user approval or local value reference
+Type credential / OTP / payment information	Never model-supplied; user must explicitly provide locally
+Submit a form	Confirmation required
+Download a file	Confirmation required
+Upload a file	Confirmation required
+Delete / send / publish / share	Confirmation required
+Navigate to a new domain	Confirmation required
+Best demo scenario
+Build a synthetic internal-style Earth Observation Operations Portal locally. Do not claim access to real ISRO systems or use real sensitive data.
+
+Task
+
+“Select the latest flood-risk layer for Bengaluru Sector 7 and generate a downloadable incident report.”
+
+Raw screen includes
+
+Dummy operator name and employee ID.
+
+Dummy project code.
+
+Fake protected coordinates.
+
+Simulated internal URL.
+
+Avatar/face photo.
+
+Dummy temporary token or password field.
+
+Map and flood-risk layer selector.
+
+Date selector.
+
+“Generate Report” button.
+
+Live judge-facing sequence
+
+Open the portal and show raw sensitive information.
+
+State the task in your extension popup.
+
+Display a Privacy Shield panel showing detected PII categories and redaction rectangles.
+
+Show the sanitized image and sanitized DOM context side-by-side.
+
+Show Local Mode: ON, Internet: OFF, and Inference endpoint: localhost only.
+
+Let the local agent plan the actions.
+
+Show the validated action JSON.
+
+Execute layer selection and report generation.
+
+Pause before download/submit and ask for user confirmation.
+
+Show a local audit record proving that the sanitized context never left the device.
+
+This directly demonstrates privacy, visual perception, autonomous task completion, controlled execution, and offline functionality.
+
+Immediate build plan
+Remove the n8n webhook dependency from the extension.
+
+Build a local FastAPI endpoint at 127.0.0.1:8000/v1/plan.
+
+Connect FastAPI to locally installed Ollama at 127.0.0.1:11434.
+
+Pre-download an open-weight instruct model before your offline demo.
+
+Build DOM extraction with stable target_id values and bounding boxes.
+
+Implement regex-based PII masking before adding heavy visual models.
+
+Add an ONNX face detector through an offscreen extension document and WebGPU/WASM fallback.
+
+Enforce localhost-only networking plus action-schema validation.
+
+Build the synthetic ISRO-style portal and scripted demo scenario.
+
+Test it with Wi‑Fi disabled and record latency, RAM, CPU/GPU, PII precision/recall, redaction precision, and task success rate.
+
+The strategic product statement should now be:
+
+A deployable, air-gapped browser agent that locally understands and sanitizes visual context, uses open-weight AI for private task planning, and executes verified browser workflows without relying on public cloud services.
+
+Pack all of this into one markdown file including a development plan and execution plan. Core goal is to get it done in two hours using grok build, Claude code, codex and antigravity.
+
+
+
+
+
+isro-local-privacy-browser-agent-two-hour-plan
+Document
+Francis, I created a complete implementation playbook that converts the idea into a two-hour, local-only SIH MVP—with the architecture, precise scope, development workflow, per-agent prompts, local security rules, demo portal design, test criteria, and a final judge-facing script.
+
+The plan deliberately avoids n8n and every cloud dependency. It prioritizes the critical path: synthetic ISRO portal → extension DOM/PII redaction → localhost FastAPI + local Ollama planner → validated browser actions → visible privacy proof. The optional ONNX/WebGPU face detector is explicitly deferred until the end-to-end DOM-first agent works.
+
+The Markdown file is available in the file panel: “ISRO Local Privacy Browser Agent Two-Hour Plan.”

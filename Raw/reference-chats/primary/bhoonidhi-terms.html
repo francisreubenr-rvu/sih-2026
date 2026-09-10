@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Register</title>
+        <link rel="icon" href="images/isroLogo.jpg" type="image/gif" sizes="16x16"> 
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <script src="js/jquery.min.js" type="text/javascript"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/bootbox.min.js" type="text/javascript" async></script>
+        <script src="js/resources.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="css/styles.css"/>
+        <link rel="stylesheet" href="css/bootstrap.min.css"/>
+        <link href="css/modal.css" rel="stylesheet" type="text/css" />
+        <script src="js/eula.js" type="text/javascript"></script>
+    </head>
+    <body style="overflow-x: hidden;overflow-y: scroll;">
+        <div align="center">    
+            <img class="img-responsive" style="padding:0px 0px 2px 0px;width:100%;border-bottom:1px solid #999;" src="https://bhoonidhi.nrsc.gov.in/bhoonidhi/images/header.png" alt="" />
+        </div> 
+        <nav class="navbar navbar-inverse">
+            <ul class="nav navbar-nav navbar-left">
+                <li class="nav-item" style="font-size: 10pt;"><a href="index.html">Bhoonidhi Browse & Order</a></li>
+            </ul>
+        </nav>
+        <form class="form-horizontal" id="reg_form" method="post" style="min-height: 650px;">
+            <fieldset>
+                <!-- Form Name -->
+                <div class="titleText" style="padding: 2em 0 1.5em 0;">Bhoonidhi Registration</div>
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <ul class="nav nav-tabs nav-justified ">
+                            <li class="active"><a data-toggle="pill" href="#pinfo">Personal Info</a></li>
+                            <li><a data-toggle="pill" href="#address">Address</a></li>
+                            <li><a data-toggle="pill" href="#contact">Contact Details</a></li>
+                            <li><a data-toggle="pill" href="#submit_reg">Submit Registration</a></li>
+                        </ul></div>
+                    <div class="col-md-3"></div>
+                </div>
+
+                <div class="tab-content" style="padding-top:1em;">
+                    <div id="pinfo" class="tab-pane fade in active">
+                        <!--<div style="text-align:center;font-size: 2em;"><b>Personal Info</b></div>-->
+                        <!-- Select Basic -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="salutation">Salutation <b>*</b></label>
+                            <div class="col-md-4">
+                                <select id="salutation" name="salutation" class="form-control">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Ms">Ms</option>
+                                    <option value="Dr">Dr</option>
+                                    <option value="Prof">Prof</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="fullname">Full name <b>*</b></label>  
+                            <div class="col-md-4">
+                                <input id="fullname" name="fullname" type="text" placeholder="full name" class="form-control input-md">
+                            </div>
+                        </div>
+
+                        <!-- Select Basic -->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="gender">Gender</label>
+                            <div class="col-md-4">
+                                <select id="gender" name="gender" class="form-control">
+                                    <option value="male">male</option>
+                                    <option value="female">female</option>
+                                    <option value="others">others</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="loginid">User ID<b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="loginid" name="loginid" type="text" placeholder="loginid" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="password">password <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="password" name="password" type="password" placeholder="password" class="form-control input-md" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="address" class="tab-pane fade">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="country">country <b>*</b> </label>
+                            <div class="col-md-4">
+                                <select id="country" name="country" class="form-control" onchange="country_change_handler();">
+                                    <option value="Afghanistan">Afghanistan</option>
+                                    <option value="Albania">Albania</option>
+                                    <option value="Algeria">Algeria</option>
+                                    <option value="Andorra">Andorra</option>
+                                    <option value="Angola">Angola</option>
+                                    <option value="Antigua and Deps">Antigua and Deps</option>
+                                    <option value="Argentina">Argentina</option>
+                                    <option value="Armenia">Armenia</option>
+                                    <option value="Australia">Australia</option>
+                                    <option value="Austria">Austria</option>
+                                    <option value="Azerbaijan">Azerbaijan</option>
+                                    <option value="Bahamas">Bahamas</option>
+                                    <option value="Bahrain">Bahrain</option>
+                                    <option value="Bangladesh">Bangladesh</option>
+                                    <option value="Barbados">Barbados</option>
+                                    <option value="Belarus">Belarus</option>
+                                    <option value="Belgium">Belgium</option>
+                                    <option value="Belize">Belize</option>
+                                    <option value="Benin">Benin</option>
+                                    <option value="Bhutan">Bhutan</option>
+                                    <option value="Bolivia">Bolivia</option>
+                                    <option value="Bosnia Herzegovina">Bosnia Herzegovina</option>
+                                    <option value="Botswana">Botswana</option>
+                                    <option value="Brazil">Brazil</option>
+                                    <option value="Brunei">Brunei</option>
+                                    <option value="Bulgaria">Bulgaria</option>
+                                    <option value="Burkina">Burkina</option>
+                                    <option value="Burundi">Burundi</option>
+                                    <option value="Cambodia">Cambodia</option>
+                                    <option value="Cameroon">Cameroon</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Cape Verde">Cape Verde</option>
+                                    <option value="Central African Rep">Central African Rep</option>
+                                    <option value="Chad">Chad</option>
+                                    <option value="Chile">Chile</option>
+                                    <option value="China">China</option>
+                                    <option value="Colombia">Colombia</option>
+                                    <option value="Comoros">Comoros</option>
+                                    <option value="Congo">Congo</option>
+                                    <option value="Democratic Republic of Congo">Democratic Republic of Congo</option>
+                                    <option value="Costa Rica">Costa Rica</option>
+                                    <option value="Croatia">Croatia</option>
+                                    <option value="Cuba">Cuba</option>
+                                    <option value="Cyprus">Cyprus</option>
+                                    <option value="Czech Republic">Czech Republic</option>
+                                    <option value="Denmark">Denmark</option>
+                                    <option value="Djibouti">Djibouti</option>
+                                    <option value="Dominica">Dominica</option>
+                                    <option value="Dominican Republic">Dominican Republic</option>
+                                    <option value="East Timor">East Timor</option>
+                                    <option value="Ecuador">Ecuador</option>
+                                    <option value="Egypt">Egypt</option>
+                                    <option value="El Salvador">El Salvador</option>
+                                    <option value="Equatorial Guinea">Equatorial Guinea</option>
+                                    <option value="Eritrea">Eritrea</option>
+                                    <option value="Estonia">Estonia</option>
+                                    <option value="Ethiopia">Ethiopia</option>
+                                    <option value="Fiji">Fiji</option>
+                                    <option value="Finland">Finland</option>
+                                    <option value="France">France</option>
+                                    <option value="Gabon">Gabon</option>
+                                    <option value="Gambia">Gambia</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Ghana">Ghana</option>
+                                    <option value="Greece">Greece</option>
+                                    <option value="Grenada">Grenada</option>
+                                    <option value="Guatemala">Guatemala</option>
+                                    <option value="Guinea">Guinea</option>
+                                    <option value="Guinea Bissau">Guinea Bissau</option>
+                                    <option value="Guyana">Guyana</option>
+                                    <option value="Haiti">Haiti</option>
+                                    <option value="Honduras">Honduras</option>
+                                    <option value="Hungary">Hungary</option>
+                                    <option value="Iceland">Iceland</option>
+                                    <option value="India">India</option>
+                                    <option value="Indonesia">Indonesia</option>
+                                    <option value="Iran">Iran</option>
+                                    <option value="Iraq">Iraq</option>
+                                    <option value="Ireland">Ireland</option>
+                                    <option value="Israel">Israel</option>
+                                    <option value="Italy">Italy</option>
+                                    <option value="Ivory Coast">Ivory Coast</option>
+                                    <option value="Jamaica">Jamaica</option>
+                                    <option value="Japan">Japan</option>
+                                    <option value="Jordan">Jordan</option>
+                                    <option value="Kazakhstan">Kazakhstan</option>
+                                    <option value="Kenya">Kenya</option>
+                                    <option value="Kiribati">Kiribati</option>
+                                    <option value="Korea North">Korea North</option>
+                                    <option value="Korea South">Korea South</option>
+                                    <option value="Kosovo">Kosovo</option>
+                                    <option value="Kuwait">Kuwait</option>
+                                    <option value="Kyrgyzstan">Kyrgyzstan</option>
+                                    <option value="Laos">Laos</option>
+                                    <option value="Latvia">Latvia</option>
+                                    <option value="Lebanon">Lebanon</option>
+                                    <option value="Lesotho">Lesotho</option>
+                                    <option value="Liberia">Liberia</option>
+                                    <option value="Libya">Libya</option>
+                                    <option value="Liechtenstein">Liechtenstein</option>
+                                    <option value="Lithuania">Lithuania</option>
+                                    <option value="Luxembourg">Luxembourg</option>
+                                    <option value="Macedonia">Macedonia</option>
+                                    <option value="Madagascar">Madagascar</option>
+                                    <option value="Malawi">Malawi</option>
+                                    <option value="Malaysia">Malaysia</option>
+                                    <option value="Maldives">Maldives</option>
+                                    <option value="Mali">Mali</option>
+                                    <option value="Malta">Malta</option>
+                                    <option value="Marshall Islands">Marshall Islands</option>
+                                    <option value="Mauritania">Mauritania</option>
+                                    <option value="Mauritius">Mauritius</option>
+                                    <option value="Mexico">Mexico</option>
+                                    <option value="Micronesia">Micronesia</option>
+                                    <option value="Moldova">Moldova</option>
+                                    <option value="Monaco">Monaco</option>
+                                    <option value="Mongolia">Mongolia</option>
+                                    <option value="Montenegro">Montenegro</option>
+                                    <option value="Morocco">Morocco</option>
+                                    <option value="Mozambique">Mozambique</option>
+                                    <option value="Myanmar">Myanmar</option>
+                                    <option value="Namibia">Namibia</option>
+                                    <option value="Nauru">Nauru</option>
+                                    <option value="Nepal">Nepal</option>
+                                    <option value="Netherlands">Netherlands</option>
+                                    <option value="New Zealand">New Zealand</option>
+                                    <option value="Nicaragua">Nicaragua</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Nigeria">Nigeria</option>
+                                    <option value="Norway">Norway</option>
+                                    <option value="Oman">Oman</option>
+                                    <option value="Pakistan">Pakistan</option>
+                                    <option value="Palau">Palau</option>
+                                    <option value="Panama">Panama</option>
+                                    <option value="Papua New Guinea">Papua New Guinea</option>
+                                    <option value="Paraguay">Paraguay</option>
+                                    <option value="Peru">Peru</option>
+                                    <option value="Philippines">Philippines</option>
+                                    <option value="Poland">Poland</option>
+                                    <option value="Portugal">Portugal</option>
+                                    <option value="Qatar">Qatar</option>
+                                    <option value="Romania">Romania</option>
+                                    <option value="Russian Federation">Russian Federation</option>
+                                    <option value="Rwanda">Rwanda</option>
+                                    <option value="St Kitts and Nevis">St Kitts and Nevis</option>
+                                    <option value="St Lucia">St Lucia</option>
+                                    <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
+                                    <option value="Samoa">Samoa</option>
+                                    <option value="San Marino">San Marino</option>
+                                    <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                                    <option value="Saudi Arabia">Saudi Arabia</option>
+                                    <option value="Senegal">Senegal</option>
+                                    <option value="Serbia">Serbia</option>
+                                    <option value="Seychelles">Seychelles</option>
+                                    <option value="Sierra Leone">Sierra Leone</option>
+                                    <option value="Singapore">Singapore</option>
+                                    <option value="Slovakia">Slovakia</option>
+                                    <option value="Slovenia">Slovenia</option>
+                                    <option value="Solomon Islands">Solomon Islands</option>
+                                    <option value="Somalia">Somalia</option>
+                                    <option value="South Africa">South Africa</option>
+                                    <option value="South Sudan">South Sudan</option>
+                                    <option value="Spain">Spain</option>
+                                    <option value="Sri Lanka">Sri Lanka</option>
+                                    <option value="Sudan">Sudan</option>
+                                    <option value="Suriname">Suriname</option>
+                                    <option value="Swaziland">Swaziland</option>
+                                    <option value="Sweden">Sweden</option>
+                                    <option value="Switzerland">Switzerland</option>
+                                    <option value="Syria">Syria</option>
+                                    <option value="Taiwan">Taiwan</option>
+                                    <option value="Tajikistan">Tajikistan</option>
+                                    <option value="Tanzania">Tanzania</option>
+                                    <option value="Thailand">Thailand</option>
+                                    <option value="Togo">Togo</option>
+                                    <option value="Tonga">Tonga</option>
+                                    <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                                    <option value="Tunisia">Tunisia</option>
+                                    <option value="Turkey">Turkey</option>
+                                    <option value="Turkmenistan">Turkmenistan</option>
+                                    <option value="Tuvalu">Tuvalu</option>
+                                    <option value="Uganda">Uganda</option>
+                                    <option value="Ukraine">Ukraine</option>
+                                    <option value="United Arab Emirates">United Arab Emirates</option>
+                                    <option value="United Kingdom">United Kingdom</option>
+                                    <option value="United States">United States</option>
+                                    <option value="Uruguay">Uruguay</option>
+                                    <option value="Uzbekistan">Uzbekistan</option>
+                                    <option value="Vanuatu">Vanuatu</option>
+                                    <option value="Vatican City">Vatican City</option>
+                                    <option value="Venezuela">Venezuela</option>
+                                    <option value="Vietnam">Vietnam</option>
+                                    <option value="Yemen">Yemen</option>
+                                    <option value="Zambia">Zambia</option>
+                                    <option value="Zimbabwe">Zimbabwe</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="usertypeDiv">
+                            <label class="col-md-4 control-label" for="usertype">User Type <b>*</b> </label>
+                            <div class="col-md-4">
+                                <select id="usertype" name="usertype" class="form-control" onchange="userType_change_handler();">
+                                    <option value="academic">Academic</option>
+                                    <option value="private">Private</option>
+                                    <option value="centralgovt">Central Government </option>
+                                    <option value="stategovt">State government</option>
+                                    <option value="dos">DOS</option>
+                                    <option value="nrsc">NRSC</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="org">Organization <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <select id="organization" name="org" class="form-control" onchange="org_change_handler();">
+                                </select>
+                                <input id="organizationtext" name="org" type="text" placeholder="Organization" class="form-control input-md" >
+                                <p id="GEformlink" style="margin:5px 0 0 0;float:right;"><a href="https://bhoonidhi.nrsc.gov.in//bhoonidhi_resources/help/docs/GE_NGE_Document_format.docx" target="_blank">Download Govt. Entity Declaration Form</a></p>
+                            </div>
+                        </div>
+                        <!--                        <div class="form-group">
+                                                    <label class="col-md-4 control-label" for="organization">Organization <b>*</b> </label>
+                                                    <div class="col-md-4">
+                                                        <select id="organization" name="organization" class="form-control"></select>
+                                                    </div>
+                                                </div>
+                        
+                                                <div class="form-group">
+                                                    <label class="col-md-4 control-label" for="organizationtext">Organization <b>*</b> </label>  
+                                                    <div class="col-md-4">
+                                                        <input id="organizationtext" name="organizationtext" type="text" placeholder="companyname" class="form-control input-md" >
+                                                    </div>
+                                                </div>-->
+
+                        <!--                        <div class="form-group">
+                                                    <label class="col-md-4 control-label" for="companyname">Company name ( FULL ) <b>*</b> </label>  
+                                                    <div class="col-md-4">
+                                                        <input id="companyname" name="companyname" type="text" placeholder="companyname" class="form-control input-md" >
+                                                    </div>
+                                                </div>
+                        
+                                                <div class="form-group">
+                                                    <label class="col-md-4 control-label" for="companyname_accronym">Company name (ACCRONYM) <b>*</b> </label>  
+                                                    <div class="col-md-4">
+                                                        <input id="companyname_accronym" name="companyname_accronym" type="text" placeholder="companyname accronym" class="form-control input-md" >
+                                                    </div>
+                                                </div>-->
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="department">Department</label>  
+                            <div class="col-md-4">
+                                <input id="department" name="department" type="text" placeholder="department" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="designation">Designation </label>  
+                            <div class="col-md-4">
+                                <input id="designation" name="designation" type="text" placeholder="designation" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="addressline1">Address Line (1) <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="addressline1" name="addressline1" type="text" placeholder="addressline1" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="addressline2">Address Line (2) </label>  
+                            <div class="col-md-4">
+                                <input id="addressline2" name="addressline2" type="text" placeholder="addressline2" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="state">State <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <select id="stateSelection" name="state" class="form-control">
+                                </select>
+                                <input id="stateTxtBox" name="state" type="text" placeholder="state" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="city"> City <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="city" name="city" type="text" placeholder="city" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="pincode"> pin code <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="pincode" name="pincode" type="number" placeholder="pincode" class="form-control input-md" >
+                            </div>
+                        </div>
+                    </div>
+                    <div id="contact" class="tab-pane fade">
+                        <!--<div style="text-align:center;font-size: 2em;"><b>Contact Details</b></div>-->
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="phone"> Phone <br/><span style="font-size:0.8em;">(Countrycode-std-Landline)</span> </label>  
+                            <div class="col-md-4">
+                                <input id="phone" name="phone"  placeholder="phone" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="addphone"> Additional Phone<br/> <span style="font-size:0.8em;">(Countrycode-std-Landline)</span> </label>  
+                            <div class="col-md-4">
+                                <input id="addphone" name="addphone"  placeholder="addphone" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="mobile"> Mobile Number <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="mobile" name="mobile" 
+                                       placeholder="mobile" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="email"> Email <b>*</b> </label>  
+                            <div class="col-md-4">
+                                <input id="email" name="email" type="text" placeholder="email" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="fax"> Fax  </label>  
+                            <div class="col-md-4">
+                                <input id="fax" name="fax" type="text" placeholder="fax" class="form-control input-md" >
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="submit_reg" class="tab-pane fade">
+                        <!--<div style="text-align:center;font-size: 2em;"><b>Submit the registration details</b></div>-->
+                        <div id="captcha_space"></div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="email"> Captcha text  </label>  
+                            <div class="col-md-4">
+                                <input id="captcha" name="captcha" type="text" placeholder="captcha text" class="form-control input-md" > 
+                                <p hidden id="captcha_id_hidden"></p>
+                            </div>
+                            <!--<button type="button" class="btn btn-primary" onclick="$('#acceptTermsModalOnReg').show();"> Submit </button>-->
+                            <button type="button" class="btn btn-primary" onclick="validateAndSubmit();"> Submit </button>
+                            <button type="button" class="btn btn-primary" onclick="javascript:Captcha()"><span class="glyphicon glyphicon-refresh"></span> Refresh Captcha</button>
+                        </div>
+                        <div class="row"><div class="col-md-4"></div><div class="col-md-4" id="response_space"></div><div class="col-md-4"></div></div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        <div id="acceptTermsModalOnReg" class="modalf" style="text-align:center;"  tabindex="-1" role="dialog">
+            <div class="modal-content" style="width:75%">
+                <div class="modalf-header" style="background: #fff;border-bottom: 1px solid #e1e1e1;">
+                    <h3 style="text-align: center;color: black;font-weight: 600;">
+                        <span style="float: right;">
+                            <button onclick="closeTnCOnRegModal();" class="btn btn-lg btn-link" style="font-size: x-large;">x</button>
+                        </span>
+                        END USER LICENCE AGREEMENT FOR USE OF REMOTE SENSING DATA FROM BHOONIDHI Portal, NRSC/ ISRO
+                    </h3>
+                </div>
+                <div class="modalf-body" style="background:transparent;overflow-y: scroll;height: 60vh;padding-top: 20px;">
+                    <eula-content></eula-content>
+                </div>
+                <div class="modalf-footer" style="background: #fff;border-top: 1px solid #e1e1e1;
+                     /*text-align: left;padding-left: 32px;*/
+                     ">
+                    <!--<label id="aoiLabel1" class="control-label col-sm-12" style="text-align: left;  color: rgb(51, 122, 183); font-size: medium; font-weight: bold;padding-left: 2px;">-->
+                    <label id="TnCcheckLabelOnReg" style="text-align: left;color: #2169a8; padding-top: 0; margin: 10px;">
+                        <input type="checkbox" name="TnCcheck" id="TnCcheckOnReg" style="vertical-align: top; margin: 0;"> &nbsp; I accept the Terms and Conditions.
+                    </label><br>
+                    <button type="button" class="btn btn-lg btn-primary" data-dismiss="modal" id="buttonTnCOnReg" onclick="processTnCOnReg();" >Proceed</button>
+                </div>
+            </div>
+        </div>
+
+        <!--        <footer>
+                    <nav class="navbar navbar-inverse">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myFooter">
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>                        
+                                </button>
+                                <a class="navbar-brand" href="#">
+                                    <label class="control-label" style="font-family: verdana;  font-size: 14px; padding-left: 10px;color:#d083f6; padding-right: 10px;padding-top: 4px;"  id="userLoginId">Browsers supported: Firefox 60+, Chrome 78+, Edge 18+, Opera 64+</label>
+                                </a>
+                            </div>
+                            <div class="collapse navbar-collapse" id="myFooter">
+                                <ul class="nav navbar-nav navbar-right" style="width: 600px;">
+                                    <li style="font-size: 10pt;" ><a onclick="callAboutUs();">About Us</a></li>
+                                    <li style="font-size: 10pt;" ><a href="htmls/Bhoonidhi-ISROOpenDataAccess-UserManual-V1.1.pdf" target="_blank">Help</a></li>
+                                    <li style="font-size: 10pt;" ><a href="htmls/help.html" target="_blank">Help</a></li>
+                                    <li style="font-size: 10pt;" ><a onclick="callTC();">Terms&Conditions</a></li>
+                                    <li style="font-size: 10pt;" ><a onclick="callDC();" >Disclaimer</a></li>
+                                    <li style="font-size: 10pt;" ><a href="htmls/FAQ2.html" target="_blank">FAQ</a></li>
+                                    <li style="font-size: 8pt;" ><a><span style="font-size: 10pt;" >&copy;</span> Bhoonidhi: ISRO/NRSC, 2020</a></li>
+                                </ul>
+                            </div>
+                        </div>      
+                    </nav>
+                </footer>-->
+
+        <script>
+            //console.log(" Initiating Registration JS");
+            var url = "/bhoonidhi/UserRegistration";
+            $(document).ready(function () {
+                $("#country").val("India").change();
+            });
+            function org_change_handler() {
+                var selOrg = $("#organization").val().trim();
+                if (selOrg === "Other") {
+                    $('#organizationtext').val('');
+                    $('#organizationtext').show();
+                    $('#GEformlink').show();
+                } else {
+                    $('#organizationtext').hide();
+                    $('#GEformlink').hide();
+                }
+            }
+
+            function userType_change_handler() {
+                var selUserType = $("#usertype").val().trim();
+                if (selUserType === "") {
+                    $('#organization').empty();
+                    $('#organizationtext').val('');
+                    $('#organization').css('display', 'none');
+                    $('#organizationtext').css('display', 'block');
+                    $('#GEformlink').hide();
+                    bhooinfo('User Type is empty , please check');
+                    return;
+                } else if (selUserType === "centralgovt" || selUserType === "stategovt" || selUserType === "dos" || selUserType === "nrsc") {
+                    // Organizations
+                    $('#organization').css('display', 'block');
+                    $('#organizationtext').css('display', 'none');
+                    $('#organizationtext').val('');
+                    $('#GEformlink').hide();
+                    $(document.body).css({'cursor': 'wait'});
+                    $('.leaflet-container').css('cursor', 'wait');
+                    var article = new Object();
+                    article.action = "GETORGANIZATIONLIST";
+                    //article.filter = selUserType;
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: JSON.stringify(article),
+                        contentType: 'application/json',
+                        mimeType: 'application/json',
+                        error: function (data, status, er) {
+                            bhoofailure("Error fetching organizations. Please try again : " + er);
+                        },
+                        success: function (data) {
+                            if (data.length === 0) {
+                                $('#organization').css('display', 'none');
+                                $('#organizationtext').css('display', 'block');
+                                $('#GEformlink').show();
+                                return;
+                            }
+                            $('#organization option').remove();
+                            for (var i = 0; i < data.length; ++i)
+                            {
+                                $('#organization').append('<option value="' + data[i] + '">' + data[i] + '</option>');
+                            }
+                            $('#organization').append('<option value="Other">Other</option>');
+                            org_change_handler();
+                            $(document.body).css({'cursor': 'default'});
+                            $('.leaflet-container').css('cursor', 'grab');
+                        }
+                    });
+                } else {
+                    // Organizations
+                    $('#organization').css('display', 'none');
+                    $('#organizationtext').val('');
+                    $('#organizationtext').css('display', 'block');
+                    $('#GEformlink').hide();
+                    return;
+                }
+            }
+
+            function country_change_handler() {
+                var selCountry = $("#country").val().trim();
+                if (selCountry === "") {
+                    $('#stateSelection').empty();
+                    $('#stateTxtBox').val('');
+                    $('#stateSelection').css('display', 'none');
+                    $('#stateTxtBox').css('display', 'block');
+                    bhooinfo('Country is empty , please check');
+                    return;
+                } else if (selCountry.toUpperCase() === "INDIA") {
+                    // user type
+                    //                    <option value="centralgovt">Central Government </option>
+                    //                    <option value="stategovt">State government</option>
+                    //                    <option value="dos">DOS</option>
+                    //                    <option value="nrsc">NRSC</option>
+                    $("#usertypeDiv").show();
+                    $('#usertype').empty();
+                    $('#usertype').append('<option value="centralgovt">Central Government</option>');
+                    $('#usertype').append('<option value="stategovt">State government</option>');
+                    $('#usertype').append('<option value="academic">Academic</option>');
+                    $('#usertype').append('<option value="private">Private</option>');
+                    $('#usertype').append('<option value="dos">DOS</option>');
+                    $('#usertype').append('<option value="nrsc">NRSC</option>');
+                    userType_change_handler();
+                    // State selection
+                    $('#stateSelection').css('display', 'block');
+                    $('#stateTxtBox').css('display', 'none');
+                    $('#stateTxtBox').val('');
+                    $(document.body).css({'cursor': 'wait'});
+                    $('.leaflet-container').css('cursor', 'wait');
+                    var article = new Object();
+                    article.action = "GETSTATELIST";
+                    article.filter = selCountry;
+                    $.ajax({
+                        url: "/bhoonidhi/GetLocations",
+                        type: 'POST',
+                        dataType: 'json',
+                        data: JSON.stringify(article),
+                        contentType: 'application/json',
+                        mimeType: 'application/json',
+                        error: function (data, status, er) {
+                            bhoofailure("Error fetching locations. Please try again : " + er);
+                        },
+                        success: function (data) {
+                            $('#stateSelection option').remove();
+                            for (var i = 0; i < data.Results.length; ++i)
+                            {
+                                if (data.Results[i].MSG !== "undefined") {
+                                    $('#stateSelection').append('<option value="' + data.Results[i].state + '">' + data.Results[i].state + '</option>');
+                                } else {
+                                    var msgs = data.Results[i].MSG;
+                                    bhoofailure(msgs);
+                                }
+                            }
+                            $(document.body).css({'cursor': 'default'});
+                            $('.leaflet-container').css('cursor', 'grab');
+                        }
+                    });
+                } else {
+                    // user type
+                    $("#usertype option").remove();
+                    $("#usertypeDiv").hide();
+                    // Organizations
+                    $('#organization').css('display', 'none');
+                    $('#organizationtext').val('');
+                    $('#organizationtext').css('display', 'block');
+                    $('#GEformlink').hide();
+                    // State selection
+                    $('#stateSelection').css('display', 'none');
+                    $('#stateTxtBox').css('display', 'block');
+                    return;
+                }
+            }
+
+            function Captcha() {
+                $.ajax({
+
+                    url: url,
+                    error: function () {
+                        //$('#info').html('<p>An error has occurred</p>');
+                        bhooinfo("Error occured while getting captcha");
+                    },
+                    //dataType: 'jsonp',
+                    success: function (data) {
+                        //data=JSON.parse(data);
+                        data = JSON.parse(data);
+                        console.log(data);
+                        if (data.hasOwnProperty("CaptchaID")) {
+                            var host = window.location.protocol + "//" + window.location.host;
+                            var ihtml = '<img class="img-responsive"  style="margin:auto;display:block;" src="' + host + '/imgarchive/CAPTCHA/' + data['CaptchaID'] + '.jpg" alt="captcha should come here" />';
+                            //var ihtml='<img class="img-responsive"  style="margin:auto;display:block;" src="/bhoonidhi_upgrade/images/'+data['CaptchaID']+'.jpg" alt="captcha should come here" /><br/><br/>';
+                            //bhooinfo("Count till 5 OK :) ");
+                            $("#captcha_space").html(ihtml);
+                            $("#captcha_id_hidden").html(data['CaptchaID']);
+                        } else {
+                            bhooinfo("Error occured while fetching captcha");
+                        }
+                    },
+                    type: 'GET'
+
+                });
+            }
+            Captcha();
+            function encodeObject(article) {
+                var keys = Object.keys(article);
+                for (var i = 0; i < keys.length; i++) {
+                    var val = article[keys[i]];
+                    article[keys[i]] = encodeURIComponent(val);
+                    //article[keys[i]] = "O'|a|'LI+TIRS";
+                    //bhooinfo(article[keys[i]]);
+                }
+                return article;
+            }
+
+            // Common email domains to check
+            const domains = [
+                'iitgn.ac.in', 'nio.org', 'iitr.ernet.in', 'msn.com', 'mietjammu.in', 'cgiar.org', 'iiti.ac.in', 'bitmesra.ac.in', 'student.nitw.ac.in',
+                'live.com', 'spab.ac.in', 'rmsi.com', 'cept.ac.in', 'mail.ru', 'sig.ac.in', 'srisriuniversity.edu.in', 'ymail.com', 'rediff.com', 'vsnl.net',
+                'btech.christuniversity.in', 'nitc.ac.in', 'ce.iitr.ac.in', 'iitk.ac.in', 'sify.com', 'yahoo.co.uk', 'vsnl.com', 'iitism.ac.in', 'yahoo.in',
+                'indiatimes.com', 'iitb.ac.in', 'outlook.com', 'sancharnet.in', 'iirs.gov.in', 'nic.in', 'gsi.gov.in', 'sac.isro.gov.in', 'gov.in',
+                'nrsc.gov.in', 'hotmail.com', 'yahoo.co.in', 'rediffmail.com', 'yahoo.com', 'gmail.com'
+            ];
+
+            /**
+             * Compute Levenshtein distance between two strings
+             * (number of single-character edits needed to match)
+             */
+            function levenshtein(a, b) {
+                const matrix = [];
+                for (let i = 0; i <= b.length; i++)
+                    matrix[i] = [i];
+                for (let j = 0; j <= a.length; j++)
+                    matrix[0][j] = j;
+                for (let i = 1; i <= b.length; i++) {
+                    for (let j = 1; j <= a.length; j++) {
+                        const cost = a[j - 1] === b[i - 1] ? 0 : 1;
+                        matrix[i][j] = Math.min(
+                                matrix[i - 1][j] + 1, // deletion
+                                matrix[i][j - 1] + 1, // insertion
+                                matrix[i - 1][j - 1] + cost // substitution
+                                );
+                    }
+                }
+                return matrix[b.length][a.length];
+            }
+
+            // max 2 instances of mismatch
+            function getFuzzyDomainMatch(inputDomain, threshold = 2) {
+                for (const domain of domains) {
+                    const distance = levenshtein(inputDomain, domain);
+                    if (distance <= threshold) {
+                        return {
+                            match: true,
+                            trustedDomain: domain,
+                            distance: distance
+                        };
+                    }
+                }
+                return {match: false};
+            }
+
+
+//     function loadValidDomains() {
+//                return fetch('js/emaildomains.json')
+//                        .then(resp => {
+//                            if (!resp.ok)
+//                                throw new Error('Failed to load domain list');
+//                            return resp.json();
+//                        })
+//                        .then(data => data.validEmailDomains) // Returns array of domains
+//                        .catch(err => {
+//                            console.error(err);
+//                            return []; // Return empty array on error
+//                        });
+//            }
+//
+//            // max 2 instances of mismatch
+//            function getFuzzyDomainMatch(inputDomain, threshold = 2) {
+//                loadValidDomains().then(validDomains => {
+//                    for (const domain of validDomains) {
+//                        const distance = levenshtein(inputDomain, domain);
+//                        console.log("domain / input :" + domain + ", " + distance);
+//                        if (distance <= threshold) {
+//                            return {
+//                                match: true,
+//                                trustedDomain: domain,
+//                                distance: distance
+//                            };
+//                        }
+//                    }
+//                });
+//                return {match: false};
+//            }
+
+            function validateAndSubmit() {
+                var validFields = validateFields();
+                if (validFields) {
+                    $('#acceptTermsModalOnReg').show();
+                }
+//                if (validFields) {
+//                    const [localPart, domainPart] = $("#email").val().trim().split('@');
+//                    var fuzzyDomain = getFuzzyDomainMatch(domainPart);
+//                    if (fuzzyDomain.match && (fuzzyDomain.distance > 0)) {
+//                        if (confirm("Email: Did you mean @" + fuzzyDomain.trustedDomain + " instead of @" + domainPart + "? Please check")) {
+//                            console.log("User clicked OK");
+//                        } else {
+//                            $('#acceptTermsModalOnReg').show();
+//                        }
+//                    } else {
+//                        $('#acceptTermsModalOnReg').show();
+//                    }
+//                }
+            }
+
+            function validateFields() {
+                if (($("#fullname").val() === null) || ($("#fullname").val() === "")) {
+                    bhooinfo('Full name is empty, please check');
+                    return false;
+                }
+
+                if (($("#loginid").val() === null) || ($("#loginid").val() === "")) {
+                    bhooinfo('User Id is empty, please check');
+                    return false;
+                }
+
+                if (($("#password").val() === null) || ($("#password").val() === "")) {
+                    bhooinfo('Password is empty, please check');
+                    return false;
+                } else {
+                    if (!/^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/.test($("#password").val())) {
+                        bhooinfo("Password length should be between 6 - 16 characters , must have one special char (one of !, @, #, $, %, ^) and one number");
+                        return false;
+                    }
+                }
+
+                if ((($("#organization").val() === null) || ($("#organization").val() === "Other")) && $("#organizationtext").val() === "") {
+                    bhooinfo('Organization cannot be empty (please specify \'Individual\' if not belonging to any organization)');
+                    return false;
+                } else {
+                    var org = "";
+                    if ($("#organization").val() === "Other" || $("#organizationtext").val() !== "") {
+                        org = $("#organizationtext").val().trim();
+                    } else {
+                        org = $("#organization").val().trim();
+                    }
+                    if (!/^[A-Za-z0-9& ,()]+$/.test(org)) {
+                        bhooinfo("Please remove special characters (if any) from Organization name.");
+                        return false;
+                    }
+                }
+
+                if (($("#addressline1").val() === null) || ($("#addressline1").val() === "")) {
+                    bhooinfo('Address Line 1 is empty, please check');
+                    return false;
+                }
+
+                if ($("#country").val().toUpperCase() !== "INDIA") {
+                    if (($("#stateTxtBox").val() === null) || ($("#stateTxtBox").val() === "")) {
+                        bhooinfo('State is empty, please check');
+                        return false;
+                    }
+                }
+
+                if (($("#city").val() === null) || ($("#city").val() === "")) {
+                    bhooinfo('City is empty, please check');
+                    return false;
+                }
+
+                var pc = $("#pincode").val();
+                pc = pc.split("-").join("").trim();
+                pc = pc.replace(" ", "").trim();
+                var regex = /^\d{3,10}$/;
+                if ((pc === null) || (pc === "")) {
+                    bhooinfo('Pincode is empty, please check');
+                    return false;
+                } else {
+                    if ($("#country").val().toUpperCase() === "INDIA") {
+                        regex = /^\d{6}$/;
+                    } else {
+                        regex = /^\d{3,10}$/;
+                    }
+                    if (!regex.test(pc)) {
+                        alert("Invalid pincode! Please enter a pincode.");
+                        return false;
+                    }
+                }
+
+                if (($("#phone").val() !== null) && ($("#phone").val() !== "")) {
+                    if (!/^[0-9-]+$/.test($("#phone").val())) {
+                        bhooinfo("Invalid field : 'Phone'. Please enter a valid number.");
+                        return false;
+                    }
+                }
+
+                if ($("#addphone").val() !== '' && !/^[0-9-]+$/.test($("#addphone").val())) {
+                    bhooinfo("Invalid field: 'Additional Phone'. Please enter a valid number.");
+                    return false;
+                }
+
+                if (($("#mobile").val() === null) || ($("#mobile").val() === "")) {
+                    bhooinfo('Mobile is empty, please check');
+                    return false;
+                } else {
+                    var val = $("#mobile").val();
+                    if ($("#country").val().toUpperCase() === "INDIA") {
+                        if (val !== '' && (!/^[+]?[0-9]+$/.test(val) || val.length !== 10)) {
+                            bhooinfo("Invalid field : 'Mobile Number'. Please enter a valid mobile number.");
+                            return false;
+                        }
+                    } else if (val !== '' && (!/^[+]?[0-9]+$/.test(val) || !(val.length >= 10 && val.length <= 16))) {
+                        bhooinfo("Invalid field : 'Mobile Number'. Please enter a valid mobile number.");
+                        return false;
+                    }
+                }
+
+                if (($("#email").val() === null) || ($("#email").val() === "")) {
+                    bhooinfo('Email is empty, please check');
+                    return false;
+                } else {
+                    if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test($("#email").val())) {
+                        bhooinfo("You have entered an invalid email address!");
+                        return false;
+                    }
+                    const [localPart, domainPart] = $("#email").val().trim().split('@');
+                    if (!domains.includes(domainPart)) {
+                        var fuzzyDomain = getFuzzyDomainMatch(domainPart);
+                        if (fuzzyDomain.match && (fuzzyDomain.distance > 0)) {
+                            if (confirm("Email: Did you mean @" + fuzzyDomain.trustedDomain + " instead of @" + domainPart + "? Click Ok to update to @" + fuzzyDomain.trustedDomain + "; click Cancel to keep @" + domainPart)) {
+                                var str = $("#email").val().trim().replace(domainPart, fuzzyDomain.trustedDomain);
+                                $("#email").val(str);
+                            }
+                        }
+                    }
+                }
+
+                if (($("#captcha").val() === null) || ($("#captcha").val() === "")) {
+                    bhooinfo('Captcha is empty, please check');
+                    return false;
+                }
+
+                if (($("#country").val().trim() === "INDIA") && ($("#usertype").val() === null)) {
+                    bhooinfo('Please select your user category');
+                    return false;
+                }
+
+//                var can_empty = ['addphone', 'designation', 'department', 'fax', 'addressline2'];
+//                for (var key in values)
+//                {
+//                    if (values[key] === '' && !can_empty.includes(key))
+//                    {
+//                        if (key === 'usertype' && values['country'].toUpperCase() !== "INDIA") { //usertype can be empty for foreign users.
+//                            continue;
+//                        }
+//                        closeTnCOnRegModal();
+//                        bhooinfo(key + ' is empty, please check');
+//                        return;
+//                    }
+//                }
+                return true;
+            }
+
+            function processTnCOnReg() {
+                if ($("#TnCcheckOnReg").prop("checked")) {
+                    SubmitRegistration();
+                } else {
+                    $("#TnCcheckLabelOnReg").css("color", "red");
+                }
+            }
+
+            function closeTnCOnRegModal() {
+                $("#acceptTermsModalOnReg").hide();
+            }
+
+            var threshold = 2;
+            function SubmitRegistration() {
+
+                console.log("Submit the data right now yo");
+                var values = {};
+                values['salutation'] = $("#salutation").val().trim();
+                values['fullname'] = $("#fullname").val().trim();
+                values['loginid'] = $("#loginid").val().trim();
+                values['password'] = $("#password").val().trim();
+                values['gender'] = $("#gender").val().trim();
+                if ($("#usertype").val() !== null)
+                    values['usertype'] = $("#usertype").val().trim();
+                else
+                    values['usertype'] = "";
+                if ($("#organization").val() === "Other" || $("#organizationtext").val() !== "") {
+                    values['organization'] = $("#organizationtext").val().trim();
+                } else {
+                    values['organization'] = $("#organization").val().trim();
+                }
+
+                values['designation'] = $("#designation").val().trim();
+                values['department'] = $("#department").val().trim();
+                values['addressline1'] = $("#addressline1").val().trim();
+                values['addressline2'] = $("#addressline2").val().trim();
+                values['country'] = $("#country").val().trim();
+                if (values['country'].toUpperCase() === "INDIA") {
+                    values['state'] = $("#stateSelection").val().trim();
+                } else {
+                    values['state'] = $("#stateTxtBox").val().trim();
+                    if (values['country'].toUpperCase() === "NEPAL") {
+                        values['usertype'] = "07";
+                    } else {
+                        values['usertype'] = "09";
+                    }
+                }
+
+                values['city'] = $("#city").val().trim();
+                if (($("#phone").val() !== null) && ($("#phone").val().trim() !== "")) {
+                    values['phone'] = $("#phone").val().trim();
+                } else {
+                    values['phone'] = "99";
+                }
+
+                values['addphone'] = $("#addphone").val().trim();
+                values['mobile'] = $("#mobile").val().trim();
+                values['email'] = $("#email").val().trim();
+                values['captcha'] = $("#captcha").val().trim();
+                values['pincode'] = $("#pincode").val().trim();
+                values['fax'] = $("#fax").val().trim();
+                values['captcha_id'] = $("#captcha_id_hidden").html();
+                if ($("#TnCcheckOnReg").prop("checked"))
+                    values['termsAccepted'] = 'Y';
+                else
+                    values['termsAccepted'] = 'N';
+                console.log(values);
+                closeTnCOnRegModal();
+                $(document.body).css({'cursor': 'wait'});
+                values['action'] = "REGISTER";
+                values = encodeObject(values);
+                $("#response_space").html('<div class="alert alert-info" >Registering user...</div>');
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    data: JSON.stringify(values),
+                    contentType: 'application/json',
+                    mimeType: 'application/json',
+                    type: 'POST',
+                    //dataType: 'jsonp',
+                    error: function () {
+                        //$('#info').html('<p>An error has occurred</p>');
+                        $(document.body).css({'cursor': 'default'});
+                        closeTnCOnRegModal();
+                        bhooinfo("Error occured while Performing registration");
+                    },
+                    success: function (data) {
+                        $(document.body).css({'cursor': 'default'});
+                        //console.log(data);
+                        if (data.hasOwnProperty("message")) {
+                            $("#response_space").html('<div class="alert alert-info" >' + data['message'] + '</div>');
+                            if (data['message'].includes("The User Registration Details have been Recorded ")) {
+                                //bhooinfo("Page will be refreshed shortly");
+                                closeTnCOnRegModal();
+                                bhooinfo("The User Registration Details have been Recorded. For sign in please click the link sent to your mail. Please check the spam/junk folders to ensure it is not missed.");
+                                window.location.reload(1);
+                            } else {
+                                closeTnCOnRegModal();
+                                bhooinfo(data['message']);
+                            }
+                        } else {
+                            closeTnCOnRegModal();
+                            bhooinfo("Error occured while fetching captcha");
+                        }
+                        Captcha();
+                    }
+                });
+            }
+
+
+
+
+        </script>
+
+    </body>
+</html>

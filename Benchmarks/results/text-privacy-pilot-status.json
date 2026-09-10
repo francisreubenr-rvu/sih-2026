@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-09-10T11:23:15.772184+00:00",
+  "scope": "local OCR/PII preview, authored English synthetic development pilot",
+  "build": "pass",
+  "automated_tests": {
+    "passed": 48,
+    "failed": 0,
+    "report": "Benchmarks/results/text-privacy-unit-tests-2026-09-10.txt",
+    "limitation": "Includes six text helper/scorer tests; does not execute OCR or NER browser inference"
+  },
+  "browser_evaluation": {
+    "status": "blocked",
+    "url": "http://127.0.0.1:9041/app/text-preview.html",
+    "error": "net::ERR_BLOCKED_BY_CLIENT",
+    "cases_completed": 0,
+    "accuracy": null,
+    "latency_ms": null,
+    "visual_qa": null
+  },
+  "native_extension": "not integrated or tested",
+  "outbound_boundary": "unchanged; free OCR text and screenshots are not accepted by the model request schema",
+  "node_version": "v26.7.0",
+  "artifacts": {
+    "Prototype/shared/local-text-engine.mjs": "112e23d4543f2fac956171f4051343773d7207616721bb901d7d6a7c0cda7de0",
+    "Prototype/shared/text-privacy.mjs": "9cc3df1325fb681aadf3ed80f4fda67be5d5c7b09eed3cfadb878789096c170b",
+    "Prototype/app/text-preview.mjs": "96b266c8029c0d066ab64ea51bc3d7350cb0097aed5a52bb7577890655388458",
+    "Prototype/app/text-fixtures.mjs": "7bb798add336ccb2c0d876d12f365ce4389b8027a37810b807cfcff8e5096e6f",
+    "Prototype/tests/text-privacy.test.mjs": "508f8777ef3931c6c3366e6cc7acd36534b317ddb224c3007d51a0a15ba4563b",
+    "Prototype/package-lock.json": "9704cad4aca39f9a5ee072926b117460cd2434ed16e2487ac4f065f31b6c81e1",
+    "Benchmarks/results/text-privacy-unit-tests-2026-09-10.txt": "9ed23f8465ef7c15991898f82c2a13aee165dfd73feb89cb94ae4ec670fade44"
+  }
+}

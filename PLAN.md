@@ -68,3 +68,16 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Added an experimental local vision worker and measured it against the same frozen slice. It is not adopted as the workspace default: first comparison reduces main-thread long tasks but regresses detection p95. Repeated measurements retained separately.
 - Current verification: 42 automated prototype tests and 7 scorer tests pass. Official metric ledger records partial diagnostics and keeps weighted score null.
 - Next substantial work: recover useful privacy-filtered context for raster/unknown interfaces, broader PII and native-DOM task evaluation, full resources and task latency. Human/native-extension gates remain open.
+
+## Reference intake — 10 September 2026
+
+- Grok alternate-project and Perplexity reference links recorded in `Raw/reference-chats/intake-2026-09-10.json`; both retrieval attempts were blocked by the web tool. No transcript or claims have been assessed. See `Wiki/reference-chat-review.md`.
+- Transcript text or an export is needed for this reference review. The Sightline implementation and its existing validation gaps remain unchanged by these unread sources.
+
+## Reference and text-privacy checkpoint — 10 September 2026
+
+- Previous goal turn made concrete reference-intake progress; shared links remained unread until Francis supplied both transcripts. Exact attachments now archived with hashes; major architecture/security/domain claims reviewed against primary sources. The original URL failures remain in provenance.
+- Keep the existing client/server split. Neither mandatory cloud hosting nor mandatory local-only inference follows from the supplied statement. CAPED extends the prior-art comparison; Bhoonidhi API documentation corrects the assumption that catalogue retrieval lacks an automation route.
+- Added separate local OCR/PII preview, synthetic diagnostic fixtures and six unit checks. Pinned Tesseract/tokenizer/model assets and build support. Build plus 48 automated tests pass; this is not OCR accuracy evidence.
+- Real preview navigation returned `net::ERR_BLOCKED_BY_CLIENT`. No alternate browser/URL workaround attempted. Browser OCR/NER results remain unmeasured; native extension also remains unverified.
+- Next implementation contracts are in `Docs/decisions/reference-informed-plan.md`: raster utility/privacy, bounded observe/act/verify loop, local value references, and synthetic domain scenario. Source transcript instructions do not alter the current task or authorize external actions.

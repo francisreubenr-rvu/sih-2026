@@ -46,3 +46,11 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [ ] Raster-only input loses all original visual context. The external 100-screen slice produces zero usable controls and zero localized PII detections; full-image masking does not satisfy useful selective redaction.
 - [ ] Worker adapter reduces observed main-thread blocking but first-run detection p95 worsens. Keep it experimental until repeated measurements justify a default change.
 - [x] Scorer overlap/matching rules tested; failed attempts remain in the declared denominator.
+
+## Round 5 — local text experiment and reference review
+
+- [x] Token-window parameters could produce a non-advancing loop. Reject invalid sizes/overlap; alignment and rejection tests pass.
+- [x] OCR build used a nonexistent `LICENSE` filename. Corrected to the installed `LICENSE.md` and rebuilt successfully.
+- [ ] OCR/NER preview has no real-browser measurement yet: local page navigation was blocked. Do not describe it as a validated privacy filter or integrate free OCR text into outbound context.
+- [ ] Current reviewed one-action workflow needs a bounded goal loop with observed task postconditions before claiming autonomous goal completion. Do not inherit VEIL's claims or fuzzy retargeting behavior from the transcript.
+- [ ] Transcript score and ISRO operational claims require original code/evidence or domain validation. Separate hypothesized use cases from verified capabilities.

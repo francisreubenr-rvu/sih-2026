@@ -1,0 +1,60 @@
+
+> sightline-sih26171@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ fresh confirmed target executes once, with a unique revision per capture (6.561333ms)
+✔ unconfirmed and unknown actions never click (0.339083ms)
+✔ open shadow roots are observed and queued mutations revoke prior snapshots (0.346208ms)
+✔ attaching a shadow root without a mutation record revokes a snapshot (0.234417ms)
+✔ shadow-root targets resolve the actual inner hit, and reject inner overlays (0.368167ms)
+✔ nested shadow content within an approved control is a valid composed hit (0.160958ms)
+✔ label, role and size changes reject even without an observer record (0.538083ms)
+✔ clipped controls compare original bounds rather than clipped coordinates (0.156333ms)
+✔ disabled fieldsets, inert parents and hidden targets cannot authorize clicks (0.420375ms)
+✔ outer overlays, links and form submission require manual handling (0.603708ms)
+✔ a failed capture revokes earlier exported scene and disposal revokes all use (2.188167ms)
+✔ arbitrary text and closed-shadow secrets never enter the scene (0.237833ms)
+✔ invalid rectangle padding or dimensions cannot become exportable geometry (0.097917ms)
+✔ outbound schema refuses raw screenshots, DOM, URLs and arbitrary tasks (4.278417ms)
+✔ scene reconstruction drops untrusted object fields and rejects arbitrary labels (0.202542ms)
+✔ out of bounds, duplicate IDs and nonfinite coordinates are rejected (0.519708ms)
+✔ clipping handles negative edges, padding and offscreen pixels (0.518333ms)
+✔ arbitrary JS, unknown targets, payload fields and typing are rejected (0.588084ms)
+✔ rendered wireframe contains allowed semantics but no arbitrary source content (0.301834ms)
+✔ PII detector identifies email and numeric IDs while export remains independent (0.519042ms)
+✔ provider proposal retains only the permitted action fields (0.956416ms)
+✔ contradictory, unknown, missing and extra provider fields cannot authorize an action (0.313292ms)
+✔ requires authorization and exact allowed origin (29.474417ms)
+✔ rejects malformed, oversized and extra-field requests before provider (13.290417ms)
+✔ valid plan contains matching revision and audit stores no scene or PII (4.198209ms)
+✔ unsafe provider target is rejected without persistence (3.630708ms)
+✔ provider outage gives actionable error without stack or endpoint leakage (3.1045ms)
+✔ request rate cap returns 429 and retry-after (16.528625ms)
+✔ static server never exposes server source, pairing tokens or tests (4.186375ms)
+✔ real provider adapter submits only validated semantics and checks JSON (0.960292ms)
+✔ serves the real app entry and fixture (3.260709ms)
+✔ no-control scenes omit an impossible empty click enum (0.152542ms)
+✔ reject invalid token windows instead of hanging or silently dropping input (0.828375ms)
+✔ overlap preserves word alignment across subword and window boundaries (1.191666ms)
+✔ invalid OCR geometry fails closed before any preview is built (0.233334ms)
+✔ subword PII evidence marks its word and malformed inference is rejected (0.246375ms)
+✔ local policy combines model labels with deterministic numeric and email rules (0.584916ms)
+✔ diagnostic counts omitted OCR as a miss, and retained PII as a leak (0.371667ms)
+✔ worker wrapper serializes detection and returns the actual worker response (1.158292ms)
+✔ disposing active worker rejects pending work and prevents reuse (0.18725ms)
+✔ worker failure releases pending request and bitmap (1.060042ms)
+✔ RGB preprocessing follows upstream channel order and normalization (1.765459ms)
+✔ face decoding thresholds, clips and suppresses duplicate boxes (0.267458ms)
+✔ invalid shapes, scores and box coordinates fail instead of reporting safe output (0.375166ms)
+✔ input/output tensors and owned bitmaps are released after every inference outcome (15.371458ms)
+✔ caller-owned bitmaps stay open and disposal is idempotent (2.611667ms)
+✔ overlapping inference rejects and session disposal waits for active inference (2.560417ms)
+✔ canvas initialization failure releases the already-created session (1.411666ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 48
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 194.167042

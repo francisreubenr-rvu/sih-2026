@@ -17,3 +17,7 @@ Reviewed 9 September 2026. These are technical comparators, not all SIH competit
 The current design makes an explicit trade-off: unknown text and images become opaque regions. This improves control over outgoing content but sacrifices visual context and redaction precision. A competitive entry needs measurements and a demonstration of that trade-off, not a novelty adjective.
 
 Source author/title/date metadata are retained in archived primary papers and `Raw/domain/archive-manifest.json`. Peer-review status is not inferred from a search service; cited arXiv records are treated as preprints unless independently established otherwise.
+
+## Reference update — 10 September 2026
+
+[CAPED](https://arxiv.org/abs/2606.12666) adds task-aware pre-upload minimization to the comparison. Its mobile implementation and prototype context-policy limitations reinforce the need for both utility and privacy measurements. Task-aware minimization is prior art, not a new Sightline claim. The supplied VEIL/DRISHTI chat reports are not audited competitor measurements. Detailed decisions and source provenance: [reference review](reference-chat-review.md).

@@ -1,0 +1,987 @@
+https://arxiv.org/pdf/2606.12666
+https://arxiv.org/pdf/2602.10139
+https://arxiv.org/pdf/2603.17357
+You should build a browser extension that combines DOM-based PII detection with a lightweight WebGPU‑accelerated vision model (via Transformers.js or ONNX Runtime Web) to sanitize the screen locally, then send only a structured, anonymized representation to a server‑side LLM/VLM that returns actions for the agent to execute. This fits perfectly with an autoresearch workflow: use the autoresearch skill to iterate on model choice, redaction strategies, and latency/accuracy trade‑offs in a disciplined two‑loop research process.[chromewebstore.google][huggingface][huggingface][chromewebstore.google][onnxruntime]
+Problem recap
+The SIH problem asks for a privacy-preserving visual browser agent: local on-device vision model reads the screen, automatically detects and redacts sensitive/PII elements, and only then sends sanitized context to a server which produces UI actions or processed data.[onnxruntime]
+Modern browser tooling makes this feasible: WebGPU and WebAssembly now allow running ML models client-side, and libraries like ONNX Runtime Web and Transformers.js expose simple JS APIs for computer vision tasks such as image classification and object detection directly in the browser.[huggingface][huggingface][huggingface][onnxruntime]
+High-level architecture
+Design the system as a browser extension + server with a well-defined contract for “sanitized context”:
+
+Browser side (extension):
+  * Content script + background/service worker.
+  * Local vision pipeline using WebGPU/WebAssembly.
+  * DOM + regex PII detection + CSS/canvas masking.
+  * Sanitized context encoder (JSON / low-res image / feature map).
+Server side:
+  * LLM/VLM endpoint that consumes sanitized context.
+  * Planner that outputs UI actions (click, type, scroll) or structured assistance.
+Existing extensions such as ScreenMask and BlurIt already show that fully local PII detection and masking is viable and practical in real-time extensions, using DOM observers and pattern matching combined with on-page blurs or redaction before screenshots or sharing.[chromewebstore.google][microsoftedge.microsoft][chromewebstore.google]
+Client-side vision stack
+Use Transformers.js or ONNX Runtime Web to run a compact CV model with WebGPU acceleration, falling back to WASM if GPU is unavailable.[huggingface][huggingface][onnxruntime]
+Transformers.js supports image classification, object detection, and segmentation tasks out-of-the-box, and can load ONNX models for browser inference.[huggingface][huggingface][techcommunity.microsoft]
+ONNX Runtime Web provides onnxruntime-web with device options webgpu, webgl, wasm, and webnn, so you can target GPU or CPU depending on the user’s hardware, which is critical for the “client side resource utilization” evaluation metric.[onnxruntime]
+For your use case:
+Face & avatar detection: small face detection/segmentation model on ONNX, run via ONNX Runtime Web with deviceType: 'webgpu' when available.[linkedin][onnxruntime]
+Screen region understanding: lightweight object detection (buttons, form fields, panels) or vision-language model (e.g., Florence-2 in ONNX) via Transformers.js v3 with WebGPU.[scrimba]
+There are live demos of running image classification models like MobileNetV4 and Florence‑2 directly on WebGPU using Transformers.js pipelines, indicating that your architecture is realistic for current browsers.[huggingface][scrimba]
+Privacy-preserving PII redaction
+For PII detection and redaction, combine DOM-level semantics with vision-level bounding boxes:
+Existing tools like ScreenMask and BlurIt detect emails, phone numbers, credit cards, IDs, and other PII using regex + DOM observers and then blur or replace them before screenshots or screen sharing.[microsoftedge.microsoft][chromewebstore.google][chromewebstore.google]
+Extensions such as Cloak and Redact & Snap show auto-redaction workflows that blur or black out sensitive fields in screenshots and web pages entirely locally without sending data to servers, aligning perfectly with your privacy requirement.[chromewebstore.google][chromewebstore.google][chromewebstore.google]
+Concretely on the client:
+DOM-based filters:
+  * Identify input[type=password], fields with autocomplete hints (email, name, phone), credit card patterns, and IDs using regex similar to ScreenMask’s pattern-matching approach.[chromewebstore.google][microsoftedge.microsoft]
+  * Apply CSS masks (blur, pixelate, overlay rectangles), or replace text content with asterisks before rendering a screenshot or serializing context.
+Vision-based filters:
+  * Capture the viewport via tabs.captureVisibleTab or draw into an offscreen canvas.
+  * Run vision model; get bounding boxes for faces, avatars, or sensitive widgets.
+  * Paint over those regions (black boxes, heavy blur) in the canvas before encoding to PNG/WebP and sending to the server.
+Your “sanitized context” payload can then be:
+A redacted screenshot (faces and PII masked), plus metadata about element roles (button, input, etc.).
+Or a structured JSON with layout (bounding boxes, element types, partial masked text), which minimises visual content while still giving the server enough state to reason and plan.
+Server-side reasoning and actions
+On the server, you can use any open-weights LLM/VLM running in the cloud during SIH, as long as it only sees anonymized data.[onnxruntime]
+Design the server with:
+Input schema:
+  * Sanitized screenshot (optional).
+  * Structured layout: list of elements with roles, positions, redaction flags, and masked text snippets.
+Reasoning engine:
+  * VLM (if using images) to interpret layout and visual cues.
+  * LLM to read the structured layout and task description (“fill this form”, “navigate to X”, etc.), and produce a sequence of high-level UI actions.
+The server returns actions like click(element_id), type(element_id, "value"), or scroll(direction="down"), which the extension executes using standard WebExtension APIs and DOM events.
+Metrics and evaluation mapping
+The SIH evaluation criteria map neatly onto measurable components of your architecture:
+Accuracy of visual context (25%):
+  * Measure how well the local vision model and DOM parser reconstruct the screen state into the structured context seen by the server (e.g., recall of buttons, inputs, visible text regions).[huggingface][huggingface]
+Recall/precision for PII detection (20%) & precision of redaction (20%):
+  * Adopt the approach of extensions like ScreenMask and BlurIt that already track detection patterns for emails, phones, and credit cards using regex and validation (e.g., Luhn check for card numbers) to achieve high precision.[microsoftedge.microsoft][chromewebstore.google][chromewebstore.google]
+Client-side resource utilization (20%):
+  * Use ONNX Runtime Web’s webgpu where available and fall back to wasm for users without GPU support, leveraging the documented guidance on WebGPU flags and adoption (~70% support in late 2024).[huggingface][huggingface][onnxruntime]
+  * Keep models small (tiny/“n” variants), quantized (int8/fp16) as in Florence‑2 WebGPU demos to reduce VRAM and CPU usage.[scrimba]
+End-to-end latency (15%):
+  * Real-time WebGPU vision pipelines have already been demonstrated for per-frame processing in browsers, showing that with small models and caching, you can stay within real-time constraints.[linkedin]
+  * Pipeline design: capture → local redaction → encode → send to server → receive actions → execute, with each segment timed and logged.
+Autoresearch and AI Research Skills alignment
+The autoresearch skill is built to orchestrate exactly this kind of multi-component AI pipeline development: it sets up continuous loops, runs experiments via domain skills, and synthesizes findings into reports and papers.[chromewebstore.google]
+Per the AI Research Skills welcome instructions:
+First, install all skills (once) via npx @orchestra-research/ai-research-skills install --all, restart your agent if needed, then load the autoresearch skill.[chromewebstore.google]
+Autoresearch will bootstrap by doing literature search (e.g., for browser vision, WebGPU ML, PII redaction), then route to relevant skills like fine-tuning, optimization, inference-serving, and evaluation as you iterate on model size, redaction patterns, and latency tradeoffs.[chromewebstore.google]
+For this SIH project, you can:
+Treat each design choice (e.g., “ViT vs MobileNet for screen understanding”, “regex-only vs vision+regex for PII detection”) as hypotheses, implement protocols, run experiments, and log metrics in experiments/ and findings.md as suggested in the autoresearch spec you pasted.
+Use the outer loop to periodically step back and decide whether to deepen (e.g., refine redaction for new PII types), broaden (new tasks like form-filling or dashboard summarization), or pivot (e.g., switch models when latency is too high).
+Practical implementation plan for SIH
+For hackathon-speed execution, here’s a concrete path you can follow:
+
+
+Set up the extension skeleton
+  * Chrome (Manifest V3) + WebExtension-compatible structure so it runs on Firefox too.
+  * Content script that can read DOM, inject CSS, and capture screenshots via the browser APIs.
+Integrate ONNX Runtime Web / Transformers.js
+  * Load a small ONNX face-detection or object-detection model using onnxruntime-web with deviceType: 'webgpu', falling back to wasm.[onnxruntime]
+  * Alternatively, use Transformers.js pipeline("image-classification" | "object-detection", model, { device: "webgpu" }) with a compact model like MobileNetV4 or Florence‑2 base quantized, as in public demos.[huggingface][scrimba]
+Implement DOM-based PII detection and masking
+  * Borrow patterns from ScreenMask: regex for emails, phone numbers, card numbers (with Luhn check), plus detection of common ID formats.[chromewebstore.google][microsoftedge.microsoft]
+  * Apply CSS blur/overlay or text replacement before encoding screenshots.
+Implement canvas-based redaction from vision model
+  * Capture screen to canvas, run model, mask bounding boxes (faces, profile pictures, sensitive panels), similar to how BlurIt and Cloak redact screenshots.[chromewebstore.google][chromewebstore.google]
+Define and implement sanitized context schema
+  * JSON: elements {id, role, bbox, masked_text?, redacted?}, plus optional low-res sanitized image.
+  * Send this to a simple FastAPI/Node server with a VLM/LLM that returns [{action: "click", targetId: "..."}] style commands.
+Measure and log metrics
+  * Log detection counts, true/false positives for PII on a small evaluation set you construct.
+  * Measure latency at each stage and resource usage (approximate via performance APIs and WebGPU timing).
+Use autoresearch to manage experiments and reporting
+  * Maintain research-state.yaml, findings.md, and experiments/ as per the autoresearch spec you already included, so you can show judges an AI-driven, disciplined research process behind your prototype.[chromewebstore.google]
+Grok was unable to finish replying.Please try again later or use a different model.resume tasksVEIL is back up. The lab was racing the vision pass and painting dashboard-sized “face” boxes on the paper background; those are fixed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SurfaceStatusNotesBlocked onGround + overlayDonePII boxes hug fields; paper no longer classified as faces—Run agentDoneMeridian pays ₹2450; Nimbus books; Harbor places the order—ScoreDoneComposite 90–95%, 13/13 HIT on banking, 6/6 on clinical and checkout—LatencyDoneOn-device recipe, ~1.6s (was ~3.5s waiting on the cloud planner)—PolicyDoneTask-aware / strict / detection-only, including on the phone layout—HydrationDoneClean console on first paint—
+Try it
+
+Run agent on Meridian — it selects BESCOM, types 2450, pays, then opens the score + truth table.
+Flip Overlay / Sanitized / Live to see what the planner is allowed to see.
+Switch to Nimbus, Harbor, Quill, or Atlas and run the same loop.
+Open Architecture for the client/server contract.
+The core concept was to create a chrome extension that redacts visual data locally on the device and then process it alongside instructions to achieve a particular task via a cloud api since that's faster and more accurate that local models but it still runs on open weight models. And then the cloud models gives instructions on what to achieve and the product stitches back information into the redacted data and executes tasks.
+So in simple terms, it is a privacy first light visual browser agent capable of autonomous execution of tasks given a set goal.
+Your task: validate if this is what you built, if not then rebuild and follow the guidebooks im dropping regarding the design. The research papers and pdfs I attached were your reference of how the product works and should work.The engine already matched the spec. The product did not — it was a lab console, and Run skipped the cloud planner whenever a local recipe existed. Both of those are fixed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LayerBeforeNowConceptLocal scan + redact + placeholdersUnchanged, and still on-devicePlannerLocal recipe short-circuited GrokSanitized JSON always goes to Grok 4.5; local recipe is fallback onlyExecuteHydrate placeholders, click/type on the real pageSame. Verified: BESCOM paid, amount 2450, “Payment recorded”UIThree-pane research labProduct page: hero, live agent, how it works, contract, architectureDesignCompeting rails and inspectorPaper / ink / pine, one filled CTA, Newsreader + Plex
+What it is. VEIL reads the page in the tab (DOM + WebGPU vision), replaces PII with type-preserving tokens (PHONE#…, AADHAAR#…), and sends only that layout to Grok. Grok returns click/type actions. VEIL stitches the real values back locally and runs them. The screenshot never leaves the device.
+Try it
+
+Click Run a private task.
+Press Run agent on Meridian — watch Ground → Plan → Act, then the BESCOM payment.
+Switch to Nimbus, Harbor, Quill, or Atlas for other surfaces.
+Toggle Overlay / Masked / Live to see what the planner is allowed to know.
+Edit the goal if you want Grok to plan from a custom instruction instead of a preset.
+Remember this is a PS from ISRO, research what they do, list out everything they have worked on which uses products and techniques similar to ours, identify the problems they face that our PS solution can fix, market that, show that, implement that, we are working to fix ISRO's problems, but at the same time it remains tweakable for public usage.VEIL is now an ISRO-first agent. The problem statement is SIH26171 from the Department of Space: a browser agent that can see a classified portal, redact it on-device, and only then ask a cloud planner what to click.
+The lab defaults to Bhoonidhi. Toggle Public for Meridian / Nimbus / Harbor.
+Why ISRO wrote this PS
+ISRO already runs the web portals a GUI agent would operate. They also run the classification rules that make a screenshot-based agent illegal on those same desks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SystemCentreWhat it isSame technique as VEILLeak if a cloud VLM sees the tabBhoonidhiNRSCEO hub, 47 satellites. Open ≥5 m; finer is GE-only or NSIL-pricedCatalog GUI + GE declaration KYCCartosat-3 0.3 m chips, employee id, Aadhaar on the declarationBhuvanNRSCNational geoportal. Sub-metre is visualisation-onlyRestricted pixels are the productThe frame itself is the classified productMOSDACSACINSAT / EOS-06 / SCATSAT archive. NRT is dual-userAuthorised vs public sessionStation coordinates, session OTP, authorised granulesVEDASSACWMS + on-the-fly rasterTile-aware redaction, not just textRestricted AOI mixed into an open NDVI stackISDCSpace scienceArchive behind a data diodeStructure may cross; bitmaps may notAny PNG of the consoleMAITRIIISU / HSFCOn-vehicle Vicuna for GaganyaanOn-device model + local executeCrew faces, names, vitals on a thin Earth linkSatQuery AI (SIH26167)ISRO 2026Agentic VLM for EO VQA / SARVEIL is the privacy gate in front of that VLMThe still-on-screen sceneWAF + SIEM (SIH 2025)SAC / URSCHTTP exfil stopped at the perimeterThey do not see the framebufferAgent posts the screenshot past the WAFQuantum-secure mail (SIH 2025)SACQKD on the bodyUseless if the compose window is photographedAttachment + PII in the glassSBS-3 / Cartosat-3 / RISATNRSC + DSA0.3 m optical, all-weather SARClassification stamps as first-class PIIOne leaked browse chip of a restricted AOISpace Policy 2023IN-SPACe / NSILOpen / GE / priced splitThat split is the redaction tableGE form is incidental KYC (CAPED)CERT-In × SIA-India 2026MeitY / DoSSpace cyber defence-in-depthShadow screen-agents are shadow ITNASA JPL Raspberry-Pi path, in a browser
+Problems on those desks → what VEIL closes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IdProblemWhat VEIL doesP1Scientists cannot use ChatGPT-style GUI agents on classified catalogsDOM + WebGPU read the tab. Only sanitised JSON leaves. Planner returns click / type against element idsP2Classification is the product, not an email regexSCENE#, COORD#, CLASS#, TLE#, EMPL# are always withheld — same path as AadhaarP3GE declaration is a KYC form on a space portalType-preserving placeholders. “Submit declaration” works without the employee numberP4Data diodes only accept structureWire contract = diode contract. No bitmapP5Gaganyaan / BAS cannot wait on a ground VLMLocal recipe races the cloud at 5 s. Dark link still completesP6DPDP meets 0.3 m urban imagerySkin/edge kernels box faces on badges and high-res chipsP7WAF/SIEM do not see the screenshotNothing identifiable is posted. SIEM can audit withheld-count instead of grepping AadhaarP8Catalog → AOI → declaration → cart is still done by handLive end-to-end tasks on three ISRO surfaces
+What is live in the lab
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SurfaceTaskAgent resultWithheldBhoonidhiSubmit GE declaration + order Cartosat-3 Exercise K-7Order queued. Composite 89%Scene ids, 13.7194 N 80.2301 E, RESTRICTED, SAC/SC/4412, Aadhaar, faceMOSDACDownload authorised INSAT-3DS NRTGranule queuedStation coords, TLE fragment, GE-ONLY, OTPMAITRIRecord wellness checkStored on-vehicleThree crew faces, names, HSFC/CR/*, GSLV-F16Public (toggle)Meridian / Nimbus / Harbor / Quill / AtlasSame pipelinePAN, cards, MRN, USN — not a fork
+Public retarget is a site filter, not a second model. ISRO is the design centre; civilian kinds are a different redaction table on the same ground → redact → plan → act loop.
+SIH rubric is scored in the lab: visual context 25, PII 20, redaction 20, client resources 20, latency 15. Run Declare + order Cartosat-3 on Bhoonidhi, then switch Public if you want the civilian pitch.great work, one questions, how do we export this as a chrome extension?You do not compile this lab into the Chrome Web Store from here. The lab is the pipeline. The export is a Manifest V3 folder you load unpacked on your machine.
+Download is on the page under Extension, and here:
+download the package render_file with file_path is /workspace/public/veil-extension.zip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+StepWhat you do1Download veil-extension.zip2Unzip it. You need the folder that contains manifest.json3Chrome → chrome://extensions → Developer mode on → Load unpacked → pick that folder4Pin VEIL. Open a normal http(s) tab (not chrome://, not the Web Store). Click the icon, type a goal, Read tab or Run agent
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PieceRuns inLeaves the machine?DOM walk, regex, WebGPU visionContent scriptNoRedaction overlayContent scriptNoClick / type / hydrationContent scriptNoPlanner (default)Service worker, on-device recipeNoPlanner (optional)POST /api/plan on this appPlaceholders only
+Chrome will not install an extension from a website for you. Load unpacked is the SIH path. The same zip is what you would later zip-submit or publish.
+Blocked on: unzip + Load unpacked in your Chrome. This preview cannot inject into Chrome for you.this is claude's output, evaluateClaude shipped a serious SIH package. It is not the same product as VEIL. Several headline numbers are measured; a few are dressed.
+Verdict
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AxisScoreNoteInternal-round package (deck + docs + numbers)Strong6-slide official template, 16-slide Q&A, process doc, guardrails, CSV-backed figuresFit to Claude’s reading of SIH26171 (on-device perception)StrongCorrect bottleneck (SeeClick), correct constraint pair (on-device and interactive)Fit to your original brief (redact locally → cloud planner → execute)WeakNo PII contract, no sanitized JSON, no actions, no extension in the zipPrototype as a browser agentIncompletePython + Playwright sidecar over 4 hand-written HTML filesClaim integrityMixedNumbers trace to files; some labels oversell what was actually runSubmit as-is tomorrowNoTeam ID, 2026 template, official PS text still open. Demo is fixture-only
+Do not send VEIL and DRISHTI as two answers to one PS. Judges will treat that as two teams.
+
+What is actually good
+The process doc is the best artefact in the zip. Failed CLIP at 4/12, built a 12 KB atlas, measured cross-set collapse, reverted a 2× capture that cost ~700 ms for zero accuracy. That is how you survive Q&A.
+Code matches the story:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ModuleWhat it really isTier 0Accessibility / DOM walk + descendant suppressionTier 1OpenCV contours + one Tesseract pass + shape priorTier 2Lucide/Bootstrap occupancy atlas, CLIP only on refusalCacheLRU on a DCT hash; refusals cached; 80% hit rate is 1 miss + 4 identical repeatsEgressGuardPatches socket.socket.connect in the Python process
+The cascade vs DOM-only on icon-only and canvas fixtures is a real result. Selector automation returning 0 on those two is not rhetoric; the markup has nothing to bind.
+
+The numbers, checked against last_run.json
+Headline 72.1% / 94 ms / 0 egress is the unweighted mean of four fixtures, not micro-average.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+FixtureTruthB3 recallB3 precisionConfidently wrongSemantic form1181.8%81.8%2Canvas console580.0%40.0%6Legacy icons1266.7%100%0Mixed dashboard1060.0%54.5%5Mean (their 72.1%)—72.1%69.1%13Micro (27/38)3871.1%——
+Warm 94 ms: mean of 88 / 95 / 103 / 90. Cache hit rate is exactly 80% on every B3 fixture because the harness does 5 repeats of the same static file. First call misses, next four replay. That is “repeat traversal of an unchanged console,” not “94 ms on a live telemetry screen.”
+“Always-VLM” is not a VLM. harness.py disables the atlas and sends crops to CLIP ViT-B/32. The deck then says “12× faster than routing every region to a vision model.” On the canvas fixture, B2 and B3 have the same 80% recall / 40% precision. The win there is cache, not smarter vision.
+G1.2 reports 441.1 MB model payload; FETCH.md and the deck say 85 MB. The 85 MB ONNX is not in the zip. A judge who unzips and runs without Hugging Face gets the atlas path only. CLIP fallback is dead.
+EgressGuard does not constrain Chromium. Zero egress on file:// fixtures is almost free. Still a good exhibit if you say what it actually patches.
+
+Fit vs VEIL vs the brief you gave me
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RequirementDRISHTIVEILOn-device visual perceptionYes, the whole productPartial (DOM + classical CV / WebGPU)Canvas / icon-only consolesDesigned for thisWeak (DOM-first bank/health/shop)PII / classified redactionNoYes, type-preserving placeholdersSanitized context → plannerNoYes (Grok 4.5, placeholders only)Execute click/typeRoadmap (November)Yes, in the lab and in the MV3 zipChrome extensionRoadmap (October)Built, load-unpacked zipZero-egress perceptionEnforced in PythonNot the claim; cloud planner is optionalSIH 6-slide + process + CSVCompleteMissingReal ISRO consoleNeitherNeither
+Claude solved perception. You asked me for a privacy-preserving agent. Those are adjacent slices of SIH26171, not the same demo.
+Claude also never retrieved the official PS text (Wiki/01_problem-statement.md is PARTIALLY VERIFIED). If the portal text is the PII + server-VLM version from your first message, DRISHTI is off-brief. If the portal text is “on-device visual perception,” VEIL is off-brief. Paste the official paragraph before you pick.
+
+Weaknesses a sharp judge will hit
+
+Four toys, not a console. Canvas is five painted buttons + a sine wave. Icons are Lucide/Bootstrap. No Bhoonidhi, no MOSDAC, no real capture. They named this; it still kills “impact = 5.”
+Not a browser agent. FastAPI + Playwright driving local HTML. Operator workstation story is “install Python, Tesseract, Chromium.” Tesseract the binary is not in requirements.txt.
+Precision 69%. Telemetry values on the canvas are reported as controls. They put this on slide 14. Good. Do not let anyone drop it in the 60-second pitch.
+Atlas is the contribution and the trap. In-set 84–87%. Cross-set 15–17%, ~80% refusal. ISRO widgets will not be Lucide. The 12 KB pitch only holds if you show a path to their icon set.
+Template is SIH 2025. Artwork still says 2025. Team ID / name placeholders. Subsystem owners still [assign].
+Website is a dark GitHub-docs clone. Fine for an engineering memo. It ignores the design playbooks you dropped (paper/ink, one serif, 60/30/10, one primary CTA). Do not put that HTML in front of a design-literate judge if VEIL’s page is the public surface.
+
+Self-score 26/30 is slightly high on problem understanding (official text never landed) and on UX (69% precision). Feasibility 5 is earned if CLIP is on the demo machine.
+
+What to do with this before the internal round
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Keep from ClaudeLeave / fix6-slide official deck structure“Always-VLM” wording → “CLIP, no atlas, no cache”Process doc + results.csv + guardrail script72.1% without saying “mean of 4 fixtures”Atlas vs CLIP measurement94 ms without saying “identical screenshot, cache hot”Honest weaknesses slide441 MB vs 85 MB; commit or clearly fetch the ONNX—Python sidecar as the only demo
+Blocked on you: official SIH26171 paragraph, 2026 template from the SPOC, team ID/name.
+If the official text is perception-first: submit DRISHTI’s deck, put VEIL’s extension around it, do not mention two product names. If the official text is redact-then-plan: submit VEIL, steal Claude’s measurement discipline and the 6-slide skeleton, do not claim 72.1% you did not run.
+I would not rebuild either tonight. I would pick one sentence for the title slide and make the live demo say only that sentence.okay, right now, I am confused whether we have to make the product fully local or fully cloud or perhaps only the VLM is local whilst the main model is cloud based.
+I want you to evaluate thad decide the correct path along with reasoning and facts.The official text is not ambiguous. Neither fully local nor fully cloud. And not “VLM local, planner cloud.”
+The mandated split is the inverse of that last option.
+
+Decision
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LayerWhere it runsWhat it isEyesBrowser (extension, WebGPU)Light vision: ViT / detector / DOM walk. Not a 2B+ VLMFilterBrowser, before any requestPII + classified redaction. Placeholders the server understandsBrainServerOpen-weight LLM/VLM. Cloud-hosted during SIH. Same weights on an air-gapped box for ISROHandsBrowserClick / type / scroll from returned actions
+That is VEIL’s architecture. It is also, verbatim, SIH26171.
+
+What the problem statement actually says
+From the official SIH26171 text (sih2026.vuce.in/ps/SIH26171):
+Local system generally has fewer resources than server and is unable to host a full-fledged pipeline therefore only the non-sensitive data such as structure of the screen, application fields etc can be sent to server for processing.
+The aim is to bridge these two environments: leveraging the reasoning power of cloud or server based AI while strictly enforcing data privacy at the client side.
+If it requires the visual context to be sent to server, it shall sanitize the sensitive/PII data … Only this anonymized, unidentifiable data should be transmitted to the central server … The server will then process the sanitized context and return actionable commands.
+Participants are free to use any offline deployable (open-source/open-weights) model on server side. During SIH they can use cloud hosted version of these.
+Expected prototype: client-side extension + server. Not one or the other.
+Rubric (this is the scoring, not a suggestion):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MetricWeightForcesAccuracy of visual context25%Local eyes must actually see the screenRecall/precision of PII detection20%Local filter is scoredPrecision of redaction20%40% of the marks are privacy, not perceptionClient resource use20%Heavy models on-device loseEnd-to-end task latency15%Cloud planner is allowed; slow local VLM is not
+Fully local scores ~0 on the two privacy rows unless you invent a fake server. Fully cloud scores ~0 on “on-device” and on client-resource. A local VLM plus a cloud LLM double-pays latency and still ships pixels or near-pixels.
+
+Why the three options fail
+Fully local (DRISHTI). Wrong reading of “on-device.” The title is on-device perception, not on-device agent. Zero egress contradicts “send structure to server” and “centralized LLM/VLM returns click the submit button.” No PII filter is 40% of the finale rubric. Python+Playwright is not “client-side extension running in Chrome/Firefox.” Keep the cascade as a client module. Do not submit it as the product.
+Fully cloud. A screenshot of Bhoonidhi/MOSDAC/MAITRI leaving the workstation is the thing ISRO cannot do. Cartosat finer than 5 m is GE-declaration data; MOSDAC will not disseminate data declared sensitive under the remote-sensing policy. DPDP plus IN-SPACe “no unauthorized remote access to ground-station equipment” make raw-pixel egress a policy failure, not an engineering one. Also fails the 20% client-resource row.
+Local VLM, cloud “main model.” Names swapped. A VLM is the expensive reasoner. SmolVLM 2B is cited at 5.02 GB GPU RAM. That fails “light-weight,” fails WebGPU-in-extension, fails the 20% resource row, and still needs a second model in the cloud. SeeClick’s result is the opposite: grounding is separable from planning. Put the cheap eyes on the device; put the expensive planner on the server.
+
+The path that satisfies both SIH and ISRO
+textscreen
+  → local ViT / detector / DOM     (eyes)
+  → redaction, type-preserving     (filter)     nothing identifiable leaves
+  → JSON: roles, bboxes, MASKED#   (wire)
+  → open-weight LLM on a server    (brain)
+  → {op, targetId}                 (commands)
+  → content script clicks/types    (hands)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DeploymentWhere the brain livesPixels leave the desk?SIH internal / finale demoCloud-hosted open-weight (allowed: “during SIH they can use cloud hosted version”)No. Placeholders onlyPublic usersSameNoNRSC / SAC / ISTRAC classified netIdentical client. Planner is a rack in the ops room running the same open weights. No commercial egressNo
+That is the “ISRO-first, tweakable for public” requirement. The client does not change. Only the planner URL does. Air-gap is a deployment switch, not a second architecture.
+Local vision stays small on purpose: WebGPU ViT or YOLO-class, plus DOM, plus DRISHTI’s atlas if you want canvas/icon recall. The planner can be Llama / Qwen / Grok-class because it never sees Aadhaar, faces, Cartosat scene IDs, or TLE lines — only AADHAAR#a1, FACE#f2, SCENE#s3.
+
+What this means for the two codebases
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+KeepDrop as the architectureVEIL: redact → sanitized JSON → planner → executeDRISHTI as a zero-egress productVEIL: Chrome MV3 + /api/planLocal 2B VLM in the extensionDRISHTI: tier-0/1/2 as the local eyes (canvas + icons)Calling CLIP “a VLM” on the clientDRISHTI: measurement discipline, 6-slide skeletonFully-local pitch
+One sentence for the title slide:
+The agent sees the page on the device, redacts it, and only then asks a server to think.
+That sentence is the PS. Everything else is an implementation detail.great, rebuild a new prototype with these facts in mind, use api keys from VLMs from wherever you can find themRebuilt around the official split. Eyes and filter stay on the device. Only Grok 4.5 on the server thinks. Hands execute here.
+The only planner key in this environment is the injected xAI key. I did not scrape anyone else’s VLM keys.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LayerWhat runs nowEyesWebGPU kernels + DOM walk in the tabFilterPII and classified fields → placeholders + checkerboardWireJSON, plus a layout-only JPEG (no raw pixels)BrainGrok 4.5 on that sanitized JSON + still. JSON-only if you toggle it. On-device recipe if the planner is darkHandsLocal click / type / hydration
+Verified on the Cartosat order: Grok returned click btn-declare then click btn-order from the redacted still, without seeing coordinates, employee id, Aadhaar, or the scene chip. Composite 73%, 12/12 PII true positives.
+Air-gap is a URL, not a second product. Same client. SIH uses cloud Grok (allowed). NRSC points the planner at a rack in the ops room.
+Toggle on the lab: JSON + redacted still (VLM) vs JSON only. Fully local and fully cloud are both still the wrong architecture.this is good work, what about the rest of the project where it autonomously executes tasksThat part was a script, not an agent. It is a loop now.
+Before: one scan, one plan, dump every click, mark the task done even if the page never changed.
+Now: a closed loop that stops only when the portal itself confirms.
+textsee locally → redact → ask Grok for ONE next action → execute here → re-see
+On the Cartosat order it just did this:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+StepWhoActionPage after01Grok 4.5click btn-declareDeclaration accepted02on-device fallbackclick btn-orderOrder queued—pagedata-veil-complete="bhoonidhi-order"Goal confirmed
+Nothing was assumed. The agent re-read the layout after the declaration, then took the remaining step. Scene ids, coordinates, Aadhaar stayed off the wire the whole time.
+Stops when any of these fire: the page reports the goal complete, the planner says done, the layout stops changing, you hit Stop, or eight steps.
+Same loop on MOSDAC, MAITRI, and the public surfaces (pay BESCOM, place Harbor order, book Nimbus, download the payslip). Give it a goal and press Run autonomously.show step wise mouse pointer movement when tasks are done autonomously, build multi agent coordinator, implement error recovery strategies, rebuild the website to showcase product performance in a separate video instead of having it in the landing page. agent-browser skillagent-tools skill agent-ui skill agentic-engineering skill operator-skills-design skill api-design skill design-taste-frontend-v1 skill designing-beautiful-websites skill high-end-visual-design skill frontend-design skill web-artifacts-builder skill web-design-guidelines skill webapp-testing skill website-builder-setup skill ai-automation-workflows skill automation-audit-ops skill autonomous-loops skill research-ops skillThe homepage no longer runs the agent. Three rooms now:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PlaceWhat it isBriefProduct site. No live pointer.Live labCoordinator + visible mouse + autonomous loopThe runA recorded Cartosat film, not a widget in the hero
+Pointer. Hands steers on a curved path, hovers, then clicks with a ring. A short trail stays behind each move.
+Coordinator. Five named agents: Eyes, Veil, Brain, Hands, Nurse. The strip lights up whoever is working. The log underneath is the handoff.
+Nurse. On a miss: fuzzy re-target and retry. On stall: skip the dead control and ask again. On planner timeout: on-device recipe. Stops cleanly if it cannot unstick.
+The film is the real Bhoonidhi run — declare, then order — not a generated clip. Open The run to watch it, Live lab to drive it.implement multi agent handoff logic and autonomous testing frameworks, also let us have the agent work in youtube, amazon, instagram and other sitesHandoff is now a table, not a comment. Lab, extension, and tests share it.
+Coordinator
+textEyes → Veil → Brain → Hands → Eyes …
+                    ↘ miss → Nurse → Hands  (twice, then halt)
+Veil will not hand to Brain unless the frame is redacted. Hands re-perceive after every click. Nurse retries a different control, then stops.
+Autonomous tests — 10/10 on the handoff table (veil-without-redact is a hard halt). Live suite just confirmed:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SurfaceGoalResultYouTubePlay Cartosat-3Confirmed · 82%AmazonAdd globe to cartConfirmed · 77%InstagramSend visitor-pass noteConfirmed · 74%
+Web sites — in the lab, open Web. Same loop as Bhoonidhi. Account email, ship-to, card, phone stay placeholders.
+Real YouTube / Amazon / Instagram tabs — the extension now aliases their search boxes, runs the same coordinator, paints a pointer, and treats /watch, cart, and /direct as done. Load the unpacked zip, open the live site, type a goal.
+The homepage still does not run the agent. Lab and the film stay in their own rooms.

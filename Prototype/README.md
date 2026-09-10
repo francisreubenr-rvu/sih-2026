@@ -79,3 +79,11 @@ The repository includes 100 released synthetic WebPII test screens under `app/be
 Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. Current suite: 42 passing prototype tests. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
 
 Read `Docs/decisions/raster-evaluation.md` before quoting results. Full-image masking covered all selected PII regions while preserving zero original visual pixels; no claim of broad PII accuracy or task utility follows.
+
+## Experimental local text privacy lab
+
+After `npm ci --ignore-scripts` and `npm run build`, open `/app/text-preview.html` on the local prototype server. This separate development page runs Tesseract.js English OCR and a quantized BERT-small PII model over three authored synthetic screens. It displays sensitive-token detection, retained interface text and timings. It never calls the reasoning endpoint. Reconstructed text may include missed entities; the page is a local diagnostic, not an approved anonymized export.
+
+Model and language files are pinned in `Raw/domain/ocr-pii/asset-manifest.json`. `python3 scripts/fetch-ocr-pii-assets.py` from the repository root restores their declared upstream revisions if needed. The build copies the OCR worker and WASM runtime from the pinned npm dependencies. These generated runtime copies are ignored by Git. Model provenance and limitations: `Docs/decisions/reference-informed-plan.md`.
+
+Validation as of 10 September: build and 48 automated tests pass. The browser tool blocked navigation to the local preview, so no browser OCR/NER accuracy, latency or visual QA result has been established. Chrome/Firefox extension verification remains separate. The lab is not integrated into the v0.1 outbound scene or native extension.

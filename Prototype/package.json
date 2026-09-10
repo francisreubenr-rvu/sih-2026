@@ -13,8 +13,10 @@
     "build": "node ../scripts/build-prototype.mjs"
   },
   "dependencies": {
+    "@huggingface/tokenizers": "0.2.0",
     "html2canvas": "^1.4.1",
     "onnxruntime-web": "^1.23.2",
+    "tesseract.js": "7.0.0",
     "zod": "4.3.6"
   },
   "devDependencies": {

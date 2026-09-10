@@ -1,0 +1,52 @@
+{
+  "retrieved_at": "2026-09-10T11:06:13.036794+00:00",
+  "ner_repo": "onnx-community/bert-small-pii-detection-ONNX",
+  "ner_revision": "6cb4e77c2b2c7f81e731b88cffa9b7a6fc675a4c",
+  "ner_license": "Apache-2.0 model card",
+  "ocr_language_revision": "87416418657359cb625c412a48b6e1d6d41c29bd",
+  "scope": "Pretrained browser-local OCR and PII experiments; author metrics are not our measurements",
+  "files": [
+    {
+      "source": "https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/resolve/6cb4e77c2b2c7f81e731b88cffa9b7a6fc675a4c/config.json",
+      "path": "Prototype/models/pii/config.json",
+      "bytes": 2948,
+      "sha256": "0e4a9201c26b524b3b406dce8b2e1ccc178680775f9c579c351af1d9e3cc0ed7"
+    },
+    {
+      "source": "https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/resolve/6cb4e77c2b2c7f81e731b88cffa9b7a6fc675a4c/tokenizer.json",
+      "path": "Prototype/models/pii/tokenizer.json",
+      "bytes": 711396,
+      "sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66"
+    },
+    {
+      "source": "https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/resolve/6cb4e77c2b2c7f81e731b88cffa9b7a6fc675a4c/tokenizer_config.json",
+      "path": "Prototype/models/pii/tokenizer_config.json",
+      "bytes": 1300,
+      "sha256": "e711904cac23112776b678356ccf702cf934babaa01125f698ac43bf9ad38e73"
+    },
+    {
+      "source": "https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/resolve/6cb4e77c2b2c7f81e731b88cffa9b7a6fc675a4c/onnx/model_int8.onnx",
+      "path": "Prototype/models/pii/model_int8.onnx",
+      "bytes": 28748527,
+      "sha256": "40e94266f077c088d3dda3e12fe7be8faa1cae862c3e3fe84b799439c509095a"
+    },
+    {
+      "source": "https://huggingface.co/onnx-community/bert-small-pii-detection-ONNX/resolve/6cb4e77c2b2c7f81e731b88cffa9b7a6fc675a4c/README.md",
+      "path": "Raw/domain/ocr-pii/ner-model-card.md",
+      "bytes": 5972,
+      "sha256": "85be6b2101aee75e07645704358d977bb4c7e6b539fab7583d99df88bf8193b5"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/eng.traineddata",
+      "path": "Prototype/models/ocr/lang/eng.traineddata",
+      "bytes": 4113088,
+      "sha256": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2"
+    },
+    {
+      "source": "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/LICENSE",
+      "path": "Raw/domain/ocr-pii/TESSDATA-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    }
+  ]
+}

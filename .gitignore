@@ -17,3 +17,8 @@ Raw/domain/mediapipe-face-web.html
 
 # Incomplete legacy screencast frames; failure documented in recording README.
 Docs/demo-recording/frames/
+
+# Rebuilt local OCR runtime; installed packages and lockfile define provenance.
+Prototype/models/ocr/core/
+Prototype/models/ocr/worker.min.js
+Prototype/models/ocr/worker.min.js.LICENSE.txt

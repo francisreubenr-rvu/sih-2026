@@ -40,3 +40,7 @@ Each row points to the original attribution record. See Wiki entries for claim-l
 ## SIH26171 domain update — 9 September2026
 
 [Domain sources](../Raw/domain-sources.json) adds25 archived source records, including the retrieved organizer catalogue. [Domain synthesis](domain-research.md) and [competitor comparison](competitors.md) use primary papers and official repositories. Earlier unavailable-SIH2171 evidence remains historical.
+
+## User-supplied reference chats — 10 September 2026
+
+Original Grok and Perplexity transcripts, provenance and hashes: `Raw/reference-chats/intake-2026-09-10.json`. Primary-source checks and archives: `Raw/reference-chats/primary-sources.json`. Reviewed conclusions and rejected/unverified claims: [reference review](reference-chat-review.md). Transcript reports are not prototype measurements.

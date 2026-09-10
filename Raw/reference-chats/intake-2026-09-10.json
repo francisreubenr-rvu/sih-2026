@@ -1,0 +1,42 @@
+{
+  "recorded_on": "2026-09-10",
+  "record_type": "user_supplied_transcripts_and_review_metadata",
+  "provided_by": "Francis",
+  "sources": [
+    {
+      "id": "grok-alternate-project",
+      "url": "https://grok.com/share/bGVnYWN5_8e7b6384-2a92-41cd-90fe-0a8c013f80a8",
+      "requested_use": "Alternate-project reference, kept separate from Sightline",
+      "retrieval_status": "user_supplied_attachment",
+      "retrieval_error": "Web tool reported URL is not safe to open (non-retryable error)",
+      "transcript_retrieved": true,
+      "claims_assessed": true,
+      "author_and_publication_date": null,
+      "original_share_fetch_status": "blocked",
+      "local_path": "Raw/reference-chats/grok-transcript.txt",
+      "sha256": "1d19f7186c4296259079b0ad381afff238993f86ee817f5cfa1245a4726abb05",
+      "bytes": 37325,
+      "assessment_scope": "Architecture, research evidence, evaluation integrity and major security/domain claims; alternative codebase unavailable",
+      "provenance": "User pasted export; online original not independently authenticated; original message dates and complete speaker boundaries unavailable"
+    },
+    {
+      "id": "perplexity-project-reference",
+      "url": "https://www.perplexity.ai/search/37b03153-cbbe-4c9c-85f1-7a48370bbfe8",
+      "requested_use": "Reference and new conclusions where supported by evidence",
+      "retrieval_status": "user_supplied_attachment",
+      "retrieval_error": "Web tool reported URL is not safe to open (non-retryable error)",
+      "transcript_retrieved": true,
+      "claims_assessed": true,
+      "author_and_publication_date": null,
+      "original_share_fetch_status": "blocked",
+      "local_path": "Raw/reference-chats/perplexity-transcript.txt",
+      "sha256": "ea26a985378f08be8b8d86809a4b7e2489c620072ed55adf4f5af96fc43c94df",
+      "bytes": 52660,
+      "assessment_scope": "Architecture, research evidence, evaluation integrity and major security/domain claims; alternative codebase unavailable",
+      "provenance": "User pasted export; online original not independently authenticated; original message dates and complete speaker boundaries unavailable"
+    }
+  ],
+  "decision": "Keep Sightline client/server split. Adopt bounded verification-loop and task-conditioned privacy experiment requirements; do not import alternate-project scores or deployment claims.",
+  "next_step": "Execute protocols in Docs/decisions/reference-informed-plan.md; code/runtime evidence is still required for all alternative-project capability claims.",
+  "reviewed_at": "2026-09-10T11:19:49.016143+00:00"
+}
