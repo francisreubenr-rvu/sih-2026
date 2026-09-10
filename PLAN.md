@@ -58,3 +58,13 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Remaining priority: held-out visual utility/PII/redaction dataset, client resource/full-task timing, broader task reliability, native extension validation and human review. Full goal remains active.
 
 - Video checkpoint `7e9b692` is live; Pages run34418979547 succeeded. Four public resource hashes matched and the live MP4 played to completion. Updated delivery status corrects the stale preparation-only inventory while retaining historical records.
+
+## Raster diagnostic checkpoint — 10 September 2026
+
+- Previous goal turn made progress: model adapter tests, continuous recording, live Pages verification and delivery inventory were published. Current work adds external synthetic dataset measurements rather than repeating that status.
+- Froze 100 WebPII test rows from 46 source IDs; all selected rows are Amazon reproductions. Images are released synthetic viewer JPEGs, not original private reproduction targets. Source revision, license cards, annotations and hashes retained.
+- Rejected the first coverage calculation after finding inherited 800x500 iframe CSS; corrected dimensions and added an independent scoring invariant. Original invalid run retained.
+- Corrected raster baseline executes 100/100 cases: zero detector predictions for 810 selected PII annotations; full image masking covers all selected PII pixels and preserves zero original visual context. This exposes a utility failure, not a privacy success claim.
+- Added an experimental local vision worker and measured it against the same frozen slice. It is not adopted as the workspace default: first comparison reduces main-thread long tasks but regresses detection p95. Repeated measurements retained separately.
+- Current verification: 42 automated prototype tests and 7 scorer tests pass. Official metric ledger records partial diagnostics and keeps weighted score null.
+- Next substantial work: recover useful privacy-filtered context for raster/unknown interfaces, broader PII and native-DOM task evaluation, full resources and task latency. Human/native-extension gates remain open.

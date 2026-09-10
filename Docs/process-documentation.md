@@ -89,3 +89,11 @@ The provider adapter now requests one enumerated choice and decodes it to the un
 The real Chrome boundary harness passes 18 checks, including 31-second expiry and shadow/overlay cases. The automated suite passes 39 tests. Native extension installation was blocked by the browser automation URL policy; no alternate installation route was attempted. Native Chrome/Firefox operation remains unverified.
 
 A continuous browser recording now shows actual WASM face inference, real Qwen Pending and Review proposals, explicit confirmations and the final review screen. The original stream and compatible MP4 are preserved under demo-recording, with hashes and a text description. Local playback reaches readyState 4 without a media error. A failed earlier screencast remains documented separately and contributes no frames to the recording. Runtime observations and video duration are not benchmark latency distributions.
+
+## External raster measurements and worker experiment
+
+A frozen 100-row WebPII test slice contains 46 source IDs, all Amazon reproductions. Actual browser WASM inference and shared scene collection were measured without passing annotations to either component. The initial coverage run was invalidated by a fixture viewport mismatch, then repeated with exact-dimension checks in the harness and scorer. All failed and corrected records are retained.
+
+The corrected run has zero detector predictions for 810 visible selected PII annotations. Full-image masking covers every selected PII pixel but retains no original visual context and exports no controls. This demonstrates the inadequacy of coverage alone and exposes the current raster-only utility gap. It is a cross-taxonomy spatial diagnostic, not general PII classifier or face accuracy.
+
+The worker experiment transfers a bitmap only within the browser. It reduces observed main-thread long tasks but initially regresses detection p95, so it remains outside the default workspace. Repeated runs, heap/long-task limitations and exact timings are documented in decisions/raster-evaluation.md. No full-flow latency, process CPU, total memory or energy claim follows. The implementation suite now passes42 tests; seven scorer tests check geometry and matching.

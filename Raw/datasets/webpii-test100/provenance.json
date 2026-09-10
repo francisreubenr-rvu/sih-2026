@@ -1,0 +1,24 @@
+{
+  "retrieval_date": "2026-09-10",
+  "dataset": "WebPII/webpii",
+  "repository_revision": "6d3317721b72bde719a361c564ceaf1fbded3a8e",
+  "stable_source": "https://huggingface.co/datasets/WebPII/webpii/tree/6d3317721b72bde719a361c564ceaf1fbded3a8e",
+  "api_selection": "test rows 0-19, 1000-1019, 2000-2019, 3000-3019, 4381-4400",
+  "license_card": "dataset-card.md",
+  "original_bytes_location": "Prototype/app/bench-assets/webpii-test100/",
+  "image_format_note": "Dataset viewer API supplies JPEG bytes. Initial loader used .png filenames; bytes are unchanged and decode as JPEG. Content sniffing was verified by file command and natural dimensions checked by browser. Preserve this baseline mapping; do not confuse it with original PNG dataset shards.",
+  "transformation": "Viewer-delivered JPEGs, not original Parquet image-byte equivalence; API annotation fields retained unchanged. No original screenshots with real PII were requested.",
+  "signed_url_policy": "Ephemeral asset query URLs were used for retrieval only and omitted from stored metadata. Stable repository revision and row index identify each source.",
+  "sample_limits": [
+    "100 variants from 46 source IDs",
+    "All selected rows are Amazon reproductions",
+    "Five deterministic contiguous ranges, not random population sampling"
+  ],
+  "authors": "Dataset/project currently attributed as WebPII; model repository citation lists Anonymous Authors. No personal author names invented.",
+  "claim_mapping": {
+    "synthetic_only": "sample-card-context.md privacy note",
+    "license": "dataset-card.md root Apache-2.0 declaration",
+    "annotations_and_test_rows": "annotations.json",
+    "measured_results": "Benchmarks/results/webpii-raster-v02-summary.json"
+  }
+}

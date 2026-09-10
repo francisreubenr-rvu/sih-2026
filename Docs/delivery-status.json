@@ -10,15 +10,16 @@
     "Cited official domain, technical and competitor research with Raw archives",
     "20 guardrails and 11 KPI definitions with explicit unknown/fail states",
     "Browser JS prototype with real UltraFace WASM, protected scene, Node API, Ollama Qwen and confirmed actions",
-    "39 passing automated tests and 18 passing actual Chrome boundary checks",
+    "42 passing automated tests and 18 passing actual Chrome boundary checks",
     "Preserved real-provider development pilot: latest Qwen7B 22/24, two remaining semantic errors",
     "Six-slide supplied-format candidate, 15-slide talk, POTX, PDFs and speaker notes",
     "Continuous synthetic-fixture browser recording, compatible MP4, verified playback and text description",
     "Responsive Sightline site published on GitHub Pages",
-    "Current methodology Markdown/PDF and deployment evidence"
+    "Current methodology Markdown/PDF and deployment evidence",
+    "100-screen external synthetic raster diagnostic, corrected scoring, 7 scorer tests and experimental worker comparison"
   ],
   "remaining": [
-    "Held-out visual utility and PII detection/redaction datasets",
+    "Useful raster context and broader PII/native-DOM task evaluation; current external slice exposes complete visual utility loss",
     "Native Chrome/Firefox extension validation; browser automation blocks extension-manager URL",
     "Client resource and full-task measurements; under-200ms target remains failed",
     "Broader task reliability and error recovery",

@@ -35,3 +35,9 @@ Chaoran Chen et al.'s **The Obvious Invisible Threat** (15 April 2025, preprint)
 5. Evaluate real user flow comprehension and review burden with participants; no simulated judge persuasion probability.
 
 The present single-reference face detections and synthetic service workflow validate integration only. No dataset-level accuracy, privacy guarantee or saturation is established.
+
+## Local follow-up: external synthetic raster diagnostic, 10 September
+
+`Docs/decisions/raster-evaluation.md` records an actual 100-screen WebPII test-slice measurement. The slice has46 source IDs, all Amazon reproductions, and810 visible selected PII annotations. The corrected raster-only path localizes no selected regions; blanket exclusion covers all selected PII pixels while preserving no original visual pixels. This is our measured diagnostic, not the WebPII authors' reported model result or a general PII-accuracy claim. Two main-thread and two worker measurements expose latency variability and lower observed worker main-thread blocking.
+
+Dataset and license provenance: `Raw/datasets/webpii-test100/provenance.json`. Primary source: https://huggingface.co/datasets/WebPII/webpii at revision6d3317721b72bde719a361c564ceaf1fbded3a8e. Do not use this limited slice as a population benchmark or evidence of broad native-DOM utility.

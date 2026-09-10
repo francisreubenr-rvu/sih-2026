@@ -1,0 +1,12 @@
+{
+  "source_snapshot_at": "2026-09-10T05:24:56.524665+00:00",
+  "timing": "snapshot captured during worker run; no code changes during that run",
+  "same_frozen_dataset": "webpii-test100-freeze-v02.json",
+  "files": {
+    "Prototype/shared/vision-worker-client.mjs": "9ca02d13d957b5e5145745ab9758582f5ffafba9e3d7b0f1ba84bc166dc9e893",
+    "Prototype/shared/vision-worker.mjs": "c72d2da2283761bb2e916b2f7f08df3da16c4520afbb766dfdd425e75e0418a6",
+    "Prototype/shared/vision.mjs": "0cb201e7c4bb9d403a8e22c3106cb9763958b445267f71d69292073869c4ccfc",
+    "Prototype/app/benchmark.mjs": "fb0e062e56b9135058cd99aea06dbe86b32803058ad4f6a744cb8618795d40ae",
+    "Prototype/app/benchmark.css": "f85e5631d6aed7a208a48ae5b2e30f187c7767da6199f53d8eb5362924ab0c25"
+  }
+}

@@ -1,0 +1,34 @@
+import {createVisionDetector} from '../shared/vision.mjs';
+import {createPageAgent} from '../shared/page-agent.mjs';
+const $=s=>document.querySelector(s);
+const heap=()=>performance.memory?{usedJSHeapSize:performance.memory.usedJSHeapSize,totalJSHeapSize:performance.memory.totalJSHeapSize,jsHeapSizeLimit:performance.memory.jsHeapSizeLimit}:null;
+const hash=async data=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data))).map(x=>x.toString(16).padStart(2,'0')).join('');
+$('#run').addEventListener('click',async()=>{
+ $('#run').disabled=true;let detector,agent,observer,frame;const longTasks=[];
+ const record={startedAt:new Date().toISOString(),scope:'real browser raster-only diagnostic on frozen external synthetic test slice',userAgent:navigator.userAgent,hardwareConcurrency:navigator.hardwareConcurrency,deviceMemoryGB:navigator.deviceMemory??null,heapStart:heap(),visibilityAtStart:document.visibilityState,warmups:[],rows:[],limitations:['No source DOM or model-server request','Not native extension or full-flow latency','JS heap excludes total process memory, and may be bucketed','Long tasks are main-thread events, not process CPU utilization','100 ordered test rows can include related variants; not a random population sample']};
+ const publish=()=>{$('#record').textContent=JSON.stringify(record,null,2);};
+ try{
+  if(PerformanceObserver.supportedEntryTypes.includes('longtask')){observer=new PerformanceObserver(list=>{for(const e of list.getEntries())longTasks.push({startTime:e.startTime,duration:e.duration,name:e.name});});observer.observe({type:'longtask',buffered:false});}
+  const response=await fetch('/app/bench-assets/webpii-test100/manifest.json');if(!response.ok)throw new Error('Dataset manifest unavailable');const bytes=await response.arrayBuffer();record.manifestSha256=await hash(bytes);const manifest=JSON.parse(new TextDecoder().decode(bytes));record.dataset={name:manifest.dataset,revision:manifest.revision,rows:manifest.row_count,offsets:manifest.offsets};
+  if(manifest.rows.length!==100)throw new Error('Frozen sample must have 100 rows');
+  $('#status').textContent='Creating local WASM detector…';let start=performance.now();detector=await createVisionDetector();record.detectorCreationMs=performance.now()-start;record.heapAfterDetector=heap();
+  const warmImage=new Image();warmImage.src='/app/assets/astronaut.png';await warmImage.decode();
+  for(let i=0;i<10;i++){start=performance.now();const r=await detector.detect(warmImage);record.warmups.push({index:i,detectMs:performance.now()-start,inferenceMs:r.inferenceMs,detections:r.detections.length});}
+  frame=document.createElement('iframe');frame.title='Synthetic raster-only evaluation fixture';const ready=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(new Error('Fixture failed'));});frame.src='/app/benchmark-fixture.html';$('#fixture-mount').replaceChildren(frame);await ready;
+  const doc=frame.contentDocument,img=doc.querySelector('#screen');agent=createPageAgent(doc);
+  for(const sample of manifest.rows){
+   $('#status').textContent=`Evaluating ${record.rows.length+1}/100 · source ${sample.source_id} · ${sample.variant}`;
+   const row={rowIndex:sample.row_index,sourceId:sample.source_id,variant:sample.variant,expectedWidth:sample.image_width,expectedHeight:sample.image_height,visibility:document.visibilityState};
+   try{
+    frame.width=String(sample.image_width);frame.height=String(sample.image_height);img.src=sample.file;start=performance.now();await img.decode();row.imageDecodeMs=performance.now()-start;
+    if(img.naturalWidth!==sample.image_width||img.naturalHeight!==sample.image_height)throw new Error(`Image dimensions differ from annotation: ${img.naturalWidth}x${img.naturalHeight}`);
+    img.width=img.naturalWidth;img.height=img.naturalHeight;
+    start=performance.now();const result=await detector.detect(img);row.detectMs=performance.now()-start;row.inferenceMs=result.inferenceMs;row.predictions=result.detections;
+    start=performance.now();const scene=agent.collect();row.collectMs=performance.now()-start;row.scene=scene;row.payloadBytes=new TextEncoder().encode(JSON.stringify(scene)).length;row.heap=heap();row.ok=true;
+   }catch(error){row.ok=false;row.error=error.message;}
+   record.rows.push(row);$('#progress').value=record.rows.length;publish();await new Promise(resolve=>requestAnimationFrame(resolve));
+  }
+  record.finishedAt=new Date().toISOString();record.heapEnd=heap();record.resources=performance.getEntriesByType('resource').filter(e=>e.name.includes('/models/')).map(e=>({name:new URL(e.name).pathname,duration:e.duration,transferSize:e.transferSize,encodedBodySize:e.encodedBodySize,decodedBodySize:e.decodedBodySize}));
+ }catch(error){record.fatalError=error.message;}
+ finally{agent?.dispose();try{await detector?.dispose();}catch(e){record.cleanupError=e.message;}record.heapAfterDispose=heap();observer?.disconnect();record.longTasks=longTasks;record.completedAt=new Date().toISOString();publish();$('#status').textContent=`Finished: ${record.rows.filter(r=>r.ok).length}/${record.rows.length} cases executed. ${record.fatalError||'Results require independent scoring.'}`;$('#run').disabled=false;}
+});

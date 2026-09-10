@@ -10,35 +10,58 @@
       "weightPercent": 25,
       "measurement": "Correct task-relevant controls/structure divided by annotated controls/structure; report precision and recall separately.",
       "observed": null,
-      "status": "not_evaluated"
+      "status": "partial_diagnostic_only",
+      "diagnostic_note": "Raster-only slice: no exported controls and no original visual pixels retained. Dataset has no interactive-control ground truth; full utility accuracy remains unmeasured.",
+      "diagnostic_evidence": [
+        "Benchmarks/results/webpii-raster-v02-summary.json",
+        "Benchmarks/results/webpii-raster-worker-v01-summary.json"
+      ]
     },
     {
       "id": "pii-detection",
       "weightPercent": 20,
       "measurement": "Instance precision TP/(TP+FP) and recall TP/(TP+FN), by email/name/number/password/face; frozen IoU and matching rules.",
       "observed": null,
-      "status": "not_evaluated"
+      "status": "partial_diagnostic_only",
+      "diagnostic_note": "100 external synthetic raster screens / 810 selected PII regions: zero UltraFace predictions. Cross-taxonomy localization recall 0, precision undefined; not general PII classifier or face accuracy.",
+      "diagnostic_evidence": [
+        "Benchmarks/results/webpii-raster-v02-summary.json",
+        "Benchmarks/results/webpii-raster-worker-v01-summary.json"
+      ]
     },
     {
       "id": "redaction",
       "weightPercent": 20,
       "measurement": "PII pixel coverage and non-PII preservation reported separately; conservative reconstruction must count useful removed pixels as utility loss.",
       "observed": null,
-      "status": "not_evaluated"
+      "status": "partial_diagnostic_only",
+      "diagnostic_note": "Full-image exclusion covers all selected PII pixels while preserving zero pixels outside those boxes. This is not selective-redaction success.",
+      "diagnostic_evidence": [
+        "Benchmarks/results/webpii-raster-v02-summary.json",
+        "Benchmarks/results/webpii-raster-worker-v01-summary.json"
+      ]
     },
     {
       "id": "client-resources",
       "weightPercent": 20,
       "measurement": "Cold/warm WASM load, inference p50/p95, downloaded bytes, JS/WASM memory where measurable, CPU/long tasks on recorded device.",
       "observed": null,
-      "status": "not_evaluated"
+      "status": "partial_diagnostic_only",
+      "diagnostic_note": "100 inferences after 10 warmups measured on main thread and worker. Includes detector time, JS heap and long tasks; no total process memory, CPU utilization or energy measurement.",
+      "diagnostic_evidence": [
+        "Benchmarks/results/webpii-raster-v02-summary.json",
+        "Benchmarks/results/webpii-raster-worker-v01-summary.json",
+        "Benchmarks/results/webpii-raster-v03-summary.json",
+        "Benchmarks/results/webpii-raster-worker-v02-summary.json"
+      ]
     },
     {
       "id": "task-latency",
       "weightPercent": 15,
       "measurement": "User trigger to verified correct end-state, including capture, model, network and action; report human review separately without omitting it from full time.",
       "observed": null,
-      "status": "not_evaluated"
+      "status": "partial_diagnostic_only",
+      "diagnostic_note": "Provider pilot and continuous task recording exist, but no 100-attempt full-flow latency distribution. Under-200ms gate remains failed."
     }
   ],
   "score": null,

@@ -1,0 +1,4244 @@
+{
+  "executionMode": "worker",
+  "startedAt": "2026-09-10T05:24:17.725Z",
+  "scope": "real browser raster-only diagnostic on frozen external synthetic test slice",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 10,
+  "deviceMemoryGB": 16,
+  "heapStart": {
+    "usedJSHeapSize": 12002352,
+    "totalJSHeapSize": 14162400,
+    "jsHeapSizeLimit": 4395630592
+  },
+  "visibilityAtStart": "visible",
+  "warmups": [
+    {
+      "index": 0,
+      "detectMs": 162.89999997615814,
+      "inferenceMs": 95.20000004768372,
+      "detections": 1
+    },
+    {
+      "index": 1,
+      "detectMs": 74.70000004768372,
+      "inferenceMs": 44.10000002384186,
+      "detections": 1
+    },
+    {
+      "index": 2,
+      "detectMs": 59,
+      "inferenceMs": 47.200000047683716,
+      "detections": 1
+    },
+    {
+      "index": 3,
+      "detectMs": 54.39999997615814,
+      "inferenceMs": 42.700000047683716,
+      "detections": 1
+    },
+    {
+      "index": 4,
+      "detectMs": 194.60000002384186,
+      "inferenceMs": 101.19999992847443,
+      "detections": 1
+    },
+    {
+      "index": 5,
+      "detectMs": 150.89999997615814,
+      "inferenceMs": 133.89999997615814,
+      "detections": 1
+    },
+    {
+      "index": 6,
+      "detectMs": 226.60000002384186,
+      "inferenceMs": 205.70000004768372,
+      "detections": 1
+    },
+    {
+      "index": 7,
+      "detectMs": 302.6999999284744,
+      "inferenceMs": 252.30000007152557,
+      "detections": 1
+    },
+    {
+      "index": 8,
+      "detectMs": 362.60000002384186,
+      "inferenceMs": 283.89999997615814,
+      "detections": 1
+    },
+    {
+      "index": 9,
+      "detectMs": 210.30000007152557,
+      "inferenceMs": 152.69999992847443,
+      "detections": 1
+    }
+  ],
+  "rows": [
+    {
+      "rowIndex": 0,
+      "sourceId": "2050",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 895,
+      "visibility": "visible",
+      "imageDecodeMs": 182.60000002384186,
+      "detectMs": 344.90000009536743,
+      "inferenceMs": 283.60000002384186,
+      "predictions": [],
+      "collectMs": 7.099999904632568,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "9b953f8c-12f6-4ddb-8ecb-e3d478b42992",
+        "viewport": {
+          "width": 1280,
+          "height": 895
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 895
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7632644,
+        "totalJSHeapSize": 14496788,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1,
+      "sourceId": "1075",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 48.10000002384186,
+      "detectMs": 166.59999990463257,
+      "inferenceMs": 133.20000004768372,
+      "predictions": [],
+      "collectMs": 30.90000009536743,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "d3f26c18-df33-4dc7-b7f1-a80499e69b25",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7670998,
+        "totalJSHeapSize": 14497186,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2,
+      "sourceId": "1150",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 128.79999995231628,
+      "detectMs": 235.40000009536743,
+      "inferenceMs": 148.5,
+      "predictions": [],
+      "collectMs": 1.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "585af353-13f4-4fb1-8113-a6db7c87d930",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7692104,
+        "totalJSHeapSize": 14497548,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3,
+      "sourceId": "2225",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3085,
+      "visibility": "visible",
+      "imageDecodeMs": 139.70000004768372,
+      "detectMs": 165.69999992847443,
+      "inferenceMs": 47.60000002384186,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "1fce8a77-ae49-4d68-ab4e-0099ee2e442d",
+        "viewport": {
+          "width": 1280,
+          "height": 3085
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3085
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7727200,
+        "totalJSHeapSize": 14497948,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4,
+      "sourceId": "1625",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 2705,
+      "visibility": "visible",
+      "imageDecodeMs": 41.60000002384186,
+      "detectMs": 105.39999997615814,
+      "inferenceMs": 56.299999952316284,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "1ae81f63-9f79-443f-8293-5b5c8b031b9f",
+        "viewport": {
+          "width": 1280,
+          "height": 2705
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 2705
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7746424,
+        "totalJSHeapSize": 14498348,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 5,
+      "sourceId": "1825",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3225,
+      "visibility": "visible",
+      "imageDecodeMs": 30.899999976158142,
+      "detectMs": 119.89999997615814,
+      "inferenceMs": 65.09999990463257,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "b3b7d673-84c8-4093-b1e8-4a68b618dd42",
+        "viewport": {
+          "width": 1280,
+          "height": 3225
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3225
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7771652,
+        "totalJSHeapSize": 14498748,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 6,
+      "sourceId": "2150",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1808,
+      "visibility": "visible",
+      "imageDecodeMs": 42.699999928474426,
+      "detectMs": 96.5,
+      "inferenceMs": 52.799999952316284,
+      "predictions": [],
+      "collectMs": 0.40000009536743164,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e080972b-0f1d-4ae3-8aaa-5c345e902fb2",
+        "viewport": {
+          "width": 1280,
+          "height": 1808
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1808
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7792816,
+        "totalJSHeapSize": 14499148,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 7,
+      "sourceId": "1225",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3060,
+      "visibility": "visible",
+      "imageDecodeMs": 33.199999928474426,
+      "detectMs": 115.89999997615814,
+      "inferenceMs": 71.10000002384186,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "dd701ff7-a586-4566-9fb7-c61f93f09a61",
+        "viewport": {
+          "width": 1280,
+          "height": 3060
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3060
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7823768,
+        "totalJSHeapSize": 14499548,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 8,
+      "sourceId": "2375",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 34.5,
+      "detectMs": 76.69999992847443,
+      "inferenceMs": 39.799999952316284,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "bd369fa8-58c4-4255-a412-a19688135a3c",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7848152,
+        "totalJSHeapSize": 14499948,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 9,
+      "sourceId": "1175",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 946,
+      "visibility": "visible",
+      "imageDecodeMs": 15.299999952316284,
+      "detectMs": 73.30000007152557,
+      "inferenceMs": 49.39999997615814,
+      "predictions": [],
+      "collectMs": 3.600000023841858,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "32ecdac2-6670-496f-a66d-bbe038dc1c3b",
+        "viewport": {
+          "width": 1280,
+          "height": 946
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 946
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7884794,
+        "totalJSHeapSize": 14500346,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 10,
+      "sourceId": "1925",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1863,
+      "visibility": "visible",
+      "imageDecodeMs": 15.300000071525574,
+      "detectMs": 118.29999995231628,
+      "inferenceMs": 57.300000071525574,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "b911625f-fd3a-45f7-bbb9-0866c492d272",
+        "viewport": {
+          "width": 1280,
+          "height": 1863
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1863
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7909882,
+        "totalJSHeapSize": 14500746,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 11,
+      "sourceId": "1525",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 2623,
+      "visibility": "visible",
+      "imageDecodeMs": 23.600000023841858,
+      "detectMs": 74.79999995231628,
+      "inferenceMs": 39.700000047683716,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a2548a8e-862a-4e55-9ca8-d439e4ef4f29",
+        "viewport": {
+          "width": 1280,
+          "height": 2623
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 2623
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7935278,
+        "totalJSHeapSize": 14501146,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 12,
+      "sourceId": "2250",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 950,
+      "visibility": "visible",
+      "imageDecodeMs": 16.5,
+      "detectMs": 56.60000002384186,
+      "inferenceMs": 43.299999952316284,
+      "predictions": [],
+      "collectMs": 0.19999992847442627,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2c2a5723-6e01-4295-8f24-cbf41863408d",
+        "viewport": {
+          "width": 1280,
+          "height": 950
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 950
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7961660,
+        "totalJSHeapSize": 14501544,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 13,
+      "sourceId": "1425",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1457,
+      "visibility": "visible",
+      "imageDecodeMs": 11.399999976158142,
+      "detectMs": 75.20000004768372,
+      "inferenceMs": 60.40000009536743,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "85da301c-8cbf-4c8c-90d2-3403bcc4d813",
+        "viewport": {
+          "width": 1280,
+          "height": 1457
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1457
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7989072,
+        "totalJSHeapSize": 14501944,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 14,
+      "sourceId": "1300",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 15.399999976158142,
+      "detectMs": 48.700000047683716,
+      "inferenceMs": 35.60000002384186,
+      "predictions": [],
+      "collectMs": 0.19999992847442627,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e8910de9-9eaf-4aee-a1ce-a101e4e5b565",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8017456,
+        "totalJSHeapSize": 14502344,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 15,
+      "sourceId": "1675",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 8.199999928474426,
+      "detectMs": 55.60000002384186,
+      "inferenceMs": 46.40000009536743,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "411ceb27-b881-4b43-aa7d-b62b744a42f7",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8046822,
+        "totalJSHeapSize": 14502742,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 16,
+      "sourceId": "2425",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 2482,
+      "visibility": "visible",
+      "imageDecodeMs": 24.5,
+      "detectMs": 83.10000002384186,
+      "inferenceMs": 45.39999997615814,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "b9b7d549-5d86-454d-b74f-6344bfa3f418",
+        "viewport": {
+          "width": 1280,
+          "height": 2482
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 2482
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8077198,
+        "totalJSHeapSize": 14503142,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 17,
+      "sourceId": "1900",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1825,
+      "visibility": "visible",
+      "imageDecodeMs": 19.100000023841858,
+      "detectMs": 57.89999997615814,
+      "inferenceMs": 34.799999952316284,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "bbabf495-3c1d-410a-99e3-29314152e4eb",
+        "viewport": {
+          "width": 1280,
+          "height": 1825
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1825
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8108542,
+        "totalJSHeapSize": 14503542,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 18,
+      "sourceId": "1075",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 10.5,
+      "detectMs": 58.60000002384186,
+      "inferenceMs": 49,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "44e924f3-4cfa-404a-ae6d-51b95da4b59f",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8141036,
+        "totalJSHeapSize": 14503940,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 19,
+      "sourceId": "1075",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 7.600000023841858,
+      "detectMs": 96.70000004768372,
+      "inferenceMs": 77,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "787d9b61-c928-4866-8be2-6e32b91be298",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8174246,
+        "totalJSHeapSize": 14504302,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1000,
+      "sourceId": "1314",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 62,
+      "detectMs": 148.80000007152557,
+      "inferenceMs": 104.30000007152557,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "857379d0-5208-45f1-b48e-0a57930463af",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8208490,
+        "totalJSHeapSize": 14504702,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1001,
+      "sourceId": "1314",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 182.60000002384186,
+      "detectMs": 444.7999999523163,
+      "inferenceMs": 253.60000002384186,
+      "predictions": [],
+      "collectMs": 3.299999952316284,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "8d5fc13b-7a0b-49ec-9201-f8101312e22f",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8243882,
+        "totalJSHeapSize": 14505066,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1002,
+      "sourceId": "1314",
+      "variant": "partial_02",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 112.39999997615814,
+      "detectMs": 568.8999999761581,
+      "inferenceMs": 408.2999999523163,
+      "predictions": [],
+      "collectMs": 6.899999976158142,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "ccae1886-8923-467b-8db5-550fde75ab0d",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8289330,
+        "totalJSHeapSize": 14505430,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1003,
+      "sourceId": "1314",
+      "variant": "partial_03",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 182.89999997615814,
+      "detectMs": 430.2999999523163,
+      "inferenceMs": 262.7999999523163,
+      "predictions": [],
+      "collectMs": 0.7999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "47c01d21-cd0a-4d93-bc0a-3fa6c505eca2",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8327210,
+        "totalJSHeapSize": 14505794,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1004,
+      "sourceId": "1314",
+      "variant": "partial_04",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 174.69999992847443,
+      "detectMs": 199.20000004768372,
+      "inferenceMs": 97.70000004768372,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "3a18f675-e098-431f-8854-07deccec660d",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8366870,
+        "totalJSHeapSize": 14506158,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1005,
+      "sourceId": "1314",
+      "variant": "partial_05",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 16.299999952316284,
+      "detectMs": 52.89999997615814,
+      "inferenceMs": 37.60000002384186,
+      "predictions": [],
+      "collectMs": 0.7000000476837158,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "ded84a2c-f190-433c-9396-0f376f37a53c",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8417834,
+        "totalJSHeapSize": 14506522,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1006,
+      "sourceId": "1314",
+      "variant": "partial_06",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 21.100000023841858,
+      "detectMs": 98,
+      "inferenceMs": 61.700000047683716,
+      "predictions": [],
+      "collectMs": 0.6999999284744263,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "28f00210-a76f-465e-8f7f-c954f0c7d149",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8457774,
+        "totalJSHeapSize": 14506886,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1007,
+      "sourceId": "1314",
+      "variant": "partial_07",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 21.700000047683716,
+      "detectMs": 57.39999997615814,
+      "inferenceMs": 38.799999952316284,
+      "predictions": [],
+      "collectMs": 0.8999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "f1990cda-7164-47a0-b9e9-4ae4d4a882e4",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8498718,
+        "totalJSHeapSize": 14507250,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1008,
+      "sourceId": "1314",
+      "variant": "partial_08",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 22,
+      "detectMs": 87.79999995231628,
+      "inferenceMs": 43.60000002384186,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "c624d1d9-54b4-49c3-b15b-852108ad0129",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8540658,
+        "totalJSHeapSize": 14769758,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1009,
+      "sourceId": "1315",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 21.899999976158142,
+      "detectMs": 74.79999995231628,
+      "inferenceMs": 52.800000071525574,
+      "predictions": [],
+      "collectMs": 0.6000000238418579,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "5a148538-c1d8-4c9b-8093-44b5daafc0a4",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8583582,
+        "totalJSHeapSize": 14770122,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1010,
+      "sourceId": "1315",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 28.300000071525574,
+      "detectMs": 69.70000004768372,
+      "inferenceMs": 35.39999997615814,
+      "predictions": [],
+      "collectMs": 0.6999999284744263,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "f04c2f5e-6087-4aef-8eb9-c94e3b54b049",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8627482,
+        "totalJSHeapSize": 14770486,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1011,
+      "sourceId": "1315",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 25.399999976158142,
+      "detectMs": 67.5,
+      "inferenceMs": 47.299999952316284,
+      "predictions": [],
+      "collectMs": 0.8999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "3cebbc68-fdb7-4d62-9293-6b5828dac6fb",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8672406,
+        "totalJSHeapSize": 14770850,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1012,
+      "sourceId": "1315",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 26.600000023841858,
+      "detectMs": 175.80000007152557,
+      "inferenceMs": 97.09999990463257,
+      "predictions": [],
+      "collectMs": 0.5999999046325684,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "7b3dc4dd-1f8d-4ad6-bafc-587a851eca5c",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8718322,
+        "totalJSHeapSize": 14771214,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1013,
+      "sourceId": "1315",
+      "variant": "partial_02",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 30.399999976158142,
+      "detectMs": 71.69999992847443,
+      "inferenceMs": 44.90000009536743,
+      "predictions": [],
+      "collectMs": 0.6000000238418579,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "556f57bc-584a-41d2-986b-14a28bc210a9",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8765210,
+        "totalJSHeapSize": 14771578,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1014,
+      "sourceId": "1315",
+      "variant": "partial_03",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 26.299999952316284,
+      "detectMs": 68.09999990463257,
+      "inferenceMs": 42.700000047683716,
+      "predictions": [],
+      "collectMs": 0.7000000476837158,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "60f716ce-28f8-4fff-8c7b-e38928f3a988",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8843590,
+        "totalJSHeapSize": 15034086,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1015,
+      "sourceId": "1315",
+      "variant": "partial_04",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 28.100000023841858,
+      "detectMs": 143.60000002384186,
+      "inferenceMs": 113.79999995231628,
+      "predictions": [],
+      "collectMs": 0.8999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "8ab0d9d7-daf5-484c-a6a7-62639f9e9edd",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8892526,
+        "totalJSHeapSize": 15034450,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1016,
+      "sourceId": "1315",
+      "variant": "partial_05",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 121.39999997615814,
+      "detectMs": 70.89999997615814,
+      "inferenceMs": 51.09999990463257,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "5c10ce5b-f462-40b9-9bb1-6365cea28191",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8942466,
+        "totalJSHeapSize": 15034814,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1017,
+      "sourceId": "1315",
+      "variant": "partial_06",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 49,
+      "detectMs": 90,
+      "inferenceMs": 61.10000002384186,
+      "predictions": [],
+      "collectMs": 0.6000000238418579,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "4045fb79-e0c2-45c3-b450-51ce06f67a02",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8993414,
+        "totalJSHeapSize": 15035178,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1018,
+      "sourceId": "1315",
+      "variant": "partial_07",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 45.199999928474426,
+      "detectMs": 128.20000004768372,
+      "inferenceMs": 65,
+      "predictions": [],
+      "collectMs": 0.7000000476837158,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e7cddf4e-e754-49fb-8df1-569a84ae3682",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 9045310,
+        "totalJSHeapSize": 15035542,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 1019,
+      "sourceId": "1315",
+      "variant": "partial_08",
+      "expectedWidth": 1280,
+      "expectedHeight": 1455,
+      "visibility": "visible",
+      "imageDecodeMs": 52.10000002384186,
+      "detectMs": 77,
+      "inferenceMs": 48.5,
+      "predictions": [],
+      "collectMs": 24.299999952316284,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "f0111805-4aea-4245-8d84-7f1f6c1851db",
+        "viewport": {
+          "width": 1280,
+          "height": 1455
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1455
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 9113342,
+        "totalJSHeapSize": 15199746,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2000,
+      "sourceId": "1408",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 37.200000047683716,
+      "detectMs": 81.79999995231628,
+      "inferenceMs": 45.699999928474426,
+      "predictions": [],
+      "collectMs": 0.7000000476837158,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "7dffff79-df21-42f4-af5a-db1325a60352",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 9168638,
+        "totalJSHeapSize": 15200146,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2001,
+      "sourceId": "1408",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 40.39999997615814,
+      "detectMs": 85.69999992847443,
+      "inferenceMs": 58.5,
+      "predictions": [],
+      "collectMs": 1.3000000715255737,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e01cff20-b3b5-44c3-bddf-4247f46ec79b",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 9223526,
+        "totalJSHeapSize": 15298814,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2002,
+      "sourceId": "1408",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 139.10000002384186,
+      "detectMs": 53.5,
+      "inferenceMs": 34.89999997615814,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "42e5d1ff-8e3f-4197-96bc-94cbdcef383d",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7488538,
+        "totalJSHeapSize": 8988034,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2003,
+      "sourceId": "1408",
+      "variant": "partial_02",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 21.600000023841858,
+      "detectMs": 54.59999990463257,
+      "inferenceMs": 37.90000009536743,
+      "predictions": [],
+      "collectMs": 0.40000009536743164,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "159c4148-7796-493d-aa4e-c672e4164839",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7545439,
+        "totalJSHeapSize": 8988407,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2004,
+      "sourceId": "1408",
+      "variant": "partial_03",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 12.899999976158142,
+      "detectMs": 63,
+      "inferenceMs": 43.5,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "209764d8-01a8-4bfc-b8ed-28fecdac0c75",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7604563,
+        "totalJSHeapSize": 8988771,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2005,
+      "sourceId": "1408",
+      "variant": "partial_04",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 21.300000071525574,
+      "detectMs": 505,
+      "inferenceMs": 482,
+      "predictions": [],
+      "collectMs": 2,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "074af3b3-d2cf-4d9d-a612-e3f2bd024b71",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7663387,
+        "totalJSHeapSize": 8989135,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2006,
+      "sourceId": "1408",
+      "variant": "partial_05",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 67.59999990463257,
+      "detectMs": 277.2999999523163,
+      "inferenceMs": 221.60000002384186,
+      "predictions": [],
+      "collectMs": 3,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "0f6e5f26-41e9-4678-96b7-c2281a6f7edc",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7723171,
+        "totalJSHeapSize": 8989499,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2007,
+      "sourceId": "1408",
+      "variant": "partial_06",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 103.80000007152557,
+      "detectMs": 271.89999997615814,
+      "inferenceMs": 194.10000002384186,
+      "predictions": [],
+      "collectMs": 0.6000000238418579,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "b423981e-9274-40e7-9752-238b762dca33",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7804767,
+        "totalJSHeapSize": 9252007,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2008,
+      "sourceId": "1408",
+      "variant": "partial_07",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 113.60000002384186,
+      "detectMs": 147,
+      "inferenceMs": 115.89999997615814,
+      "predictions": [],
+      "collectMs": 1.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "30850799-a33b-4645-ab24-936f177b444a",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7871355,
+        "totalJSHeapSize": 9252371,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2009,
+      "sourceId": "1409",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 112,
+      "detectMs": 138.30000007152557,
+      "inferenceMs": 92.39999997615814,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "bb5a88a4-97f0-489d-bab6-4725a847fead",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7934341,
+        "totalJSHeapSize": 9252757,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2010,
+      "sourceId": "1409",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 44.59999990463257,
+      "detectMs": 323.10000002384186,
+      "inferenceMs": 98.20000004768372,
+      "predictions": [],
+      "collectMs": 0.6000000238418579,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "110d8b79-448c-4dff-aefa-bdb17f8606de",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7998269,
+        "totalJSHeapSize": 9253121,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2011,
+      "sourceId": "1409",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 86.10000002384186,
+      "detectMs": 146.60000002384186,
+      "inferenceMs": 87.39999997615814,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "011fdec9-7b58-4220-818b-83c48ae9a910",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8077073,
+        "totalJSHeapSize": 9515629,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2012,
+      "sourceId": "1409",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 45.39999997615814,
+      "detectMs": 140.69999992847443,
+      "inferenceMs": 79.60000002384186,
+      "predictions": [],
+      "collectMs": 1.399999976158142,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a75b93d4-63b2-437e-ba93-7e80f40de630",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8142785,
+        "totalJSHeapSize": 9515993,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2013,
+      "sourceId": "1409",
+      "variant": "partial_02",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 375.2999999523163,
+      "detectMs": 140.29999995231628,
+      "inferenceMs": 99.39999997615814,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "d3df71b6-6034-4e4b-b369-f61bd77d3c6e",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8212949,
+        "totalJSHeapSize": 9516357,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2014,
+      "sourceId": "1409",
+      "variant": "partial_03",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 95.29999995231628,
+      "detectMs": 264.2999999523163,
+      "inferenceMs": 117.39999997615814,
+      "predictions": [],
+      "collectMs": 1,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "800f010c-0afd-482b-99de-7a4d9b82089b",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8280829,
+        "totalJSHeapSize": 9615025,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2015,
+      "sourceId": "1409",
+      "variant": "partial_04",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 95.5,
+      "detectMs": 95.69999992847443,
+      "inferenceMs": 36.800000071525574,
+      "predictions": [],
+      "collectMs": 0.8000000715255737,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "3a95f957-3109-438a-8e03-5b6529b6dbf5",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8349545,
+        "totalJSHeapSize": 9615389,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2016,
+      "sourceId": "1409",
+      "variant": "partial_05",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 22.5,
+      "detectMs": 53.800000071525574,
+      "inferenceMs": 37.300000071525574,
+      "predictions": [],
+      "collectMs": 0.6999999284744263,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "8835c331-d0b6-40a2-ad80-8048dfb69eae",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7560709,
+        "totalJSHeapSize": 8993161,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2017,
+      "sourceId": "1409",
+      "variant": "partial_06",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 35.700000047683716,
+      "detectMs": 161.69999992847443,
+      "inferenceMs": 111.70000004768372,
+      "predictions": [],
+      "collectMs": 0.6000000238418579,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "49d62ff4-6f88-4624-b205-f3c55e380790",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7631169,
+        "totalJSHeapSize": 8993525,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2018,
+      "sourceId": "1409",
+      "variant": "partial_07",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 131.80000007152557,
+      "detectMs": 158.89999997615814,
+      "inferenceMs": 96.89999997615814,
+      "predictions": [],
+      "collectMs": 0.7999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "eb18973f-0675-44d1-a6bd-7c84ff2be596",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7702633,
+        "totalJSHeapSize": 8993889,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 2019,
+      "sourceId": "1410",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 1212,
+      "visibility": "visible",
+      "imageDecodeMs": 29.199999928474426,
+      "detectMs": 95.80000007152557,
+      "inferenceMs": 64.5,
+      "predictions": [],
+      "collectMs": 0.8000000715255737,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a77e0a57-12d1-4f19-ad35-ad21d767db53",
+        "viewport": {
+          "width": 1280,
+          "height": 1212
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 1212
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7775101,
+        "totalJSHeapSize": 9256397,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3000,
+      "sourceId": "1720",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 35.10000002384186,
+      "detectMs": 231.89999997615814,
+      "inferenceMs": 203.40000009536743,
+      "predictions": [],
+      "collectMs": 1,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "49819822-041f-4788-8ff2-27bb99ff2d93",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7848643,
+        "totalJSHeapSize": 9256795,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3001,
+      "sourceId": "1720",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 35.5,
+      "detectMs": 507.60000002384186,
+      "inferenceMs": 487.7999999523163,
+      "predictions": [],
+      "collectMs": 0.7000000476837158,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "aee09d42-d3e3-40e8-9750-0501f583e9f9",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7923065,
+        "totalJSHeapSize": 9257157,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3002,
+      "sourceId": "1720",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 77.19999992847443,
+      "detectMs": 188.09999990463257,
+      "inferenceMs": 167.29999995231628,
+      "predictions": [],
+      "collectMs": 2.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "6dbdbd3a-e133-4110-b1da-d987f17069f5",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7998455,
+        "totalJSHeapSize": 9257519,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3003,
+      "sourceId": "1720",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 83.89999997615814,
+      "detectMs": 204.09999990463257,
+      "inferenceMs": 157.39999997615814,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "352860b5-146e-43f5-b4f7-f2f2abd54d05",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8109673,
+        "totalJSHeapSize": 9520025,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3004,
+      "sourceId": "1720",
+      "variant": "partial_02",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 92.70000004768372,
+      "detectMs": 261.5,
+      "inferenceMs": 212.89999997615814,
+      "predictions": [],
+      "collectMs": 2.100000023841858,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "6de34be7-1dc8-4964-bb10-48506c8ec45b",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8187079,
+        "totalJSHeapSize": 9520387,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3005,
+      "sourceId": "1720",
+      "variant": "partial_03",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 32.5,
+      "detectMs": 158,
+      "inferenceMs": 126.10000002384186,
+      "predictions": [],
+      "collectMs": 0.6999999284744263,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2a9bdfae-ed87-4b06-b7a0-8bfa36983555",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8265473,
+        "totalJSHeapSize": 9520749,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3006,
+      "sourceId": "1720",
+      "variant": "partial_04",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 114,
+      "detectMs": 162.5,
+      "inferenceMs": 121.10000002384186,
+      "predictions": [],
+      "collectMs": 0.8000000715255737,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "6981318c-33ee-4a7d-afa3-edfaac6e2a16",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8376355,
+        "totalJSHeapSize": 9652183,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3007,
+      "sourceId": "1720",
+      "variant": "partial_05",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 20.800000071525574,
+      "detectMs": 97.39999997615814,
+      "inferenceMs": 61.60000002384186,
+      "predictions": [],
+      "collectMs": 1.3000000715255737,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "c57f1b4d-cd89-464e-ae56-20a861ffed7a",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7576381,
+        "totalJSHeapSize": 8997185,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3008,
+      "sourceId": "1721",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 15.700000047683716,
+      "detectMs": 115.89999997615814,
+      "inferenceMs": 104.09999990463257,
+      "predictions": [],
+      "collectMs": 0.7999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "861dbaac-b62b-4736-85ae-21fc1abf1715",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7657731,
+        "totalJSHeapSize": 8997551,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3009,
+      "sourceId": "1721",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 40.200000047683716,
+      "detectMs": 268,
+      "inferenceMs": 188.10000002384186,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "9dfad4de-7b14-4e2f-ba2f-f57d5af2ce41",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7740257,
+        "totalJSHeapSize": 8997913,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3010,
+      "sourceId": "1721",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 131.5,
+      "detectMs": 369.39999997615814,
+      "inferenceMs": 261.8000000715256,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a09f4d0a-5f51-4de3-9ce8-89899ef18c07",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7872507,
+        "totalJSHeapSize": 9260419,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3011,
+      "sourceId": "1721",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 35.60000002384186,
+      "detectMs": 227.39999997615814,
+      "inferenceMs": 207.59999990463257,
+      "predictions": [],
+      "collectMs": 0.19999992847442627,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "9abf5979-b5dc-405b-aeab-2d7d87860a63",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7956821,
+        "totalJSHeapSize": 9260781,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3012,
+      "sourceId": "1721",
+      "variant": "partial_02",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 38.800000071525574,
+      "detectMs": 77.39999997615814,
+      "inferenceMs": 51.89999997615814,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "c978c980-b056-48f2-9289-d42482f00f35",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8042923,
+        "totalJSHeapSize": 9261143,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3013,
+      "sourceId": "1721",
+      "variant": "partial_03",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 10.399999976158142,
+      "detectMs": 48.09999990463257,
+      "inferenceMs": 40.5,
+      "predictions": [],
+      "collectMs": 0.40000009536743164,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "005e2eb8-ef14-4326-a258-2478ec20c432",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8139769,
+        "totalJSHeapSize": 9523649,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3014,
+      "sourceId": "1721",
+      "variant": "partial_04",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 7.099999904632568,
+      "detectMs": 51.799999952316284,
+      "inferenceMs": 42.60000002384186,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "087dc404-5e18-4214-bf06-a3f2e1242019",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8227067,
+        "totalJSHeapSize": 9524011,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3015,
+      "sourceId": "1721",
+      "variant": "partial_05",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 5.800000071525574,
+      "detectMs": 80.79999995231628,
+      "inferenceMs": 67.29999995231628,
+      "predictions": [],
+      "collectMs": 13.700000047683716,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "64b8e3b7-9936-4045-b929-fd26bb6fa28f",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8315377,
+        "totalJSHeapSize": 9524373,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3016,
+      "sourceId": "1722",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 13.399999976158142,
+      "detectMs": 62.39999997615814,
+      "inferenceMs": 46.89999997615814,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2be60867-fa63-42d1-aa28-36522b504db8",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 8406503,
+        "totalJSHeapSize": 9639423,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3017,
+      "sourceId": "1722",
+      "variant": "empty",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 10.099999904632568,
+      "detectMs": 64.70000004768372,
+      "inferenceMs": 39.800000071525574,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "1a9d39b0-176d-4835-96e0-fa0433dbaddc",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7619721,
+        "totalJSHeapSize": 9000809,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3018,
+      "sourceId": "1722",
+      "variant": "partial_00",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 6.899999976158142,
+      "detectMs": 56.700000047683716,
+      "inferenceMs": 46.90000009536743,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "55335c47-f711-435a-89eb-a37436be259f",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7711042,
+        "totalJSHeapSize": 9001174,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 3019,
+      "sourceId": "1722",
+      "variant": "partial_01",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 9.800000071525574,
+      "detectMs": 86.20000004768372,
+      "inferenceMs": 74.80000007152557,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a9256528-06ea-4444-8c4b-3ed4a6660cd5",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7803332,
+        "totalJSHeapSize": 9001536,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4381,
+      "sourceId": "2373",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 12.100000023841858,
+      "detectMs": 67.89999997615814,
+      "inferenceMs": 49.800000071525574,
+      "predictions": [],
+      "collectMs": 0.19999992847442627,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e3f0dd7a-4734-48a2-a055-eaf8a26178bc",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7898842,
+        "totalJSHeapSize": 9264042,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4382,
+      "sourceId": "2374",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 800,
+      "visibility": "visible",
+      "imageDecodeMs": 8.899999976158142,
+      "detectMs": 61.89999997615814,
+      "inferenceMs": 44.5,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "a8b8b994-eb4c-4f49-8f91-b4d19316a3d5",
+        "viewport": {
+          "width": 1280,
+          "height": 800
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 800
+            }
+          }
+        ]
+      },
+      "payloadBytes": 213,
+      "heap": {
+        "usedJSHeapSize": 7993144,
+        "totalJSHeapSize": 9264404,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4383,
+      "sourceId": "2376",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 29.200000047683716,
+      "detectMs": 137.39999997615814,
+      "inferenceMs": 58.200000047683716,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "c8110907-2a6d-4239-a6ba-decb0bcf2b45",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7522223,
+        "totalJSHeapSize": 9777539,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4384,
+      "sourceId": "2377",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 25.399999976158142,
+      "detectMs": 139.20000004768372,
+      "inferenceMs": 42.89999997615814,
+      "predictions": [],
+      "collectMs": 0.5,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "c4fe85b3-2631-432f-8e21-89c57a76c7a7",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7522921,
+        "totalJSHeapSize": 9515465,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4385,
+      "sourceId": "2378",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 31.700000047683716,
+      "detectMs": 106.80000007152557,
+      "inferenceMs": 57.699999928474426,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "049183b9-ae96-4cb0-869b-bf5fc8ab4e52",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7621198,
+        "totalJSHeapSize": 9515838,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4386,
+      "sourceId": "2379",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 34.10000002384186,
+      "detectMs": 142.20000004768372,
+      "inferenceMs": 89.19999992847443,
+      "predictions": [],
+      "collectMs": 2.100000023841858,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2042a046-08a2-4db2-89b1-4163bda34d1b",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7719454,
+        "totalJSHeapSize": 9516202,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4387,
+      "sourceId": "2380",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 180.5,
+      "detectMs": 95.30000007152557,
+      "inferenceMs": 65.89999997615814,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "b501ec42-35e8-4ccc-834c-8c96fcc9a29c",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7879830,
+        "totalJSHeapSize": 9516566,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4388,
+      "sourceId": "2381",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 27.700000047683716,
+      "detectMs": 123.30000007152557,
+      "inferenceMs": 69.09999990463257,
+      "predictions": [],
+      "collectMs": 0.5999999046325684,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "799058be-4d71-4a0d-92f2-d8550cd79501",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7980290,
+        "totalJSHeapSize": 9516930,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4389,
+      "sourceId": "2382",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 41.299999952316284,
+      "detectMs": 119.20000004768372,
+      "inferenceMs": 73.19999992847443,
+      "predictions": [],
+      "collectMs": 1,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2905076e-85bc-4de5-863c-37ffb5ac3b09",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8144850,
+        "totalJSHeapSize": 9517294,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4390,
+      "sourceId": "2383",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 28.100000023841858,
+      "detectMs": 156.5,
+      "inferenceMs": 112.89999997615814,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "bfa3466e-da4a-4be5-99a1-65d802a49dcf",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8247082,
+        "totalJSHeapSize": 9517658,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4391,
+      "sourceId": "2384",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 72.59999990463257,
+      "detectMs": 142,
+      "inferenceMs": 64.79999995231628,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "8cf29e89-e4ce-4bc4-8a71-d11931837560",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8410214,
+        "totalJSHeapSize": 9763782,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4392,
+      "sourceId": "2385",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 32.39999997615814,
+      "detectMs": 172,
+      "inferenceMs": 115.79999995231628,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "b646c116-9162-47b2-b264-8ac64dde9af6",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8514626,
+        "totalJSHeapSize": 9764146,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4393,
+      "sourceId": "2386",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 69.80000007152557,
+      "detectMs": 95.70000004768372,
+      "inferenceMs": 57.89999997615814,
+      "predictions": [],
+      "collectMs": 1.2000000476837158,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "d8080c81-cc49-491b-bc80-149872c3560e",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7694486,
+        "totalJSHeapSize": 8994462,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4394,
+      "sourceId": "2387",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 22.600000023841858,
+      "detectMs": 170.19999992847443,
+      "inferenceMs": 61.5,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "76ab5e5d-8082-4e00-bb9d-ea55b41f86dc",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7890506,
+        "totalJSHeapSize": 9256970,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4395,
+      "sourceId": "2388",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 25.299999952316284,
+      "detectMs": 107.30000007152557,
+      "inferenceMs": 69.30000007152557,
+      "predictions": [],
+      "collectMs": 0.5999999046325684,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "69c5972f-4080-4e59-8db6-1453123db0db",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7997654,
+        "totalJSHeapSize": 9257334,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4396,
+      "sourceId": "2389",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 25.299999952316284,
+      "detectMs": 99.29999995231628,
+      "inferenceMs": 41.10000002384186,
+      "predictions": [],
+      "collectMs": 0.20000004768371582,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "737da62a-ec4d-4675-bb18-6f47ac45d2ff",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8155674,
+        "totalJSHeapSize": 9519842,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4397,
+      "sourceId": "2390",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 23,
+      "detectMs": 119.69999992847443,
+      "inferenceMs": 77.59999990463257,
+      "predictions": [],
+      "collectMs": 0.30000007152557373,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "e910f12f-ca13-4fa5-bfdb-66bfb697a016",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8264842,
+        "totalJSHeapSize": 9520206,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4398,
+      "sourceId": "2391",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 125.29999995231628,
+      "detectMs": 73.39999997615814,
+      "inferenceMs": 39.700000047683716,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "9446008d-5888-4307-9249-d5e4d139f04b",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8420634,
+        "totalJSHeapSize": 9766330,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4399,
+      "sourceId": "2392",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 21.199999928474426,
+      "detectMs": 113,
+      "inferenceMs": 40.5,
+      "predictions": [],
+      "collectMs": 0.3999999761581421,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "2bbcaf07-145f-4713-95e7-32fe2264f3a3",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 8531994,
+        "totalJSHeapSize": 9766694,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    },
+    {
+      "rowIndex": 4400,
+      "sourceId": "2393",
+      "variant": "full",
+      "expectedWidth": 1280,
+      "expectedHeight": 3020,
+      "visibility": "visible",
+      "imageDecodeMs": 30.899999976158142,
+      "detectMs": 135.89999997615814,
+      "inferenceMs": 49.89999997615814,
+      "predictions": [],
+      "collectMs": 0.2999999523162842,
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "48053814-b33e-478f-a361-2dd64acd94f7",
+        "viewport": {
+          "width": 1280,
+          "height": 3020
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "media",
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 3020
+            }
+          }
+        ]
+      },
+      "payloadBytes": 215,
+      "heap": {
+        "usedJSHeapSize": 7531649,
+        "totalJSHeapSize": 8992417,
+        "jsHeapSizeLimit": 4395630592
+      },
+      "ok": true
+    }
+  ],
+  "limitations": [
+    "No source DOM or model-server request",
+    "Not native extension or full-flow latency",
+    "JS heap excludes total process memory, and may be bucketed",
+    "Long tasks are main-thread events, not process CPU utilization",
+    "100 ordered test rows can include related variants; not a random population sample"
+  ],
+  "manifestSha256": "c71e4c76a0c2bf51d382792b85a3cea5f5e3b6a24791e1b7bc777fac48b600c3",
+  "dataset": {
+    "name": "WebPII/webpii",
+    "revision": "6d3317721b72bde719a361c564ceaf1fbded3a8e",
+    "rows": 100,
+    "offsets": [
+      0,
+      1000,
+      2000,
+      3000,
+      4381
+    ]
+  },
+  "detectorCreationMs": 308.1999999284744,
+  "heapAfterDetector": {
+    "usedJSHeapSize": 13642058,
+    "totalJSHeapSize": 15769310,
+    "jsHeapSizeLimit": 4395630592
+  },
+  "finishedAt": "2026-09-10T05:24:41.558Z",
+  "heapEnd": {
+    "usedJSHeapSize": 7531649,
+    "totalJSHeapSize": 8992417,
+    "jsHeapSizeLimit": 4395630592
+  },
+  "resources": [],
+  "heapAfterDispose": {
+    "usedJSHeapSize": 7531649,
+    "totalJSHeapSize": 8992417,
+    "jsHeapSizeLimit": 4395630592
+  },
+  "longTasks": [
+    {
+      "startTime": 889.1000000238419,
+      "duration": 57,
+      "name": "self"
+    },
+    {
+      "startTime": 3638,
+      "duration": 58,
+      "name": "self"
+    },
+    {
+      "startTime": 4051.2000000476837,
+      "duration": 116,
+      "name": "self"
+    },
+    {
+      "startTime": 5073.400000095367,
+      "duration": 59,
+      "name": "self"
+    },
+    {
+      "startTime": 6442.200000047684,
+      "duration": 109,
+      "name": "self"
+    },
+    {
+      "startTime": 7020.700000047684,
+      "duration": 119,
+      "name": "self"
+    },
+    {
+      "startTime": 7828.600000023842,
+      "duration": 143,
+      "name": "self"
+    },
+    {
+      "startTime": 8276.400000095367,
+      "duration": 56,
+      "name": "self"
+    },
+    {
+      "startTime": 8481.5,
+      "duration": 93,
+      "name": "self"
+    },
+    {
+      "startTime": 12482.5,
+      "duration": 63,
+      "name": "self"
+    },
+    {
+      "startTime": 12783.700000047684,
+      "duration": 50,
+      "name": "self"
+    },
+    {
+      "startTime": 13087.800000071526,
+      "duration": 83,
+      "name": "same-origin-descendant"
+    },
+    {
+      "startTime": 13384.600000023842,
+      "duration": 188,
+      "name": "self"
+    },
+    {
+      "startTime": 14355.5,
+      "duration": 101,
+      "name": "same-origin-descendant"
+    },
+    {
+      "startTime": 14827.400000095367,
+      "duration": 89,
+      "name": "self"
+    },
+    {
+      "startTime": 18748,
+      "duration": 57,
+      "name": "self"
+    },
+    {
+      "startTime": 19273.5,
+      "duration": 92,
+      "name": "self"
+    },
+    {
+      "startTime": 20855.300000071526,
+      "duration": 51,
+      "name": "self"
+    },
+    {
+      "startTime": 21021,
+      "duration": 76,
+      "name": "self"
+    },
+    {
+      "startTime": 21804.5,
+      "duration": 50,
+      "name": "self"
+    },
+    {
+      "startTime": 22367.900000095367,
+      "duration": 73,
+      "name": "self"
+    },
+    {
+      "startTime": 22546.900000095367,
+      "duration": 52,
+      "name": "self"
+    },
+    {
+      "startTime": 22914.800000071526,
+      "duration": 94,
+      "name": "self"
+    },
+    {
+      "startTime": 23253.800000071526,
+      "duration": 55,
+      "name": "self"
+    },
+    {
+      "startTime": 23738.900000095367,
+      "duration": 70,
+      "name": "self"
+    }
+  ],
+  "completedAt": "2026-09-10T05:24:41.559Z"
+}

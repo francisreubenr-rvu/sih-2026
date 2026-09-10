@@ -1,0 +1,13 @@
+{
+  "frozen_at": "2026-09-10T05:21:49.034749+00:00",
+  "reason": "Correct fixture viewport CSS and reject geometry mismatch; same images, annotations and detector",
+  "files": {
+    "Prototype/shared/vision.mjs": "0cb201e7c4bb9d403a8e22c3106cb9763958b445267f71d69292073869c4ccfc",
+    "Prototype/shared/privacy.mjs": "55cbcd813e6c7e9afe860a318a937169543346bb2aa7ad2f7e5f0a2bdf0229b6",
+    "Prototype/shared/page-agent.mjs": "6e22900f27102ec0050af778b1d52dc8457ce38a23d31530f4122e882cfac0b3",
+    "Prototype/app/benchmark.mjs": "31c8c20314fa46f244259685579b469b2e4180c1b4c4795f0d2f8623c5e73b1e",
+    "Prototype/app/benchmark.css": "f85e5631d6aed7a208a48ae5b2e30f187c7767da6199f53d8eb5362924ab0c25",
+    "scripts/score-raster-benchmark.py": "d5bcfa5c5375cea91a94f77e46c0098d563b35f887e6467b4598cc26db66a130",
+    "Raw/datasets/webpii-test100/annotations.json": "c71e4c76a0c2bf51d382792b85a3cea5f5e3b6a24791e1b7bc777fac48b600c3"
+  }
+}

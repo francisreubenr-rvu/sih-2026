@@ -1,0 +1,15 @@
+{
+  "frozen_at": "2026-09-10T05:17:44.593708+00:00",
+  "phase": "before first evaluation",
+  "files": {
+    "Prototype/shared/vision.mjs": "0cb201e7c4bb9d403a8e22c3106cb9763958b445267f71d69292073869c4ccfc",
+    "Prototype/shared/privacy.mjs": "55cbcd813e6c7e9afe860a318a937169543346bb2aa7ad2f7e5f0a2bdf0229b6",
+    "Prototype/shared/page-agent.mjs": "6e22900f27102ec0050af778b1d52dc8457ce38a23d31530f4122e882cfac0b3",
+    "Prototype/shared/protocol.mjs": "b370175a020d206e284886be21a49775e023c1bfcbaaabf30daeecb88f47ff77",
+    "Prototype/models/ultraface-rfb320.onnx": "22bd2fbe053a8e54d54b44b25901f0f6260059ac9ae7d3cc8720f5f7c0d936fa",
+    "Prototype/app/benchmark.mjs": "65cb257169199be9bf1743e9939599dd860653321825adff9018ff9624ccc7a8",
+    "Benchmarks/datasets/webpii-test100-contract.md": "666623e4efc3f14cde17b63f056c1605f3292e54de87cd5a79a570305dc838e0",
+    "Raw/datasets/webpii-test100/annotations.json": "c71e4c76a0c2bf51d382792b85a3cea5f5e3b6a24791e1b7bc777fac48b600c3",
+    "scripts/score-raster-benchmark.py": "f17596f68427e29030be81fd23cba457ff9f50c1e50ba67a83204a5d95679f1c"
+  }
+}

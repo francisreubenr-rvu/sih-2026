@@ -1,0 +1,12 @@
+test_clipping_uses_pixel_bounds (test_score_raster.ScoringTests.test_clipping_uses_pixel_bounds) ... ok
+test_disjoint_and_empty (test_score_raster.ScoringTests.test_disjoint_and_empty) ... ok
+test_duplicate_prediction_is_false_positive (test_score_raster.ScoringTests.test_duplicate_prediction_is_false_positive) ... ok
+test_low_overlap_is_not_detection (test_score_raster.ScoringTests.test_low_overlap_is_not_detection) ... ok
+test_missed_annotation_stays_false_negative (test_score_raster.ScoringTests.test_missed_annotation_stays_false_negative) ... ok
+test_nested_box_does_not_inflate_coverage (test_score_raster.ScoringTests.test_nested_box_does_not_inflate_coverage) ... ok
+test_overlap_is_counted_once (test_score_raster.ScoringTests.test_overlap_is_counted_once) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.000s
+
+OK

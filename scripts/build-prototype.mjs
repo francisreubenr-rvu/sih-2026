@@ -8,3 +8,5 @@ for(const file of ['ort.wasm.min.mjs','ort-wasm-simd-threaded.mjs','ort-wasm-sim
 await copyFile(new URL('node_modules/onnxruntime-web/README.md',root),new URL('models/ORT-README.md',root));
 await build({entryPoints:[fileURLToPath(new URL('app/main.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/app.js',root)),minify:true,legalComments:'eof'});
 await build({entryPoints:[fileURLToPath(new URL('app/validation.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/validation.js',root)),minify:true,legalComments:'eof'});
+await build({entryPoints:[fileURLToPath(new URL('app/benchmark.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/benchmark.js',root)),minify:true,legalComments:'eof'});
+await build({entryPoints:[fileURLToPath(new URL('shared/vision-worker.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/vision-worker.js',root)),minify:true,legalComments:'eof'});

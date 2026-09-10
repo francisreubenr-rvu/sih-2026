@@ -39,3 +39,10 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [x] Legacy screencast dropped events. Replaced it with a real browser recording stream; verified final frame and MP4 playback. No fabricated video frames.
 - [ ] Qwen7B latest adapter still selects the wrong action in 2/24 authored development cases. Smaller models also fail; strict JSON is not semantic correctness. See Docs/decisions/model-pilot.md.
 - [ ] Native extension installation was blocked by browser URL policy. Respect that boundary; no cross-browser extension readiness claim.
+
+## Round 4 — external raster diagnostic
+
+- [x] Benchmark inherited fixed 800x500 iframe CSS while annotations used full-image bounds. Reject the old coverage summary, set exact dimensions, and verify them in both harness and scorer.
+- [ ] Raster-only input loses all original visual context. The external 100-screen slice produces zero usable controls and zero localized PII detections; full-image masking does not satisfy useful selective redaction.
+- [ ] Worker adapter reduces observed main-thread blocking but first-run detection p95 worsens. Keep it experimental until repeated measurements justify a default change.
+- [x] Scorer overlap/matching rules tested; failed attempts remain in the declared denominator.

@@ -71,3 +71,11 @@ The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min
 Run `npm test` for the current 39 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
 
 `Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/sightline-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.
+
+## External raster diagnostic and worker experiment
+
+The repository includes 100 released synthetic WebPII test screens under `app/bench-assets/webpii-test100/`, with source attribution in `Raw/datasets/webpii-test100/`. These are dataset reproductions, not real user screenshots or partner endorsements. Run `python3 ../scripts/fetch-webpii-test100.py` from this directory to verify the frozen image hashes.
+
+Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. Current suite: 42 passing prototype tests. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
+
+Read `Docs/decisions/raster-evaluation.md` before quoting results. Full-image masking covered all selected PII regions while preserving zero original visual pixels; no claim of broad PII accuracy or task utility follows.
