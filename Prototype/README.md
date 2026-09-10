@@ -87,3 +87,9 @@ After `npm ci --ignore-scripts` and `npm run build`, open `/app/text-preview.htm
 Model and language files are pinned in `Raw/domain/ocr-pii/asset-manifest.json`. `python3 scripts/fetch-ocr-pii-assets.py` from the repository root restores their declared upstream revisions if needed. The build copies the OCR worker and WASM runtime from the pinned npm dependencies. These generated runtime copies are ignored by Git. Model provenance and limitations: `Docs/decisions/reference-informed-plan.md`.
 
 Validation as of 10 September: build and 48 automated tests pass. The browser tool blocked navigation to the local preview, so no browser OCR/NER accuracy, latency or visual QA result has been established. Chrome/Firefox extension verification remains separate. The lab is not integrated into the v0.1 outbound scene or native extension.
+
+## Experimental bounded synthetic runner
+
+`/app/task-loop.html` is linked from the main workspace. Start authorizes safe actions in the built-in synthetic fixture only. The runner uses the existing local vision and model adapters, reobserves after each action and checks declared fixture postconditions. It stops after 8 actions, 90 seconds, two unchanged observations, cancellation or an execution error. A model's `done` reply alone cannot produce a completed status.
+
+The full suite now has 58 passing tests, including 10 coordinator cases. Build passes. Browser execution and visual QA of this new page remain unverified; the native extension still uses the existing manual review flow. See `Docs/decisions/reference-informed-plan.md` for acceptance scope and remaining tests.

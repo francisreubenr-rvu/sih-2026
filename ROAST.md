@@ -54,3 +54,10 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [ ] OCR/NER preview has no real-browser measurement yet: local page navigation was blocked. Do not describe it as a validated privacy filter or integrate free OCR text into outbound context.
 - [ ] Current reviewed one-action workflow needs a bounded goal loop with observed task postconditions before claiming autonomous goal completion. Do not inherit VEIL's claims or fuzzy retargeting behavior from the transcript.
 - [ ] Transcript score and ISRO operational claims require original code/evidence or domain validation. Separate hypothesized use cases from verified capabilities.
+
+## Round 6 — bounded coordinator
+
+- [x] A model saying `done` must not itself prove goal completion. Runner reports `completion_unverified` unless the local fixture postcondition holds.
+- [x] Late planner results after cancellation could otherwise reach execution. Abort-aware coordinator checks again before execution; cancellation/late-result unit test passes.
+- [x] A reloaded fixture at the same URL must not reuse the old target map. Adapter checks document identity as well as the authorized fixture URL.
+- [ ] Runner integration is built but has no real-browser/visual/native-extension evidence. The generic-site autonomy gap remains open.

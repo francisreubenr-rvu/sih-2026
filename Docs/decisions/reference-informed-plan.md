@@ -45,3 +45,9 @@ Bhoonidhi's published API is a relevant baseline for catalogue search/download. 
 Keep each protocol, code/model hash, input set, failed attempt and result together. Distinguish exploratory development from confirmatory evaluation. Periodically decide whether evidence supports continuing or changing approach. Existing PLAN/ROAST/Benchmarks checkpoints provide continuity; an additional scheduled loop or skill installation is not needed merely because the transcript contains those instructions.
 
 No current guardrail is relaxed. The <200 ms full-flow requirement remains failed; external paper timings, model-only latency and static-page cache hits do not close it.
+
+## E02 implementation checkpoint
+
+The bounded coordinator is implemented in `Prototype/shared/task-loop.mjs` and connected to `/app/task-loop.html`. The user starts an explicitly synthetic run. The adapter uses real packaged WASM face inference, the existing protected request schema, the local model endpoint and the existing revision/hit-tested executor. It verifies exact declared fixture headings locally after actions, with an 8-action/90-second budget and no fuzzy retargeting. A changed document is rejected even if its URL is unchanged.
+
+Ten coordinator tests cover success, premature completion, no progress, budgets, cancellation with late model response, deadline, execution failure, malformed input and pre-start cancellation. The full suite passes 58 tests; report in `Benchmarks/results/task-loop-unit-tests-2026-09-10.txt`. Build succeeds. No real-browser execution, visual QA, native-extension integration or general-site success has been established for this runner. The earlier manually reviewed workflow's evidence does not certify this new loop.

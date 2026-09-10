@@ -81,3 +81,10 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Added separate local OCR/PII preview, synthetic diagnostic fixtures and six unit checks. Pinned Tesseract/tokenizer/model assets and build support. Build plus 48 automated tests pass; this is not OCR accuracy evidence.
 - Real preview navigation returned `net::ERR_BLOCKED_BY_CLIENT`. No alternate browser/URL workaround attempted. Browser OCR/NER results remain unmeasured; native extension also remains unverified.
 - Next implementation contracts are in `Docs/decisions/reference-informed-plan.md`: raster utility/privacy, bounded observe/act/verify loop, local value references, and synthetic domain scenario. Source transcript instructions do not alter the current task or authorize external actions.
+
+## Bounded runner implementation checkpoint — 10 September 2026
+
+- Published reference/OCR checkpoint `2d65852` to GitHub; no Website files changed and no Pages redeployment claimed.
+- Implemented shared bounded coordinator and connected a synthetic task-runner page using existing local vision, protected request, open-weight provider and validated executor. Goal completion requires a local fixture postcondition; cancellation, deadlines and no-progress stop the loop.
+- 58 automated tests pass, including 10 coordinator cases. Build passes. Browser integration, responsive/visual checks and extension execution are still unverified; existing manual-demo results are not reused as runner evidence.
+- The earlier manifest process handle disappeared without a refreshed file; its old 483-file inventory was confirmed unchanged. The previously stalled file is readable now; rebuild the manifest for this checkpoint.
