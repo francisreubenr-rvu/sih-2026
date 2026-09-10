@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-10T05:31:34.716259+00:00",
+  "created_at": "2026-09-10T05:33:12.484130+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "b7b2f332a28b6e16cb7f9fd5ce702b72290872a1",
+  "source_commit_before_manifest": "d6e9af996200ced639b1eb1146b48619b2a08937",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -48,8 +48,8 @@
     },
     {
       "path": "Benchmarks/datasets/webpii-worker-source.json",
-      "bytes": 759,
-      "sha256": "62994e226ce63dd1e1abb7116fe454c07c3df204980976ae480c69cfc2c1013d"
+      "bytes": 804,
+      "sha256": "56880af4da2984dd85617889012d10fd252b4baf0a6b8f48ae6b6ba42b5c3446"
     },
     {
       "path": "Benchmarks/definitions.csv",
@@ -923,13 +923,13 @@
     },
     {
       "path": "Docs/process-documentation.md",
-      "bytes": 14805,
-      "sha256": "764b67912829ebe211978bfdeae37173e06817ee58aa95e43b5938d7c5370ca9"
+      "bytes": 14806,
+      "sha256": "10a284bac798f1a5d06dac27a02fc20bd51198fed324f70fde1e6850ca17b517"
     },
     {
       "path": "Docs/process-documentation.pdf",
       "bytes": 16171,
-      "sha256": "36d80e946eb57ea2159235bf19a32ffd3281bb28d0e4b886c5683f92a2585d60"
+      "sha256": "bab6432a12a231d8f3d8909e9ffe4741956496dfef1ed7158f53b065dd7574e6"
     },
     {
       "path": "Docs/process-preparation-history.md",

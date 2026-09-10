@@ -1,6 +1,6 @@
 {
   "source_snapshot_at": "2026-09-10T05:24:56.524665+00:00",
-  "timing": "snapshot captured during worker run; no code changes during that run",
+  "timing": "Snapshot captured after the first worker run and before repeated comparisons; source unchanged during those runs.",
   "same_frozen_dataset": "webpii-test100-freeze-v02.json",
   "files": {
     "Prototype/shared/vision-worker-client.mjs": "9ca02d13d957b5e5145745ab9758582f5ffafba9e3d7b0f1ba84bc166dc9e893",
