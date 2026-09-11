@@ -28,7 +28,8 @@ SRC={
  'ort':'https://onnxruntime.ai/docs/get-started/with-javascript/web.html',
  'injection':'https://arxiv.org/abs/2504.11281',
 }
-EVID='Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt'
+EVID=('Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; '
+      'Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt')
 F=['TITLE PAGE','IDEA TITLE','TECHNICAL APPROACH','FEASIBILITY AND VIABILITY','IMPACT AND BENEFITS','RESEARCH  AND REFERENCES']
 
 def color(v):return RGBColor.from_string(v)
@@ -74,12 +75,12 @@ def base(p,n,family,title,sub,dark=False):
  text(s,title,.6,.95,12.1,1.17,40,PAPER if dark else INK,True)
  text(s,sub,.63,2.48 if '\n' in title else 2.18,12,.62,18,PAPER if dark else MUTED)
  line(s,.6,6.99,12.1,FOREST if dark else MUTED)
- text(s,'RV UNIVERSITY · ENGINEERING CANDIDATE v0.1 · 09 SEP 2026',.6,7.14,10,.22,10,PAPER if dark else MUTED)
+ text(s,'RV UNIVERSITY · ENGINEERING CANDIDATE v0.1 · 11 SEP 2026',.6,7.14,10,.22,10,PAPER if dark else MUTED)
  text(s,f'{n:02d} / 15',11.9,7.14,.84,.22,10,PAPER if dark else MUTED)
  return s
 NOTES=[]
 def note(s,title,secs,script,refs=''):
- s.notes_slide.notes_text_frame.text=f'{title}\nPlanned duration: {secs} seconds; rehearsal not measured.\n\n{script}\n\nSources: {refs or EVID}\nEvidence date: 9 September 2026. No population accuracy or competition score is inferred from integration checks.'
+ s.notes_slide.notes_text_frame.text=f'{title}\nPlanned duration: {secs} seconds; rehearsal not measured.\n\n{script}\n\nSources: {refs or EVID}\nEvidence date: 11 September 2026. No population accuracy or competition score is inferred from integration checks.'
  NOTES.append((title,secs,script,refs or EVID))
 
 def submission():
@@ -112,7 +113,7 @@ def submission():
  for x in [3.35,6.48,9.61]:arrow(s,x,4.26,.24)
  text(s,'Observed: Pending → Review → Request ready for review (synthetic fixture).\nCurrent LLM reads protected geometry/labels, not PNG pixels; native extension QA pending.',.6,5.46,12,.9,20)
  s=p.slides[3]
- for y,label,body in [(1.55,'Analysis of the feasibility of the idea','Local browser + Qwen workflow observed; 37 recorded Node tests pass.\nSingle desktop observation: capture 92 ms; face inference 9.6 ms.'),(3.12,'Potential challenges and risks','Real model step: 3,029 ms; full-flow <200 ms target fails.\nFace-only CV; context removal costs utility; no dataset PII accuracy yet.'),(4.7,'Strategies for overcoming these challenges','Measure detection/utility on labeled held-out pages; profile cold/warm costs.\nFail closed on CV errors; explicit action review; expiry and schema checks.')]:
+ for y,label,body in [(1.55,'Analysis of the feasibility of the idea','Local browser + Qwen workflow observed; 75 recorded Node tests pass.\nSingle desktop observation: capture 92 ms; face inference 9.6 ms.'),(3.12,'Potential challenges and risks','Real model step: 3,029 ms; full-flow <200 ms target fails.\nFace-only CV; context removal costs utility; no dataset PII accuracy yet.'),(4.7,'Strategies for overcoming these challenges','Measure detection/utility on labeled held-out pages; profile cold/warm costs.\nFail closed on CV errors; explicit action review; expiry and schema checks.')]:
   text(s,label,.6,y,12,.33,14,FOREST,True);text(s,body,.6,y+.45,12,1.03,23)
  s=p.slides[4]
  text(s,'Potential impact on the target audience',.6,1.53,12,.35,14,FOREST,True)
@@ -195,11 +196,11 @@ def talk():
  source(s,'Recorded manual integration: actual qwen2.5:7b-instruct on Ollama, not provider test doubles.')
  note(s,'9 · Demonstration',75,'For the live demonstration, choose Review a pending request, then capture and protect. Point out the protected preview and the outgoing request before asking the local model. Confirm the proposed Pending action. The fixture enters Pending requests. Capture the new scene, request another plan and confirm Review. The verified end-state is Request ready for review. This exact sequence was observed with the real Qwen2.5 model. During an earlier attempt, waiting too long caused the second action to expire; recapture restored the valid path. Reserve roughly thirty seconds here for the actual operations. If the live path is unavailable, show the recorded evidence honestly. At the time of these source records, screenshots exist and screen-recording playback has not been verified.',EVID+'; Prototype/README.md')
  s=base(p,10,F[3],'Fast perception. Slower reasoning.','Single integration observations on Apple M1 Pro / 16 GB / embedded Chromium. Not p95.')
- for x,value,label in [(.62,'9.6 ms','Warm face inference'),(4.78,'92 ms','Capture + protection'),(8.94,'3,029 ms','First real model step')]:
+ for x,value,label in [(.62,'9–20 ms','Face inference, 14 input sizes'),(4.78,'92–108 ms','Capture + protection'),(8.94,'3,029 ms','First real model step')]:
   text(s,value,x,3.4,3.76,.83,42,INK,True);text(s,label,x,4.44,3.76,.67,22,MUTED);line(s,x,5.4,3.76)
- text(s,'37 recorded Node tests pass. The <200 ms full-flow target does not pass.',.63,5.89,12,.47,23,CAUTION,True)
- source(s,'Observation date: 9 Sep 2026 · test doubles are unit-test scope; actual Qwen workflow is separate evidence.')
- note(s,'10 · Measured limits',60,'The measurement story needs precision. One desktop observation after graph cleanup recorded nine point six milliseconds for warm face inference and ninety-two milliseconds for capture and protection. A separate first live model step displayed three thousand and twenty-nine milliseconds. These are single observations in the embedded Chromium browser on an Apple M1 Pro with sixteen gigabytes of system memory. They are not a distribution, a mobile benchmark or end-to-end latency. Thirty-seven recorded Node tests passed, covering contracts and error paths, with provider doubles clearly separated from the live model workflow. The original two-hundred-millisecond full-flow target is failed. The next work is repeated cold and warm profiling, actual full-task timing and resource measurements, not rebranding the fastest component as the whole pipeline.',EVID)
+ text(s,'75 recorded Node tests pass. The <200 ms full-flow target does not pass.',.63,5.89,12,.47,23,CAUTION,True)
+ source(s,'Face-inference range: 11 Sep 2026 face-scale matrix. Capture and model figures: 9 Sep 2026 v0.1 record. Test doubles are unit-test scope; the Qwen workflow is separate evidence.')
+ note(s,'10 · Measured limits',60,'The measurement story needs precision. A scale matrix ran the packaged face model over one synthetic image at fourteen sizes from forty-eight to three hundred and twenty pixels: every size returned one detection, between nine and twenty milliseconds. Capture and protection measured ninety-two to one hundred and eight milliseconds across the recorded desktop, initial and narrow-viewport captures. An integrated synthetic observation desk completed a local draft in thirty point five seconds including the human confirmation step, and two further runs stopped correctly on expiry and on user request. A separate first live model step displayed three thousand and twenty-nine milliseconds. One result went against us and it is on the slide: on one hundred frozen synthetic screens, local OCR and the PII model retained exact annotated personal data on fifty-eight of them. That is why text export stays disabled and the outbound schema stays structural. These are local observations on an Apple M1 Pro with sixteen gigabytes of system memory, not distributions or a mobile benchmark. Seventy-five recorded Node tests pass. The original two-hundred-millisecond full-flow target is failed, and we are not rebranding the fastest component as the whole pipeline.',EVID)
  s=base(p,11,F[3],'Build on prior work, then test the difference.','Privacy filtering is established. Our claim is an inspectable browser integration, not invention of anonymization.')
  for i,(name,overlap,difference) in enumerate([('WebPII / WebRedact','UI PII detection + benchmark','Browser cost and action-boundary tests pending'),('PrivWeb','Local anonymization + user control','Explicit pixel-free egress + expiring controls'),('Available but Invisible','Typed placeholders + secure proxy','Browser implementation and packaging')]):
   y=3.17+i*.93;line(s,.63,y,12.04);text(s,name,.63,y+.17,3.8,.53,22,INK,True);text(s,overlap,4.71,y+.18,3.65,.58,18,MUTED);text(s,difference,8.65,y+.18,4.0,.63,18,FOREST)
@@ -210,7 +211,7 @@ def talk():
  panel(s,4.78,3.1,3.76,3.0,'Validate next','Chrome + Firefox extension\nLabeled unseen pages\nAccessibility and user review','OPEN')
  panel(s,8.94,3.1,3.76,3.0,'Improve carefully','Compare DOM / CV baselines\nWorker and cold-load profile\nAdd context only with evidence','ROADMAP')
  source(s,'These are explicit limitations and planned work. No broad PII, WCAG or extension conformance claim.')
- note(s,'12 · Risks and mitigation',40,'The conservative reconstruction is a deliberate trade-off. It limits what enters the server request, but useful text and images can disappear as well. A face-only model may miss small or occluded faces, and it cannot recognize textual PII. The current workflow is restricted, while native Chrome and Firefox extension execution remains a separate verification gate. Next, freeze labeled unseen pages and compare DOM-only, face-only, detected masks and conservative reconstruction. Measure preservation as well as removal. Then profile worker execution and cold loading. Any broader vocabulary or image context should be admitted only after its privacy and task utility are evaluated.','Prototype/README.md; Wiki/domain-research.md; Docs/decisions/local-vision.md')
+ note(s,'12 · Risks and mitigation',40,'Two risks are measured rather than assumed. First, the conservative reconstruction is a deliberate trade-off. It limits what enters the server request, but useful text and images can disappear as well. A face-only model may miss small or occluded faces, and it cannot recognize textual PII. The current workflow is restricted, while native Chrome and Firefox extension execution remains a separate verification gate. Next, freeze labeled unseen pages and compare DOM-only, face-only, detected masks and conservative reconstruction. Measure preservation as well as removal. Second, and more serious: on one hundred frozen synthetic screens, local OCR and the PII model retained exact annotated personal data on fifty-eight of them. That is a failed privacy result, and it is why text export remains disabled and the outbound request schema stays structural rather than carrying reconstructed text. Then profile worker execution and cold loading. Any broader vocabulary or image context should be admitted only after its privacy and task utility are evaluated.','Prototype/README.md; Wiki/domain-research.md; Docs/decisions/local-vision.md')
  s=base(p,13,F[4],'Measure benefit at the task boundary.','Proposed pilot outcomes, not achieved social impact or a validated business model.')
  for x,label,body in [(.62,'User control','Comprehension of preview\nReview burden\nTask completion'),(4.78,'Operating viability','Existing-device deployment\nCost per completed task\nMaintainer responsibility'),(8.94,'Privacy / utility','Sensitive coverage\nUseful context retained\nFailure severity')]:
   text(s,label,x,3.35,3.75,.8,28,INK,True);line(s,x,4.31,3.76);text(s,body,x,4.64,3.75,1.5,22,MUTED)
@@ -260,7 +261,8 @@ lines=['# Sightline — 15-slide speaker notes','',f'Planned talk slots: {total}
  '- `pitch-deck.pptx/pdf`: separate 15-slide technical talk; it is not the six-slide portal submission.',
  '- `sightline-template.potx`: open in PowerPoint to create a new presentation. Replace its title/content placeholders, preserve evidence labels, and save the new file as PPTX. Editing a POTX does not automatically update presentations already created from it. The reusable visual template is an original design, not an organizer-issued template.',
  '', '## Evidence discipline','',
- 'All 9.6 ms / 92 ms / 3,029 ms figures are single manual observations from the 9 September v0.1 record on Apple M1 Pro / 16 GB / embedded Chromium. They are not p95, dataset accuracy or cross-browser certification. Thirty-seven tests is the recorded test report at deck generation, not a promise that future revisions retain this count. The full-flow 200 ms guardrail remains failed. Future measurements must replace these only with traceable new evidence.','']
+ 'Every timing on these slides is a single local observation on Apple M1 Pro / 16 GB, not a p95, dataset accuracy or cross-browser certification. The 9-20 ms face-inference range comes from the 11 September face-scale matrix; the 92-108 ms capture-and-protection range and the 3,029 ms first-model-step figure come from the 9 September v0.1 record. Seventy-five tests is the recorded count at deck generation, not a promise that future revisions retain it.',
+ 'The 58-of-100 retained-PII figure is a failed privacy result on frozen synthetic screens. It is published deliberately and it constrains the product: text export stays disabled and the outbound request carries structure rather than reconstructed text. The full-flow 200 ms guardrail remains failed. Future measurements must replace these only with traceable new evidence.','']
 for title,secs,script,refs in NOTES:lines += ['## '+title,'',f'**Timing: {secs} seconds**','',script,'','Sources: '+refs,'']
 (D/'pitch-speaker-notes.md').write_text('\n'.join(lines))
 print(json.dumps({'submissionSlides':6,'talkSlides':15,'talkPlannedSeconds':total,'templateSlides':6,'outputs':['submission-deck.pptx','pitch-deck.pptx','sightline-template.potx','pitch-speaker-notes.md']}))

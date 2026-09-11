@@ -9,7 +9,11 @@ const status=(message,error=false)=>{$('#status').textContent=message;$('#status
 const clear=()=>{prepared=null;plan=null;$('#plan').disabled=true;$('#execute').disabled=true;$('#proposal').textContent='Capture the current page before requesting an action.';};
 const setBusy=value=>{busy=value;$('#capture').disabled=value;$('#reset').disabled=value;$('#task').disabled=value;};
 const getToken=async()=>{if(!token){const response=await fetch('/api/v1/session');if(!response.ok)throw new Error('Local pairing failed. Reload this page from the server URL.');token=(await response.json()).data.token;}return token;};
-function connect(){const doc=frame.contentDocument;if(!doc?.documentElement||!doc.body||doc.URL==='about:blank')return;pageAgent?.dispose();pageAgent=createPageAgent(doc);clear();$('#capture').disabled=false;}
+function connect(){const doc=frame.contentDocument;if(!doc?.documentElement||!doc.body||doc.URL==='about:blank')return;
+ // A frame mid-navigation can hand back a document that is not yet an observable
+ // target. Skip this pass; the next load event retries instead of raising.
+ try{pageAgent?.dispose();pageAgent=createPageAgent(doc);}catch(error){pageAgent=null;status('Waiting for the page to settle before capture.',true);return;}
+ clear();$('#capture').disabled=false;}
 frame.addEventListener('load',connect);if(frame.contentDocument?.readyState==='complete')connect();
 const getDetector=()=>detectorPromise??=(createVisionDetector().then(value=>(detector=value)).catch(error=>{detectorPromise=null;throw error;}));
 $('#capture').addEventListener('click',async()=>{

@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-11T05:43:37.478439+00:00",
+  "created_at": "2026-09-11T07:02:19.383454+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "25acdf183b70d2cec01c4d5586c5b85fde6a6c8b",
+  "source_commit_before_manifest": "74a83f46ed5485675ef5e4c4ece3671c12edbcc7",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -703,8 +703,8 @@
     },
     {
       "path": "Benchmarks/results/prototype-unit-tests.txt",
-      "bytes": 3306,
-      "sha256": "5bc04974bf191043ea16fb8d84aa319f46d250fae3e90865701c32b56e693f29"
+      "bytes": 6546,
+      "sha256": "5e91329c3c7b34f25b9ee4d13ed5f88e9bc648f5ebbb8e6ef8c2f75ed5dd3068"
     },
     {
       "path": "Benchmarks/results/prototype-v01-browser.json",
@@ -1028,18 +1028,18 @@
     },
     {
       "path": "Docs/pitch-deck.pdf",
-      "bytes": 502212,
-      "sha256": "5beba338562f9932157ad229417beb633ed336424b45de9e7ed09f9f7b5bafb8"
+      "bytes": 502433,
+      "sha256": "369ca42b7876759b1ad0cfa4cb832dc03ae26b6af25bae792e3a6c28d510370e"
     },
     {
       "path": "Docs/pitch-deck.pptx",
-      "bytes": 144006,
-      "sha256": "46be318feb7376ee2f463fed8874a6c60e9c7f7e2c63e0557976bf7489432a51"
+      "bytes": 144608,
+      "sha256": "cb3bb33460281110a6d03d9e50a5e40f00e58ed439fab3f07447078ddd2ad629"
     },
     {
       "path": "Docs/pitch-speaker-notes.md",
-      "bytes": 13952,
-      "sha256": "7f314beb765923ff86ba0540580eb376be7616c2bcf8f504359e307ac275efec"
+      "bytes": 15731,
+      "sha256": "9916f473e3901cd0394a91ef549bc2ed5c57a1bcc8fa6b3a493f679c282df2d2"
     },
     {
       "path": "Docs/preparation-brief.md",
@@ -1298,13 +1298,13 @@
     },
     {
       "path": "Docs/process-documentation.md",
-      "bytes": 20098,
-      "sha256": "1e840b181f46c10636f8bbe1f3e28c6bc1dfceba26936e64cdbeb2e72cf1f6db"
+      "bytes": 22548,
+      "sha256": "eb60418d72f189b3fa506a7cb47540ce83c671111237ec5101ddef908dff5855"
     },
     {
       "path": "Docs/process-documentation.pdf",
-      "bytes": 20137,
-      "sha256": "b89c9ba4ea651c592e7d28ed54d0b5b15af3a17a828c5c4bfe11a90116c3228e"
+      "bytes": 22581,
+      "sha256": "282ca819fe0818b7dec9584cf816de650da6168a46fb0673a3b64537f827ffb4"
     },
     {
       "path": "Docs/process-preparation-history.md",
@@ -1354,7 +1354,7 @@
     {
       "path": "Docs/sightline-template.potx",
       "bytes": 48757,
-      "sha256": "a369422eb3e5abff83d83ec4540ce6cdc1dac719c9f5e5f8a0e4b50902505ad5"
+      "sha256": "66ecb8df23b65620bb353f3119698019ff90d983d1f7ae9724a05d7fb646a088"
     },
     {
       "path": "Docs/skill-application.md",
@@ -1378,13 +1378,13 @@
     },
     {
       "path": "Docs/submission-deck.pdf",
-      "bytes": 412457,
-      "sha256": "727003b756952e2aa1803507641e2b4812dab6493b30f5130172ca009b896aeb"
+      "bytes": 412459,
+      "sha256": "91408383e346333229a60cc724eb8f2ddc49a06622d56423d475c2c72f9cca0d"
     },
     {
       "path": "Docs/submission-deck.pptx",
-      "bytes": 263241,
-      "sha256": "950fd2d2f6aced92799fd06c844c1f8e2798463a2e5b39dfe6f379aafdaa6a73"
+      "bytes": 263413,
+      "sha256": "e2e9ffeccf2e061f2b4e8ccd008f18e00c81a52c55669f48b2160e5816010506"
     },
     {
       "path": "Docs/team-plan.md",
@@ -1468,8 +1468,8 @@
     },
     {
       "path": "PLAN.md",
-      "bytes": 17362,
-      "sha256": "ece3144bde6d8660628b591df418f2f861309dbf166646dbfca4ca4abc3cb29f"
+      "bytes": 25494,
+      "sha256": "5e9cdf015e4a0b8dc9f36690cb14428c80f5e3dc84afbba1615daf1fd2752f58"
     },
     {
       "path": "Prototype/.dockerignore",
@@ -2093,8 +2093,8 @@
     },
     {
       "path": "Prototype/app/main.mjs",
-      "bytes": 6219,
-      "sha256": "235b371d87fe26a57313bb0cf74292fcec9de9068ba36a6cc1cbd430df1fa426"
+      "bytes": 6484,
+      "sha256": "d551506a5732ceb2cc60ef32a1be36e8afef6d50851320d1927852fe2c7eb01c"
     },
     {
       "path": "Prototype/app/operations-fixture.css",
@@ -2348,8 +2348,8 @@
     },
     {
       "path": "Prototype/shared/page-agent.mjs",
-      "bytes": 8050,
-      "sha256": "6e22900f27102ec0050af778b1d52dc8457ce38a23d31530f4122e882cfac0b3"
+      "bytes": 8580,
+      "sha256": "511a68e61b2f7d1e6c0a0f62aed5c52818426dc1adb56a8fb530d91c77bf13af"
     },
     {
       "path": "Prototype/shared/privacy.mjs",
@@ -2403,8 +2403,8 @@
     },
     {
       "path": "Prototype/tests/page-agent.test.mjs",
-      "bytes": 8120,
-      "sha256": "73323a21c4b4d05953d3e073533aea8460dd3e600a3141c2914151628679c590"
+      "bytes": 8861,
+      "sha256": "3e2b68c498e4404f2a629eee0489f651b171221af5a5b6f707fa1076f2d46e5a"
     },
     {
       "path": "Prototype/tests/protocol.test.mjs",
@@ -2448,8 +2448,8 @@
     },
     {
       "path": "ROAST.md",
-      "bytes": 10100,
-      "sha256": "a47ecb4bc98b447baa5ee6cc468d1c7573d5903d75949b68d77eecdafb6307ff"
+      "bytes": 11467,
+      "sha256": "855a110e20ab3d88d6cfa00af749a978171e17422bbdfe2cccfff09476136b2e"
     },
     {
       "path": "Raw/README.md",
@@ -3043,8 +3043,8 @@
     },
     {
       "path": "scripts/build_final_decks.py",
-      "bytes": 36316,
-      "sha256": "e96b73aa0bb90e68029eb4fa1728eb0edf3c819f2bb2ffa4c805becbd88d1ffe"
+      "bytes": 37675,
+      "sha256": "2d14fcfb9efa4e77fb880079722a53d93166ddbd810402730083cf310e98c676"
     },
     {
       "path": "scripts/build_pitch.py",

@@ -10,7 +10,8 @@ Planned talk slots: 700 seconds (11m 40s). Approximately 12 minutes; not a measu
 
 ## Evidence discipline
 
-All 9.6 ms / 92 ms / 3,029 ms figures are single manual observations from the 9 September v0.1 record on Apple M1 Pro / 16 GB / embedded Chromium. They are not p95, dataset accuracy or cross-browser certification. Thirty-seven tests is the recorded test report at deck generation, not a promise that future revisions retain this count. The full-flow 200 ms guardrail remains failed. Future measurements must replace these only with traceable new evidence.
+Every timing on these slides is a single local observation on Apple M1 Pro / 16 GB, not a p95, dataset accuracy or cross-browser certification. The 9-20 ms face-inference range comes from the 11 September face-scale matrix; the 92-108 ms capture-and-protection range and the 3,029 ms first-model-step figure come from the 9 September v0.1 record. Seventy-five tests is the recorded count at deck generation, not a promise that future revisions retain it.
+The 58-of-100 retained-PII figure is a failed privacy result on frozen synthetic screens. It is published deliberately and it constrains the product: text export stays disabled and the outbound request carries structure rather than reconstructed text. The full-flow 200 ms guardrail remains failed. Future measurements must replace these only with traceable new evidence.
 
 ## 1 · Sightline
 
@@ -50,7 +51,7 @@ Sources: Prototype/README.md; CONTEXT.md; Docs/decisions/local-vision.md
 
 This is a real screenshot of the delivered synthetic demo. The left side is the source fixture, and the right side is the protected reconstruction. The synthetic account label, number, password field and reference portrait do not become part of the raw plan request. The approved navigation controls remain usable. This design does not claim that the face detector discovers every sensitive region. Unknown material is excluded independently, and face output never authorizes sending original image pixels. The preview lets the user inspect the remaining disclosure, including layout geometry, before asking the model. A synthetic example establishes integration, not a general privacy guarantee.
 
-Sources: Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt; Prototype/models/manifest.json
+Sources: Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt; Prototype/models/manifest.json
 
 ## 6 · Local perception
 
@@ -66,7 +67,7 @@ Sources: https://github.com/Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB; 
 
 Our main privacy control is the outgoing data contract. It has fields for a revision, viewport, bounded control geometry, approved labels and opaque region kinds. It has no raw screenshot, DOM dump, field-value or source-URL field. Extra fields and malformed geometry are rejected. In the recorded mobile check, the synthetic email, account number and image data were absent from the payload. That is a specific observation on one fixture, not proof against every encoding or page. Layout still reveals structure, and approved labels reveal a restricted vocabulary. We make that residual exposure inspectable and need adversarial testing before broadening the allowed context.
 
-Sources: Prototype/README.md; Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt
+Sources: Prototype/README.md; Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt
 
 ## 8 · Reviewed action
 
@@ -74,7 +75,7 @@ Sources: Prototype/README.md; Benchmarks/results/prototype-v01-browser.json; Ben
 
 The server does not receive authority to execute arbitrary instructions. It returns a small action vocabulary, and a click must identify a currently approved target. The client binds that proposal to the captured revision, expires it after thirty seconds and rechecks the target when the user confirms. A delayed confirmation was rejected in the actual workflow, and the app later disabled plan and execute controls proactively after expiry. Typing, arbitrary navigation, executable code and irreversible submissions are outside the current scope. These checks reduce the attack surface. They do not establish complete prompt-injection safety, especially as page coverage expands.
 
-Sources: Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt; https://arxiv.org/abs/2504.11281
+Sources: Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt; https://arxiv.org/abs/2504.11281
 
 ## 9 · Demonstration
 
@@ -82,15 +83,15 @@ Sources: Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/proto
 
 For the live demonstration, choose Review a pending request, then capture and protect. Point out the protected preview and the outgoing request before asking the local model. Confirm the proposed Pending action. The fixture enters Pending requests. Capture the new scene, request another plan and confirm Review. The verified end-state is Request ready for review. This exact sequence was observed with the real Qwen2.5 model. During an earlier attempt, waiting too long caused the second action to expire; recapture restored the valid path. Reserve roughly thirty seconds here for the actual operations. If the live path is unavailable, show the recorded evidence honestly. At the time of these source records, screenshots exist and screen-recording playback has not been verified.
 
-Sources: Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt; Prototype/README.md
+Sources: Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt; Prototype/README.md
 
 ## 10 · Measured limits
 
 **Timing: 60 seconds**
 
-The measurement story needs precision. One desktop observation after graph cleanup recorded nine point six milliseconds for warm face inference and ninety-two milliseconds for capture and protection. A separate first live model step displayed three thousand and twenty-nine milliseconds. These are single observations in the embedded Chromium browser on an Apple M1 Pro with sixteen gigabytes of system memory. They are not a distribution, a mobile benchmark or end-to-end latency. Thirty-seven recorded Node tests passed, covering contracts and error paths, with provider doubles clearly separated from the live model workflow. The original two-hundred-millisecond full-flow target is failed. The next work is repeated cold and warm profiling, actual full-task timing and resource measurements, not rebranding the fastest component as the whole pipeline.
+The measurement story needs precision. A scale matrix ran the packaged face model over one synthetic image at fourteen sizes from forty-eight to three hundred and twenty pixels: every size returned one detection, between nine and twenty milliseconds. Capture and protection measured ninety-two to one hundred and eight milliseconds across the recorded desktop, initial and narrow-viewport captures. An integrated synthetic observation desk completed a local draft in thirty point five seconds including the human confirmation step, and two further runs stopped correctly on expiry and on user request. A separate first live model step displayed three thousand and twenty-nine milliseconds. One result went against us and it is on the slide: on one hundred frozen synthetic screens, local OCR and the PII model retained exact annotated personal data on fifty-eight of them. That is why text export stays disabled and the outbound schema stays structural. These are local observations on an Apple M1 Pro with sixteen gigabytes of system memory, not distributions or a mobile benchmark. Seventy-five recorded Node tests pass. The original two-hundred-millisecond full-flow target is failed, and we are not rebranding the fastest component as the whole pipeline.
 
-Sources: Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt
+Sources: Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt
 
 ## 11 · Competitive position
 
@@ -104,7 +105,7 @@ Sources: https://arxiv.org/abs/2603.17357; https://arxiv.org/abs/2509.11939; htt
 
 **Timing: 40 seconds**
 
-The conservative reconstruction is a deliberate trade-off. It limits what enters the server request, but useful text and images can disappear as well. A face-only model may miss small or occluded faces, and it cannot recognize textual PII. The current workflow is restricted, while native Chrome and Firefox extension execution remains a separate verification gate. Next, freeze labeled unseen pages and compare DOM-only, face-only, detected masks and conservative reconstruction. Measure preservation as well as removal. Then profile worker execution and cold loading. Any broader vocabulary or image context should be admitted only after its privacy and task utility are evaluated.
+Two risks are measured rather than assumed. First, the conservative reconstruction is a deliberate trade-off. It limits what enters the server request, but useful text and images can disappear as well. A face-only model may miss small or occluded faces, and it cannot recognize textual PII. The current workflow is restricted, while native Chrome and Firefox extension execution remains a separate verification gate. Next, freeze labeled unseen pages and compare DOM-only, face-only, detected masks and conservative reconstruction. Measure preservation as well as removal. Second, and more serious: on one hundred frozen synthetic screens, local OCR and the PII model retained exact annotated personal data on fifty-eight of them. That is a failed privacy result, and it is why text export remains disabled and the outbound request schema stays structural rather than carrying reconstructed text. Then profile worker execution and cold loading. Any broader vocabulary or image context should be admitted only after its privacy and task utility are evaluated.
 
 Sources: Prototype/README.md; Wiki/domain-research.md; Docs/decisions/local-vision.md
 
@@ -130,4 +131,4 @@ Sources: Docs/team-plan.md; user brief; current PLAN.md
 
 Sightline already connects real browser-local inference, a protected scene, a real reasoning model and a reviewed action on a synthetic task. Its current result is an inspectable engineering boundary, not a promise of zero leakage or universal automation. The next decision is to evaluate that boundary on held-out tasks and measure what is protected, what remains useful and what it costs. We invite evaluation of the demonstrated mechanism and its explicit limits. The complete source and evidence registers travel with the build.
 
-Sources: Wiki/source-index.md; Benchmarks/results/prototype-v01-browser.json; Benchmarks/results/prototype-unit-tests.txt
+Sources: Wiki/source-index.md; Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt

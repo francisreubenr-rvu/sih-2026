@@ -14,7 +14,7 @@ function fixture() {
   }
   function descendants(root){return root.children.flatMap(el=>[el,...descendants(el)]);}
   function add(parent,el){parent.children.push(el);el.parentElement=parent.nodeType===1?parent:null;el.root=parent.nodeType===11?parent:(parent.root??doc);return el;}
-  const doc={children:[],addEventListener(type,fn){listeners.set(type,fn);},removeEventListener(type){listeners.delete(type);},querySelectorAll(){return descendants(this);},elementFromPoint(){return this.hit;},createTreeWalker(root){const nodes=[root,...descendants(root)];let i=0;return {currentNode:root,nextNode(){return nodes[++i]??null;}}},createRange(){return {selectNodeContents(){},getClientRects(){return [{x:30,y:50,width:150,height:20}];}}}};
+  const doc={nodeType:9,children:[],addEventListener(type,fn){listeners.set(type,fn);},removeEventListener(type){listeners.delete(type);},querySelectorAll(){return descendants(this);},elementFromPoint(){return this.hit;},createTreeWalker(root){const nodes=[root,...descendants(root)];let i=0;return {currentNode:root,nextNode(){return nodes[++i]??null;}}},createRange(){return {selectNodeContents(){},getClientRects(){return [{x:30,y:50,width:150,height:20}];}}}};
   const win={innerWidth:800,innerHeight:600,NodeFilter:{SHOW_ELEMENT:1,SHOW_TEXT:4},addEventListener(type,fn){listeners.set(type,fn);},removeEventListener(type){listeners.delete(type);},getComputedStyle(el){return el.style;},scrollBy(options){this.scroll=options;},MutationObserver:class {
     constructor(fn){this.fn=fn;this.roots=new Set();this.records=[];observer=this;}
     observe(root){this.roots.add(root);}
@@ -107,4 +107,15 @@ test('invalid rectangle padding or dimensions cannot become exportable geometry'
  const rect={x:1,y:1,width:20,height:20},viewport={width:800,height:600};
  for(const padding of [NaN,Infinity,-1])assert.equal(clipRect(rect,viewport,padding),null);
  assert.equal(clipRect({...rect,width:-1},viewport,20),null);
+});
+
+test('a document that is not yet an observable target is rejected before observe',()=>{
+ const f=fixture();
+ // Mid-navigation frames can hand back a document with the right shape but no
+ // observable node type. createPageAgent must throw a clear error, not call
+ // MutationObserver.observe with an invalid target.
+ const unobservable={defaultView:f.win,nodeType:0,children:[],addEventListener(){},removeEventListener(){}};
+ assert.throws(()=>createPageAgent(unobservable),/document or shadow root/);
+ // A missing window is also rejected explicitly rather than crashing later.
+ assert.throws(()=>createPageAgent({nodeType:9,defaultView:null,children:[],addEventListener(){},removeEventListener(){}}),/attached document/);
 });

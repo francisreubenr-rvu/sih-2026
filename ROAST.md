@@ -93,3 +93,11 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [x] The configured model endpoint drifted to a different catalogue. Preserve failed attempts, use existing Qwen weights in a separate local service, and verify a real provider response plus SQLite readback.
 - [ ] Synthetic reference UI remains browser-unverified; do not infer DOM execution from the shared-module pilot.
 - [ ] Three fixed reference cases do not demonstrate general PII detection, free-text task sanitization, arbitrary-site typing or native extension support.
+
+## Round 8 — deck audit and page-agent guard
+
+- [x] `Prototype/shared/page-agent.mjs` carried a duplicated guard block, so `OBSERVABLE_NODE_TYPES` was declared twice and the module failed to parse. Collapse to one copy and keep the `nodeType` guard in `collect`. `node --check` passes.
+- [x] A deck slide stated "139–141 ms capture + protection" with no evidence file behind it. Replace it with the persisted `captureMs` range 92–108 ms from `prototype-v01-browser.json`, which measures the same window. Do not ship an unpersisted console reading as a measurement.
+- [x] The deck's "75 recorded Node tests" claim had no supporting report and the suite ran 74. Add the missing guard regression test and regenerate the report from an unrestricted run before the claim is published.
+- [x] The 11 September unit-test report could not be regenerated under the sandbox: nine tests bind `127.0.0.1` and fail with `EPERM ... syscall: 'listen'`. The sandbox-only 66/75 run was rejected as evidence and the committed report was restored; the report was then regenerated from a real unrestricted run at 75 passing, 0 failing.
+- [x] `Docs/submission-deck.pdf` and `Docs/pitch-deck.pdf` corresponded to the 9 September PPTX builds. Re-exported from the regenerated sources once `soffice` could run, and both were visually checked page by page against the corrected slides.

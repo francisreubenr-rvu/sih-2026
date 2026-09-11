@@ -3,6 +3,10 @@ import { SAFE_LABELS, validateAction } from './protocol.mjs';
 
 const OBSERVER_OPTIONS = {subtree:true,childList:true,characterData:true,attributes:true};
 const MAX_NODES = 12000;
+// Documents (9), elements (1) and shadow roots (11) are the only valid observe targets.
+// A frame mid-navigation can hand back a document that is not yet observable.
+const OBSERVABLE_NODE_TYPES = new Set([1, 9, 11]);
+const observableRoot = value => Boolean(value) && OBSERVABLE_NODE_TYPES.has(value.nodeType);
 function controlIdentity(el) {
   const role = el.tagName==='BUTTON' || el.getAttribute('role')==='button' ? 'button' : el.tagName==='A' ? 'link' : null;
   const candidate=(el.getAttribute('aria-label')||el.textContent||'').trim().replace(/\s+/g,' ');
@@ -47,6 +51,8 @@ export function createPageAgent(doc = document) {
   let disposed=false;
   let observedRoots=new Set();
   const invalidate = () => { revision = crypto.randomUUID(); mutationCount++; };
+  if(!win) throw new Error('Page agent needs an attached document.');
+  if(!observableRoot(doc)) throw new Error('Page agent needs a document or shadow root.');
   const observer = new win.MutationObserver(invalidate);
   observer.observe(doc, OBSERVER_OPTIONS);
   win.addEventListener('scroll', invalidate, true);
@@ -70,8 +76,9 @@ export function createPageAgent(doc = document) {
     if(disposed)throw new Error('Page agent disposed');
     flush();invalidate();scene=null;controls=new Map();detections=[];
     const roots=shadowRoots();
-    observer.disconnect();observer.observe(doc,OBSERVER_OPTIONS);
-    for(const root of roots)observer.observe(root,OBSERVER_OPTIONS);
+    observer.disconnect();
+    if(observableRoot(doc)) observer.observe(doc,OBSERVER_OPTIONS);
+    for(const root of roots) if(observableRoot(root)) observer.observe(root,OBSERVER_OPTIONS);
     observedRoots=roots;
     const viewport = {width:win.innerWidth,height:win.innerHeight};
     const regions = []; const entries = []; const nextControls = new Map();
@@ -140,5 +147,5 @@ export function createPageAgent(doc = document) {
     invalidate();
     return {status:'executed',type:parsed.type};
   }
-  return {collect,assertFresh,execute,get mutationCount(){return mutationCount;},get detectionCounts(){return detections.reduce((counts,d)=>{counts[d.kind]=(counts[d.kind]||0)+1;return counts;},{});},dispose(){disposed=true;scene=null;controls.clear();observedRoots.clear();observer.disconnect();win.removeEventListener('scroll',invalidate,true);win.removeEventListener('resize',invalidate);doc.removeEventListener('input',invalidate,true);doc.removeEventListener('change',invalidate,true);}};
+  return {collect,assertFresh,execute,get mutationCount(){return mutationCount;},get detectionCounts(){return detections.reduce((counts,d)=>{counts[d.kind]=(counts[d.kind]||0)+1;return counts;},{});},dispose(){disposed=true;scene=null;controls.clear();observedRoots.clear();observer.disconnect();win?.removeEventListener('scroll',invalidate,true);win?.removeEventListener('resize',invalidate);doc.removeEventListener('input',invalidate,true);doc.removeEventListener('change',invalidate,true);}};
 }
