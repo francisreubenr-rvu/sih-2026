@@ -24,3 +24,5 @@ await build({entryPoints:[fileURLToPath(new URL('app/task-loop.mjs',root))],bund
 await build({entryPoints:[fileURLToPath(new URL('app/local-reference.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/local-reference.js',root)),minify:true,legalComments:'eof'});
 await build({entryPoints:[fileURLToPath(new URL('app/text-benchmark.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/text-benchmark.js',root)),minify:true,legalComments:'eof',external:['/models/*']});
 await build({entryPoints:[fileURLToPath(new URL('app/operations.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/operations.js',root)),minify:true,legalComments:'eof'});
+
+await build({entryPoints:[fileURLToPath(new URL('app/face-test-entry.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/app-face-test.js',root)),minify:true,legalComments:'eof'});

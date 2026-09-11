@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sightline — face scale matrix</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin:0; padding:32px; background:#f4f1ea; color:#111;
+         font:15px/1.5 ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  h1 { font-size:26px; letter-spacing:-.02em; margin:0 0 8px; }
+  p.lede { max-width:64ch; margin:0 0 20px; color:#333; }
+  button { font:inherit; padding:10px 16px; border:1px solid #111; background:#111; color:#f4f1ea;
+           border-radius:2px; cursor:pointer; margin-right:8px; }
+  button[disabled] { opacity:.5; cursor:progress; }
+  #status { margin:16px 0 8px; font-variant-numeric:tabular-nums; }
+  pre { background:#fff; border:1px solid #d8d3c8; padding:14px; overflow:auto; max-height:60vh;
+        font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  table { border-collapse:collapse; margin-top:16px; }
+  th, td { border-bottom:1px solid #d8d3c8; padding:6px 14px 6px 0; text-align:left;
+           font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+<h1>Face detection across input scales</h1>
+<p class="lede">Runs the packaged UltraFace RFB-320 detector over one synthetic source image rendered at a range of square sizes.
+Each size is drawn into a fresh canvas, then passed to the real detector. Purely local; no network request leaves this page.</p>
+<button id="run" type="button">Run scale matrix</button>
+<button id="run48" type="button">Run 48–128 px only</button>
+<p id="status">Bootstrapping.</p>
+<table id="table"><thead><tr><th>Input size</th><th>Detections</th><th>Inference ms</th><th>Wall ms</th></tr></thead><tbody></tbody></table>
+<pre id="record" hidden></pre>
+<script type="module" src="/app/face-scale-test.mjs"></script>
+</body>
+</html>
