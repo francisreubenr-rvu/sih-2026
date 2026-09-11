@@ -1,5 +1,14 @@
 # SIH26171 delivery plan
 
+## External text checkpoint — 11 September 2026
+
+- Previous turn made verified progress: three browser experiments and the explicit address-label regression fix published as `bfcbb43`.
+- Froze an annotation-free image input listing, browser OCR/PII harness, source hashes and separate scoring contract before the external run. Scoring agent produced a draft then exhausted quota; main completed/reviewed it and added tests.
+- Actual browser run completed 100/100 external synthetic WebPII rows. Exact sensitive text remains in the intended redraw on 58 screens; 219 exact annotated PII tokens retained. Selected product-token retention is 55.1%; local OCR/NER p95 is 2,888.4 ms. No export integration approved.
+- All 19 Python scorer tests pass. Frozen files remain unchanged. Raw results, failed privacy outcomes, timing and incomplete network capture preserved in `Benchmarks/results/webpii-text-v01*`.
+- Corrected the public repository description from unresolved SIH2171 preparation to the verified SIH26171 engineering candidate; verified readback. No website deployment claimed.
+- Next: whole-field/contextual privacy beyond entity tagging, meaningful synthetic domain workflow, native-extension/resource and human validation, and final artifact review. Full objective remains active.
+
 ## Latest checkpoint — 11 September 2026
 
 - Published local-reference implementation through `75f69f5`; remote master verified. No Website files changed in that checkpoint.

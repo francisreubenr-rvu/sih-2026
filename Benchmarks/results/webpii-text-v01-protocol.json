@@ -1,0 +1,19 @@
+{
+  "frozenAt": "2026-09-11T02:05:42.486988+00:00",
+  "parentCommit": "bfcbb433ed2bb8ad4cfaba3dbc00d62723d8e027",
+  "status": "frozen before first external OCR run",
+  "policyChangedDuringRun": false,
+  "sha256": {
+    "Prototype/app/bench-assets/webpii-test100/text-inputs.json": "27721edd9c21884c3fa3dfe57bfcd9c48e4c5b8b9b91a72f0e5c9e6a0a93b24a",
+    "Prototype/app/text-benchmark.mjs": "68e61379afddad65cbad8e3987c179955cad37d3553c27bc79688f85d0a48d83",
+    "Prototype/shared/local-text-engine.mjs": "112e23d4543f2fac956171f4051343773d7207616721bb901d7d6a7c0cda7de0",
+    "Prototype/shared/text-privacy.mjs": "639a9cddc1dc4a9bccae4ecd9aafba94629ee8a98740900352d26d4e6c344be2",
+    "Prototype/dist/text-benchmark.js": "3fe4c47de81b65f5d3f7e3a2fa62a38c310373671a39e9b29ee592adc91b80f4",
+    "Prototype/package-lock.json": "9704cad4aca39f9a5ee072926b117460cd2434ed16e2487ac4f065f31b6c81e1",
+    "scripts/score-text-benchmark.py": "466a32404bdbb1d39e12bd40cf0bc3ab4edd2726b347f49991f2624742b12894",
+    "scripts/tests/test_score_text.py": "88f6590a9982269a03eaf7ff172a728ae625c9984472748845df2987dd2c3fab",
+    "Benchmarks/datasets/webpii-text-contract.md": "684bd8899a7325e2a1ff9b3a95c98b8db191e7685749d2afb2a7522be16afb4b",
+    "Raw/domain/ocr-pii/asset-manifest.json": "ada84499df7ad603a777fe5fbfe3034de30a721fd1bc769fce06a0cee14a71c7",
+    "Raw/datasets/webpii-test100/annotations.json": "c71e4c76a0c2bf51d382792b85a3cea5f5e3b6a24791e1b7bc777fac48b600c3"
+  }
+}

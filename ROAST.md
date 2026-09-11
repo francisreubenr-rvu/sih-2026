@@ -1,5 +1,12 @@
 # Roast Loop — 9 September 2026
 
+## Round 9 — external OCR/PII evaluation
+
+- [ ] Current OCR/PII policy retains exact annotated sensitive text on 58/100 external synthetic screens. Contextual content such as gift messages and address components defeats the current entity/token policy. Keep local-only; no arbitrary-text export.
+- [ ] OCR/NER processing p95 is 2,888.4 ms on this slice. This excludes server planning and does not approach the existing full-task performance target.
+- [x] Scorer must not count missing OCR as successful detection or blank output as useful privacy. Frozen protocol separates recognition, marking, intended retention and product-text utility; failed/missing rows retain denominators. Twelve new tests pass.
+- [ ] Browser network event buffer reports truncation; retained subset shows no external/planner request, but complete egress isolation remains unproven.
+
 ## Round 8 — browser experiments, 11 September
 
 - [x] Original local preview opens using updated supported browser connection. Synthetic runner and local reference now have browser execution evidence; prior blocked records are historical. This does not close the native-extension gate.

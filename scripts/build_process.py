@@ -2,12 +2,13 @@
 """Render current process Markdown without rewriting historical artifacts."""
 from pathlib import Path
 import re, html
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 R=Path(__file__).resolve().parents[1]
 styles=getSampleStyleSheet()
+styles['Heading2'].keepWithNext=True
 styles.add(ParagraphStyle(name='BodyCopy',fontName='Helvetica',fontSize=10,leading=14,spaceAfter=8,textColor=colors.HexColor('#15211f')))
 styles.add(ParagraphStyle(name='CellCopy',parent=styles['BodyCopy'],fontSize=8,leading=11,spaceAfter=2))
 def markup(s):
@@ -22,6 +23,8 @@ story=[]
 for block in (R/'Docs/process-documentation.md').read_text().split('\n\n'):
  block=block.strip()
  if not block:continue
+ if block=='<!-- pagebreak -->':
+  story.append(PageBreak());continue
  if block.startswith('|'):
   rows=[line.strip('|').split('|') for line in block.splitlines() if not re.match(r'^\|[- :|]+$',line)]
   cells=[[Paragraph(markup(v.strip()),styles['CellCopy']) for v in row] for row in rows]

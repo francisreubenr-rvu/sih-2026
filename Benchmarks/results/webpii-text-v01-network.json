@@ -1,0 +1,513 @@
+{
+  "scope": "Requests observed on benchmark tab through supported CDP; worker coverage not guaranteed, no claim of complete egress isolation",
+  "truncated": true,
+  "requests": [
+    {
+      "url": "http://127.0.0.1:9041/models/ocr/worker.min.js",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0000.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0001.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0002.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0003.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0004.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0005.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0006.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0007.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0008.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0009.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0010.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0011.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0012.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0013.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0014.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0015.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0016.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0017.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0018.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/0019.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1000.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1001.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1002.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1003.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1004.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1005.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1006.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1007.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1008.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1009.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1010.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1011.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1012.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1013.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1014.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1015.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1016.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1017.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1018.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/1019.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2000.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2001.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2002.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2003.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2004.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2005.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2006.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2007.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2008.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2009.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2010.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2011.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2012.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2013.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2014.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2015.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2016.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2017.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2018.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/2019.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3000.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3001.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3002.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3003.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3004.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3005.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3006.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3007.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3008.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3009.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3010.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3011.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3012.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3013.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3014.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3015.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3016.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3017.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3018.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/3019.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4381.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4382.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4383.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4384.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4385.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4386.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4387.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4388.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4389.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4390.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4391.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4392.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4393.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4394.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4395.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4396.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4397.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4398.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4399.png",
+      "method": "GET",
+      "hasPostData": false
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/bench-assets/webpii-test100/4400.png",
+      "method": "GET",
+      "hasPostData": false
+    }
+  ],
+  "externalHttpRequests": [],
+  "plannerRequests": []
+}

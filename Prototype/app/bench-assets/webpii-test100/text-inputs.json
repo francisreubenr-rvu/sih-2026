@@ -1,0 +1,908 @@
+{
+  "dataset": "WebPII/webpii",
+  "revision": "6d3317721b72bde719a361c564ceaf1fbded3a8e",
+  "scope": "Frozen OCR input listing only; no privacy or utility annotations",
+  "sourceManifestSha256": "c71e4c76a0c2bf51d382792b85a3cea5f5e3b6a24791e1b7bc777fac48b600c3",
+  "rows": [
+    {
+      "row_index": 0,
+      "source_id": "2050",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 895,
+      "file": "/app/bench-assets/webpii-test100/0000.png",
+      "image_sha256": "e5aa8c5fa303fcbdfbea2348b9f83b93a1880833a053227c223463889b1a5889"
+    },
+    {
+      "row_index": 1,
+      "source_id": "1075",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/0001.png",
+      "image_sha256": "525c4eab39fb7ab18c2251fb4a3e1318222800f9c7e3e97143917b9352e2eada"
+    },
+    {
+      "row_index": 2,
+      "source_id": "1150",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/0002.png",
+      "image_sha256": "5d7414532aabe5cdbab18c667fe63466db40adc63f510000ba649759142f6cb9"
+    },
+    {
+      "row_index": 3,
+      "source_id": "2225",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3085,
+      "file": "/app/bench-assets/webpii-test100/0003.png",
+      "image_sha256": "da8ef652f626b1e9f85599bdc3a06b7bd4fca8633ea90f05bc588c6595747d75"
+    },
+    {
+      "row_index": 4,
+      "source_id": "1625",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 2705,
+      "file": "/app/bench-assets/webpii-test100/0004.png",
+      "image_sha256": "fc16f356f63ad17d799279bb20514ed63a92a1f723e2e66a2d4d4ea3f4d319a2"
+    },
+    {
+      "row_index": 5,
+      "source_id": "1825",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3225,
+      "file": "/app/bench-assets/webpii-test100/0005.png",
+      "image_sha256": "c8cdee48cfe605f84eda389c0a418927bfc90d9631b73894b32653aa97e6aee5"
+    },
+    {
+      "row_index": 6,
+      "source_id": "2150",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1808,
+      "file": "/app/bench-assets/webpii-test100/0006.png",
+      "image_sha256": "74c611e638a21f892f3156a3d8e65a2547a8dc011a530ab0c1ac261f8e64352f"
+    },
+    {
+      "row_index": 7,
+      "source_id": "1225",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3060,
+      "file": "/app/bench-assets/webpii-test100/0007.png",
+      "image_sha256": "869bad510be0676a918bf72ef278ccbec1b9065ab5430e17570c19188b60324b"
+    },
+    {
+      "row_index": 8,
+      "source_id": "2375",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/0008.png",
+      "image_sha256": "1b9b13f89b65c25370636a2a0c6c13ca4b8c1248faaf8eb5a06c103c2034cef4"
+    },
+    {
+      "row_index": 9,
+      "source_id": "1175",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 946,
+      "file": "/app/bench-assets/webpii-test100/0009.png",
+      "image_sha256": "4846210769984cd12a98fd8d1925d9ac2cad00ebbf541ab0a1ba422319e6ae9c"
+    },
+    {
+      "row_index": 10,
+      "source_id": "1925",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1863,
+      "file": "/app/bench-assets/webpii-test100/0010.png",
+      "image_sha256": "4c706e41c0f93b98d83a739bf7d66c721a20ace6a30a245f3bea29ee4501a1c8"
+    },
+    {
+      "row_index": 11,
+      "source_id": "1525",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 2623,
+      "file": "/app/bench-assets/webpii-test100/0011.png",
+      "image_sha256": "39db0079b539f76a16bd59a075424176bcee99431a4bd564df6ff9eacef43dca"
+    },
+    {
+      "row_index": 12,
+      "source_id": "2250",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 950,
+      "file": "/app/bench-assets/webpii-test100/0012.png",
+      "image_sha256": "29c05925d0e537e939ef65b5c898de9ae4f0a4feac097a1af1d9444da92ff447"
+    },
+    {
+      "row_index": 13,
+      "source_id": "1425",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1457,
+      "file": "/app/bench-assets/webpii-test100/0013.png",
+      "image_sha256": "f7c3ddfa3f9ce99b5ca66a694903de95dbf95dcb27855280178655ff014e1b79"
+    },
+    {
+      "row_index": 14,
+      "source_id": "1300",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/0014.png",
+      "image_sha256": "fe55ffb8ccab1d6810cb46ecb15be3ab41373fe08df1285c8f0d72f0e686c3f3"
+    },
+    {
+      "row_index": 15,
+      "source_id": "1675",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/0015.png",
+      "image_sha256": "c2c634e9aad0d486304cd9813fecfdbdd739f901179c7500c475e9e0479904ed"
+    },
+    {
+      "row_index": 16,
+      "source_id": "2425",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 2482,
+      "file": "/app/bench-assets/webpii-test100/0016.png",
+      "image_sha256": "ef6bc79a3fe187911111bdb7fe322334361f769b14b422d312d3bd1dfb4ae7ac"
+    },
+    {
+      "row_index": 17,
+      "source_id": "1900",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1825,
+      "file": "/app/bench-assets/webpii-test100/0017.png",
+      "image_sha256": "e8ac8d4ad8c8d32b04fed6a82ca56d8b714c7ec198c521824359d771867ba531"
+    },
+    {
+      "row_index": 18,
+      "source_id": "1075",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/0018.png",
+      "image_sha256": "dbc8cd6ea0a9befba64e667b64b9e84417a7b7672676a729abb7a69d574e0e99"
+    },
+    {
+      "row_index": 19,
+      "source_id": "1075",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/0019.png",
+      "image_sha256": "e37b3a19bffd96c2d5189a53aa0c9c752ceefa4fe4192f6109f44247eefa6bca"
+    },
+    {
+      "row_index": 1000,
+      "source_id": "1314",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1000.png",
+      "image_sha256": "4a352548ac5c38566723c651e138887fd42cb63c92cccb9064778df2f1819cd2"
+    },
+    {
+      "row_index": 1001,
+      "source_id": "1314",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1001.png",
+      "image_sha256": "29e92dac90161c8878093fc0e0b283f55e37013612c5985c697d3b71848c6f31"
+    },
+    {
+      "row_index": 1002,
+      "source_id": "1314",
+      "variant": "partial_02",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1002.png",
+      "image_sha256": "7c8d1ffa7dd994d3ab16faa1325e86fec3e4a763d8c60d5161269e5afffaa00c"
+    },
+    {
+      "row_index": 1003,
+      "source_id": "1314",
+      "variant": "partial_03",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1003.png",
+      "image_sha256": "78c34391dd110fde124e6626e56127eeadf35d50df8b7a7a5b5762e5536584e3"
+    },
+    {
+      "row_index": 1004,
+      "source_id": "1314",
+      "variant": "partial_04",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1004.png",
+      "image_sha256": "2ae88b3f6c20083fc059db640b00d24ae6928449b519bf22617f903f20d0a914"
+    },
+    {
+      "row_index": 1005,
+      "source_id": "1314",
+      "variant": "partial_05",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1005.png",
+      "image_sha256": "5b880402879814ddfff5541f8b03db6c6a1cd8459f43a6c2b4b47038db0893ed"
+    },
+    {
+      "row_index": 1006,
+      "source_id": "1314",
+      "variant": "partial_06",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1006.png",
+      "image_sha256": "f47e344f4a9cc11d66e447d2e7b796c6da0ce347b1547e79231ba52e57831ce0"
+    },
+    {
+      "row_index": 1007,
+      "source_id": "1314",
+      "variant": "partial_07",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1007.png",
+      "image_sha256": "c3d99b4d3222b4525c7957db98e783cbe0a329e711c8028a796613fd0be96dcf"
+    },
+    {
+      "row_index": 1008,
+      "source_id": "1314",
+      "variant": "partial_08",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1008.png",
+      "image_sha256": "d352be154788aa325f4538de67d654be3220f17225dc06c95fd895d0b39c58fb"
+    },
+    {
+      "row_index": 1009,
+      "source_id": "1315",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1009.png",
+      "image_sha256": "ac17b7bf0a76fae5d4788b98a27eaed2c39f31a0da212d009f4e6c58778437d0"
+    },
+    {
+      "row_index": 1010,
+      "source_id": "1315",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1010.png",
+      "image_sha256": "89ce630d7cce12afce294ba1342635f0838ec3a82ab00973a3029100b03b3de7"
+    },
+    {
+      "row_index": 1011,
+      "source_id": "1315",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1011.png",
+      "image_sha256": "fe2143ccb57a1fc837a70c545b735a7a0360a11601b0455e795f6de210a80a82"
+    },
+    {
+      "row_index": 1012,
+      "source_id": "1315",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1012.png",
+      "image_sha256": "50a46f4c9b93055a84ea7c5d75942e79c32fab1b7bc36c931ff1ec51f79c85de"
+    },
+    {
+      "row_index": 1013,
+      "source_id": "1315",
+      "variant": "partial_02",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1013.png",
+      "image_sha256": "920e48e8094c962cc5a48077c3c248a1c02941068f80aeed06e56c835bf2c3b1"
+    },
+    {
+      "row_index": 1014,
+      "source_id": "1315",
+      "variant": "partial_03",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1014.png",
+      "image_sha256": "26d8f803ecfbbe950f9f0d8d7afdfa3f3cd2730d9c56af7c1db5327b77a9cfc3"
+    },
+    {
+      "row_index": 1015,
+      "source_id": "1315",
+      "variant": "partial_04",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1015.png",
+      "image_sha256": "8dce2277b2f6aba3ebbc121beb8f7eb6375f2f4af326c40568699470bff4df30"
+    },
+    {
+      "row_index": 1016,
+      "source_id": "1315",
+      "variant": "partial_05",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1016.png",
+      "image_sha256": "dfb5cae9d17d623dd32780780d138ebbb0e2688628b32a160560fef28af7dd4e"
+    },
+    {
+      "row_index": 1017,
+      "source_id": "1315",
+      "variant": "partial_06",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1017.png",
+      "image_sha256": "0498439ae35a0a587f06b9dce5eb7b5777357254063995bec338298311fd57a0"
+    },
+    {
+      "row_index": 1018,
+      "source_id": "1315",
+      "variant": "partial_07",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1018.png",
+      "image_sha256": "7cfa2d0e3611aa5fcd854eda7417ad2738cffeb3cd987f0da76ecdda0a396845"
+    },
+    {
+      "row_index": 1019,
+      "source_id": "1315",
+      "variant": "partial_08",
+      "image_width": 1280,
+      "image_height": 1455,
+      "file": "/app/bench-assets/webpii-test100/1019.png",
+      "image_sha256": "cb27d41517e9334b081f23f6c525755472073d45e81214e72b4dbd04619ead77"
+    },
+    {
+      "row_index": 2000,
+      "source_id": "1408",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2000.png",
+      "image_sha256": "56d1a232ae607fd1cfa6e8263547d1da826afda0ba684d4a94a8ca8b8ef79341"
+    },
+    {
+      "row_index": 2001,
+      "source_id": "1408",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2001.png",
+      "image_sha256": "56d1a232ae607fd1cfa6e8263547d1da826afda0ba684d4a94a8ca8b8ef79341"
+    },
+    {
+      "row_index": 2002,
+      "source_id": "1408",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2002.png",
+      "image_sha256": "693f4445bd7766db6f06a9cb27c9504eb4680a5a4d5e98f80fa46759d62b3a81"
+    },
+    {
+      "row_index": 2003,
+      "source_id": "1408",
+      "variant": "partial_02",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2003.png",
+      "image_sha256": "feb45ad1fb8b266d17140d6bb07f814d9037897fc1df9838a816880ff5f1bdac"
+    },
+    {
+      "row_index": 2004,
+      "source_id": "1408",
+      "variant": "partial_03",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2004.png",
+      "image_sha256": "e1b792956de90446c800a82e9814a0b830c853a65cce8647680dc7d69313dea0"
+    },
+    {
+      "row_index": 2005,
+      "source_id": "1408",
+      "variant": "partial_04",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2005.png",
+      "image_sha256": "31f150d245d071c6e9e7f2450a63b80372fdbec81dff6931e9c23d7e8d6f1704"
+    },
+    {
+      "row_index": 2006,
+      "source_id": "1408",
+      "variant": "partial_05",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2006.png",
+      "image_sha256": "ad078c5a655ad65737e7d2872d2d8faf66b76de5a20b77960f6559de9b2bc4bf"
+    },
+    {
+      "row_index": 2007,
+      "source_id": "1408",
+      "variant": "partial_06",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2007.png",
+      "image_sha256": "29242b5e7495ba3ec0fbe62423bce4a8f1a626ddcf86e394c64cbc9d1b5c6286"
+    },
+    {
+      "row_index": 2008,
+      "source_id": "1408",
+      "variant": "partial_07",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2008.png",
+      "image_sha256": "08cdca4a54c9544974967e398397b7fa56bef7a977864aae39bd90e335364eba"
+    },
+    {
+      "row_index": 2009,
+      "source_id": "1409",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2009.png",
+      "image_sha256": "dafa48746eecd7b480ee909ae754a43000bca2061b7beb342eb135e89ad18839"
+    },
+    {
+      "row_index": 2010,
+      "source_id": "1409",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2010.png",
+      "image_sha256": "1e14e0151e112e3f6478776407d71c084b77bffbe4c99f5105cee08edd2bb341"
+    },
+    {
+      "row_index": 2011,
+      "source_id": "1409",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2011.png",
+      "image_sha256": "1e14e0151e112e3f6478776407d71c084b77bffbe4c99f5105cee08edd2bb341"
+    },
+    {
+      "row_index": 2012,
+      "source_id": "1409",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2012.png",
+      "image_sha256": "87abaa2b257c7a653792d56f6647794db9f52036ea1b9f78e0437af6d9c8eaa8"
+    },
+    {
+      "row_index": 2013,
+      "source_id": "1409",
+      "variant": "partial_02",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2013.png",
+      "image_sha256": "22738b30acbe7974dcc1c09324efec26a0eca5d94935bcb25b1c68b2f37b8651"
+    },
+    {
+      "row_index": 2014,
+      "source_id": "1409",
+      "variant": "partial_03",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2014.png",
+      "image_sha256": "d031779e4c3878f60789453f54992aafcde9ae1f23362fbe6f7a4125a9d98e5d"
+    },
+    {
+      "row_index": 2015,
+      "source_id": "1409",
+      "variant": "partial_04",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2015.png",
+      "image_sha256": "23622cc21078b2b759604453e126ed3d30293926bb9f6f02102d20c9ce1b1590"
+    },
+    {
+      "row_index": 2016,
+      "source_id": "1409",
+      "variant": "partial_05",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2016.png",
+      "image_sha256": "70c4b52a59056a1a06552b8b53c469e6bd394e246138ef03a25eb76c63592895"
+    },
+    {
+      "row_index": 2017,
+      "source_id": "1409",
+      "variant": "partial_06",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2017.png",
+      "image_sha256": "cae2cffffef0713c53f62ad470e605f9935a43eb41646bee34454befe03c83b4"
+    },
+    {
+      "row_index": 2018,
+      "source_id": "1409",
+      "variant": "partial_07",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2018.png",
+      "image_sha256": "adcfc35857c3a338a9b2f31934aec5faec9cb058f7e4a814df80cb3b9e635bb4"
+    },
+    {
+      "row_index": 2019,
+      "source_id": "1410",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 1212,
+      "file": "/app/bench-assets/webpii-test100/2019.png",
+      "image_sha256": "f36dad296962b6fe9dc687afa1d4675fc06ba8068108f9a78689bc8f8aa4f283"
+    },
+    {
+      "row_index": 3000,
+      "source_id": "1720",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3000.png",
+      "image_sha256": "7efe3d06aff3e33f6cf51bc3dbe36abc23704cc31aa902926bc83331340ed2d2"
+    },
+    {
+      "row_index": 3001,
+      "source_id": "1720",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3001.png",
+      "image_sha256": "0fd5d08b3badf380d9f315f8dbd80f29495f7a3073832b8c0b8872b73dac3410"
+    },
+    {
+      "row_index": 3002,
+      "source_id": "1720",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3002.png",
+      "image_sha256": "b2039a83bf88c874e5a50ad9a4252078afaf8995f14acd9f0750803b336d471d"
+    },
+    {
+      "row_index": 3003,
+      "source_id": "1720",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3003.png",
+      "image_sha256": "8cf51e04f3885f53c457ae0b3664e713436ddfd7272834a9db7166932d109b67"
+    },
+    {
+      "row_index": 3004,
+      "source_id": "1720",
+      "variant": "partial_02",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3004.png",
+      "image_sha256": "5cf6168cb39bc6bdb89d82d07fae1aa7e3d80e9e4eeb09f26fbf0dec85a3b451"
+    },
+    {
+      "row_index": 3005,
+      "source_id": "1720",
+      "variant": "partial_03",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3005.png",
+      "image_sha256": "3f5b9b73f9bc954b2226651983b283ff6c27d43c3aa2c81c0a4a4acce099ec99"
+    },
+    {
+      "row_index": 3006,
+      "source_id": "1720",
+      "variant": "partial_04",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3006.png",
+      "image_sha256": "abc744e54f937c1a4c755438387d1deef05e910f2f569a1e816fa5254c581b01"
+    },
+    {
+      "row_index": 3007,
+      "source_id": "1720",
+      "variant": "partial_05",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3007.png",
+      "image_sha256": "04efd9b5cafacff58eab47b556c07ef95ddf23e41d0d06ae8f85967fd1ae8674"
+    },
+    {
+      "row_index": 3008,
+      "source_id": "1721",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3008.png",
+      "image_sha256": "7479fa0a4278f2e8598d7ba4a9f2b6005164be885020f1a7540ae59d5ca22a33"
+    },
+    {
+      "row_index": 3009,
+      "source_id": "1721",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3009.png",
+      "image_sha256": "0fd5d08b3badf380d9f315f8dbd80f29495f7a3073832b8c0b8872b73dac3410"
+    },
+    {
+      "row_index": 3010,
+      "source_id": "1721",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3010.png",
+      "image_sha256": "a67288aaf76ea511b694f51422eb04906078eac990e1bd65c9aa63c7302e514a"
+    },
+    {
+      "row_index": 3011,
+      "source_id": "1721",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3011.png",
+      "image_sha256": "cca3e04ecf937ab0871962cdb014899cf5bf36d0119a502e1775b1a7243dec52"
+    },
+    {
+      "row_index": 3012,
+      "source_id": "1721",
+      "variant": "partial_02",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3012.png",
+      "image_sha256": "b92e833bd144bcf8f06108fa88cb90df09d0109df03e8f8389b98666c738973f"
+    },
+    {
+      "row_index": 3013,
+      "source_id": "1721",
+      "variant": "partial_03",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3013.png",
+      "image_sha256": "31058c4f266d7b56c02552919e3894bc4908838ff4bbc515d6a5542d37913f9f"
+    },
+    {
+      "row_index": 3014,
+      "source_id": "1721",
+      "variant": "partial_04",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3014.png",
+      "image_sha256": "a36e17b4fb4cca5aade2f20fd48e7b83e48d8d538b3b4c23194a762ee7a3c54a"
+    },
+    {
+      "row_index": 3015,
+      "source_id": "1721",
+      "variant": "partial_05",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3015.png",
+      "image_sha256": "dc60b232d12be7a11a88646061b9c65e3770f01aa1dddfaaf4ad501cc5072c2c"
+    },
+    {
+      "row_index": 3016,
+      "source_id": "1722",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3016.png",
+      "image_sha256": "a2b1f407e0e790466ea11d1f184c665e8e0cadb8fef5e3a01e3f7776a4f596ff"
+    },
+    {
+      "row_index": 3017,
+      "source_id": "1722",
+      "variant": "empty",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3017.png",
+      "image_sha256": "0fd5d08b3badf380d9f315f8dbd80f29495f7a3073832b8c0b8872b73dac3410"
+    },
+    {
+      "row_index": 3018,
+      "source_id": "1722",
+      "variant": "partial_00",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3018.png",
+      "image_sha256": "549ec57e090d63f7f57c40f9f58c84bfac95ee07963f909f8e7eddfbb9545a56"
+    },
+    {
+      "row_index": 3019,
+      "source_id": "1722",
+      "variant": "partial_01",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/3019.png",
+      "image_sha256": "9202ab5b937ad18e8003905a53b94c96a811aa0f509ec6f731ac43629411d056"
+    },
+    {
+      "row_index": 4381,
+      "source_id": "2373",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/4381.png",
+      "image_sha256": "d41c868028dc52bcefc2812b514438c2ed4dbfd21eef39a37fceb561bfd39f0e"
+    },
+    {
+      "row_index": 4382,
+      "source_id": "2374",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 800,
+      "file": "/app/bench-assets/webpii-test100/4382.png",
+      "image_sha256": "42967d7ac6de5879c5f1d5c8500dfd48e45b83fa89583681fc3a1829791809e0"
+    },
+    {
+      "row_index": 4383,
+      "source_id": "2376",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4383.png",
+      "image_sha256": "b1cba71e77ea1b92a30fc233dad65409ecdc7463369358c836d4fc6d635150a1"
+    },
+    {
+      "row_index": 4384,
+      "source_id": "2377",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4384.png",
+      "image_sha256": "41d574e89575f59260f2c5b953fb9ff4a30ff6069d07e45d40f813bac7bc68c6"
+    },
+    {
+      "row_index": 4385,
+      "source_id": "2378",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4385.png",
+      "image_sha256": "e0659e47ea70c5b728e2b3d55945ba0c949eef83263519407e445f74b379a9d5"
+    },
+    {
+      "row_index": 4386,
+      "source_id": "2379",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4386.png",
+      "image_sha256": "fbef8ed8f718fca82d6fd0679190b608675953293a1168702c8f3e74105414f0"
+    },
+    {
+      "row_index": 4387,
+      "source_id": "2380",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4387.png",
+      "image_sha256": "3c1fa1e467f705dd0027c5133bc82c717881ef842359a74d4c15b301a464cbea"
+    },
+    {
+      "row_index": 4388,
+      "source_id": "2381",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4388.png",
+      "image_sha256": "d795cb91a6290882c5ffc7175445dade23ee224d9c38679ac9bb1041d21128aa"
+    },
+    {
+      "row_index": 4389,
+      "source_id": "2382",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4389.png",
+      "image_sha256": "c9e3031c7d82867abdb9a574d0beec4570a2e11e10bab8f1de701b585d7f376d"
+    },
+    {
+      "row_index": 4390,
+      "source_id": "2383",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4390.png",
+      "image_sha256": "e37d2877a16fa5540bf07f19a6c1967a935fd8dad4d43ec8df2862eff5d9988f"
+    },
+    {
+      "row_index": 4391,
+      "source_id": "2384",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4391.png",
+      "image_sha256": "472658f53dee30b68b3536fa84173bc5cd7f531b66c9c8cdec5179a585337865"
+    },
+    {
+      "row_index": 4392,
+      "source_id": "2385",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4392.png",
+      "image_sha256": "4b42ce35c75a997da5334c5c16bcec33c7809d1f5a39f012253d0948bc50c9f8"
+    },
+    {
+      "row_index": 4393,
+      "source_id": "2386",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4393.png",
+      "image_sha256": "fa1bed28b624a6492d08447a0d370b2d762143b184babfa61f3bf99e3572b831"
+    },
+    {
+      "row_index": 4394,
+      "source_id": "2387",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4394.png",
+      "image_sha256": "16ca41bfa46496ebd30d862084f4a11dd8cb4fd52953ff1ee018a79e00808914"
+    },
+    {
+      "row_index": 4395,
+      "source_id": "2388",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4395.png",
+      "image_sha256": "a7ee00d6f3f23fccda36a3f33106f6a7ca606dcd44a38b57c0aed449bfe432ac"
+    },
+    {
+      "row_index": 4396,
+      "source_id": "2389",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4396.png",
+      "image_sha256": "5239197045d7f02e4f2eb600ad4b34ea492b54ff70337febb41c754101072993"
+    },
+    {
+      "row_index": 4397,
+      "source_id": "2390",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4397.png",
+      "image_sha256": "7f4b9a4fd1f13f91308a22b8a15e1440ccd44707b8c9eb7616a52eae23ac6d90"
+    },
+    {
+      "row_index": 4398,
+      "source_id": "2391",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4398.png",
+      "image_sha256": "196f086b5751915121e63f1c3f9dc6dcb59ded769053f4728f77e9c11f729213"
+    },
+    {
+      "row_index": 4399,
+      "source_id": "2392",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4399.png",
+      "image_sha256": "539c35e031ec6067e19cdad2548f9e14c8580f0c31420ed5d0501e48a8057a60"
+    },
+    {
+      "row_index": 4400,
+      "source_id": "2393",
+      "variant": "full",
+      "image_width": 1280,
+      "image_height": 3020,
+      "file": "/app/bench-assets/webpii-test100/4400.png",
+      "image_sha256": "2f243b7e28d0ef68118fc35c9d72eaf013d262a8512ca47c5fc3746cd34cf650"
+    }
+  ]
+}

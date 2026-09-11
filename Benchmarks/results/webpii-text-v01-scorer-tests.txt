@@ -1,0 +1,24 @@
+test_clipping_uses_pixel_bounds (test_score_raster.ScoringTests.test_clipping_uses_pixel_bounds) ... ok
+test_disjoint_and_empty (test_score_raster.ScoringTests.test_disjoint_and_empty) ... ok
+test_duplicate_prediction_is_false_positive (test_score_raster.ScoringTests.test_duplicate_prediction_is_false_positive) ... ok
+test_low_overlap_is_not_detection (test_score_raster.ScoringTests.test_low_overlap_is_not_detection) ... ok
+test_missed_annotation_stays_false_negative (test_score_raster.ScoringTests.test_missed_annotation_stays_false_negative) ... ok
+test_nested_box_does_not_inflate_coverage (test_score_raster.ScoringTests.test_nested_box_does_not_inflate_coverage) ... ok
+test_overlap_is_counted_once (test_score_raster.ScoringTests.test_overlap_is_counted_once) ... ok
+test_dataset_mismatch_rejected (test_score_text.TextScoreTests.test_dataset_mismatch_rejected) ... ok
+test_failed_missing_rows_stay_in_denominator (test_score_text.TextScoreTests.test_failed_missing_rows_stay_in_denominator) ... ok
+test_invalid_observation_identity_geometry_and_timing_rejected (test_score_text.TextScoreTests.test_invalid_observation_identity_geometry_and_timing_rejected) ... ok
+test_low_confidence_suppression_is_not_detector_credit (test_score_text.TextScoreTests.test_low_confidence_suppression_is_not_detector_credit) ... ok
+test_misread_sensitive_text_is_geometric_risk_not_exact_match (test_score_text.TextScoreTests.test_misread_sensitive_text_is_geometric_risk_not_exact_match) ... ok
+test_multiline_annotation_is_one_value_group (test_score_text.TextScoreTests.test_multiline_annotation_is_one_value_group) ... ok
+test_overlap_threshold_uses_word_area (test_score_text.TextScoreTests.test_overlap_threshold_uses_word_area) ... ok
+test_partial_value_exposure_is_not_full_withholding (test_score_text.TextScoreTests.test_partial_value_exposure_is_not_full_withholding) ... ok
+test_product_false_positive_and_overlap_exclusion (test_score_text.TextScoreTests.test_product_false_positive_and_overlap_exclusion) ... ok
+test_retained_duplicate_prevents_false_complete_withholding (test_score_text.TextScoreTests.test_retained_duplicate_prevents_false_complete_withholding) ... ok
+test_unicode_normalization_and_nearest_rank (test_score_text.TextScoreTests.test_unicode_normalization_and_nearest_rank) ... ok
+test_union_does_not_double_count_overlap (test_score_text.TextScoreTests.test_union_does_not_double_count_overlap) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.002s
+
+OK

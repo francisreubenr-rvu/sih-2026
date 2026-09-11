@@ -1,0 +1,751 @@
+{
+  "categories": {
+    "PII_CARD_LAST4": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 2
+    },
+    "PII_CITY": {
+      "expected_tokens": 103,
+      "recognized_tokens": 58,
+      "pii_marked_tokens": 27,
+      "retained_tokens": 24
+    },
+    "PII_COUNTRY": {
+      "expected_tokens": 102,
+      "recognized_tokens": 62,
+      "pii_marked_tokens": 4,
+      "retained_tokens": 58
+    },
+    "PII_FULLNAME": {
+      "expected_tokens": 144,
+      "recognized_tokens": 119,
+      "pii_marked_tokens": 117,
+      "retained_tokens": 2
+    },
+    "PII_PHONE": {
+      "expected_tokens": 63,
+      "recognized_tokens": 25,
+      "pii_marked_tokens": 25,
+      "retained_tokens": 0
+    },
+    "PII_POSTCODE_FULL": {
+      "expected_tokens": 18,
+      "recognized_tokens": 18,
+      "pii_marked_tokens": 17,
+      "retained_tokens": 0
+    },
+    "PII_PROMO_CODE": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 1
+    },
+    "PII_STATE": {
+      "expected_tokens": 46,
+      "recognized_tokens": 15,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 11
+    },
+    "PII_STREET": {
+      "expected_tokens": 188,
+      "recognized_tokens": 85,
+      "pii_marked_tokens": 83,
+      "retained_tokens": 2
+    },
+    "PII_FULLNAME2": {
+      "expected_tokens": 6,
+      "recognized_tokens": 4,
+      "pii_marked_tokens": 4,
+      "retained_tokens": 0
+    },
+    "PII_GIFT_FULLNAME": {
+      "expected_tokens": 6,
+      "recognized_tokens": 6,
+      "pii_marked_tokens": 6,
+      "retained_tokens": 0
+    },
+    "PII_STATE_ABBR": {
+      "expected_tokens": 7,
+      "recognized_tokens": 7,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 6
+    },
+    "PII_GIFT_MESSAGE": {
+      "expected_tokens": 117,
+      "recognized_tokens": 59,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 55
+    },
+    "PII_EMAIL": {
+      "expected_tokens": 70,
+      "recognized_tokens": 43,
+      "pii_marked_tokens": 43,
+      "retained_tokens": 0
+    },
+    "PII_POSTCODE": {
+      "expected_tokens": 66,
+      "recognized_tokens": 29,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 23
+    },
+    "PII_FIRSTNAME": {
+      "expected_tokens": 32,
+      "recognized_tokens": 19,
+      "pii_marked_tokens": 15,
+      "retained_tokens": 4
+    },
+    "PII_LASTNAME": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_GIFT_LASTNAME": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_FULLNAME3": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_FIRSTNAME2": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_FIRSTNAME3": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LASTNAME2": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LASTNAME3": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_FIRSTNAME_DERIVED": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LASTNAME_DERIVED": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_FULLNAME_DERIVED": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_NAME_FULL_DERIVED": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_STREET2": {
+      "expected_tokens": 90,
+      "recognized_tokens": 62,
+      "pii_marked_tokens": 48,
+      "retained_tokens": 14
+    },
+    "PII_CITY2": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_POSTCODE_NUMERIC": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION10_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION10_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION10_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION10_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION11_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION11_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION11_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION11_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION12_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION12_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION12_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION12_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION13_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION13_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION13_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION13_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION14_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION14_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION14_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION14_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION15_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 2
+    },
+    "PII_LOCATION15_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION15_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION15_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION16_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION16_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION16_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION16_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION17_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION17_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION17_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION17_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION18_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION18_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION18_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION18_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION19_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION19_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION19_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION19_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION1_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION1_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION1_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION1_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION20_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION20_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION20_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION20_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION2_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION2_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION2_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION2_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 4,
+      "pii_marked_tokens": 4,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION3_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION3_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION3_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION3_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION4_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION4_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION4_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION4_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION5_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_LOCATION5_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION5_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION5_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION6_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION6_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION6_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION6_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 4,
+      "pii_marked_tokens": 4,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION7_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 2,
+      "pii_marked_tokens": 2,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION7_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION7_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION7_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION8_CITY": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION8_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION8_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION8_STREET": {
+      "expected_tokens": 5,
+      "recognized_tokens": 5,
+      "pii_marked_tokens": 5,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION9_CITY": {
+      "expected_tokens": 2,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION9_POSTCODE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION9_POSTCODE_EXT": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOCATION9_STREET": {
+      "expected_tokens": 3,
+      "recognized_tokens": 3,
+      "pii_marked_tokens": 3,
+      "retained_tokens": 0
+    },
+    "PII_POSTCODE_EXT": {
+      "expected_tokens": 2,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_STATE2": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_CITY_STATE_ZIP": {
+      "expected_tokens": 8,
+      "recognized_tokens": 8,
+      "pii_marked_tokens": 7,
+      "retained_tokens": 1
+    },
+    "PII_CITY_STATE_ZIP2": {
+      "expected_tokens": 3,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_SECURITY_CODE": {
+      "expected_tokens": 21,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_LOGIN_USERNAME": {
+      "expected_tokens": 2,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 1,
+      "retained_tokens": 0
+    },
+    "PII_LOGIN_PASSWORD": {
+      "expected_tokens": 47,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_CARD_TYPE": {
+      "expected_tokens": 1,
+      "recognized_tokens": 1,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 1
+    },
+    "PII_CARD_LAST4_NUMERIC": {
+      "expected_tokens": 1,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    },
+    "PII_EMAIL2": {
+      "expected_tokens": 64,
+      "recognized_tokens": 30,
+      "pii_marked_tokens": 30,
+      "retained_tokens": 0
+    },
+    "PII_LOGIN_PASSWORD_CONFIRM": {
+      "expected_tokens": 44,
+      "recognized_tokens": 0,
+      "pii_marked_tokens": 0,
+      "retained_tokens": 0
+    }
+  },
+  "initializationMs": 457.40000009536743,
+  "longTaskCount": 102,
+  "longTaskTotalMs": 35190,
+  "heapStart": {
+    "usedJSHeapSize": 10870749,
+    "totalJSHeapSize": 13861913,
+    "jsHeapSizeLimit": 4395630592
+  },
+  "heapAfterDispose": {
+    "usedJSHeapSize": 16868685,
+    "totalJSHeapSize": 21390317,
+    "jsHeapSizeLimit": 4395630592
+  },
+  "rowVisibilityCounts": {
+    "visible": 100
+  },
+  "limitations": [
+    "Main-page JS heap excludes worker/process memory",
+    "Long tasks are not total CPU utilization",
+    "Network capture was truncated; cannot establish complete egress isolation"
+  ]
+}
