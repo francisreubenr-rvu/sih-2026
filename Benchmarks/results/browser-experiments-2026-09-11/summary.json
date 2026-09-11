@@ -1,0 +1,275 @@
+{
+  "recordedAt": "2026-09-11T01:11:09.901516+00:00",
+  "scope": "Authored synthetic development cases in Codex in-app Chromium; real packaged WASM/OCR/NER and Qwen2.5 7B on loopback. Not native-extension, human-study or held-out evidence.",
+  "ocr": {
+    "baseline": {
+      "record": "Benchmarks/results/browser-experiments-2026-09-11/text-pilot-v1.json",
+      "status": "completed",
+      "initializationMs": 463.2000000476837,
+      "piiTokens": 14,
+      "piiDetected": 12,
+      "piiRetained": 2,
+      "usefulTokens": 25,
+      "usefulRetained": 25,
+      "processingMs": [
+        188.89999997615814,
+        120.39999997615814,
+        132.89999997615814
+      ]
+    },
+    "revised": {
+      "record": "Benchmarks/results/browser-experiments-2026-09-11/text-pilot-v2.json",
+      "status": "completed",
+      "initializationMs": 373.89999997615814,
+      "piiTokens": 14,
+      "piiDetected": 14,
+      "piiRetained": 0,
+      "usefulTokens": 25,
+      "usefulRetained": 25,
+      "processingMs": [
+        200.59999990463257,
+        128.80000007152557,
+        133.10000002384186
+      ]
+    },
+    "interpretation": "Explicit-label rule fixes two address-token misses on the same development screens; broader privacy remains unverified; local-only preview."
+  },
+  "tasks": {
+    "task-review-v1.json": {
+      "status": "stopped",
+      "reason": "planning_failed",
+      "actions": 0,
+      "elapsedMs": 336.6999999284744,
+      "trace": [
+        {
+          "state": "observe",
+          "actions": 0,
+          "elapsedMs": 0
+        },
+        {
+          "state": "plan",
+          "actions": 0,
+          "elapsedMs": 325.09999990463257
+        },
+        {
+          "state": "stopped",
+          "actions": 0,
+          "elapsedMs": 336.59999990463257,
+          "reason": "planning_failed"
+        }
+      ]
+    },
+    "task-review-v2.json": {
+      "status": "completed",
+      "reason": "postcondition_verified",
+      "actions": 2,
+      "elapsedMs": 10635.5,
+      "trace": [
+        {
+          "state": "observe",
+          "actions": 0,
+          "elapsedMs": 0
+        },
+        {
+          "state": "plan",
+          "actions": 0,
+          "elapsedMs": 117.20000004768372
+        },
+        {
+          "state": "execute",
+          "actions": 0,
+          "elapsedMs": 8529.800000071526
+        },
+        {
+          "state": "verify",
+          "actions": 1,
+          "elapsedMs": 8535.300000071526
+        },
+        {
+          "state": "observe",
+          "actions": 1,
+          "elapsedMs": 8535.300000071526
+        },
+        {
+          "state": "plan",
+          "actions": 1,
+          "elapsedMs": 8680
+        },
+        {
+          "state": "execute",
+          "actions": 1,
+          "elapsedMs": 10634.600000023842
+        },
+        {
+          "state": "verify",
+          "actions": 2,
+          "elapsedMs": 10635.400000095367
+        },
+        {
+          "state": "observe",
+          "actions": 2,
+          "elapsedMs": 10635.400000095367
+        },
+        {
+          "state": "completed",
+          "actions": 2,
+          "elapsedMs": 10635.400000095367,
+          "reason": "postcondition_verified"
+        }
+      ]
+    },
+    "task-completed-v1.json": {
+      "status": "completed",
+      "reason": "postcondition_verified",
+      "actions": 1,
+      "elapsedMs": 3868.399999976158,
+      "trace": [
+        {
+          "state": "observe",
+          "actions": 0,
+          "elapsedMs": 0
+        },
+        {
+          "state": "plan",
+          "actions": 0,
+          "elapsedMs": 125.39999997615814
+        },
+        {
+          "state": "execute",
+          "actions": 0,
+          "elapsedMs": 3867.1999999284744
+        },
+        {
+          "state": "verify",
+          "actions": 1,
+          "elapsedMs": 3868.399999976158
+        },
+        {
+          "state": "observe",
+          "actions": 1,
+          "elapsedMs": 3868.399999976158
+        },
+        {
+          "state": "completed",
+          "actions": 1,
+          "elapsedMs": 3868.399999976158,
+          "reason": "postcondition_verified"
+        }
+      ]
+    },
+    "task-next-v1.json": {
+      "status": "completed",
+      "reason": "postcondition_verified",
+      "actions": 1,
+      "elapsedMs": 3440,
+      "trace": [
+        {
+          "state": "observe",
+          "actions": 0,
+          "elapsedMs": 0
+        },
+        {
+          "state": "plan",
+          "actions": 0,
+          "elapsedMs": 119.5
+        },
+        {
+          "state": "execute",
+          "actions": 0,
+          "elapsedMs": 3437.899999976158
+        },
+        {
+          "state": "verify",
+          "actions": 1,
+          "elapsedMs": 3440
+        },
+        {
+          "state": "observe",
+          "actions": 1,
+          "elapsedMs": 3440
+        },
+        {
+          "state": "completed",
+          "actions": 1,
+          "elapsedMs": 3440,
+          "reason": "postcondition_verified"
+        }
+      ]
+    },
+    "task-cancel-v1.json": {
+      "status": "cancelled",
+      "reason": "user_cancelled",
+      "actions": 0,
+      "elapsedMs": 3024.8000000715256,
+      "trace": [
+        {
+          "state": "observe",
+          "actions": 0,
+          "elapsedMs": 0.20000004768371582
+        },
+        {
+          "state": "plan",
+          "actions": 0,
+          "elapsedMs": 153.10000002384186
+        },
+        {
+          "state": "cancelled",
+          "actions": 0,
+          "elapsedMs": 3024.8000000715256,
+          "reason": "user_cancelled"
+        }
+      ]
+    }
+  },
+  "localReference": {
+    "expiry": "Observed binding revoked and confirmation disabled while draft remained empty. Exact elapsed expiry duration not instrumented.",
+    "write": "Fresh request led to fill-local; explicit confirmation produced fixture equality-success status and visibly populated input; apply disabled afterwards.",
+    "knownEmailInRequest": false,
+    "readbackLimitation": "Read-only locator evaluate returned empty value despite populated screenshot and fixture equality status. Probe preserved, not counted as a passing direct property check. No raw-CDP value extraction used.",
+    "nativeExtension": "not integrated",
+    "networkScope": "Saved app-displayed exact serialized request; no new complete network-egress trace captured."
+  },
+  "layout": {
+    "valid": [
+      {
+        "name": "text",
+        "scrollWidth": 390,
+        "width": 390
+      },
+      {
+        "name": "runner",
+        "scrollWidth": 390,
+        "width": 390
+      },
+      {
+        "name": "reference",
+        "scrollWidth": 390,
+        "width": 390
+      }
+    ],
+    "prior": "mobile-layout.json only applied 390px to reference tab; other two entries are desktop checks, not mobile evidence.",
+    "limitation": "Screenshots from browser surface are scaled; no full WCAG certification or human readability score."
+  },
+  "automatedTests": {
+    "passed": 71,
+    "failed": 0,
+    "report": "Benchmarks/results/browser-experiments-2026-09-11/unit-tests-v2.txt"
+  },
+  "sourceV2Sha256": {
+    "Prototype/shared/text-privacy.mjs": "639a9cddc1dc4a9bccae4ecd9aafba94629ee8a98740900352d26d4e6c344be2",
+    "Prototype/shared/local-text-engine.mjs": "112e23d4543f2fac956171f4051343773d7207616721bb901d7d6a7c0cda7de0",
+    "Prototype/app/text-preview.mjs": "96b266c8029c0d066ab64ea51bc3d7350cb0097aed5a52bb7577890655388458",
+    "Prototype/app/text-fixtures.mjs": "7bb798add336ccb2c0d876d12f365ce4389b8027a37810b807cfcff8e5096e6f",
+    "Prototype/tests/text-privacy.test.mjs": "b4c156975ea14807133390a5599235d240b4176801cf03bf04ae2b6f983db17f",
+    "Prototype/app/task-loop.mjs": "c65d0dac9ebc9ad9da2269b04b867eb0468abe26e6055b37b250f49fef8b5700",
+    "Prototype/app/local-reference.mjs": "e48fa64e8c2e2944644021778d5e5ae1039da2800b762d17bd20f1b9641d388b",
+    "Prototype/app/local-reference-fixture.js": "b469155fa69056be9c021616560dd3d703263f9fa5a07213f1bd0f38f4fe3720"
+  },
+  "open": [
+    "General PII precision and recall",
+    "Unlabelled and multilingual raster utility",
+    "Native Chrome/Firefox extension execution",
+    "Full-flow under 200ms",
+    "Human usability and domain validation"
+  ]
+}

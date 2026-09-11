@@ -1,15 +1,13 @@
 // OCR and PII labels are local evidence, never permission to export arbitrary text.
 export function flattenOcrWords(data,width,height){
- const words=[];let lineIndex=0;
- for(const block of data.blocks||[])for(const paragraph of block.paragraphs||[])for(const line of paragraph.lines||[]){
- const currentLine=lineIndex++;
- for(const word of line.words||[]){
+ const words=[];
+ for(const block of data.blocks||[])for(const paragraph of block.paragraphs||[])for(const line of paragraph.lines||[])for(const word of line.words||[]){
   const {x0,y0,x1,y1}=word.bbox||{};
   if(![x0,y0,x1,y1,word.confidence].every(Number.isFinite)||x1<=x0||y1<=y0)throw new Error('Invalid OCR geometry');
   if(typeof word.text!=='string'||word.text.length>512)throw new Error('Invalid OCR word');
   const x=Math.max(0,x0),y=Math.max(0,y0),right=Math.min(width,x1),bottom=Math.min(height,y1);
-  if(right>x&&bottom>y)words.push({text:word.text,confidence:word.confidence,lineIndex:currentLine,rect:{x,y,width:right-x,height:bottom-y}});
- }}
+  if(right>x&&bottom>y)words.push({text:word.text,confidence:word.confidence,rect:{x,y,width:right-x,height:bottom-y}});
+ }
  if(words.length>3000)throw new Error('OCR word limit exceeded');return words;
 }
 export function packWordTokens(words,tokenizer,maxTokens=192,overlap=32){
@@ -36,23 +34,10 @@ export function decodeTokenLabels(logits,shape,wordIndices,id2label,threshold=.5
  return labels;
 }
 export function localWordPolicy(words,modelLabels){
- // A model may label only part of an address or secret. Explicit field labels
- // conservatively withhold following values on that OCR line. This is an English
- // development heuristic; OCR grouping errors and unlabelled PII remain gaps.
- const fields=new Map();
- const kinds={name:'PERSON',recipient:'PERSON',customer:'PERSON',email:'EMAIL_ADDRESS',phone:'PHONE_NUMBER',password:'PASSWORD',account:'ACCOUNT',address:'LOCATION',city:'LOCATION',postcode:'LOCATION'};
- const fieldValues=new Map();
- for(const [index,word] of [...words.entries()].sort((a,b)=>a[1].rect.x-b[1].rect.x)){
-  if(!Number.isInteger(word.lineIndex)||word.lineIndex<0)continue;
-  const match=/^([a-z]+):$/i.exec(word.text);
-  if(match){fields.set(word.lineIndex,kinds[match[1].toLowerCase()]||null);continue;}
-  const kind=fields.get(word.lineIndex);if(kind)fieldValues.set(index,kind);
- }
  return words.map((word,index)=>{
   const label=modelLabels.get(index);const t=word.text;
-  const fieldRule=fieldValues.get(index);
-  const rule=fieldRule||(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(t)?'EMAIL_ADDRESS':/(?:\d[\d\s().-]{5,}\d)/.test(t)?'NUMBER':null);
-  return {...word,sensitive:Boolean(label||rule),kind:label?.kind||rule||null,piiConfidence:label?.confidence??null,rule:fieldRule?'explicit-sensitive-field':rule?'token-pattern':null};
+  const rule=/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(t)?'EMAIL_ADDRESS':/(?:\d[\d\s().-]{5,}\d)/.test(t)?'NUMBER':null;
+  return {...word,sensitive:Boolean(label||rule),kind:label?.kind||rule||null,piiConfidence:label?.confidence??(rule?1:null)};
  });
 }
 export function paintLocalTextPreview(ctx,words,width,height){

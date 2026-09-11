@@ -1,5 +1,14 @@
 # Roast Loop — 9 September 2026
 
+## Round 8 — browser experiments, 11 September
+
+- [x] Original local preview opens using updated supported browser connection. Synthetic runner and local reference now have browser execution evidence; prior blocked records are historical. This does not close the native-extension gate.
+- [x] NER missed street words after detecting an address number. Preserve failed run; add conservative explicit-label value withholding and line-boundary tests. Same-fixture regression now withholds 14/14 scored sensitive tokens and retains 25/25 useful tokens.
+- [ ] Explicit-label OCR rule remains English and dependent on correct line grouping. Evaluate unseen layouts, multiline/unlabelled PII, scripts and decoys before export integration.
+- [x] Model service outage caused first task to stop with no actions. Restored existing local Qwen service; three goal runs and cancellation completed with preserved traces.
+- [ ] Read-only field-value probe conflicts with populated screenshot and fixture equality status. Preserve the probe; do not call it direct readback proof. Browser draft conclusion uses visible/fixture evidence.
+- [x] Initial viewport override affected only one tab. Preserve original dimensions and repeat per-tab 390px checks; all three show no document overflow.
+
 ## Scope
 SIH26171 implementation. The earlier preparation pack is historical evidence, not a working privacy agent.
 

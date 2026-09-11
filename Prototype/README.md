@@ -68,7 +68,7 @@ The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min
 
 ## Additional validation evidence — 10 September
 
-Run `npm test` for the current 39 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
+Run `npm test` for the current 71 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
 
 `Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/sightline-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.
 
@@ -76,7 +76,7 @@ Run `npm test` for the current 39 automated tests. With the app running, open `/
 
 The repository includes 100 released synthetic WebPII test screens under `app/bench-assets/webpii-test100/`, with source attribution in `Raw/datasets/webpii-test100/`. These are dataset reproductions, not real user screenshots or partner endorsements. Run `python3 ../scripts/fetch-webpii-test100.py` from this directory to verify the frozen image hashes.
 
-Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. Current suite: 42 passing prototype tests. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
+Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. The original raster checkpoint passed 42 prototype tests; the current total is 71. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
 
 Read `Docs/decisions/raster-evaluation.md` before quoting results. Full-image masking covered all selected PII regions while preserving zero original visual pixels; no claim of broad PII accuracy or task utility follows.
 
@@ -86,13 +86,13 @@ After `npm ci --ignore-scripts` and `npm run build`, open `/app/text-preview.htm
 
 Model and language files are pinned in `Raw/domain/ocr-pii/asset-manifest.json`. `python3 scripts/fetch-ocr-pii-assets.py` from the repository root restores their declared upstream revisions if needed. The build copies the OCR worker and WASM runtime from the pinned npm dependencies. These generated runtime copies are ignored by Git. Model provenance and limitations: `Docs/decisions/reference-informed-plan.md`.
 
-Validation as of 10 September: build and 48 automated tests pass. The browser tool blocked navigation to the local preview, so no browser OCR/NER accuracy, latency or visual QA result has been established. Chrome/Firefox extension verification remains separate. The lab is not integrated into the v0.1 outbound scene or native extension.
+Browser validation on 11 September: the original policy left two of 14 sensitive tokens readable. An explicit-field-label correction withholds all 14 on the same three development screens and retains all 25 scored useful tokens. This is a regression result, not general or held-out privacy accuracy. Earlier blocked navigation and failed results remain preserved. The lab is not integrated into the v0.1 outbound scene or native extension. See `Docs/decisions/browser-experiments-2026-09-11.md`.
 
 ## Experimental bounded synthetic runner
 
 `/app/task-loop.html` is linked from the main workspace. Start authorizes safe actions in the built-in synthetic fixture only. The runner uses the existing local vision and model adapters, reobserves after each action and checks declared fixture postconditions. It stops after 8 actions, 90 seconds, two unchanged observations, cancellation or an execution error. A model's `done` reply alone cannot produce a completed status.
 
-The full suite now has 58 passing tests, including 10 coordinator cases. Build passes. Browser execution and visual QA of this new page remain unverified; the native extension still uses the existing manual review flow. See `Docs/decisions/reference-informed-plan.md` for acceptance scope and remaining tests.
+The current suite has 71 passing tests, including 10 coordinator cases. Build passes. Actual in-app browser runs completed all three authored task goals; cancellation during planning stopped with zero actions. The first provider-unavailable attempt is preserved. These runs do not establish arbitrary-site reliability; the native extension still uses the existing manual review flow. See `Docs/decisions/browser-experiments-2026-09-11.md`.
 
 ## Experimental local-reference draft flow
 
@@ -100,6 +100,6 @@ Open `/app/local-reference.html` from the workspace. Capture the synthetic repor
 
 References are bound to the original target object and page revision, require confirmation, expire after 30 seconds, and are consumed before writes. Reset/navigation revokes the vault. The current adapter only supports the authored synthetic email field; arbitrary-site input handlers can transmit typed values and require a different authorization/integration review.
 
-Validation: 68 automated tests, three correct authored real-Qwen provider cases, and a running-server/SQLite readback pass. Browser DOM execution, visual QA and native-extension support for this feature remain unverified. Evidence and failed attempts: `Docs/decisions/local-reference-pilot.md`.
+Validation: current suite 71 passing tests; three correct authored real-Qwen provider cases and a running-server/SQLite readback pass. The 11 September browser run observed expiry rejection and a confirmed local draft fill, supported by the visible field and fixture equality oracle. A conflicting read-only property probe is preserved as inconclusive; native-extension support remains unverified. Evidence and limitations: `Docs/decisions/local-reference-pilot.md` and `Docs/decisions/browser-experiments-2026-09-11.md`.
 
 If the configured Ollama endpoint no longer lists the required model, check that service's model directory before downloading weights again. This development machine currently uses a separate instance on `127.0.0.1:11436` with the existing Qwen cache; the private `.env` points to it. Fresh installations may use the standard port 11434. Both the model service and prototype server must be running; a static Pages site cannot host them.

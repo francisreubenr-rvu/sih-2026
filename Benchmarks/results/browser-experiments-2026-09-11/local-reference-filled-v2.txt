@@ -1,0 +1,35 @@
+- main:
+  - link "Back to workspace":
+    - /url: /
+  - paragraph: Sightline / local value reference
+  - heading "Use the value. Keep it off the wire." [level=1]:
+    - text: Use the value.
+    - text: Keep it off the wire.
+  - paragraph: The planner receives a random reference for a synthetic email and the destination field geometry. After your confirmation, the browser resolves it into this local draft. This experiment does not submit or send a report.
+  - button "Capture & bind locally"
+  - button "Ask the local model" [disabled]
+  - button "Confirm local draft fill" [disabled]
+  - button "Reset"
+  - status: The contact draft was filled locally. The value was not included in the planner request.
+  - heading "Synthetic source and draft" [level=2]
+  - iframe [id="fixture"]:
+    - banner:
+      - strong: Report preparation
+      - generic: SYNTHETIC DATA
+    - main:
+      - img "NASA public-domain reference portrait"
+      - text: Synthetic operator
+      - heading "Alex Example" [level=1]
+      - paragraph: alex.operator@example.test
+      - paragraph: Employee DEMO-041
+      - heading "Report contact draft" [level=2]
+      - paragraph: Copy the operator email into the local draft. No report is sent or submitted.
+      - text: Report contact
+      - textbox "Report contact"
+      - status: Contact draft prepared locally. Nothing was sent.
+  - heading "Protected layout" [level=2]
+  - generic "Protected layout without email value"
+  - heading "Planner proposal" [level=2]
+  - generic: "{ \"type\": \"fill-local\", \"targetId\": \"f0\", \"referenceId\": \"f547df90-6da1-4063-8f63-aa6bb77d6179\" }"
+  - generic "Exact outgoing request"
+  - paragraph: Only this synthetic field is supported. This is an experimental adapter; no arbitrary-site, native-extension or general PII-accuracy claim is made.

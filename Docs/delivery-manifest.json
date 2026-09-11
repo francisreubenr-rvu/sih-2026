@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-11T00:59:43.531328+00:00",
+  "created_at": "2026-09-11T01:12:59.054464+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "e48b51ddd1196c61c52847c17ac480a83b8aebc6",
+  "source_commit_before_manifest": "75f69f5e984306d6aec6656cc8558b77fea32271",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -75,6 +75,181 @@
       "path": "Benchmarks/results/artifact-checks.json",
       "bytes": 4743,
       "sha256": "db4acacd05ac65f9adbec23e5412647ccf3fe836d3e4d3c5dadefac0f458ede6"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/local-reference-expired-v1.txt",
+      "bytes": 1752,
+      "sha256": "df11d66c6cb3ae0fbedef0246cf84e5259b4e0be4e707d14e00d089a8d0dfca6"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/local-reference-filled-v2.png",
+      "bytes": 51447,
+      "sha256": "bb4bf5a537d089b51002eabaeaa24e0a4f3e5eefe4c51effe67129c6a3318d30"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/local-reference-filled-v2.txt",
+      "bytes": 1819,
+      "sha256": "3b533eeec5f7d83409a8728943dcb4c8482bc4297c0e5c0b39a236ba4694cdc1"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/local-reference-request-v1.json",
+      "bytes": 2496,
+      "sha256": "4a172934a44cd0b01ccfbd4d3f2b761841122211b2b7bc8c3383b6229ca9bf95"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/local-reference-request-v2.json",
+      "bytes": 2496,
+      "sha256": "747798e90a10ce1017ab8a1d66a566012c4535f47a8ca1e14ecddb2e7a138a55"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/local-reference-value-check-v2.json",
+      "bytes": 36,
+      "sha256": "ef9105f5e395ca2667d6721c57c5351b9db4b12d5c680478c2bde7a5ea57b868"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/mobile-layout-v2.json",
+      "bytes": 219,
+      "sha256": "bb47b9dd346e615c5238ea0d6f39d7fab7c767e20f3c2e45a561d99c59d97a24"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/mobile-layout.json",
+      "bytes": 223,
+      "sha256": "0b5700604cfcb5cc8e1c9838054692e89ce760e5db3d2a739321b5f958441026"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/reference-390px-v2.png",
+      "bytes": 6932,
+      "sha256": "bcfec918751fce1c8014945bdbcf924b10764f2ef3cda8a465073e51b4162a99"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/reference-mobile-viewport.png",
+      "bytes": 39590,
+      "sha256": "e244b9cefa877de8033b51cb3c3fd80a4e80113debad26901ceaa19cdeec3dcd"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/runner-390px-v2.png",
+      "bytes": 7072,
+      "sha256": "9099285942a4039b4684226697ea7b082ac1bcc29302cfe6e6061df1d3e2efa0"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/runner-mobile-viewport.png",
+      "bytes": 72838,
+      "sha256": "f78179f3000e89a1a05b6fa7e3501e5dc15facd04f6001a8e207a1c8bb35e560"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1.json",
+      "bytes": 1063,
+      "sha256": "623c4b26acd106f578786a1b72bf66e394e3cb4ece2a676ac1a38d46d90c6c95"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/local-reference-fixture.js",
+      "bytes": 299,
+      "sha256": "b469155fa69056be9c021616560dd3d703263f9fa5a07213f1bd0f38f4fe3720"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/local-reference-provider.mjs",
+      "bytes": 1703,
+      "sha256": "32a833d0dc70aacfd512b4d595823ff3e34907678e2bb3c6d2a54c3eb4f3c105"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/local-reference.mjs",
+      "bytes": 6142,
+      "sha256": "e48fa64e8c2e2944644021778d5e5ae1039da2800b762d17bd20f1b9641d388b"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/local-text-engine.mjs",
+      "bytes": 3364,
+      "sha256": "112e23d4543f2fac956171f4051343773d7207616721bb901d7d6a7c0cda7de0"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/provider.mjs",
+      "bytes": 3177,
+      "sha256": "2a883357dbe845f086f44ab0758298b69c73ce3132a89e2877c22d78f1d65dc8"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/task-loop.mjs",
+      "bytes": 5628,
+      "sha256": "c65d0dac9ebc9ad9da2269b04b867eb0468abe26e6055b37b250f49fef8b5700"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/text-fixtures.mjs",
+      "bytes": 2530,
+      "sha256": "7bb798add336ccb2c0d876d12f365ce4389b8027a37810b807cfcff8e5096e6f"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/text-preview.mjs",
+      "bytes": 2341,
+      "sha256": "96b266c8029c0d066ab64ea51bc3d7350cb0097aed5a52bb7577890655388458"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/source-v1/text-privacy.mjs",
+      "bytes": 3602,
+      "sha256": "9cc3df1325fb681aadf3ed80f4fda67be5d5c7b09eed3cfadb878789096c170b"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/summary.json",
+      "bytes": 8146,
+      "sha256": "1931a76171f016ee83ba3b29c3c458387d1f34e229d14e47b0cc025bf0328795"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/task-cancel-v1.json",
+      "bytes": 951,
+      "sha256": "71d4dda575673c2f6836d504551118b584504ffc6fa9c6b0c40fe8abf7edc860"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/task-completed-v1.json",
+      "bytes": 1265,
+      "sha256": "3d9af61ad1466982c2f86aef1547f6ade83cef4804180e04be67cd0f9d88305f"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/task-next-v1.json",
+      "bytes": 1194,
+      "sha256": "cc56d8fe4b2b34290c68dba633747f5459794acf47b38b17630e67df1d351c68"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/task-review-v1.json",
+      "bytes": 930,
+      "sha256": "1c34298db1c368df9ba358213e915e0771d550d1824cc01955a144ffe5cbe841"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/task-review-v2.json",
+      "bytes": 1665,
+      "sha256": "761dd11525e3f14c5ef18fb5574804665204c6df6c90eb5863308557dc9f7cda"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/text-390px-v2.png",
+      "bytes": 8015,
+      "sha256": "19d7472ce636f919d0df99dce50f98784055cdc0dab36542b7f6fbb4b3e4df83"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/text-mobile-v2.png",
+      "bytes": 48086,
+      "sha256": "4c58dc22f3cc94ae03afdd1b6485868d58aaba07b402ab9427a3c540c34b82c6"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/text-mobile-viewport.png",
+      "bytes": 63231,
+      "sha256": "e951b493ed2495d66c1ebb52d9fb5d153e6028fdf7077829863d7a16b9f82d98"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/text-pilot-v1.json",
+      "bytes": 28347,
+      "sha256": "9fc39ef1997ae969ae54bde0832725b6a74175372a0556b048d775d85286277b"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/text-pilot-v1.png",
+      "bytes": 48088,
+      "sha256": "a0708b31a4ec8a8de86c472acae983b1f2aa0f8bcd883f7e67fabf51ff11f0d6"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/text-pilot-v2.json",
+      "bytes": 30921,
+      "sha256": "220e33211cd91be51141f7d86d98159f3207f91489829ed0cc607783b8da7a04"
+    },
+    {
+      "path": "Benchmarks/results/browser-experiments-2026-09-11/unit-tests-v2.txt",
+      "bytes": 6188,
+      "sha256": "1f22a1736477f615487af93bb074bb6a44215ab0df9249c3e57c1ace26c03079"
     },
     {
       "path": "Benchmarks/results/browser-review.json",
@@ -533,8 +708,8 @@
     },
     {
       "path": "CONTEXT.md",
-      "bytes": 2136,
-      "sha256": "4e16243d5523b531328a5782e9fdb218b6304831df26b263c4b995b4c5cec6f7"
+      "bytes": 2256,
+      "sha256": "d0f545dec9e0fef2e43391fae50737abbf9427ffdde894d5263cd73eaa5c777a"
     },
     {
       "path": "DESIGN.md",
@@ -580,6 +755,11 @@
       "path": "Docs/claim-ledger.json",
       "bytes": 1702,
       "sha256": "55d2caf16efff8fe7d845108971d02f282bbe1e488e00c73b31c42caa0f81e70"
+    },
+    {
+      "path": "Docs/decisions/browser-experiments-2026-09-11.md",
+      "bytes": 4931,
+      "sha256": "aab8250d71759c0666e8ba2c14ebaed96ae3662803467a6f9d549b2c1d6a1d02"
     },
     {
       "path": "Docs/decisions/client-audit.md",
@@ -1113,8 +1293,8 @@
     },
     {
       "path": "PLAN.md",
-      "bytes": 13121,
-      "sha256": "a4c10c223835f8aa300ac1b5f0516bb2d3404ad6f7462aff60e2bc3a4e47073e"
+      "bytes": 14515,
+      "sha256": "4736bd1089e04454736df3109c5e97b6ac3fdd785a626f06adfc42781dcef81e"
     },
     {
       "path": "Prototype/.dockerignore",
@@ -1133,8 +1313,8 @@
     },
     {
       "path": "Prototype/README.md",
-      "bytes": 10578,
-      "sha256": "f4d74fef0fad476b6f73906cd2a1d3c7c2c198a1978bc3c3571f72b62e2134d9"
+      "bytes": 11133,
+      "sha256": "951d33458939703f1670dee5122b58bd355257e7d46f2a7c05474319a3ae0335"
     },
     {
       "path": "Prototype/app/assets/astronaut.png",
@@ -1953,8 +2133,8 @@
     },
     {
       "path": "Prototype/shared/text-privacy.mjs",
-      "bytes": 3602,
-      "sha256": "9cc3df1325fb681aadf3ed80f4fda67be5d5c7b09eed3cfadb878789096c170b"
+      "bytes": 4654,
+      "sha256": "639a9cddc1dc4a9bccae4ecd9aafba94629ee8a98740900352d26d4e6c344be2"
     },
     {
       "path": "Prototype/shared/vision-worker-client.mjs",
@@ -2008,8 +2188,8 @@
     },
     {
       "path": "Prototype/tests/text-privacy.test.mjs",
-      "bytes": 2575,
-      "sha256": "508f8777ef3931c6c3366e6cc7acd36534b317ddb224c3007d51a0a15ba4563b"
+      "bytes": 3933,
+      "sha256": "b4c156975ea14807133390a5599235d240b4176801cf03bf04ae2b6f983db17f"
     },
     {
       "path": "Prototype/tests/vision-worker-client.test.mjs",
@@ -2028,8 +2208,8 @@
     },
     {
       "path": "ROAST.md",
-      "bytes": 7199,
-      "sha256": "af4fba32b6c7146cff72c437b9ea16a9fc0ad8459ab4becd6e77815720073609"
+      "bytes": 8474,
+      "sha256": "bc09abaf507718fe2a506a25064309e1eab1f4c1eccbaeb796c25a5b143d1c0a"
     },
     {
       "path": "Raw/README.md",

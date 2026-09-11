@@ -1,0 +1,17 @@
+[
+  {
+    "name": "text",
+    "scrollWidth": 1280,
+    "width": 1280
+  },
+  {
+    "name": "runner",
+    "scrollWidth": 1280,
+    "width": 1280
+  },
+  {
+    "name": "reference",
+    "scrollWidth": 390,
+    "width": 390
+  }
+]

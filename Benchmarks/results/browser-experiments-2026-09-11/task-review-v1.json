@@ -1,0 +1,33 @@
+{
+  "version": "bounded-synthetic-loop-v1",
+  "startedAt": "2026-09-11T01:05:03.809Z",
+  "task": "review-pending",
+  "scope": "synthetic fixture only; real local vision and server planning when executed",
+  "completionOracle": "exact declared fixture heading",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "result": {
+    "status": "stopped",
+    "reason": "planning_failed",
+    "actions": 0,
+    "elapsedMs": 336.6999999284744,
+    "trace": [
+      {
+        "state": "observe",
+        "actions": 0,
+        "elapsedMs": 0
+      },
+      {
+        "state": "plan",
+        "actions": 0,
+        "elapsedMs": 325.09999990463257
+      },
+      {
+        "state": "stopped",
+        "actions": 0,
+        "elapsedMs": 336.59999990463257,
+        "reason": "planning_failed"
+      }
+    ]
+  },
+  "finishedAt": "2026-09-11T01:05:04.164Z"
+}

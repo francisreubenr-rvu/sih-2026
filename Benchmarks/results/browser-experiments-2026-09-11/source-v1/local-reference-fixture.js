@@ -1,0 +1,1 @@
+const contact=document.getElementById('report-contact');contact.addEventListener('input',()=>{document.getElementById('draft-status').textContent=contact.value===document.getElementById('local-email').textContent?'Contact draft prepared locally. Nothing was sent.':'Contact draft needs review.';});

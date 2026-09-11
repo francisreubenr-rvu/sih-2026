@@ -1,5 +1,14 @@
 # SIH26171 delivery plan
 
+## Latest checkpoint — 11 September 2026
+
+- Published local-reference implementation through `75f69f5`; remote master verified. No Website files changed in that checkpoint.
+- Updated browser connection opens original local preview. OCR/NER baseline exposes two address-token leaks; conservative explicit-label correction yields 14/14 sensitive and 25/25 useful tokens on the same three development screens. Original results and source retained. Local-only preview remains the boundary.
+- Real bounded browser loop completes all three authored goals; pending review uses two actions. Provider-unavailable failure preserved; cancellation during planning stops with zero actions.
+- Local reference expiry blocks confirmation; a fresh reference produces a confirmed synthetic draft fill, supported by visible state and the fixture equality oracle. Direct property probe discrepancy preserved. Native extension remains unverified.
+- 71 automated tests and build pass. Actual 390px document-width checks show no horizontal overflow on the three experiment pages. Fresh results: `Benchmarks/results/browser-experiments-2026-09-11/summary.json`.
+- Next: broader frozen privacy/utility cases beyond the tuned fixtures; resource/full-task budgets; native-extension and human/domain validation; update final submission artifacts only to supported evidence. Full entry remains an engineering candidate.
+
 Updated 9 September 2026. Internal target: 11 September 2026. User supplied organizer statement resolves initial SIH2171 mismatch. Historical Raw records are preserved.
 
 ## Requirements and evidence

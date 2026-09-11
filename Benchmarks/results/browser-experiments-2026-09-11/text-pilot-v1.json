@@ -1,0 +1,1174 @@
+{
+  "version": "local-text-pilot-v1",
+  "startedAt": "2026-09-11T01:04:27.995Z",
+  "scope": "three authored English synthetic development screens; no server reasoning or native extension",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 10,
+  "deviceMemory": 16,
+  "results": [
+    {
+      "id": "contact-record",
+      "width": 1000,
+      "height": 560,
+      "words": [
+        {
+          "text": "Contact",
+          "confidence": 96,
+          "rect": {
+            "x": 49,
+            "y": 34,
+            "width": 110,
+            "height": 23
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "details",
+          "confidence": 96,
+          "rect": {
+            "x": 169,
+            "y": 34,
+            "width": 93,
+            "height": 23
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Name:",
+          "confidence": 95,
+          "rect": {
+            "x": 50,
+            "y": 122,
+            "width": 73,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Alex",
+          "confidence": 95,
+          "rect": {
+            "x": 132,
+            "y": 122,
+            "width": 50,
+            "height": 19
+          },
+          "sensitive": true,
+          "kind": "PERSON",
+          "piiConfidence": 0.9956538973801125
+        },
+        {
+          "text": "Morgan",
+          "confidence": 96,
+          "rect": {
+            "x": 191,
+            "y": 122,
+            "width": 85,
+            "height": 25
+          },
+          "sensitive": true,
+          "kind": "PERSON",
+          "piiConfidence": 0.9805365090998237
+        },
+        {
+          "text": "Email:",
+          "confidence": 93,
+          "rect": {
+            "x": 50,
+            "y": 194,
+            "width": 69,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "alex@example.test",
+          "confidence": 89,
+          "rect": {
+            "x": 128,
+            "y": 194,
+            "width": 221,
+            "height": 24
+          },
+          "sensitive": true,
+          "kind": "EMAIL_ADDRESS",
+          "piiConfidence": 0.9486128094578012
+        },
+        {
+          "text": "Phone:",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 266,
+            "width": 79,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "202-555-0147",
+          "confidence": 96,
+          "rect": {
+            "x": 138,
+            "y": 266,
+            "width": 161,
+            "height": 19
+          },
+          "sensitive": true,
+          "kind": "PHONE_NUMBER",
+          "piiConfidence": 0.9628068860173294
+        },
+        {
+          "text": "Status:",
+          "confidence": 96,
+          "rect": {
+            "x": 49,
+            "y": 338,
+            "width": 78,
+            "height": 20
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Pending",
+          "confidence": 96,
+          "rect": {
+            "x": 138,
+            "y": 338,
+            "width": 92,
+            "height": 25
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Review",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 410,
+            "width": 83,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Details",
+          "confidence": 96,
+          "rect": {
+            "x": 142,
+            "y": 410,
+            "width": 77,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Next",
+          "confidence": 96,
+          "rect": {
+            "x": 229,
+            "y": 410,
+            "width": 51,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        }
+      ],
+      "ocrMs": 145,
+      "nerMs": 43.799999952316284,
+      "totalMs": 188.89999997615814,
+      "mode": "local-only-preview",
+      "model": "bert-small-pii-detection-int8",
+      "language": "eng",
+      "score": {
+        "scope": "authored token diagnostic; not entity-level benchmark",
+        "piiTokens": 4,
+        "piiDetected": 4,
+        "piiRetained": 0,
+        "usefulTokens": 8,
+        "usefulRetained": 8,
+        "assessments": [
+          {
+            "text": "Name:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 120,
+              "width": 76.578125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Alex",
+            "pii": true,
+            "rect": {
+              "x": 131.8017578125,
+              "y": 120,
+              "width": 50.578125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Morgan",
+            "pii": true,
+            "rect": {
+              "x": 189.603515625,
+              "y": 120,
+              "width": 88.15625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Email:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 192,
+              "width": 72.236328125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "alex@example.test",
+            "pii": true,
+            "rect": {
+              "x": 127.4599609375,
+              "y": 192,
+              "width": 221.4951171875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Phone:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 264,
+              "width": 82.4052734375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "202-555-0147",
+            "pii": true,
+            "rect": {
+              "x": 137.62890625,
+              "y": 264,
+              "width": 161.916015625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Status:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 336,
+              "width": 80.9326171875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Pending",
+            "pii": false,
+            "rect": {
+              "x": 136.15625,
+              "y": 336,
+              "width": 95.41796875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Review",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 408,
+              "width": 85.2490234375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Details",
+            "pii": false,
+            "rect": {
+              "x": 140.47265625,
+              "y": 408,
+              "width": 79.47265625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Next",
+            "pii": false,
+            "rect": {
+              "x": 227.1689453125,
+              "y": 408,
+              "width": 53.4599609375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "delivery-record",
+      "width": 1000,
+      "height": 560,
+      "words": [
+        {
+          "text": "Delivery",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 34,
+            "width": 114,
+            "height": 28
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "request",
+          "confidence": 96,
+          "rect": {
+            "x": 175,
+            "y": 35,
+            "width": 106,
+            "height": 27
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Recipient:",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 122,
+            "width": 112,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Taylor",
+          "confidence": 96,
+          "rect": {
+            "x": 171,
+            "y": 122,
+            "width": 69,
+            "height": 25
+          },
+          "sensitive": true,
+          "kind": "PERSON",
+          "piiConfidence": 0.9947257700207955
+        },
+        {
+          "text": "Smith",
+          "confidence": 96,
+          "rect": {
+            "x": 249,
+            "y": 122,
+            "width": 63,
+            "height": 20
+          },
+          "sensitive": true,
+          "kind": "PERSON",
+          "piiConfidence": 0.9967414839508091
+        },
+        {
+          "text": "Address:",
+          "confidence": 96,
+          "rect": {
+            "x": 48,
+            "y": 194,
+            "width": 101,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "42",
+          "confidence": 96,
+          "rect": {
+            "x": 158,
+            "y": 194,
+            "width": 28,
+            "height": 19
+          },
+          "sensitive": true,
+          "kind": "LOCATION",
+          "piiConfidence": 0.7813811301405855
+        },
+        {
+          "text": "Example",
+          "confidence": 96,
+          "rect": {
+            "x": 196,
+            "y": 194,
+            "width": 98,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Street",
+          "confidence": 96,
+          "rect": {
+            "x": 303,
+            "y": 194,
+            "width": 68,
+            "height": 20
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "City:",
+          "confidence": 96,
+          "rect": {
+            "x": 49,
+            "y": 266,
+            "width": 49,
+            "height": 25
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Springfield",
+          "confidence": 96,
+          "rect": {
+            "x": 108,
+            "y": 266,
+            "width": 120,
+            "height": 25
+          },
+          "sensitive": true,
+          "kind": "LOCATION",
+          "piiConfidence": 0.8509180664077812
+        },
+        {
+          "text": "Status:",
+          "confidence": 96,
+          "rect": {
+            "x": 49,
+            "y": 338,
+            "width": 78,
+            "height": 20
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Completed",
+          "confidence": 96,
+          "rect": {
+            "x": 137,
+            "y": 338,
+            "width": 123,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Previous",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 410,
+            "width": 98,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Review",
+          "confidence": 96,
+          "rect": {
+            "x": 159,
+            "y": 410,
+            "width": 82,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Help",
+          "confidence": 96,
+          "rect": {
+            "x": 251,
+            "y": 410,
+            "width": 50,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        }
+      ],
+      "ocrMs": 103,
+      "nerMs": 17.399999976158142,
+      "totalMs": 120.39999997615814,
+      "mode": "local-only-preview",
+      "model": "bert-small-pii-detection-int8",
+      "language": "eng",
+      "score": {
+        "scope": "authored token diagnostic; not entity-level benchmark",
+        "piiTokens": 6,
+        "piiDetected": 4,
+        "piiRetained": 2,
+        "usefulTokens": 8,
+        "usefulRetained": 8,
+        "assessments": [
+          {
+            "text": "Recipient:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 120,
+              "width": 115.6162109375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Taylor",
+            "pii": true,
+            "rect": {
+              "x": 170.83984375,
+              "y": 120,
+              "width": 69.3544921875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Smith",
+            "pii": true,
+            "rect": {
+              "x": 247.41796875,
+              "y": 120,
+              "width": 66.4599609375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Address:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 192,
+              "width": 102.603515625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "42",
+            "pii": true,
+            "rect": {
+              "x": 157.8271484375,
+              "y": 192,
+              "width": 28.919921875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Example",
+            "pii": true,
+            "rect": {
+              "x": 193.970703125,
+              "y": 192,
+              "width": 101.15625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Street",
+            "pii": true,
+            "rect": {
+              "x": 302.3505859375,
+              "y": 192,
+              "width": 69.3671875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "City:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 264,
+              "width": 52,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Springfield",
+            "pii": true,
+            "rect": {
+              "x": 107.2236328125,
+              "y": 264,
+              "width": 122.8525390625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Status:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 336,
+              "width": 80.9326171875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Completed",
+            "pii": false,
+            "rect": {
+              "x": 136.15625,
+              "y": 336,
+              "width": 125.734375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Previous",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 408,
+              "width": 101.15625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Review",
+            "pii": false,
+            "rect": {
+              "x": 156.3798828125,
+              "y": 408,
+              "width": 85.2490234375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Help",
+            "pii": false,
+            "rect": {
+              "x": 248.8525390625,
+              "y": 408,
+              "width": 53.47265625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "mixed-context",
+      "width": 1000,
+      "height": 560,
+      "words": [
+        {
+          "text": "Account",
+          "confidence": 96,
+          "rect": {
+            "x": 49,
+            "y": 34,
+            "width": 118,
+            "height": 23
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "review",
+          "confidence": 96,
+          "rect": {
+            "x": 178,
+            "y": 34,
+            "width": 92,
+            "height": 23
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Customer:",
+          "confidence": 96,
+          "rect": {
+            "x": 49,
+            "y": 122,
+            "width": 117,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Jordan",
+          "confidence": 96,
+          "rect": {
+            "x": 176,
+            "y": 122,
+            "width": 77,
+            "height": 19
+          },
+          "sensitive": true,
+          "kind": "PERSON",
+          "piiConfidence": 0.9874091775071748
+        },
+        {
+          "text": "Lee",
+          "confidence": 96,
+          "rect": {
+            "x": 264,
+            "y": 122,
+            "width": 40,
+            "height": 19
+          },
+          "sensitive": true,
+          "kind": "PERSON",
+          "piiConfidence": 0.9877070667090018
+        },
+        {
+          "text": "Password:",
+          "confidence": 92,
+          "rect": {
+            "x": 50,
+            "y": 194,
+            "width": 118,
+            "height": 20
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "DemoSecret42!",
+          "confidence": 92,
+          "rect": {
+            "x": 178,
+            "y": 194,
+            "width": 178,
+            "height": 20
+          },
+          "sensitive": true,
+          "kind": "PASSWORD",
+          "piiConfidence": 0.8560662165798575
+        },
+        {
+          "text": "Account:",
+          "confidence": 96,
+          "rect": {
+            "x": 48,
+            "y": 266,
+            "width": 100,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "123456789012",
+          "confidence": 96,
+          "rect": {
+            "x": 159,
+            "y": 266,
+            "width": 170,
+            "height": 20
+          },
+          "sensitive": true,
+          "kind": "NUMBER",
+          "piiConfidence": 1
+        },
+        {
+          "text": "Request:",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 338,
+            "width": 100,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Update",
+          "confidence": 96,
+          "rect": {
+            "x": 161,
+            "y": 338,
+            "width": 81,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "preferences",
+          "confidence": 96,
+          "rect": {
+            "x": 252,
+            "y": 338,
+            "width": 135,
+            "height": 24
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Back",
+          "confidence": 96,
+          "rect": {
+            "x": 50,
+            "y": 410,
+            "width": 56,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Cancel",
+          "confidence": 95,
+          "rect": {
+            "x": 114,
+            "y": 410,
+            "width": 78,
+            "height": 19
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        },
+        {
+          "text": "Search",
+          "confidence": 96,
+          "rect": {
+            "x": 202,
+            "y": 410,
+            "width": 80,
+            "height": 20
+          },
+          "sensitive": false,
+          "kind": null,
+          "piiConfidence": null
+        }
+      ],
+      "ocrMs": 108.89999997615814,
+      "nerMs": 24,
+      "totalMs": 132.89999997615814,
+      "mode": "local-only-preview",
+      "model": "bert-small-pii-detection-int8",
+      "language": "eng",
+      "score": {
+        "scope": "authored token diagnostic; not entity-level benchmark",
+        "piiTokens": 4,
+        "piiDetected": 4,
+        "piiRetained": 0,
+        "usefulTokens": 9,
+        "usefulRetained": 9,
+        "assessments": [
+          {
+            "text": "Customer:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 120,
+              "width": 119.919921875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Jordan",
+            "pii": true,
+            "rect": {
+              "x": 175.1435546875,
+              "y": 120,
+              "width": 79.498046875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Lee",
+            "pii": true,
+            "rect": {
+              "x": 261.865234375,
+              "y": 120,
+              "width": 43.3798828125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Password:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 192,
+              "width": 121.3798828125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "DemoSecret42!",
+            "pii": true,
+            "rect": {
+              "x": 176.603515625,
+              "y": 192,
+              "width": 180.6416015625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Account:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 264,
+              "width": 101.1689453125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "123456789012",
+            "pii": true,
+            "rect": {
+              "x": 156.392578125,
+              "y": 264,
+              "width": 173.51953125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": true,
+            "retained": false
+          },
+          {
+            "text": "Request:",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 336,
+              "width": 104.0634765625,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Update",
+            "pii": false,
+            "rect": {
+              "x": 159.287109375,
+              "y": 336,
+              "width": 83.83984375,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "preferences",
+            "pii": false,
+            "rect": {
+              "x": 250.3505859375,
+              "y": 336,
+              "width": 137.2998046875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Back",
+            "pii": false,
+            "rect": {
+              "x": 48,
+              "y": 408,
+              "width": 57.8017578125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Cancel",
+            "pii": false,
+            "rect": {
+              "x": 113.025390625,
+              "y": 408,
+              "width": 80.9326171875,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          },
+          {
+            "text": "Search",
+            "pii": false,
+            "rect": {
+              "x": 201.181640625,
+              "y": 408,
+              "width": 82.3798828125,
+              "height": 32
+            },
+            "recognized": true,
+            "detected": false,
+            "retained": true
+          }
+        ]
+      }
+    }
+  ],
+  "initializationMs": 463.2000000476837,
+  "status": "completed",
+  "finishedAt": "2026-09-11T01:04:28.908Z"
+}

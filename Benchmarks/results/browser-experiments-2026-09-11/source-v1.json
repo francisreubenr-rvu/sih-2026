@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-09-11T01:08:37.379192+00:00",
+  "sha256": {
+    "Prototype/shared/text-privacy.mjs": "9cc3df1325fb681aadf3ed80f4fda67be5d5c7b09eed3cfadb878789096c170b",
+    "Prototype/shared/local-text-engine.mjs": "112e23d4543f2fac956171f4051343773d7207616721bb901d7d6a7c0cda7de0",
+    "Prototype/app/text-preview.mjs": "96b266c8029c0d066ab64ea51bc3d7350cb0097aed5a52bb7577890655388458",
+    "Prototype/app/text-fixtures.mjs": "7bb798add336ccb2c0d876d12f365ce4389b8027a37810b807cfcff8e5096e6f",
+    "Prototype/app/task-loop.mjs": "c65d0dac9ebc9ad9da2269b04b867eb0468abe26e6055b37b250f49fef8b5700",
+    "Prototype/app/local-reference.mjs": "e48fa64e8c2e2944644021778d5e5ae1039da2800b762d17bd20f1b9641d388b",
+    "Prototype/app/local-reference-fixture.js": "b469155fa69056be9c021616560dd3d703263f9fa5a07213f1bd0f38f4fe3720",
+    "Prototype/server/provider.mjs": "2a883357dbe845f086f44ab0758298b69c73ce3132a89e2877c22d78f1d65dc8",
+    "Prototype/server/local-reference-provider.mjs": "32a833d0dc70aacfd512b4d595823ff3e34907678e2bb3c6d2a54c3eb4f3c105"
+  }
+}

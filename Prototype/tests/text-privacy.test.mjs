@@ -25,6 +25,22 @@ test('local policy combines model labels with deterministic numeric and email ru
  const result=localWordPolicy([word('Alex'),word('alex@example.test'),word('123456789'),word('Review')],new Map([[0,{kind:'PERSON',confidence:.9}]]));
  assert.deepEqual(result.map(w=>w.sensitive),[true,true,true,false]);
 });
+test('explicit address label withholds the whole value without masking another line or following public field',()=>{
+ const items=[['Address:',0,0],['42',0,40],['Example',0,80],['Street',0,120],['Status:',0,180],['Pending',0,220],['Review',1,0]].map(([text,lineIndex,x])=>({...word(text,x),lineIndex}));
+ const result=localWordPolicy(items,new Map());
+ assert.deepEqual(result.map(w=>w.sensitive),[false,true,true,true,false,false,false]);
+ assert.equal(result[2].rule,'explicit-sensitive-field');
+ assert.equal(result[2].piiConfidence,null); // A deterministic rule is not a calibrated probability.
+});
+test('line policy uses geometry, requires an exact colon label and never assumes missing line identity',()=>{
+ const items=[{...word('Secret',100),lineIndex:2},{...word('Password:',0),lineIndex:2},{...word('Password',0),lineIndex:3},{...word('Help',100),lineIndex:3},word('Name:',0),word('Alex',100)];
+ assert.deepEqual(localWordPolicy(items,new Map()).map(w=>w.sensitive),[true,false,false,false,false,false]);
+});
+test('flattening keeps distinct OCR line identities for policy boundaries',()=>{
+ const w=text=>({text,confidence:95,bbox:{x0:0,y0:0,x1:20,y1:20}});
+ const result=flattenOcrWords({blocks:[{paragraphs:[{lines:[{words:[w('Address:'),w('42')]},{words:[w('Review')]}]}]}]},100,100);
+ assert.deepEqual(result.map(w=>w.lineIndex),[0,0,1]);
+});
 test('diagnostic counts omitted OCR as a miss, and retained PII as a leak',()=>{
  const expected=[{...word('Alex'),pii:true},{...word('Review',40),pii:false},{...word('Missing',80),pii:true}];
  const result=scoreTextFixture(expected,[{...word('Alex'),sensitive:false},{...word('Review',40),sensitive:false}]);

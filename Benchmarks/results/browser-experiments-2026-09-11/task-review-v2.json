@@ -1,0 +1,68 @@
+{
+  "version": "bounded-synthetic-loop-v1",
+  "startedAt": "2026-09-11T01:05:48.560Z",
+  "task": "review-pending",
+  "scope": "synthetic fixture only; real local vision and server planning when executed",
+  "completionOracle": "exact declared fixture heading",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "result": {
+    "status": "completed",
+    "reason": "postcondition_verified",
+    "actions": 2,
+    "elapsedMs": 10635.5,
+    "trace": [
+      {
+        "state": "observe",
+        "actions": 0,
+        "elapsedMs": 0
+      },
+      {
+        "state": "plan",
+        "actions": 0,
+        "elapsedMs": 117.20000004768372
+      },
+      {
+        "state": "execute",
+        "actions": 0,
+        "elapsedMs": 8529.800000071526
+      },
+      {
+        "state": "verify",
+        "actions": 1,
+        "elapsedMs": 8535.300000071526
+      },
+      {
+        "state": "observe",
+        "actions": 1,
+        "elapsedMs": 8535.300000071526
+      },
+      {
+        "state": "plan",
+        "actions": 1,
+        "elapsedMs": 8680
+      },
+      {
+        "state": "execute",
+        "actions": 1,
+        "elapsedMs": 10634.600000023842
+      },
+      {
+        "state": "verify",
+        "actions": 2,
+        "elapsedMs": 10635.400000095367
+      },
+      {
+        "state": "observe",
+        "actions": 2,
+        "elapsedMs": 10635.400000095367
+      },
+      {
+        "state": "completed",
+        "actions": 2,
+        "elapsedMs": 10635.400000095367,
+        "reason": "postcondition_verified"
+      }
+    ]
+  },
+  "finishedAt": "2026-09-11T01:05:59.241Z"
+}

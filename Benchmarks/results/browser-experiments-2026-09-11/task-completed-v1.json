@@ -1,0 +1,48 @@
+{
+  "version": "bounded-synthetic-loop-v1",
+  "startedAt": "2026-09-11T01:07:24.741Z",
+  "task": "show-completed",
+  "scope": "synthetic fixture only; real local vision and server planning when executed",
+  "completionOracle": "exact declared fixture heading",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "result": {
+    "status": "completed",
+    "reason": "postcondition_verified",
+    "actions": 1,
+    "elapsedMs": 3868.399999976158,
+    "trace": [
+      {
+        "state": "observe",
+        "actions": 0,
+        "elapsedMs": 0
+      },
+      {
+        "state": "plan",
+        "actions": 0,
+        "elapsedMs": 125.39999997615814
+      },
+      {
+        "state": "execute",
+        "actions": 0,
+        "elapsedMs": 3867.1999999284744
+      },
+      {
+        "state": "verify",
+        "actions": 1,
+        "elapsedMs": 3868.399999976158
+      },
+      {
+        "state": "observe",
+        "actions": 1,
+        "elapsedMs": 3868.399999976158
+      },
+      {
+        "state": "completed",
+        "actions": 1,
+        "elapsedMs": 3868.399999976158,
+        "reason": "postcondition_verified"
+      }
+    ]
+  },
+  "finishedAt": "2026-09-11T01:07:28.661Z"
+}
