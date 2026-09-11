@@ -21,3 +21,4 @@ await copyFile(new URL('node_modules/tesseract.js-core/LICENSE',root),new URL('m
 await build({entryPoints:[fileURLToPath(new URL('app/text-preview.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/text-preview.js',root)),minify:true,legalComments:'eof',external:['/models/*']});
 await copyFile(new URL('node_modules/tesseract.js/dist/worker.min.js.LICENSE.txt',root),new URL('models/ocr/worker.min.js.LICENSE.txt',root));
 await build({entryPoints:[fileURLToPath(new URL('app/task-loop.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/task-loop.js',root)),minify:true,legalComments:'eof'});
+await build({entryPoints:[fileURLToPath(new URL('app/local-reference.mjs',root))],bundle:true,format:'esm',platform:'browser',outfile:fileURLToPath(new URL('dist/local-reference.js',root)),minify:true,legalComments:'eof'});

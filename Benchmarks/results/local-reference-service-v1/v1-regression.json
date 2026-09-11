@@ -1,0 +1,22 @@
+{
+  "recordedAt": "2026-09-10T16:31:38.443Z",
+  "scope": "single v1 API regression against real running server and provider; no browser execution",
+  "httpStatus": 200,
+  "correct": true,
+  "response": {
+    "data": {
+      "id": "55eea7f1-90c2-4a2b-9375-6bf473811ddc",
+      "revision": "8e19ab2f-6dad-4fcf-b134-1d356632f2be",
+      "action": {
+        "type": "click",
+        "targetId": "c0"
+      },
+      "provider": {
+        "model": "qwen2.5:7b-instruct",
+        "mode": "open-weight-llm-semantic-layout"
+      },
+      "latencyMs": 3023.26,
+      "expiresInMs": 30000
+    }
+  }
+}

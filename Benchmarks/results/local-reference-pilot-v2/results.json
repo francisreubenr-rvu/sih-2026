@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "scope": "authored server/shared-client pilot; no browser DOM execution",
+  "startedAt": "2026-09-10T16:24:26.832Z",
+  "model": "qwen2.5:7b-instruct",
+  "baseUrl": "http://127.0.0.1:11436",
+  "cases": [
+    {
+      "id": "empty-contact",
+      "status": 200,
+      "correct": true,
+      "noKnownValue": true,
+      "localWrite": true,
+      "oneTime": true,
+      "elapsedMs": 7867.176041,
+      "modelRequests": 1,
+      "request": {
+        "scheme": "sightline-local-references-v1",
+        "task": "prepare-report-contact",
+        "scene": {
+          "scheme": "sightline-semantic-v1",
+          "revision": "8efcf309-6234-4f27-bf01-7e160e944599",
+          "viewport": {
+            "width": 800,
+            "height": 600
+          },
+          "controls": [],
+          "regions": []
+        },
+        "fields": [
+          {
+            "id": "f0",
+            "label": "Report contact",
+            "referenceId": "a83ecc0d-f90b-45ea-962a-169da869119b",
+            "kind": "email",
+            "empty": true,
+            "rect": {
+              "x": 20,
+              "y": 30,
+              "width": 300,
+              "height": 40
+            }
+          }
+        ]
+      },
+      "response": {
+        "data": {
+          "id": "a44b287f-99b1-4777-a00b-89d78eb3f369",
+          "revision": "8efcf309-6234-4f27-bf01-7e160e944599",
+          "action": {
+            "type": "fill-local",
+            "targetId": "f0",
+            "referenceId": "a83ecc0d-f90b-45ea-962a-169da869119b"
+          },
+          "provider": {
+            "model": "qwen2.5:7b-instruct",
+            "mode": "open-weight-local-reference-plan"
+          },
+          "latencyMs": 7851.7,
+          "expiresInMs": 30000
+        }
+      }
+    },
+    {
+      "id": "filled-contact",
+      "status": 200,
+      "correct": true,
+      "noKnownValue": true,
+      "localWrite": null,
+      "oneTime": null,
+      "elapsedMs": 893.7797500000006,
+      "modelRequests": 1,
+      "request": {
+        "scheme": "sightline-local-references-v1",
+        "task": "prepare-report-contact",
+        "scene": {
+          "scheme": "sightline-semantic-v1",
+          "revision": "c0eb6ea3-2e5a-4f47-a984-14167a6651d5",
+          "viewport": {
+            "width": 800,
+            "height": 600
+          },
+          "controls": [],
+          "regions": []
+        },
+        "fields": [
+          {
+            "id": "f0",
+            "label": "Report contact",
+            "referenceId": "d47d0d9e-917c-4850-9708-72e02b08f950",
+            "kind": "email",
+            "empty": false,
+            "rect": {
+              "x": 20,
+              "y": 30,
+              "width": 300,
+              "height": 40
+            }
+          }
+        ]
+      },
+      "response": {
+        "data": {
+          "id": "0e54a1c6-52b1-40d3-8302-f78d28eb01c5",
+          "revision": "c0eb6ea3-2e5a-4f47-a984-14167a6651d5",
+          "action": {
+            "type": "done"
+          },
+          "provider": {
+            "model": "qwen2.5:7b-instruct",
+            "mode": "open-weight-local-reference-plan"
+          },
+          "latencyMs": 889.99,
+          "expiresInMs": 30000
+        }
+      }
+    },
+    {
+      "id": "second-contact",
+      "status": 200,
+      "correct": true,
+      "noKnownValue": true,
+      "localWrite": true,
+      "oneTime": true,
+      "elapsedMs": 2860.097167,
+      "modelRequests": 1,
+      "request": {
+        "scheme": "sightline-local-references-v1",
+        "task": "prepare-report-contact",
+        "scene": {
+          "scheme": "sightline-semantic-v1",
+          "revision": "f4a51809-b7f6-4177-8eb8-36ed4394fee4",
+          "viewport": {
+            "width": 800,
+            "height": 600
+          },
+          "controls": [],
+          "regions": []
+        },
+        "fields": [
+          {
+            "id": "f0",
+            "label": "Report contact",
+            "referenceId": "4026f5be-b5b6-46f6-b937-11e640fe1311",
+            "kind": "email",
+            "empty": false,
+            "rect": {
+              "x": 20,
+              "y": 30,
+              "width": 300,
+              "height": 40
+            }
+          },
+          {
+            "id": "f1",
+            "label": "Report contact",
+            "referenceId": "ef38e05d-ea8e-4dee-9248-68277d7c3c19",
+            "kind": "email",
+            "empty": true,
+            "rect": {
+              "x": 20,
+              "y": 90,
+              "width": 300,
+              "height": 40
+            }
+          }
+        ]
+      },
+      "response": {
+        "data": {
+          "id": "f57d2e8a-ce06-4bf6-9093-cbc1ca05543b",
+          "revision": "f4a51809-b7f6-4177-8eb8-36ed4394fee4",
+          "action": {
+            "type": "fill-local",
+            "targetId": "f1",
+            "referenceId": "ef38e05d-ea8e-4dee-9248-68277d7c3c19"
+          },
+          "provider": {
+            "model": "qwen2.5:7b-instruct",
+            "mode": "open-weight-local-reference-plan"
+          },
+          "latencyMs": 2858.64,
+          "expiresInMs": 30000
+        }
+      }
+    }
+  ],
+  "modelMetadata": {
+    "name": "qwen2.5:7b-instruct",
+    "model": "qwen2.5:7b-instruct",
+    "modified_at": "2026-07-29T13:38:49.976015133+05:30",
+    "size": 4683087332,
+    "digest": "845dbda0ea48ed749caafd9e6037047aa19acfcfd82e704d7ca97d631a0b697e",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen2",
+      "families": [
+        "qwen2"
+      ],
+      "parameter_size": "7.6B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 32768,
+      "embedding_length": 3584
+    },
+    "capabilities": [
+      "completion",
+      "tools"
+    ]
+  },
+  "finishedAt": "2026-09-10T16:24:38.477Z",
+  "sourceHashes": {
+    "Prototype/shared/local-values.mjs": "9d129b6fa00814b2a715055e50f7efe681e74786d19afc1327edb4179411b532",
+    "Prototype/shared/local-reference-protocol.mjs": "be8dffce3b88843f27ca3ac04bc7b6bfc1fa7aead0a6304ef24a85a9dbd3f184",
+    "Prototype/server/local-reference-provider.mjs": "32a833d0dc70aacfd512b4d595823ff3e34907678e2bb3c6d2a54c3eb4f3c105",
+    "Prototype/server/app.mjs": "7020c30f115c860724a94c522c9eb08ba31f731c3ad00498c204eb628e1709d3",
+    "scripts/pilot-local-references.mjs": "11c1bccd93645db8c064b68115a3c7f42a86ef3403d39aa37ce182262b670392"
+  }
+}

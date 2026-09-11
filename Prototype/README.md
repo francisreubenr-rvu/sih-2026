@@ -93,3 +93,13 @@ Validation as of 10 September: build and 48 automated tests pass. The browser to
 `/app/task-loop.html` is linked from the main workspace. Start authorizes safe actions in the built-in synthetic fixture only. The runner uses the existing local vision and model adapters, reobserves after each action and checks declared fixture postconditions. It stops after 8 actions, 90 seconds, two unchanged observations, cancellation or an execution error. A model's `done` reply alone cannot produce a completed status.
 
 The full suite now has 58 passing tests, including 10 coordinator cases. Build passes. Browser execution and visual QA of this new page remain unverified; the native extension still uses the existing manual review flow. See `Docs/decisions/reference-informed-plan.md` for acceptance scope and remaining tests.
+
+## Experimental local-reference draft flow
+
+Open `/app/local-reference.html` from the workspace. Capture the synthetic report contact, inspect the protected layout/request, ask the local model, then confirm the exact local draft fill. The email stays in the fixture and a client-memory vault; the model receives an expiring random reference, field type and geometry. `POST /api/v2/local-plans` returns only an allowed reference/field pair or `done`. No report is submitted. This separate protocol does not enable typing in the native extension or v1 action API.
+
+References are bound to the original target object and page revision, require confirmation, expire after 30 seconds, and are consumed before writes. Reset/navigation revokes the vault. The current adapter only supports the authored synthetic email field; arbitrary-site input handlers can transmit typed values and require a different authorization/integration review.
+
+Validation: 68 automated tests, three correct authored real-Qwen provider cases, and a running-server/SQLite readback pass. Browser DOM execution, visual QA and native-extension support for this feature remain unverified. Evidence and failed attempts: `Docs/decisions/local-reference-pilot.md`.
+
+If the configured Ollama endpoint no longer lists the required model, check that service's model directory before downloading weights again. This development machine currently uses a separate instance on `127.0.0.1:11436` with the existing Qwen cache; the private `.env` points to it. Fresh installations may use the standard port 11434. Both the model service and prototype server must be running; a static Pages site cannot host them.

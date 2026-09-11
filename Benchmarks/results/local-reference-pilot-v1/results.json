@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "scope": "authored server/shared-client pilot; no browser DOM execution",
+  "startedAt": "2026-09-10T16:21:56.039Z",
+  "model": "qwen2.5:7b-instruct",
+  "cases": [
+    {
+      "id": "empty-contact",
+      "status": 503,
+      "correct": false,
+      "noKnownValue": true,
+      "localWrite": false,
+      "oneTime": false,
+      "elapsedMs": 18.88220799999999,
+      "modelRequests": 1,
+      "request": {
+        "scheme": "sightline-local-references-v1",
+        "task": "prepare-report-contact",
+        "scene": {
+          "scheme": "sightline-semantic-v1",
+          "revision": "0a111f85-2652-4ddf-b2c0-0599a30fdd01",
+          "viewport": {
+            "width": 800,
+            "height": 600
+          },
+          "controls": [],
+          "regions": []
+        },
+        "fields": [
+          {
+            "id": "f0",
+            "label": "Report contact",
+            "referenceId": "510a2b99-9209-4d31-b85a-53292379935c",
+            "kind": "email",
+            "empty": true,
+            "rect": {
+              "x": 20,
+              "y": 30,
+              "width": 300,
+              "height": 40
+            }
+          }
+        ]
+      },
+      "response": {
+        "error": {
+          "code": "provider_unavailable",
+          "message": "The reasoning model is unavailable. Start the configured provider, then retry.",
+          "requestId": "4dba7321-2c87-4d2c-987d-a67259ec18e4"
+        }
+      }
+    },
+    {
+      "id": "filled-contact",
+      "status": 503,
+      "correct": false,
+      "noKnownValue": true,
+      "localWrite": null,
+      "oneTime": null,
+      "elapsedMs": 13.483875000000012,
+      "modelRequests": 1,
+      "request": {
+        "scheme": "sightline-local-references-v1",
+        "task": "prepare-report-contact",
+        "scene": {
+          "scheme": "sightline-semantic-v1",
+          "revision": "4167122f-0ef9-410c-9634-78ffe5e8a950",
+          "viewport": {
+            "width": 800,
+            "height": 600
+          },
+          "controls": [],
+          "regions": []
+        },
+        "fields": [
+          {
+            "id": "f0",
+            "label": "Report contact",
+            "referenceId": "072dd505-6723-4a13-b000-60635ef7a2c6",
+            "kind": "email",
+            "empty": false,
+            "rect": {
+              "x": 20,
+              "y": 30,
+              "width": 300,
+              "height": 40
+            }
+          }
+        ]
+      },
+      "response": {
+        "error": {
+          "code": "provider_unavailable",
+          "message": "The reasoning model is unavailable. Start the configured provider, then retry.",
+          "requestId": "10b5598a-c467-4495-83b1-42236755270e"
+        }
+      }
+    },
+    {
+      "id": "second-contact",
+      "status": 503,
+      "correct": false,
+      "noKnownValue": true,
+      "localWrite": false,
+      "oneTime": false,
+      "elapsedMs": 5.1522919999999885,
+      "modelRequests": 1,
+      "request": {
+        "scheme": "sightline-local-references-v1",
+        "task": "prepare-report-contact",
+        "scene": {
+          "scheme": "sightline-semantic-v1",
+          "revision": "3a7fa537-4b91-4e14-bfe2-4c77c45b8cd5",
+          "viewport": {
+            "width": 800,
+            "height": 600
+          },
+          "controls": [],
+          "regions": []
+        },
+        "fields": [
+          {
+            "id": "f0",
+            "label": "Report contact",
+            "referenceId": "a43dc494-7f9c-4122-a631-d362cfac551d",
+            "kind": "email",
+            "empty": false,
+            "rect": {
+              "x": 20,
+              "y": 30,
+              "width": 300,
+              "height": 40
+            }
+          },
+          {
+            "id": "f1",
+            "label": "Report contact",
+            "referenceId": "e3eb2284-11b3-46c8-8926-634e2ba29f9b",
+            "kind": "email",
+            "empty": true,
+            "rect": {
+              "x": 20,
+              "y": 90,
+              "width": 300,
+              "height": 40
+            }
+          }
+        ]
+      },
+      "response": {
+        "error": {
+          "code": "provider_unavailable",
+          "message": "The reasoning model is unavailable. Start the configured provider, then retry.",
+          "requestId": "ee28a6b4-64e2-4d0e-af63-01555fe9bc26"
+        }
+      }
+    }
+  ],
+  "modelMetadata": null,
+  "finishedAt": "2026-09-10T16:21:56.575Z",
+  "sourceHashes": {
+    "Prototype/shared/local-values.mjs": "9d129b6fa00814b2a715055e50f7efe681e74786d19afc1327edb4179411b532",
+    "Prototype/shared/local-reference-protocol.mjs": "be8dffce3b88843f27ca3ac04bc7b6bfc1fa7aead0a6304ef24a85a9dbd3f184",
+    "Prototype/server/local-reference-provider.mjs": "32a833d0dc70aacfd512b4d595823ff3e34907678e2bb3c6d2a54c3eb4f3c105",
+    "Prototype/server/app.mjs": "7020c30f115c860724a94c522c9eb08ba31f731c3ad00498c204eb628e1709d3",
+    "scripts/pilot-local-references.mjs": "95c4a2e096ed67681ebeb0bf61598868022f956b8394ad8283174cf16a41c378"
+  }
+}

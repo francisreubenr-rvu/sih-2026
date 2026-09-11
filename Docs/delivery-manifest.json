@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-10T16:12:51.613249+00:00",
+  "created_at": "2026-09-11T00:59:43.531328+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "2d65852e7a52b7f8ff29b297af6718da5f33b313",
+  "source_commit_before_manifest": "e48b51ddd1196c61c52847c17ac480a83b8aebc6",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -297,6 +297,36 @@
       "sha256": "8f9588bff4cfab09cda356afbf330ceb7a6f72a2ee2e3170385582fc2b63a079"
     },
     {
+      "path": "Benchmarks/results/local-reference-pilot-v1/results.json",
+      "bytes": 4999,
+      "sha256": "7f7f4204fbacdac810e5b9ca2da9c2627a09a79f54dad29c755f8e8459fd9b1d"
+    },
+    {
+      "path": "Benchmarks/results/local-reference-pilot-v2/results.json",
+      "bytes": 6308,
+      "sha256": "c530b285154d7fa92ea3c2c9c0c405a1baf10151ca779c9a91c13ff289d01993"
+    },
+    {
+      "path": "Benchmarks/results/local-reference-service-v1/result.json",
+      "bytes": 885,
+      "sha256": "d171a2f06cee86d6d41498d0507493690a31cd8f7e46c17fec1d6cde768698ac"
+    },
+    {
+      "path": "Benchmarks/results/local-reference-service-v1/v1-regression.json",
+      "bytes": 591,
+      "sha256": "4d8fe2492c2876c994431b6aa55fc06d51d1b5e013a00f1592146ff65938abec"
+    },
+    {
+      "path": "Benchmarks/results/local-reference-status.json",
+      "bytes": 1758,
+      "sha256": "714a1025bab36699e335e33f58cf2e6bb78c930b55b510c5308a9255d50d716f"
+    },
+    {
+      "path": "Benchmarks/results/local-reference-unit-tests-2026-09-10.txt",
+      "bytes": 5863,
+      "sha256": "aae0ad9adb95fe484a1a20a29056457c606328f92524b6092edad96a8d13e547"
+    },
+    {
       "path": "Benchmarks/results/model-pilot-v1/cases.json",
       "bytes": 75673,
       "sha256": "9b1504e12dc16c14a0bc569356c7b5a192663d0f2f08f55eb7d6cf7adf552d20"
@@ -503,8 +533,8 @@
     },
     {
       "path": "CONTEXT.md",
-      "bytes": 1558,
-      "sha256": "a65557ef56f07dd6d4c5acc8b5c999ddeda0a705f06908b9c574ff8b42ca7f84"
+      "bytes": 2136,
+      "sha256": "4e16243d5523b531328a5782e9fdb218b6304831df26b263c4b995b4c5cec6f7"
     },
     {
       "path": "DESIGN.md",
@@ -560,6 +590,11 @@
       "path": "Docs/decisions/deployment.md",
       "bytes": 1381,
       "sha256": "b5e8fb5d05227fefbff1634c210eb47891f4f2232555814d3c078c6c02379405"
+    },
+    {
+      "path": "Docs/decisions/local-reference-pilot.md",
+      "bytes": 5207,
+      "sha256": "d2fef5c47e3174208ed30b0d5380f736ae123d6492a2eae8ecbad91cbb831856"
     },
     {
       "path": "Docs/decisions/local-vision.md",
@@ -1078,8 +1113,8 @@
     },
     {
       "path": "PLAN.md",
-      "bytes": 11711,
-      "sha256": "7ac4a707ae3277209c491914309f5c873e9dc07e2136ba07357f3316ead46984"
+      "bytes": 13121,
+      "sha256": "a4c10c223835f8aa300ac1b5f0516bb2d3404ad6f7462aff60e2bc3a4e47073e"
     },
     {
       "path": "Prototype/.dockerignore",
@@ -1098,8 +1133,8 @@
     },
     {
       "path": "Prototype/README.md",
-      "bytes": 8911,
-      "sha256": "969c06156e243fb4820831d85679d9d34d451f6ce946d78b7451503f31eb0cb8"
+      "bytes": 10578,
+      "sha256": "f4d74fef0fad476b6f73906cd2a1d3c7c2c198a1978bc3c3571f72b62e2134d9"
     },
     {
       "path": "Prototype/app/assets/astronaut.png",
@@ -1658,8 +1693,28 @@
     },
     {
       "path": "Prototype/app/index.html",
-      "bytes": 4120,
-      "sha256": "a5a088f962a83a9e154265f9b2411feece38312aba1d5028baef86259cca7604"
+      "bytes": 4217,
+      "sha256": "ac231878ed6330b3cefecbc2cdc6bda2c6ec0ffaeff4b0856b949bb835418a29"
+    },
+    {
+      "path": "Prototype/app/local-reference-fixture.html",
+      "bytes": 961,
+      "sha256": "d1becbb28bb6f87da0558ff7b78a05996a01330ca6150b8c10637f4936255134"
+    },
+    {
+      "path": "Prototype/app/local-reference-fixture.js",
+      "bytes": 299,
+      "sha256": "b469155fa69056be9c021616560dd3d703263f9fa5a07213f1bd0f38f4fe3720"
+    },
+    {
+      "path": "Prototype/app/local-reference.html",
+      "bytes": 1710,
+      "sha256": "3b6f6a9ae135d33301c506ddb9d20fdc0ca414d65f30e77a0dc04ac13abe0a1b"
+    },
+    {
+      "path": "Prototype/app/local-reference.mjs",
+      "bytes": 6142,
+      "sha256": "e48fa64e8c2e2944644021778d5e5ae1039da2800b762d17bd20f1b9641d388b"
     },
     {
       "path": "Prototype/app/main.mjs",
@@ -1843,13 +1898,18 @@
     },
     {
       "path": "Prototype/server/app.mjs",
-      "bytes": 6735,
-      "sha256": "c83ed67b33ce2e488630cab2c8f06bca94af4d3d4ad60186d1d6bb70169f1843"
+      "bytes": 7183,
+      "sha256": "7020c30f115c860724a94c522c9eb08ba31f731c3ad00498c204eb628e1709d3"
     },
     {
       "path": "Prototype/server/index.mjs",
-      "bytes": 2141,
-      "sha256": "4d465dd2d12a192a1f98ae5a4dcb9279794442bad380c7ba5957ef7d530f004d"
+      "bytes": 2360,
+      "sha256": "e055041c0b9da55e02f2e4f253a906b66fc9b5ec8610c73e95c3aa47262ee236"
+    },
+    {
+      "path": "Prototype/server/local-reference-provider.mjs",
+      "bytes": 1703,
+      "sha256": "32a833d0dc70aacfd512b4d595823ff3e34907678e2bb3c6d2a54c3eb4f3c105"
     },
     {
       "path": "Prototype/server/provider.mjs",
@@ -1857,9 +1917,19 @@
       "sha256": "2a883357dbe845f086f44ab0758298b69c73ce3132a89e2877c22d78f1d65dc8"
     },
     {
+      "path": "Prototype/shared/local-reference-protocol.mjs",
+      "bytes": 2249,
+      "sha256": "be8dffce3b88843f27ca3ac04bc7b6bfc1fa7aead0a6304ef24a85a9dbd3f184"
+    },
+    {
       "path": "Prototype/shared/local-text-engine.mjs",
       "bytes": 3364,
       "sha256": "112e23d4543f2fac956171f4051343773d7207616721bb901d7d6a7c0cda7de0"
+    },
+    {
+      "path": "Prototype/shared/local-values.mjs",
+      "bytes": 2338,
+      "sha256": "9d129b6fa00814b2a715055e50f7efe681e74786d19afc1327edb4179411b532"
     },
     {
       "path": "Prototype/shared/page-agent.mjs",
@@ -1900,6 +1970,16 @@
       "path": "Prototype/shared/vision.mjs",
       "bytes": 5243,
       "sha256": "0cb201e7c4bb9d403a8e22c3106cb9763958b445267f71d69292073869c4ccfc"
+    },
+    {
+      "path": "Prototype/tests/local-reference-server.test.mjs",
+      "bytes": 2651,
+      "sha256": "e092b30c4e424e0d7e1c62d3b344426d61216c408a94fad1e07801645bd14e6e"
+    },
+    {
+      "path": "Prototype/tests/local-values.test.mjs",
+      "bytes": 4057,
+      "sha256": "da37c09d2221164e9b0dba9c8334f2e0e0b2710cf6a0fdb779c5bc471d1f4b11"
     },
     {
       "path": "Prototype/tests/page-agent.test.mjs",
@@ -1948,8 +2028,8 @@
     },
     {
       "path": "ROAST.md",
-      "bytes": 6269,
-      "sha256": "ae95baa12ce79717ca47297bc7bb397ed6c8189401214ee9caf6713153749342"
+      "bytes": 7199,
+      "sha256": "af4fba32b6c7146cff72c437b9ea16a9fc0ad8459ab4becd6e77815720073609"
     },
     {
       "path": "Raw/README.md",
@@ -2252,6 +2332,11 @@
       "sha256": "a140c9e9574ff99d3dc1c435d5e8b5e60690dc91597e66387cbbb52be12cce4c"
     },
     {
+      "path": "Raw/experiments/local-reference-pilot-v1-script.mjs",
+      "bytes": 4147,
+      "sha256": "95c4a2e096ed67681ebeb0bf61598868022f956b8394ad8283174cf16a41c378"
+    },
+    {
       "path": "Raw/experiments/provider-flat-task-v03.mjs.txt",
       "bytes": 3728,
       "sha256": "6362e5e8d1e019ea768026299bcb17fca7bb565b4e51df61ae55def8dbe52c07"
@@ -2528,8 +2613,8 @@
     },
     {
       "path": "scripts/build-prototype.mjs",
-      "bytes": 2758,
-      "sha256": "072745c643fe65a349f65450c01eb7b1c6cff8fff806fb76aec5966ea843d8aa"
+      "bytes": 2982,
+      "sha256": "ec4d7e6d6ca9c6ea25934e6b7b3400bc2263800252593b61be27684221fc479e"
     },
     {
       "path": "scripts/build_documents.py",
@@ -2582,6 +2667,11 @@
       "sha256": "5e64eeaec237ad855d6c3ac713cf509f105117b9b5c34ae8269064469a6cda57"
     },
     {
+      "path": "scripts/pilot-local-references.mjs",
+      "bytes": 4195,
+      "sha256": "11c1bccd93645db8c064b68115a3c7f42a86ef3403d39aa37ce182262b670392"
+    },
+    {
       "path": "scripts/render_presentations.py",
       "bytes": 852,
       "sha256": "77fda518567a7d0c87c92087ab0738a560e84e9562a930ac2ef32a23e15e41d7"
@@ -2595,6 +2685,11 @@
       "path": "scripts/score-raster-benchmark.py",
       "bytes": 6480,
       "sha256": "d5bcfa5c5375cea91a94f77e46c0098d563b35f887e6467b4598cc26db66a130"
+    },
+    {
+      "path": "scripts/smoke-local-reference-service.mjs",
+      "bytes": 2567,
+      "sha256": "4c7144a7e2a9238e0f6a54e388af8486df69eefbba45c0fa9d5d0b4f4ed723ae"
     },
     {
       "path": "scripts/tests/test_score_raster.py",

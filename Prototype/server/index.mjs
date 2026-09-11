@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { createApp } from './app.mjs';
 import { ollamaProvider } from './provider.mjs';
+import {localReferenceProvider} from './local-reference-provider.mjs';
 
 const dataDir=fileURLToPath(new URL('../data/',import.meta.url));
 mkdirSync(dataDir,{recursive:true,mode:0o700});
@@ -16,6 +17,6 @@ if(host!=='127.0.0.1' && (!process.env.SIGHTLINE_TOKEN||!process.env.PUBLIC_ORIG
 const db=new DatabaseSync(`${dataDir}/audit.sqlite`);
 db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS audit(id TEXT PRIMARY KEY, createdAt TEXT NOT NULL, model TEXT NOT NULL, mode TEXT NOT NULL, controls INTEGER NOT NULL, regions INTEGER NOT NULL, latencyMs REAL NOT NULL, actionType TEXT NOT NULL)');
 const insert=db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)');
-const app=createApp({token,publicOrigin:process.env.PUBLIC_ORIGIN||`http://127.0.0.1:${port}`,origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean),infer:ollamaProvider({baseUrl:process.env.OLLAMA_URL||'http://127.0.0.1:11434',model:process.env.OLLAMA_MODEL||'qwen2.5:7b-instruct'}),saveAudit:r=>{insert.run(r.id,r.createdAt,r.model,r.mode,r.controls,r.regions,r.latencyMs,r.actionType);db.exec('DELETE FROM audit WHERE id NOT IN (SELECT id FROM audit ORDER BY createdAt DESC LIMIT 1000)');},readAudits:()=>db.prepare('SELECT * FROM audit ORDER BY createdAt DESC LIMIT 100').all()});
+const app=createApp({token,publicOrigin:process.env.PUBLIC_ORIGIN||`http://127.0.0.1:${port}`,origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean),infer:ollamaProvider({baseUrl:process.env.OLLAMA_URL||'http://127.0.0.1:11434',model:process.env.OLLAMA_MODEL||'qwen2.5:7b-instruct'}),localInfer:localReferenceProvider({baseUrl:process.env.OLLAMA_URL||'http://127.0.0.1:11434',model:process.env.OLLAMA_MODEL||'qwen2.5:7b-instruct'}),saveAudit:r=>{insert.run(r.id,r.createdAt,r.model,r.mode,r.controls,r.regions,r.latencyMs,r.actionType);db.exec('DELETE FROM audit WHERE id NOT IN (SELECT id FROM audit ORDER BY createdAt DESC LIMIT 1000)');},readAudits:()=>db.prepare('SELECT * FROM audit ORDER BY createdAt DESC LIMIT 100').all()});
 app.listen(port,host,()=>console.log(`Sightline prototype: http://${host}:${port}. Pairing token remains in local data storage.`));
 for(const signal of ['SIGINT','SIGTERM']) process.on(signal,()=>app.close(()=>{db.close();process.exit(0);}));

@@ -88,3 +88,11 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Implemented shared bounded coordinator and connected a synthetic task-runner page using existing local vision, protected request, open-weight provider and validated executor. Goal completion requires a local fixture postcondition; cancellation, deadlines and no-progress stop the loop.
 - 58 automated tests pass, including 10 coordinator cases. Build passes. Browser integration, responsive/visual checks and extension execution are still unverified; existing manual-demo results are not reused as runner evidence.
 - The earlier manifest process handle disappeared without a refreshed file; its old 483-file inventory was confirmed unchanged. The previously stalled file is readable now; rebuild the manifest for this checkpoint.
+
+## Local-reference implementation checkpoint — 10 September 2026
+
+- Prior goal turn made progress: reference review, bounded runner, and a refreshed 519-file inventory were published through `77dc051`.
+- Added random, expiring, one-use local value references; v2 typed field/reference protocol; real open-weight provider; authenticated API; and an explicitly synthetic confirmed draft-fill UI. The native extension and original v1 action contract still do not support typing.
+- The first provider pilot failed 3/3 because the live Ollama catalogue no longer contained Qwen. Existing weights were recovered from the local cache through an independent loopback instance on 11436; app-managed instances were left intact. Project server restarted with this private configuration and passes health/readback checks.
+- Retried the same three authored cases: 3/3 correct; exact known-value absence checks pass; both local resolutions reject replay. Separate actual-service test verifies SQLite audit persistence without the reference/value. This is server/shared-module evidence, not browser execution.
+- Build and 68 automated tests pass. Browser/visual verification remains unavailable, as do native-extension and broader PII guarantees. Full-flow latency remains failed. Next: validate browser adapters when available, extend the meaningful domain workflow, and finish broader privacy/utility/resource evidence.

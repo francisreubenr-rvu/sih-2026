@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-09-10T16:27:26.793Z",
+  "scope": "running service plus SQLite readback and shared local value module; no browser capture or DOM execution",
+  "httpStatus": 200,
+  "elapsedMs": 3067.6086659999996,
+  "provider": {
+    "model": "qwen2.5:7b-instruct",
+    "mode": "open-weight-local-reference-plan"
+  },
+  "action": {
+    "type": "fill-local",
+    "targetId": "f0",
+    "referenceId": "5bc88f50-2725-49d1-8045-e0a1a3a88554"
+  },
+  "localValueResolved": true,
+  "auditPersisted": true,
+  "auditContainsReference": false,
+  "knownValueInWireOrAudit": false,
+  "audit": {
+    "id": "931216d4-827c-4188-b2d3-3a8483100b0f",
+    "createdAt": "2026-09-10T16:27:26.774Z",
+    "model": "qwen2.5:7b-instruct",
+    "mode": "open-weight-local-reference-plan",
+    "controls": 0,
+    "regions": 0,
+    "latencyMs": 2997.06,
+    "actionType": "fill-local"
+  },
+  "error": null
+}

@@ -12,3 +12,5 @@ User: Francis, on behalf of RV University team Gopreet, Hiranmayi, Varun, Kousha
 - **Measured:** evidence from a declared actual runtime. Synthetic fixtures, projections, unit doubles and author-reported literature numbers must be labeled separately.
 
 Working server http://127.0.0.1:9041; The redesigned static Website is ready for candidate publication; check Docs/deployment-verification.md for the actual published revision. Current implementation is v0.1, not competition-ready. See PLAN.md for the complete remaining scope and ROAST.md for implementation findings.
+
+Experimental additions (10 September): `/app/text-preview.html` provides local-only OCR/PII diagnostics; `/app/task-loop.html` provides a bounded synthetic task loop; `/app/local-reference.html` provides a confirmed synthetic email draft using one-use local references and `/api/v2/local-plans`. Their browser/native-extension gates remain unverified. The reference provider has real Node/Qwen/SQLite evidence, separately from DOM execution. The current ignored `.env` selects an independent local Ollama instance on port11436; default install instructions still support11434.

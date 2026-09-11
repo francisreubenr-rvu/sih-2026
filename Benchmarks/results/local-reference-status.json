@@ -1,0 +1,31 @@
+{
+  "recordedAt": "2026-09-10T16:31:07.152398+00:00",
+  "scope": "Experimental local-value draft path; separate evidence gates",
+  "build": "pass",
+  "unitTests": {
+    "passed": 68,
+    "failed": 0
+  },
+  "realProviderPilot": {
+    "path": "Benchmarks/results/local-reference-pilot-v2/results.json",
+    "correct": 3,
+    "attempts": 3,
+    "scope": "authored development cases; no browser execution",
+    "priorFailure": "Benchmarks/results/local-reference-pilot-v1/results.json"
+  },
+  "runningServiceAndSqlite": "Benchmarks/results/local-reference-service-v1/result.json",
+  "browserDomAndVisualQa": "unverified",
+  "nativeExtension": "not integrated",
+  "fullFlowUnder200ms": "not satisfied",
+  "artifactSha256": {
+    "Prototype/shared/local-values.mjs": "9d129b6fa00814b2a715055e50f7efe681e74786d19afc1327edb4179411b532",
+    "Prototype/shared/local-reference-protocol.mjs": "be8dffce3b88843f27ca3ac04bc7b6bfc1fa7aead0a6304ef24a85a9dbd3f184",
+    "Prototype/server/local-reference-provider.mjs": "32a833d0dc70aacfd512b4d595823ff3e34907678e2bb3c6d2a54c3eb4f3c105",
+    "Prototype/server/app.mjs": "7020c30f115c860724a94c522c9eb08ba31f731c3ad00498c204eb628e1709d3",
+    "Prototype/server/index.mjs": "e055041c0b9da55e02f2e4f253a906b66fc9b5ec8610c73e95c3aa47262ee236",
+    "Prototype/app/local-reference.mjs": "e48fa64e8c2e2944644021778d5e5ae1039da2800b762d17bd20f1b9641d388b",
+    "Prototype/app/local-reference-fixture.html": "d1becbb28bb6f87da0558ff7b78a05996a01330ca6150b8c10637f4936255134",
+    "scripts/smoke-local-reference-service.mjs": "4c7144a7e2a9238e0f6a54e388af8486df69eefbba45c0fa9d5d0b4f4ed723ae",
+    "Benchmarks/results/local-reference-unit-tests-2026-09-10.txt": "aae0ad9adb95fe484a1a20a29056457c606328f92524b6092edad96a8d13e547"
+  }
+}

@@ -4,6 +4,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
+import {localReferenceRequestSchema,validateLocalReferenceAction} from '../shared/local-reference-protocol.mjs';
 
 const root = resolve(fileURLToPath(new URL('../',import.meta.url)));
 const errors = {
@@ -30,7 +31,7 @@ async function readBody(req, limit=262144) {
   }
   try {return JSON.parse(Buffer.concat(chunks).toString('utf8'));} catch {throw new Error('invalid_json');}
 }
-export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:9041', infer, saveAudit=()=>{}, readAudits=()=>[], now=Date.now}={}) {
+export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:9041', infer, localInfer, saveAudit=()=>{}, readAudits=()=>[], now=Date.now}={}) {
   if(typeof token!=='string'||token.length<24) throw new Error('Set a pairing token with at least 24 characters');
   if(typeof infer!=='function') throw new Error('Reasoning provider required');
   let requests=[];let inFlight=0;
@@ -61,19 +62,21 @@ export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:904
       if(path.startsWith('/api/')) {
         if(!equalToken(req.headers.authorization,`Bearer ${token}`)) return fail('unauthorized');
         if(path==='/api/v1/audits' && req.method==='GET') return send(200,{data:readAudits()});
-        if(path!=='/api/v1/plans'||req.method!=='POST') return fail('not_found');
+        const localReferences=path==='/api/v2/local-plans';
+        if((path!=='/api/v1/plans'&&!localReferences)||req.method!=='POST') return fail('not_found');
+        if(localReferences&&typeof localInfer!=='function')return fail('provider_unavailable');
         if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']||'')) return fail('unsupported_media');
         requests=requests.filter(t=>now()-t<60000);
         if(requests.length>=20||inFlight>=2) return fail('rate_limited');
         requests.push(now());
-        const parsed=requestSchema.safeParse(await readBody(req));
+        const parsed=(localReferences?localReferenceRequestSchema:requestSchema).safeParse(await readBody(req));
         if(!parsed.success) return fail('validation_error');
         inFlight++;
         const started=performance.now();
         let result;
-        try {result=await infer(parsed.data);} finally {inFlight--;}
+        try {result=await (localReferences?localInfer:infer)(parsed.data);} finally {inFlight--;}
         let action;
-        try {action=validateAction(result.action,parsed.data.scene);} catch {return fail('provider_invalid');}
+        try {action=localReferences?validateLocalReferenceAction(result.action,parsed.data):validateAction(result.action,parsed.data.scene);} catch {return fail('provider_invalid');}
         const latencyMs=Math.round((performance.now()-started)*100)/100;
         const record={id:requestId,createdAt:new Date(now()).toISOString(),model:result.model,mode:result.mode,controls:parsed.data.scene.controls.length,regions:parsed.data.scene.regions.length,latencyMs,actionType:action.type};
         saveAudit(record);

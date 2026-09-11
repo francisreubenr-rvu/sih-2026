@@ -61,3 +61,11 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [x] Late planner results after cancellation could otherwise reach execution. Abort-aware coordinator checks again before execution; cancellation/late-result unit test passes.
 - [x] A reloaded fixture at the same URL must not reuse the old target map. Adapter checks document identity as well as the authorized fixture URL.
 - [ ] Runner integration is built but has no real-browser/visual/native-extension evidence. The generic-site autonomy gap remains open.
+
+## Round 7 — private value references
+
+- [x] A reusable reference would allow replay after an uncertain write. Consume before writing and reject unknown/reused/expired/wrong-target bindings; tests pass.
+- [x] Rechecking vault size inside the write callback failed after intentional consumption. Keep target/revision/hit tests inside the callback, while requiring reference availability before consumption. Browser execution still needs validation.
+- [x] The configured model endpoint drifted to a different catalogue. Preserve failed attempts, use existing Qwen weights in a separate local service, and verify a real provider response plus SQLite readback.
+- [ ] Synthetic reference UI remains browser-unverified; do not infer DOM execution from the shared-module pilot.
+- [ ] Three fixed reference cases do not demonstrate general PII detection, free-text task sanitization, arbitrary-site typing or native extension support.
