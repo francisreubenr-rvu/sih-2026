@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-11T03:51:05.766971+00:00",
+  "created_at": "2026-09-11T05:43:37.478439+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "0eff69651e3985df009b0217a0b2606db95e8ea1",
+  "source_commit_before_manifest": "25acdf183b70d2cec01c4d5586c5b85fde6a6c8b",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -617,6 +617,16 @@
       "sha256": "282b496cad9756ca286ef99bff1edd913c05e33ff7b04421da6d0dc5967709dd"
     },
     {
+      "path": "Benchmarks/results/operations-v01/face-scale-v01.json",
+      "bytes": 5417,
+      "sha256": "25e17d62e913b3ef550c34a9e8f84f26426ff7bd4d723a54d82fb7975f4f4135"
+    },
+    {
+      "path": "Benchmarks/results/operations-v01/face-scale-v01.png",
+      "bytes": 178835,
+      "sha256": "82ec150e74b017082321ba5511a24daba1a1e7ca1e6d3b2ad4cdaf746d43f545"
+    },
+    {
       "path": "Benchmarks/results/operations-v01/run-v1-network.json",
       "bytes": 187,
       "sha256": "f6705d66e2849a2f479f74934dcdf1d09d85f7915900e505a2e1890bb5c248bd"
@@ -880,6 +890,11 @@
       "path": "Docs/decisions/external-text-evaluation.md",
       "bytes": 5453,
       "sha256": "ce788a118817eab96bc1ab506bb513ab0695ece0db10c930e9aa0b2b79b9b9aa"
+    },
+    {
+      "path": "Docs/decisions/face-scale-and-in-app-browser.md",
+      "bytes": 3012,
+      "sha256": "a9fb28c61f3771181a5c9089043ff96262f01c9e365d332f73d8df10103add87"
     },
     {
       "path": "Docs/decisions/local-reference-pilot.md",
@@ -2022,6 +2037,21 @@
       "sha256": "fb0e062e56b9135058cd99aea06dbe86b32803058ad4f6a744cb8618795d40ae"
     },
     {
+      "path": "Prototype/app/face-scale-test.html",
+      "bytes": 1885,
+      "sha256": "b05272401ec9c1aa6ac33c92e0dd41971913bc337739a71373f9069a03c562a7"
+    },
+    {
+      "path": "Prototype/app/face-scale-test.mjs",
+      "bytes": 2986,
+      "sha256": "315d0eb6fb0971e6a52ccfa920a6e7dc0ad9565c86e467859f377961b595c2ae"
+    },
+    {
+      "path": "Prototype/app/face-test-entry.mjs",
+      "bytes": 59,
+      "sha256": "4b0b36edaf7a5940ec161aea283ee72985dc90fa110bfb49f0808057d68f4512"
+    },
+    {
       "path": "Prototype/app/fixture.css",
       "bytes": 975,
       "sha256": "7e5daef215da682538a37160f654a0138bac26319b81564b049612019c32157d"
@@ -2938,8 +2968,8 @@
     },
     {
       "path": "Website/index.html",
-      "bytes": 15771,
-      "sha256": "1b52adac439f7faa3b36765a6ef10ecab78e8c7e359c9aeb9a1e54f9afbe2457"
+      "bytes": 18305,
+      "sha256": "e52c6a9656d3d0feafa529cc7e982862337bde23c08b460e3f7206e8759d9a9c"
     },
     {
       "path": "Website/style.css",
@@ -3003,8 +3033,8 @@
     },
     {
       "path": "scripts/build-prototype.mjs",
-      "bytes": 3441,
-      "sha256": "42d8e1e5a61e9fd2b39150816e15b977efcba14f332816a0c0df33b623baf64b"
+      "bytes": 3664,
+      "sha256": "efaf10f8ba7c4a430f84acf1afc26bf189d8d214c3e2b6a060ad604f80013df7"
     },
     {
       "path": "scripts/build_documents.py",
