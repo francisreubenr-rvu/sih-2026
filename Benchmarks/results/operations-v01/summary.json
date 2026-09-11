@@ -1,0 +1,72 @@
+{
+  "recordedAt": "2026-09-11T03:49:27.163437+00:00",
+  "scope": "Original synthetic Earth-observation workflow; in-app Chromium; real WASM vision + Qwen2.5 7B loopback planning",
+  "runs": {
+    "completed": {
+      "status": "completed",
+      "reason": "draft_postcondition_verified",
+      "elapsedMs": 30529.399999976158,
+      "navigationActions": 2,
+      "navigationElapsedMs": 11589,
+      "confirmedLocalWrite": true,
+      "postcondition": "fixture_exact_contact_match",
+      "captures": [
+        {
+          "controls": 2,
+          "regions": 14,
+          "faces": 0,
+          "inferenceMs": 22.799999952316284
+        },
+        {
+          "controls": 2,
+          "regions": 16,
+          "faces": 0,
+          "inferenceMs": 18
+        },
+        {
+          "controls": 0,
+          "regions": 16,
+          "faces": 0,
+          "inferenceMs": 11
+        }
+      ],
+      "planLatencies": [
+        {
+          "latencyMs": 7912.84
+        },
+        {
+          "latencyMs": 2982.13
+        },
+        {
+          "latencyMs": 5309.93
+        }
+      ]
+    },
+    "expiry": {
+      "status": "stopped",
+      "reason": "binding_expired_or_page_changed",
+      "elapsedMs": 38174.200000047684,
+      "draftWrite": false
+    },
+    "stop": {
+      "status": "cancelled",
+      "reason": "user_cancelled",
+      "elapsedMs": 5688.799999952316
+    }
+  },
+  "privacy": {
+    "serializedRequests": "Benchmarks/results/operations-v01/run-v1-requests.json",
+    "knownEmailInRequests": false,
+    "knownNameInRequests": false,
+    "networkCapture": "Benchmarks/results/operations-v01/run-v1-network.json (page context only; 25 requests, zero external; not a complete egress proof)",
+    "faceDetections": "0 on all three captures at 80px fixture portrait; earlier 96px fixture detected the same image. Scale-sensitive; not a face-recall result."
+  },
+  "readbackDiscrepancy": "Read-only locator evaluate returned empty input value twice although the field was visibly populated and the fixture equality oracle matched. Probe preserved as inconclusive; completion relies on visible state and fixture oracle.",
+  "layout390px": "No document horizontal overflow (scrollWidth=390=clientWidth)",
+  "limitations": [
+    "Synthetic simulation only; no ISRO portal or real workflow claim",
+    "Not native extension evidence",
+    "Full-flow timing includes human confirmation windows and far exceeds 200 ms",
+    "No held-out domain validation or human study"
+  ]
+}

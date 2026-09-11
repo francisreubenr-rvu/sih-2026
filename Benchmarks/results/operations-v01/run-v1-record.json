@@ -1,0 +1,103 @@
+{
+  "version": "operations-simulation-v1",
+  "startedAt": "2026-09-11T03:45:54.675Z",
+  "scope": "Original synthetic Earth-observation report workflow; no real portal or submission",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "status": "completed",
+  "captures": [
+    {
+      "controls": 2,
+      "regions": 14,
+      "faces": 0,
+      "inferenceMs": 22.799999952316284
+    },
+    {
+      "controls": 2,
+      "regions": 16,
+      "faces": 0,
+      "inferenceMs": 18
+    },
+    {
+      "controls": 0,
+      "regions": 16,
+      "faces": 0,
+      "inferenceMs": 11
+    }
+  ],
+  "plans": [
+    {
+      "latencyMs": 7912.84
+    },
+    {
+      "latencyMs": 2982.13
+    },
+    {
+      "latencyMs": 5309.93
+    }
+  ],
+  "navigation": {
+    "status": "completed",
+    "reason": "postcondition_verified",
+    "actions": 2,
+    "elapsedMs": 11589,
+    "trace": [
+      {
+        "state": "observe",
+        "actions": 0,
+        "elapsedMs": 0.20000004768371582
+      },
+      {
+        "state": "plan",
+        "actions": 0,
+        "elapsedMs": 408.60000002384186
+      },
+      {
+        "state": "execute",
+        "actions": 0,
+        "elapsedMs": 8370.400000095367
+      },
+      {
+        "state": "verify",
+        "actions": 1,
+        "elapsedMs": 8386.600000023842
+      },
+      {
+        "state": "observe",
+        "actions": 1,
+        "elapsedMs": 8386.700000047684
+      },
+      {
+        "state": "plan",
+        "actions": 1,
+        "elapsedMs": 8580.200000047684
+      },
+      {
+        "state": "execute",
+        "actions": 1,
+        "elapsedMs": 11585.700000047684
+      },
+      {
+        "state": "verify",
+        "actions": 2,
+        "elapsedMs": 11588.900000095367
+      },
+      {
+        "state": "observe",
+        "actions": 2,
+        "elapsedMs": 11588.900000095367
+      },
+      {
+        "state": "completed",
+        "actions": 2,
+        "elapsedMs": 11589,
+        "reason": "postcondition_verified"
+      }
+    ]
+  },
+  "navigationVerified": true,
+  "confirmedLocalWrite": true,
+  "localPostcondition": "fixture_exact_contact_match",
+  "reason": "draft_postcondition_verified",
+  "elapsedMs": 30529.399999976158,
+  "finishedAt": "2026-09-11T03:46:25.204Z"
+}

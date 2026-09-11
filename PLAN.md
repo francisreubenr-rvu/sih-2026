@@ -1,5 +1,14 @@
 # SIH26171 delivery plan
 
+## Integrated simulation checkpoint — 11 September 2026
+
+- Previous turn verified the external OCR/PII privacy failure (`0eff696`); policy kept local-only.
+- Built `/app/operations.html`: original synthetic Earth-observation desk with basin grid, protected map region and report-contact draft. Combines the verified bounded loop, protected scene, Qwen planning on `/api/v1/plans` and `/api/v2/local-plans`, and one-use local value references.
+- Browser evidence: complete run (2 navigation actions, confirmed local draft fill, `fixture_exact_contact_match`), binding expiry stop (no write, empty draft), and user cancellation during planning. Serialized requests contain no operator name or contact value. Scoped network capture: 25 page-context requests, zero external; not complete egress proof.
+- New findings preserved honestly: read-only property probe again conflicts with populated field (same artifact as local-reference), and UltraFace yields zero face detections at the fixture's 80px portrait scale versus 96px in earlier fixtures. Face-scale gap must be evaluated before relying on the detection signal in demo copy.
+- 74 automated tests pass. 390px layout has no horizontal overflow. Decision record: `Docs/decisions/operations-simulation.md`. Evidence: `Benchmarks/results/operations-v01/`.
+- Remaining for the full objective: native extension execution, broader task/privacy datasets, human/domain validation, full-flow latency and resources, refreshed presentation/website evidence tied to this simulation, and final packaging audit.
+
 ## External text checkpoint — 11 September 2026
 
 - Previous turn made verified progress: three browser experiments and the explicit address-label regression fix published as `bfcbb43`.

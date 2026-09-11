@@ -1,0 +1,29 @@
+{
+  "version": "operations-simulation-v1",
+  "startedAt": "2026-09-11T03:48:44.516Z",
+  "scope": "Original synthetic Earth-observation report workflow; no real portal or submission",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "status": "cancelled",
+  "captures": [
+    {
+      "controls": 2,
+      "regions": 15,
+      "faces": 0,
+      "inferenceMs": 23.199999928474426
+    },
+    {
+      "controls": 2,
+      "regions": 17,
+      "faces": 0,
+      "inferenceMs": 11.300000071525574
+    }
+  ],
+  "plans": [
+    {
+      "latencyMs": 3854.51
+    }
+  ],
+  "reason": "user_cancelled",
+  "elapsedMs": 5688.799999952316,
+  "finishedAt": "2026-09-11T03:48:50.205Z"
+}

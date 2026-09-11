@@ -1,0 +1,529 @@
+[
+  {
+    "endpoint": "/api/v1/plans",
+    "request": {
+      "task": "review-pending",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "7d686d52-06c5-4281-b0b1-937b614651d0",
+        "viewport": {
+          "width": 598,
+          "height": 658
+        },
+        "controls": [
+          {
+            "id": "c0",
+            "role": "button",
+            "label": "Pending",
+            "rect": {
+              "x": 24,
+              "y": 339,
+              "width": 91,
+              "height": 45
+            }
+          },
+          {
+            "id": "c1",
+            "role": "button",
+            "label": "Completed",
+            "rect": {
+              "x": 124,
+              "y": 339,
+              "width": 110,
+              "height": 45
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 16,
+              "width": 130,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 495,
+              "y": 15,
+              "width": 83,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 83,
+              "width": 151,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 106,
+              "width": 158,
+              "height": 36
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 146,
+              "width": 188,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 173,
+              "width": 141,
+              "height": 25
+            }
+          },
+          {
+            "kind": "media",
+            "rect": {
+              "x": 470,
+              "y": 77,
+              "width": 88,
+              "height": 88
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 470,
+              "y": 164,
+              "width": 90,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 470,
+              "y": 179,
+              "width": 38,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 244,
+              "width": 228,
+              "height": 38
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 296,
+              "width": 419,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 39,
+              "y": 349,
+              "width": 61,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 139,
+              "y": 349,
+              "width": 80,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 405,
+              "width": 502,
+              "height": 21
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "endpoint": "/api/v1/plans",
+    "request": {
+      "task": "review-pending",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "491bff9a-cd1e-4f08-a03c-10caf3d0f202",
+        "viewport": {
+          "width": 598,
+          "height": 658
+        },
+        "controls": [
+          {
+            "id": "c0",
+            "role": "button",
+            "label": "Review",
+            "rect": {
+              "x": 24,
+              "y": 533,
+              "width": 84,
+              "height": 44
+            }
+          },
+          {
+            "id": "c1",
+            "role": "button",
+            "label": "Back",
+            "rect": {
+              "x": 117,
+              "y": 533,
+              "width": 71,
+              "height": 44
+            }
+          }
+        ],
+        "regions": [
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 16,
+              "width": 130,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 495,
+              "y": 15,
+              "width": 83,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 83,
+              "width": 151,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 106,
+              "width": 158,
+              "height": 36
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 146,
+              "width": 188,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 173,
+              "width": 141,
+              "height": 25
+            }
+          },
+          {
+            "kind": "media",
+            "rect": {
+              "x": 470,
+              "y": 77,
+              "width": 88,
+              "height": 88
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 470,
+              "y": 164,
+              "width": 90,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 470,
+              "y": 179,
+              "width": 38,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 244,
+              "width": 234,
+              "height": 38
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 296,
+              "width": 414,
+              "height": 25
+            }
+          },
+          {
+            "kind": "media",
+            "rect": {
+              "x": 20,
+              "y": 321,
+              "width": 558,
+              "height": 174
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 494,
+              "width": 376,
+              "height": 21
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 39,
+              "y": 542,
+              "width": 54,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 132,
+              "y": 542,
+              "width": 41,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 598,
+              "width": 502,
+              "height": 22
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "endpoint": "/api/v2/local-plans",
+    "request": {
+      "scheme": "sightline-local-references-v1",
+      "task": "prepare-report-contact",
+      "scene": {
+        "scheme": "sightline-semantic-v1",
+        "revision": "31e8b87c-1b10-4102-a0b7-7df1d3956b00",
+        "viewport": {
+          "width": 598,
+          "height": 658
+        },
+        "controls": [],
+        "regions": [
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 16,
+              "width": 130,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 495,
+              "y": 15,
+              "width": 83,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 83,
+              "width": 151,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 106,
+              "width": 158,
+              "height": 36
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 146,
+              "width": 188,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 173,
+              "width": 141,
+              "height": 25
+            }
+          },
+          {
+            "kind": "media",
+            "rect": {
+              "x": 470,
+              "y": 77,
+              "width": 88,
+              "height": 88
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 470,
+              "y": 164,
+              "width": 90,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 470,
+              "y": 179,
+              "width": 38,
+              "height": 20
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 244,
+              "width": 283,
+              "height": 38
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 296,
+              "width": 417,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 335,
+              "width": 457,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 388,
+              "width": 105,
+              "height": 25
+            }
+          },
+          {
+            "kind": "field",
+            "rect": {
+              "x": 20,
+              "y": 407,
+              "width": 368,
+              "height": 53
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 467,
+              "width": 159,
+              "height": 25
+            }
+          },
+          {
+            "kind": "private",
+            "rect": {
+              "x": 20,
+              "y": 512,
+              "width": 502,
+              "height": 21
+            }
+          }
+        ]
+      },
+      "fields": [
+        {
+          "id": "f0",
+          "label": "Report contact",
+          "kind": "email",
+          "referenceId": "cde73036-16cb-446d-946e-f19e114efd00",
+          "empty": true,
+          "rect": {
+            "x": 24,
+            "y": 411.5,
+            "width": 360,
+            "height": 44
+          }
+        }
+      ]
+    }
+  }
+]

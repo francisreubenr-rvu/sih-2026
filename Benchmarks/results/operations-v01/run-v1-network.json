@@ -1,0 +1,9 @@
+{
+  "scope": "CDP page-context requests only; worker and complete egress not covered",
+  "requestCount": 25,
+  "external": [],
+  "origins": [
+    "http://127.0.0.1:9041",
+    "null"
+  ]
+}

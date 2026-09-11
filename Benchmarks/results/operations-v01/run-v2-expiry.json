@@ -1,0 +1,101 @@
+{
+  "version": "operations-simulation-v1",
+  "startedAt": "2026-09-11T03:46:50.317Z",
+  "scope": "Original synthetic Earth-observation report workflow; no real portal or submission",
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "status": "stopped",
+  "captures": [
+    {
+      "controls": 2,
+      "regions": 14,
+      "faces": 0,
+      "inferenceMs": 11.700000047683716
+    },
+    {
+      "controls": 2,
+      "regions": 16,
+      "faces": 0,
+      "inferenceMs": 11
+    },
+    {
+      "controls": 0,
+      "regions": 16,
+      "faces": 0,
+      "inferenceMs": 14.399999976158142
+    }
+  ],
+  "plans": [
+    {
+      "latencyMs": 3968.84
+    },
+    {
+      "latencyMs": 3400.06
+    },
+    {
+      "latencyMs": 5332.81
+    }
+  ],
+  "navigation": {
+    "status": "completed",
+    "reason": "postcondition_verified",
+    "actions": 2,
+    "elapsedMs": 7635.100000023842,
+    "trace": [
+      {
+        "state": "observe",
+        "actions": 0,
+        "elapsedMs": 0.10000002384185791
+      },
+      {
+        "state": "plan",
+        "actions": 0,
+        "elapsedMs": 137.69999992847443
+      },
+      {
+        "state": "execute",
+        "actions": 0,
+        "elapsedMs": 4123.100000023842
+      },
+      {
+        "state": "verify",
+        "actions": 1,
+        "elapsedMs": 4124.199999928474
+      },
+      {
+        "state": "observe",
+        "actions": 1,
+        "elapsedMs": 4124.199999928474
+      },
+      {
+        "state": "plan",
+        "actions": 1,
+        "elapsedMs": 4225.100000023842
+      },
+      {
+        "state": "execute",
+        "actions": 1,
+        "elapsedMs": 7633.199999928474
+      },
+      {
+        "state": "verify",
+        "actions": 2,
+        "elapsedMs": 7635
+      },
+      {
+        "state": "observe",
+        "actions": 2,
+        "elapsedMs": 7635
+      },
+      {
+        "state": "completed",
+        "actions": 2,
+        "elapsedMs": 7635.100000023842,
+        "reason": "postcondition_verified"
+      }
+    ]
+  },
+  "navigationVerified": true,
+  "reason": "binding_expired_or_page_changed",
+  "elapsedMs": 38174.200000047684,
+  "finishedAt": "2026-09-11T03:47:28.491Z"
+}

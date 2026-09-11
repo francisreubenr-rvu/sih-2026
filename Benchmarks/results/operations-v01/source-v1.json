@@ -1,0 +1,16 @@
+{
+  "recordedAt": "2026-09-11T03:02:37.694709+00:00",
+  "scope": "Pre-browser integrated synthetic workflow build",
+  "sha256": {
+    "Prototype/app/operations.mjs": "7260663223313b1052c632e0aa53a08ce81898796b8f7f28e04251ea91acf3e9",
+    "Prototype/app/operations.html": "42afd23abebb49da7d457ac588ab316e67f0ed3d8a952bd7cad504625ee20f08",
+    "Prototype/app/operations.css": "1aa601f9140de9cee5bd0fde028ee199aa1142f4370c4d97924b06617b62b7a6",
+    "Prototype/app/operations-fixture.html": "2289b99f7df92012a71e83294b8ed7aeeb310fea10f61f22b227951e6febccb4",
+    "Prototype/app/operations-fixture.css": "937f6a561a354d4e5efdc5f33a0bcb8df92406909b70009d850971e369a2e133",
+    "Prototype/app/operations-fixture.js": "ea7a203715dea431942102527fc1d833480a8865a92c4dd5a9bc216eb5007179",
+    "Prototype/dist/operations.js": "5f7fb62b057c8916fc34f8d65ade309d85ae3e4507d676b1d00ae0c3f31f31ae",
+    "Prototype/shared/task-loop.mjs": "e920a8a3e244fac994780d8fe0ab118eb4928a32c1ab5459a36a11694406e2f8",
+    "Prototype/shared/local-values.mjs": "9d129b6fa00814b2a715055e50f7efe681e74786d19afc1327edb4179411b532",
+    "Prototype/shared/local-reference-protocol.mjs": "be8dffce3b88843f27ca3ac04bc7b6bfc1fa7aead0a6304ef24a85a9dbd3f184"
+  }
+}

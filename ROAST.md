@@ -1,5 +1,13 @@
 # Roast Loop — 9 September 2026
 
+## Round 10 — integrated operations simulation
+
+- [x] Bounded loop plus protected capture plus expiring reference now run a complete synthetic domain task end-to-end in the browser; completion requires the fixture's exact-match postcondition, not a model `done`.
+- [x] Expiry and user-stop cases verified with no write and no further actions. Serialized requests contain no private values.
+- [ ] Native extension still runs the older manual flow; this page is web-only evidence.
+- [ ] UltraFace detects zero faces at 80px fixture scale. Same portrait at 96px previously detected. Evaluate face scale/thresholds before the demo narrative claims detection on this page.
+- [ ] Scoped network capture excludes worker/other contexts; do not claim full egress proof.
+
 ## Round 9 — external OCR/PII evaluation
 
 - [ ] Current OCR/PII policy retains exact annotated sensitive text on 58/100 external synthetic screens. Contextual content such as gift messages and address components defeats the current entity/token policy. Keep local-only; no arbitrary-text export.
