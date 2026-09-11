@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createPageAgent} from '../shared/page-agent.mjs';
 import {clipRect} from '../shared/privacy.mjs';
+import {newRevisionId} from '../shared/random-id.mjs';
 
 // Deliberately small DOM double: this verifies authorization decisions, not
 // native browser rendering, event retargeting or extension behavior.
@@ -118,4 +119,26 @@ test('a document that is not yet an observable target is rejected before observe
  assert.throws(()=>createPageAgent(unobservable),/document or shadow root/);
  // A missing window is also rejected explicitly rather than crashing later.
  assert.throws(()=>createPageAgent({nodeType:9,defaultView:null,children:[],addEventListener(){},removeEventListener(){}}),/attached document/);
+});
+
+test('revision ids survive a page with no secure-context randomUUID',()=>{
+ // crypto.randomUUID() is undefined on ordinary http:// pages, which is exactly
+ // where the content script is injected. The agent must still build a revision.
+ const f=fixture();let counter=0;
+ const original=Object.getOwnPropertyDescriptor(globalThis,'crypto');
+ Object.defineProperty(globalThis,'crypto',{configurable:true,writable:true,value:{getRandomValues:bytes=>{for(let i=0;i<bytes.length;i++)bytes[i]=(i*7+3+counter++*29)&0xff;return bytes;}}});
+ try {
+  const agent=createPageAgent(f.doc),first=agent.collect(),second=agent.collect();
+  assert.match(first.revision,/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+  assert.notEqual(first.revision,second.revision);
+  agent.dispose();
+ } finally { Object.defineProperty(globalThis,'crypto',original); }
+});
+
+test('the revision helper reports a crypto source it cannot use',()=>{
+ assert.throws(()=>newRevisionId(null),/No crypto source/);
+ assert.throws(()=>newRevisionId({}),/neither randomUUID nor getRandomValues/);
+ assert.match(newRevisionId({getRandomValues:bytes=>{bytes.fill(0xab);return bytes;}}),/^abababab-abab-4bab-abab-abababababab$/);
+ const weak=newRevisionId({},{allowWeakFallback:true});
+ assert.match(weak,/^[0-9a-f]{8}-0000-4000-8000-[0-9a-f]{12}$/);
 });

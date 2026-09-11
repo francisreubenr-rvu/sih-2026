@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-09T23:54:21.851615+00:00",
+  "timestamp": "2026-09-11T08:21:58.662974+00:00",
   "scope": "complete SIH26171 competition entry",
   "status": "fail",
   "submission_ready": false,
@@ -31,7 +31,7 @@
       "id": "G03",
       "name": "Reproducible complete workflow",
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted.",
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. The native MV3 extension now loads, injects and reaches its declared server in a real Chromium (8 passed / 0 failed / 1 informational, Benchmarks/results/extension-native-v01.json), but the toolbar capture path, Firefox and the full clean-setup-to-reload journey remain unproven.",
       "missing_evidence": [
         "Benchmarks/results/e2e.json"
       ]
@@ -95,7 +95,7 @@
       "id": "G10",
       "name": "Responsive and motion safety",
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted.",
+      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. A 390 px document-width check with no document-level horizontal overflow is recorded per experiment in Benchmarks/results/browser-experiments-2026-09-11/, but no motion-safety or reduced-motion review is complete.",
       "missing_evidence": []
     },
     {

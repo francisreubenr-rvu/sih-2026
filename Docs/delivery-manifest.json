@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-11T07:02:19.383454+00:00",
+  "created_at": "2026-09-11T09:10:39.435037+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "74a83f46ed5485675ef5e4c4ece3671c12edbcc7",
+  "source_commit_before_manifest": "156ab6540c7f1715308f077f5dda41cc5777e080",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -73,8 +73,8 @@
     },
     {
       "path": "Benchmarks/release-status.json",
-      "bytes": 6194,
-      "sha256": "1b43083a8481e3cc9d84712eeda57c29144688606b1b18bee6038965b50cc512"
+      "bytes": 6688,
+      "sha256": "a178ff770241e82906334f86b79271c953c4bf4192ae840c892c08e5f995dbde"
     },
     {
       "path": "Benchmarks/results/artifact-checks.json",
@@ -270,6 +270,11 @@
       "path": "Benchmarks/results/chrome-boundary-v02.json",
       "bytes": 3333,
       "sha256": "47b7cbdaaf184742b45cd0413b0d16e07bc963274a7febe70ec2c068341dac87"
+    },
+    {
+      "path": "Benchmarks/results/extension-native-v01.json",
+      "bytes": 3811,
+      "sha256": "d1827f3fd9ecf73a1fc29e0b5c3bdf0e51d215dcb60fb80979d9115cf0e51064"
     },
     {
       "path": "Benchmarks/results/iteration-1/mobile-1.report.html",
@@ -703,8 +708,8 @@
     },
     {
       "path": "Benchmarks/results/prototype-unit-tests.txt",
-      "bytes": 6546,
-      "sha256": "5e91329c3c7b34f25b9ee4d13ed5f88e9bc648f5ebbb8e6ef8c2f75ed5dd3068"
+      "bytes": 6692,
+      "sha256": "45cb76b718b733d6835dab4f25629d3aaa66702aa337b28ec21663d88940da70"
     },
     {
       "path": "Benchmarks/results/prototype-v01-browser.json",
@@ -823,8 +828,8 @@
     },
     {
       "path": "CONTEXT.md",
-      "bytes": 3151,
-      "sha256": "d44bcc40bbcc6326e896097f4c33b0babb181ce154daacd943b6d45b8246bc56"
+      "bytes": 4319,
+      "sha256": "bcf6bd46265b9c6973a8ada2a896c8af473c8f0aa54e951c871d980b955db538"
     },
     {
       "path": "DESIGN.md",
@@ -910,6 +915,11 @@
       "path": "Docs/decisions/model-pilot.md",
       "bytes": 3681,
       "sha256": "29cce01bca4fa03b27f78346f688001a6f254c62d5e2df600189fac43a738c03"
+    },
+    {
+      "path": "Docs/decisions/native-extension-validation.md",
+      "bytes": 6074,
+      "sha256": "264c6860615e46e6d0eebd1635e44fbb80ada03e058d2c62c7ea3787db80233d"
     },
     {
       "path": "Docs/decisions/operations-simulation.md",
@@ -1463,13 +1473,13 @@
     },
     {
       "path": "Guardrails/guardrails.json",
-      "bytes": 16265,
-      "sha256": "ae66711ab400696d8377b7f13831054909fd1d6c3529167c51a30533c4b0b9e4"
+      "bytes": 16815,
+      "sha256": "cb1a407705411de77889b169479aaed690cb580a7f2eea8f944bc292df00698d"
     },
     {
       "path": "PLAN.md",
-      "bytes": 25494,
-      "sha256": "5e9cdf015e4a0b8dc9f36690cb14428c80f5e3dc84afbba1615daf1fd2752f58"
+      "bytes": 27802,
+      "sha256": "59e4a5983b8d38cbbdbac6691e76e21a8a71c400785cfd36fe79c29a6efb639b"
     },
     {
       "path": "Prototype/.dockerignore",
@@ -2303,13 +2313,13 @@
     },
     {
       "path": "Prototype/package-lock.json",
-      "bytes": 28556,
-      "sha256": "9704cad4aca39f9a5ee072926b117460cd2434ed16e2487ac4f065f31b6c81e1"
+      "bytes": 29036,
+      "sha256": "42e63cccf29bf1c244c1a4411523a7ecdfffc7996b9f61e5a7d9487abfa9fe47"
     },
     {
       "path": "Prototype/package.json",
-      "bytes": 579,
-      "sha256": "ba5f9fab0fb84eda79b8ba3fcb6ca2b041954c1ffd7f0d720ee9e08888d5ee82"
+      "bytes": 612,
+      "sha256": "966ae4db69454ba0bbf92b9e0f9f686de651b82c779fe2348ad8fafd8c6b666d"
     },
     {
       "path": "Prototype/server/app.mjs",
@@ -2343,13 +2353,13 @@
     },
     {
       "path": "Prototype/shared/local-values.mjs",
-      "bytes": 2338,
-      "sha256": "9d129b6fa00814b2a715055e50f7efe681e74786d19afc1327edb4179411b532"
+      "bytes": 2383,
+      "sha256": "507b5b457b831c254afbbe681fcdca60285ae5b03d11abff4488eb4fc1fe13d9"
     },
     {
       "path": "Prototype/shared/page-agent.mjs",
-      "bytes": 8580,
-      "sha256": "511a68e61b2f7d1e6c0a0f62aed5c52818426dc1adb56a8fb530d91c77bf13af"
+      "bytes": 8620,
+      "sha256": "4c6b1becfadc16ae1aeec2ae898d033ab0cc4a559e986e9ee4c690fd8f71c54a"
     },
     {
       "path": "Prototype/shared/privacy.mjs",
@@ -2360,6 +2370,11 @@
       "path": "Prototype/shared/protocol.mjs",
       "bytes": 2268,
       "sha256": "b370175a020d206e284886be21a49775e023c1bfcbaaabf30daeecb88f47ff77"
+    },
+    {
+      "path": "Prototype/shared/random-id.mjs",
+      "bytes": 2489,
+      "sha256": "de712dd613d0ed8cf56577b92862285357d1e74f388b25a20986ce7c229ec655"
     },
     {
       "path": "Prototype/shared/task-loop.mjs",
@@ -2403,8 +2418,8 @@
     },
     {
       "path": "Prototype/tests/page-agent.test.mjs",
-      "bytes": 8861,
-      "sha256": "3e2b68c498e4404f2a629eee0489f651b171221af5a5b6f707fa1076f2d46e5a"
+      "bytes": 10253,
+      "sha256": "e071ef11d924632164aa23e6b20c0b7489a1b85a020d714a8622fb73222b35d1"
     },
     {
       "path": "Prototype/tests/protocol.test.mjs",
@@ -2448,8 +2463,8 @@
     },
     {
       "path": "ROAST.md",
-      "bytes": 11467,
-      "sha256": "855a110e20ab3d88d6cfa00af749a978171e17422bbdfe2cccfff09476136b2e"
+      "bytes": 14383,
+      "sha256": "d22766c2d5b8fbef930ff38395400fad40238f498d05285894f99906d08deb6f"
     },
     {
       "path": "Raw/README.md",
@@ -3125,6 +3140,11 @@
       "path": "scripts/tests/test_score_text.py",
       "bytes": 5163,
       "sha256": "88f6590a9982269a03eaf7ff172a728ae625c9984472748845df2987dd2c3fab"
+    },
+    {
+      "path": "scripts/validate-extension.mjs",
+      "bytes": 13300,
+      "sha256": "eaeba1b3657ca15c1885529dd3e9c0d0f6671b48caf70948c7edd251305be630"
     }
   ]
 }

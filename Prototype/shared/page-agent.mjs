@@ -1,5 +1,6 @@
 import { makeScene, clipRect, classifySensitive } from './privacy.mjs';
 import { SAFE_LABELS, validateAction } from './protocol.mjs';
+import { newRevisionId } from './random-id.mjs';
 
 const OBSERVER_OPTIONS = {subtree:true,childList:true,characterData:true,attributes:true};
 const MAX_NODES = 12000;
@@ -39,10 +40,9 @@ function composedContains(el,hit) {
   for(let node=hit;node;node=node.assignedSlot||node.parentElement||node.getRootNode()?.host) if(node===el)return true;
   return false;
 }
-
 export function createPageAgent(doc = document) {
   const win = doc.defaultView;
-  let revision = crypto.randomUUID();
+  let revision = newRevisionId();
   let controls = new Map();
   let scene = null;
   let capturedAt = 0;
@@ -50,7 +50,7 @@ export function createPageAgent(doc = document) {
   let detections = [];
   let disposed=false;
   let observedRoots=new Set();
-  const invalidate = () => { revision = crypto.randomUUID(); mutationCount++; };
+  const invalidate = () => { revision = newRevisionId(); mutationCount++; };
   if(!win) throw new Error('Page agent needs an attached document.');
   if(!observableRoot(doc)) throw new Error('Page agent needs a document or shadow root.');
   const observer = new win.MutationObserver(invalidate);

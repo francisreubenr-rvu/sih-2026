@@ -1,6 +1,7 @@
 // Values stay in this module's closure. References authorize one exact local write.
+import { newRevisionId } from './random-id.mjs';
 export const VALUE_KINDS=Object.freeze(['email','person-name','phone','employee-id','location-code']);
-export function createLocalValueVault({ttlMs=30000,now=()=>performance.now(),randomId=()=>crypto.randomUUID()}={}){
+export function createLocalValueVault({ttlMs=30000,now=()=>performance.now(),randomId=()=>newRevisionId()}={}){
  if(!Number.isFinite(ttlMs)||ttlMs<1||ttlMs>300000)throw new Error('Invalid local value lifetime');
  const created=now(),entries=new Map();let revoked=false;
  const revoke=()=>{revoked=true;entries.clear();clearTimeout(timer);};
