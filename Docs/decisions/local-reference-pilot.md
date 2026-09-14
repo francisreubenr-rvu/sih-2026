@@ -16,7 +16,7 @@ This is a server plus shared-client-module test. It does not capture a browser, 
 
 ## Runtime contract
 
-`POST /api/v2/local-plans` uses the existing origin/authentication/body/rate limits and audit store. `sightline-local-references-v1` wraps the existing pixel-free scene, fixed task and typed bindings. Actions are either `fill-local` with the exact authorized field/reference pair, or `done`. The original `/api/v1/plans` schema and manual-review extension remain unchanged.
+`POST /api/v2/local-plans` uses the existing origin/authentication/body/rate limits and audit store. `dhristi-local-references-v1` wraps the existing pixel-free scene, fixed task and typed bindings. Actions are either `fill-local` with the exact authorized field/reference pair, or `done`. The original `/api/v1/plans` schema and manual-review extension remain unchanged.
 
 The UI permits a confirmed write only to the exact input in its original synthetic fixture document. It rechecks identity, bounds, field type/state, hit testing, page revision and expiry. Navigation/reset/pagehide revoke bindings. Typing dispatches an input event only on this trusted synthetic fixture; the feature is not enabled on arbitrary sites, whose input handlers may transmit values.
 

@@ -1,7 +1,7 @@
 - main:
   - link "Back to workspace":
     - /url: /
-  - paragraph: Sightline / local value reference
+  - paragraph: Dhristi / local value reference
   - heading "Use the value. Keep it off the wire." [level=1]:
     - text: Use the value.
     - text: Keep it off the wire.

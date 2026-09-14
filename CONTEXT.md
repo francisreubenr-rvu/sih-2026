@@ -1,5 +1,8 @@
-# Sightline — SIH26171
+# Dhristi — SIH26171
 
+
+## Product rename (2026-09-14)
+Product renamed **Sightline → Dhristi** on 2026-09-14 (user spelling: Dhristi). Repo slug and GitHub Pages path remain `sih-2026`. Name collision note: a separate Devpost project named SightLine (voice browser agent) is unrelated prior art; former name Sightline / now Dhristi for this SIH26171 candidate.
 User: Francis, on behalf of RV University team Gopreet, Hiranmayi, Varun, Koushaik, Francis and Niharika. Roles remain proposed, not verified skill evidence. Internal target11September2026. Correct organizer problem is SIH26171, ISRO, on-device visual perception for light-weight browser agents. The official retrieved statement supersedes the original unresolved SIH2171 shorthand.
 
 ## Vocabulary

@@ -16,11 +16,11 @@
     },
     "manifest_parsed": {
       "status": "pass",
-      "detail": "MV3 \"Sightline — Local privacy review\" v0.1.0 read from the browser"
+      "detail": "MV3 \"Dhristi — Local privacy review\" v0.1.0 read from the browser"
     },
     "content_script_injection": {
       "status": "pass",
-      "detail": "content.js executed in a real page and registered __sightlineController."
+      "detail": "content.js executed in a real page and registered __dhristiController."
     },
     "collect_protected_scene": {
       "status": "pass",
@@ -32,7 +32,7 @@
     },
     "popup_loaded": {
       "status": "pass",
-      "detail": "title=\"Sightline privacy review\", #status=\"Capture the active tab to create a protected layout.\"",
+      "detail": "title=\"Dhristi privacy review\", #status=\"Capture the active tab to create a protected layout.\"",
       "extension_origin": "chrome-extension://bimcbkphmeboblldpplkeenglfjjmhkh",
       "buttons": [
         "Capture & protect",
@@ -46,7 +46,7 @@
     },
     "host_permission_reachable": {
       "status": "pass",
-      "detail": "GET http://127.0.0.1:9041/api/v1/health -> 200 {\"data\":{\"status\":\"ready\",\"scheme\":\"sightline-semantic-v1\",\"modelConnection\":\"checked-on-request\"}}"
+      "detail": "GET http://127.0.0.1:9041/api/v1/health -> 200 {\"data\":{\"status\":\"ready\",\"scheme\":\"dhristi-semantic-v1\",\"modelConnection\":\"checked-on-request\"}}"
     }
   },
   "console_errors": [],

@@ -6,7 +6,7 @@
     {
       "id": "grok-alternate-project",
       "url": "https://grok.com/share/bGVnYWN5_8e7b6384-2a92-41cd-90fe-0a8c013f80a8",
-      "requested_use": "Alternate-project reference, kept separate from Sightline",
+      "requested_use": "Alternate-project reference, kept separate from Dhristi",
       "retrieval_status": "user_supplied_attachment",
       "retrieval_error": "Web tool reported URL is not safe to open (non-retryable error)",
       "transcript_retrieved": true,
@@ -36,7 +36,7 @@
       "provenance": "User pasted export; online original not independently authenticated; original message dates and complete speaker boundaries unavailable"
     }
   ],
-  "decision": "Keep Sightline client/server split. Adopt bounded verification-loop and task-conditioned privacy experiment requirements; do not import alternate-project scores or deployment claims.",
+  "decision": "Keep Dhristi client/server split. Adopt bounded verification-loop and task-conditioned privacy experiment requirements; do not import alternate-project scores or deployment claims.",
   "next_step": "Execute protocols in Docs/decisions/reference-informed-plan.md; code/runtime evidence is still required for all alternative-project capability claims.",
   "reviewed_at": "2026-09-10T11:19:49.016143+00:00"
 }

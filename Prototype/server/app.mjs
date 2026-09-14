@@ -47,7 +47,7 @@ export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:904
     res.setHeader('Cross-Origin-Resource-Policy','same-origin');
     res.setHeader('Cross-Origin-Opener-Policy','same-origin');
     // Production debug off: never expose stack/provider endpoint in JSON error bodies (fail() uses fixed messages).
-    if (process.env.NODE_ENV === 'production') res.setHeader('X-Sightline-Debug','off');
+    if (process.env.NODE_ENV === 'production') res.setHeader('X-Dhristi-Debug','off');
     res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; img-src 'self' data: blob:; connect-src 'self'; style-src 'self'; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'");
     const origin=req.headers.origin;
     if(origin && !allowed.has(origin)) return fail('origin_denied');
@@ -58,7 +58,7 @@ export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:904
     }
     const path=new URL(req.url,'http://localhost').pathname;
     try {
-      if(path==='/api/v1/health' && req.method==='GET') return send(200,{data:{status:'ready',scheme:'sightline-semantic-v1',modelConnection:'checked-on-request'}});
+      if(path==='/api/v1/health' && req.method==='GET') return send(200,{data:{status:'ready',scheme:'dhristi-semantic-v1',modelConnection:'checked-on-request'}});
       if(path==='/api/v1/session' && req.method==='GET') {
         // Only our same-origin document may bootstrap the demo session. Extension
         // pairing uses the user's explicit copy/paste, not wildcard extension CORS.

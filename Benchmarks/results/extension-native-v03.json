@@ -16,11 +16,11 @@
     },
     "manifest_parsed": {
       "status": "pass",
-      "detail": "MV3 \"Sightline — Local privacy review\" v0.1.1 read from the browser"
+      "detail": "MV3 \"Dhristi — Local privacy review\" v0.1.1 read from the browser"
     },
     "content_script_injection": {
       "status": "pass",
-      "detail": "content.js executed in a real page and registered __sightlineController."
+      "detail": "content.js executed in a real page and registered __dhristiController."
     },
     "collect_protected_scene": {
       "status": "pass",
@@ -32,7 +32,7 @@
     },
     "popup_loaded": {
       "status": "pass",
-      "detail": "title=\"Sightline — local privacy review\", #status=\"Capture the active tab. Filtering runs here before any network call.\"",
+      "detail": "title=\"Dhristi — local privacy review\", #status=\"Capture the active tab. Filtering runs here before any network call.\"",
       "extension_origin": "chrome-extension://nkejlhpdhocmbapjdfaegfdipnjinekb",
       "buttons": [
         "EN",

@@ -13,7 +13,7 @@
     },
     "popup_document_loaded": {
       "status": "pass",
-      "detail": "popup.html -> 200; title=\"Sightline — local privacy review\""
+      "detail": "popup.html -> 200; title=\"Dhristi — local privacy review\""
     },
     "host_permission_tab_found": {
       "status": "pass",
@@ -133,7 +133,7 @@
     "purpose": "Exercise chrome.tabs.captureVisibleTab when activeTab user gesture cannot be simulated",
     "shipped_manifest_unchanged": true,
     "temporary_permission_added": "<all_urls>",
-    "path": "/tmp/sightline-ext-overlay-VzsfML",
+    "path": "/tmp/dhristi-ext-overlay-VzsfML",
     "extension_id": "nbcnhkaffhaamppboelkgpmoeaokibmp",
     "result": {
       "ok": true,

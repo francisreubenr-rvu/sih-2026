@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { createApp } from '../server/app.mjs';
 import { ollamaProvider, outputSchema } from '../server/provider.mjs';
 const token='synthetic-test-token-not-a-real-secret';
-const body=()=>({task:'review-pending',scene:{scheme:'sightline-semantic-v1',revision:randomUUID(),viewport:{width:800,height:600},controls:[{id:'c0',role:'button',label:'Pending',rect:{x:10,y:10,width:80,height:44}}],regions:[]}});
+const body=()=>({task:'review-pending',scene:{scheme:'dhristi-semantic-v1',revision:randomUUID(),viewport:{width:800,height:600},controls:[{id:'c0',role:'button',label:'Pending',rect:{x:10,y:10,width:80,height:44}}],regions:[]}});
 async function fixture(fn,{infer=async()=>({action:{type:'click',targetId:'c0'},model:'test-double',mode:'test-only'}),saveAudit=()=>{}}={}) {
  const app=createApp({token,infer,saveAudit});await new Promise(r=>app.listen(0,'127.0.0.1',r));
  const url=`http://127.0.0.1:${app.address().port}`;

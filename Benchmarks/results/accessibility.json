@@ -114,7 +114,7 @@
           "tag": "a",
           "id": "",
           "role": "",
-          "label": "Sightline home",
+          "label": "Dhristi home",
           "hasVisibleFocusHint": true
         },
         {
@@ -292,7 +292,7 @@
         },
         {
           "tag": "p",
-          "text": "Open Sightline from the toolbar icon so ",
+          "text": "Open Dhristi from the toolbar icon so ",
           "width": 552,
           "height": 56,
           "clipped": false

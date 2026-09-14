@@ -39,7 +39,7 @@ function runOnce() {
   // Stage: selective mosaic (optimized subsample average)
   redactSelective(buf, W, H, regions, { blockSize: 8, padding: 0 });
   // Stage: sanitize-shaped object build (allocation only)
-  const sanitized = { scheme: 'sightline-semantic-v1', controls: allow, regions: regions.length };
+  const sanitized = { scheme: 'dhristi-semantic-v1', controls: allow, regions: regions.length };
   void sanitized;
   return performance.now() - t0;
 }
@@ -61,7 +61,7 @@ function runStagedOnce() {
   redactSelective(buf, W, H, regions, { blockSize: 8, padding: 0 });
   stages.push({ name: 'selective_redact_mosaic', elapsedMs: performance.now() - t });
   t = performance.now();
-  const sanitized = { scheme: 'sightline-semantic-v1', controls: allow, regions: regions.length, revision: 'bench' };
+  const sanitized = { scheme: 'dhristi-semantic-v1', controls: allow, regions: regions.length, revision: 'bench' };
   void JSON.stringify(sanitized);
   stages.push({ name: 'sanitize_serialize_proxy', elapsedMs: performance.now() - t });
   return stages;

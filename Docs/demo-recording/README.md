@@ -1,6 +1,6 @@
 # Actual browser demonstration
 
-Watch `sightline-browser-v02.mp4` (about 38 seconds). It shows real local WASM vision and Qwen suggestions completing Pending → Review on synthetic data. No form is submitted. The original AV1 WebM is preserved; the MP4 is a compatibility transcode without cuts or speed-up. Variable frame output and container timing differ slightly; see manifest.json. This is a browser JavaScript run, not a native extension demonstration or latency benchmark.
+Watch `dhristi-browser-v02.mp4` (about 38 seconds). It shows real local WASM vision and Qwen suggestions completing Pending → Review on synthetic data. No form is submitted. The original AV1 WebM is preserved; the MP4 is a compatibility transcode without cuts or speed-up. Variable frame output and container timing differ slightly; see manifest.json. This is a browser JavaScript run, not a native extension demonstration or latency benchmark.
 
 ## Description
 

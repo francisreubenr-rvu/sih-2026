@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Sightline — Local privacy review",
+  "name": "Dhristi — Local privacy review",
   "version": "0.1.1",
   "description": "On-device capture, selective privacy redaction, and reviewed semantic context for a browser agent. SIH26171 prototype.",
   "permissions": [

@@ -7,8 +7,8 @@
     "Prototype/extension-build-firefox"
   ],
   "zips": [
-    "Docs/sightline-extension-v01.zip",
-    "Docs/sightline-extension-wave3.zip",
-    "Docs/sightline-extension-firefox-wave3.zip"
+    "Docs/dhristi-extension-v01.zip",
+    "Docs/dhristi-extension-wave3.zip",
+    "Docs/dhristi-extension-firefox-wave3.zip"
   ]
 }

@@ -1,8 +1,8 @@
 {
-  "scheme": "sightline-local-references-v1",
+  "scheme": "dhristi-local-references-v1",
   "task": "prepare-report-contact",
   "scene": {
-    "scheme": "sightline-semantic-v1",
+    "scheme": "dhristi-semantic-v1",
     "revision": "408a20d4-f70d-41b1-a7d1-9a9eaa7a286f",
     "viewport": {
       "width": 604,

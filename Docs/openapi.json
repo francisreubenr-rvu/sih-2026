@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Sightline sanitized-context API",
+    "title": "Dhristi sanitized-context API",
     "version": "0.1.0",
     "description": "SIH26171 candidate. Dynamic rectangle/viewport consistency and target-membership validation supplement JSON Schema. No image, raw DOM, free text, URL or field-value input exists."
   },
@@ -129,7 +129,7 @@
             "properties": {
               "scheme": {
                 "type": "string",
-                "const": "sightline-semantic-v1"
+                "const": "dhristi-semantic-v1"
               },
               "revision": {
                 "type": "string",

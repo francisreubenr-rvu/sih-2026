@@ -30,9 +30,9 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 async function runtimeFixture(runTest,{mode='success',nullContext=false}={}) {
- const dir=await mkdtemp(join(tmpdir(),'sightline-vision-test-'));
+ const dir=await mkdtemp(join(tmpdir(),'dhristi-vision-test-'));
  const state={inputs:[],outputs:[],clears:0,closed:0,releases:0,mode};
- const keys=['__sightlineVisionTestRuntime','location','OffscreenCanvas','ImageData','createImageBitmap'];
+ const keys=['__dhristiVisionTestRuntime','location','OffscreenCanvas','ImageData','createImageBitmap'];
  const originals=keys.map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]);
  const output=(data,dims)=>{const tensor={data,dims,disposed:0,dispose(){this.disposed++;}};state.outputs.push(tensor);return tensor;};
  const session={inputNames:['input'],async run(){
@@ -41,7 +41,7 @@ async function runtimeFixture(runTest,{mode='success',nullContext=false}={}) {
   if(state.mode==='shape-error')return {unexpected:output([0],[1])};
   return {scores:output([.1,state.mode==='nan'?NaN:.9],[1,1,2]),boxes:output([.1,.1,.5,.5],[1,1,4])};
  },async release(){state.releases++;}};
- globalThis.__sightlineVisionTestRuntime={env:{wasm:{}},Tensor:class {
+ globalThis.__dhristiVisionTestRuntime={env:{wasm:{}},Tensor:class {
   constructor(type,data,dims){this.data=data;this.dims=dims;this.disposed=0;state.inputs.push(this);}
   dispose(){this.disposed++;}
  },InferenceSession:{async create(){return session;}}};
@@ -50,7 +50,7 @@ async function runtimeFixture(runTest,{mode='success',nullContext=false}={}) {
  globalThis.createImageBitmap=async()=>({close(){state.closed++;}});
  globalThis.OffscreenCanvas=class {getContext(){return nullContext?null:{drawImage(){},getImageData(){return {data:new Uint8ClampedArray(320*240*4)};},clearRect(){state.clears++;}};}};
  const file=join(dir,'runtime.mjs');
- await writeFile(file,'const runtime=globalThis.__sightlineVisionTestRuntime; export const env=runtime.env; export const Tensor=runtime.Tensor; export const InferenceSession=runtime.InferenceSession;');
+ await writeFile(file,'const runtime=globalThis.__dhristiVisionTestRuntime; export const env=runtime.env; export const Tensor=runtime.Tensor; export const InferenceSession=runtime.InferenceSession;');
  try{await runTest(state,()=>createVisionDetector({runtimeUrl:pathToFileURL(file).href,modelUrl:'synthetic-model'}));}
  finally{for(const [key,descriptor]of originals){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}await rm(dir,{recursive:true,force:true});}
 }

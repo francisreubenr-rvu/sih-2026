@@ -1,5 +1,5 @@
 
-> sightline-sih26171@0.1.0 test
+> dhristi-sih26171@0.1.0 test
 > node --test tests/*.test.mjs
 
 TAP version 13

@@ -3,7 +3,7 @@ import {sceneSchema} from './protocol.mjs';
 import {VALUE_KINDS} from './local-values.mjs';
 const rect=z.object({x:z.number().min(0),y:z.number().min(0),width:z.number().positive(),height:z.number().positive()}).strict();
 export const localReferenceRequestSchema=z.object({
- scheme:z.literal('sightline-local-references-v1'),
+ scheme:z.literal('dhristi-local-references-v1'),
  task:z.literal('prepare-report-contact'),
  scene:sceneSchema,
  fields:z.array(z.object({id:z.string().regex(/^f\d{1,2}$/),label:z.literal('Report contact'),kind:z.enum(VALUE_KINDS),referenceId:z.string().uuid(),empty:z.boolean(),rect}).strict()).min(1).max(10)

@@ -1,4 +1,4 @@
-# Sightline — judge / demo checklist (1 page)
+# Dhristi — judge / demo checklist (1 page)
 
 **Purpose:** Human toolbar / activeTab path. Automation cannot click the Chrome toolbar glyph; do not claim it did.
 
@@ -12,7 +12,7 @@
 ## Live path (human required)
 
 1. Open the synthetic fixture tab (`/app/fixture.html` or operations desk).
-2. **Click the Sightline toolbar icon** (not a bookmarked `popup.html` tab) so Chrome grants `activeTab`.
+2. **Click the Dhristi toolbar icon** (not a bookmarked `popup.html` tab) so Chrome grants `activeTab`.
 3. Confirm trust chip: “on this device” / “इस उपकरण पर”.
 4. Capture & protect → stage strip advances inject→…→review; selective or wireframe preview appears.
 5. Inspect outbound JSON: **no** screenshot / dataUrl / raw pixels.

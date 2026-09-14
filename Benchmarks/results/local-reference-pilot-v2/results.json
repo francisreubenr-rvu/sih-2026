@@ -15,10 +15,10 @@
       "elapsedMs": 7867.176041,
       "modelRequests": 1,
       "request": {
-        "scheme": "sightline-local-references-v1",
+        "scheme": "dhristi-local-references-v1",
         "task": "prepare-report-contact",
         "scene": {
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "revision": "8efcf309-6234-4f27-bf01-7e160e944599",
           "viewport": {
             "width": 800,
@@ -71,10 +71,10 @@
       "elapsedMs": 893.7797500000006,
       "modelRequests": 1,
       "request": {
-        "scheme": "sightline-local-references-v1",
+        "scheme": "dhristi-local-references-v1",
         "task": "prepare-report-contact",
         "scene": {
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "revision": "c0eb6ea3-2e5a-4f47-a984-14167a6651d5",
           "viewport": {
             "width": 800,
@@ -125,10 +125,10 @@
       "elapsedMs": 2860.097167,
       "modelRequests": 1,
       "request": {
-        "scheme": "sightline-local-references-v1",
+        "scheme": "dhristi-local-references-v1",
         "task": "prepare-report-contact",
         "scene": {
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "revision": "f4a51809-b7f6-4177-8eb8-36ed4394fee4",
           "viewport": {
             "width": 800,

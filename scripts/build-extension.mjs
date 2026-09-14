@@ -57,7 +57,7 @@ for (const name of ['ort.wasm.min.mjs', 'ort-wasm-simd-threaded.wasm', 'ort-wasm
 
 const manifest = JSON.parse(await readFile(new URL('manifest.json', out), 'utf8'));
 manifest.browser_specific_settings = {
-  gecko: { id: 'sightline-sih26171@rvu.example', strict_min_version: '128.0' },
+  gecko: { id: 'dhristi-sih26171@rvu.example', strict_min_version: '128.0' },
 };
 await writeFile(new URL('manifest.firefox.json', out), JSON.stringify(manifest, null, 2));
 
@@ -68,7 +68,7 @@ await copyFile(new URL('manifest.firefox.json', out), new URL('manifest.json', f
 await writeFile(
   new URL('FIREFOX-README.txt', firefoxOut),
   [
-    'Sightline Firefox unpacked package (SIH26171)',
+    'Dhristi Firefox unpacked package (SIH26171)',
     '',
     '1. about:debugging → This Firefox → Load Temporary Add-on',
     '2. Select manifest.json in this directory',
@@ -89,10 +89,10 @@ async function zipDirPy(sourceDir, zipPath) {
   });
 }
 
-const docsZip = fileURLToPath(new URL('Docs/sightline-extension-v01.zip', repo));
-const webZip = fileURLToPath(new URL('Website/downloads/sightline-extension-v01.zip', repo));
-const wave3Zip = fileURLToPath(new URL('Docs/sightline-extension-wave3.zip', repo));
-const firefoxZip = fileURLToPath(new URL('Docs/sightline-extension-firefox-wave3.zip', repo));
+const docsZip = fileURLToPath(new URL('Docs/dhristi-extension-v01.zip', repo));
+const webZip = fileURLToPath(new URL('Website/downloads/dhristi-extension-v01.zip', repo));
+const wave3Zip = fileURLToPath(new URL('Docs/dhristi-extension-wave3.zip', repo));
+const firefoxZip = fileURLToPath(new URL('Docs/dhristi-extension-firefox-wave3.zip', repo));
 const outAbs = fileURLToPath(out);
 
 await zipDirPy(outAbs, docsZip);

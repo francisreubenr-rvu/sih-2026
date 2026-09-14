@@ -5,7 +5,7 @@
   "shipped": {
     "manifest_firefox": "Prototype/extension-build/manifest.firefox.json",
     "api_polyfill": "globalThis.browser ?? globalThis.chrome in popup.mjs and content.mjs",
-    "gecko_id": "sightline-sih26171@rvu.example",
+    "gecko_id": "dhristi-sih26171@rvu.example",
     "strict_min_version": "128.0"
   },
   "browser_binary_on_box": null,

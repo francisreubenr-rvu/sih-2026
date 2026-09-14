@@ -133,7 +133,7 @@ const record = {
   },
   deployment_controls: {
     status: 'proven_for_declared_scope',
-    note: 'GitHub Pages hosts static Website over HTTPS. Node prototype defaults to loopback; non-loopback requires HTTPS PUBLIC_ORIGIN + SIGHTLINE_TOKEN. Hardening harness: Benchmarks/results/hardening.json (headers, origin, body size, rate limit, error hygiene).',
+    note: 'GitHub Pages hosts static Website over HTTPS. Node prototype defaults to loopback; non-loopback requires HTTPS PUBLIC_ORIGIN + DHRISTI_TOKEN. Hardening harness: Benchmarks/results/hardening.json (headers, origin, body size, rate limit, error hygiene).',
     hardening_evidence: 'Benchmarks/results/hardening.json',
   },
   verdict: {

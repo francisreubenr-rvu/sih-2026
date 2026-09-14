@@ -1,4 +1,4 @@
-# Sightline delivery scope (SIH26171)
+# Dhristi delivery scope (SIH26171)
 
 ## In scope for the engineering candidate
 

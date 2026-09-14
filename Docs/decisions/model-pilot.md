@@ -38,7 +38,7 @@ These are 12 authored semantic states, each repeated in two layouts, closely ali
 Future runs use frozen v1 case inputs by default and a fresh timestamped output directory. Existing output paths are rejected rather than overwritten:
 
 ```sh
-SIGHTLINE_PILOT_RUN=model-pilot-followup SIGHTLINE_PILOT_MODELS=qwen2.5:7b-instruct node scripts/benchmark-models.mjs
+DHRISTI_PILOT_RUN=model-pilot-followup DHRISTI_PILOT_MODELS=qwen2.5:7b-instruct node scripts/benchmark-models.mjs
 ```
 
 A genuinely unseen task/page evaluation, richer useful visual semantics, PII/redaction measurements, client resources and full-flow timings remain required. Do not change expected answers after observing model failures.

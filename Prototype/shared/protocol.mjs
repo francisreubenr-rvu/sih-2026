@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const SCHEME = 'sightline-semantic-v1';
+export const SCHEME = 'dhristi-semantic-v1';
 export const SAFE_LABELS = Object.freeze(['Pending', 'Completed', 'Review', 'Details', 'Next', 'Previous', 'Back', 'Close', 'Search', 'Help', 'Cancel']);
 export const TASKS = Object.freeze(['review-pending', 'show-completed', 'next-page']);
 const size = z.number().int().min(1).max(8192);

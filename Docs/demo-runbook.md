@@ -9,7 +9,7 @@
 3. Optional Ollama + `qwen2.5:7b-instruct`. If down, leave **Privacy-only** checked.
 4. Load unpacked `Prototype/extension-build/` in Chrome.
 5. Open synthetic fixture (`/app/fixture.html` or operations desk).
-6. **Click the Sightline toolbar icon** (human required for `activeTab`).
+6. **Click the Dhristi toolbar icon** (human required for `activeTab`).
 7. Capture & protect → stage strip → selective/wireframe preview → inspect semantics-only JSON.
 8. Privacy-only: stop and narrate boundary. Planner: Ask model → Confirm.
 9. Show one controlled failure (capture without toolbar → reopen from glyph) and recovery.
@@ -17,7 +17,7 @@
 
 ## Recorded fallback
 
-- File: `Docs/demo-fallback.webm` (copy of `Docs/demo-recording/sightline-browser-v02.webm`).
+- File: `Docs/demo-fallback.webm` (copy of `Docs/demo-recording/dhristi-browser-v02.webm`).
 - Scope: web workspace Pending→Review with local protect + Qwen (not toolbar-glyph MV3 capture).
 - Say aloud which path is shown. Offline-safe local playback verified historically in Pages checkpoint notes.
 

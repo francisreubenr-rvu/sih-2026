@@ -4,7 +4,7 @@
     "request": {
       "task": "review-pending",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7d686d52-06c5-4281-b0b1-937b614651d0",
         "viewport": {
           "width": 598,
@@ -170,7 +170,7 @@
     "request": {
       "task": "review-pending",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "491bff9a-cd1e-4f08-a03c-10caf3d0f202",
         "viewport": {
           "width": 598,
@@ -352,10 +352,10 @@
   {
     "endpoint": "/api/v2/local-plans",
     "request": {
-      "scheme": "sightline-local-references-v1",
+      "scheme": "dhristi-local-references-v1",
       "task": "prepare-report-contact",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "31e8b87c-1b10-4102-a0b7-7df1d3956b00",
         "viewport": {
           "width": 598,

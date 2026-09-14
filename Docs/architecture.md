@@ -1,10 +1,10 @@
-# Sightline architecture (SIH26171)
+# Dhristi architecture (SIH26171)
 
 Status: engineering candidate v0.1. Bound to a single primary user journey.
 
 ## Primary user journey
 
-1. Operator opens a synthetic (or authorized) page and activates Sightline from the **toolbar** (activeTab).
+1. Operator opens a synthetic (or authorized) page and activates Dhristi from the **toolbar** (activeTab).
 2. Local capture → UltraFace WASM + DOM regions → selective/wireframe preview (local only).
 3. `assertSanitizedPayload` builds a semantics-only scene (controls, geometry, region kinds).
 4. **Privacy-only mode** stops at human review (no network). **Planner-assisted mode** sends the scene to a local Ollama/Qwen process, then requires explicit confirm before a bounded click/scroll/done.

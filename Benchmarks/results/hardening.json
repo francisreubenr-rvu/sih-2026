@@ -1,7 +1,7 @@
 {
   "name": "wave6-node-api-hardening",
   "generatedAt": "2026-09-14T11:20:50.791Z",
-  "scope": "Local createApp instance. Public deployment remains GitHub Pages (static HTTPS). Node binds loopback unless HTTPS PUBLIC_ORIGIN + SIGHTLINE_TOKEN.",
+  "scope": "Local createApp instance. Public deployment remains GitHub Pages (static HTTPS). Node binds loopback unless HTTPS PUBLIC_ORIGIN + DHRISTI_TOKEN.",
   "checks": [
     {
       "id": "security_headers",

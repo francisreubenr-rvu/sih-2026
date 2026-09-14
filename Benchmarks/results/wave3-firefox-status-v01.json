@@ -5,7 +5,7 @@
   "package": {
     "manifest": "Prototype/extension-build/manifest.firefox.json",
     "unpacked_tree": "Prototype/extension-build-firefox/",
-    "zip": "Docs/sightline-extension-firefox-wave3.zip",
+    "zip": "Docs/dhristi-extension-firefox-wave3.zip",
     "polyfill": "browser ?? chrome in popup/content"
   },
   "live_run": "unverified",

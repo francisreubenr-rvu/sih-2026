@@ -41,7 +41,7 @@ Evidence harness: `scripts/wave6-hardening-evidence.mjs` → `Benchmarks/results
 | Rate limit | 21st POST/min → 429 + `Retry-After: 60` |
 | Error hygiene | Fixed message catalog; no stack / provider endpoint leakage |
 | Screenshot field | Extra `screenshot` → 422 before provider |
-| Public HTTPS | GitHub Pages static site; Node loopback default; non-loopback requires `HTTPS` `PUBLIC_ORIGIN` + `SIGHTLINE_TOKEN` |
+| Public HTTPS | GitHub Pages static site; Node loopback default; non-loopback requires `HTTPS` `PUBLIC_ORIGIN` + `DHRISTI_TOKEN` |
 | Production debug | Off for API error bodies; `NODE_ENV=production` non-loopback guard in `server/index.mjs` |
 | Scans | `security.json` + `dependency-audit.json` re-run each wave |
 

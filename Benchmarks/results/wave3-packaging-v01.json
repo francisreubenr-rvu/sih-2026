@@ -9,10 +9,10 @@
   "chrome_unpacked": "Prototype/extension-build/",
   "firefox_unpacked": "Prototype/extension-build-firefox/",
   "zips": {
-    "chrome_v01_alias": "Docs/sightline-extension-v01.zip",
-    "chrome_wave3": "Docs/sightline-extension-wave3.zip",
-    "website_download": "Website/downloads/sightline-extension-v01.zip",
-    "firefox_wave3": "Docs/sightline-extension-firefox-wave3.zip"
+    "chrome_v01_alias": "Docs/dhristi-extension-v01.zip",
+    "chrome_wave3": "Docs/dhristi-extension-wave3.zip",
+    "website_download": "Website/downloads/dhristi-extension-v01.zip",
+    "firefox_wave3": "Docs/dhristi-extension-firefox-wave3.zip"
   },
   "zip_bytes": {
     "chrome_v01_alias": 4323524,

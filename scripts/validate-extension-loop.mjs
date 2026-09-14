@@ -24,7 +24,7 @@ const playwrightChromium = join(
   process.env.HOME || '',
   '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome'
 );
-const defaultChromium = process.env.SIGHTLINE_CHROMIUM
+const defaultChromium = process.env.DHRISTI_CHROMIUM
   || (existsSync(playwrightChromium) ? playwrightChromium : '/usr/bin/google-chrome');
 
 const argv = process.argv.slice(2);
@@ -91,7 +91,7 @@ async function ensureServer() {
 
 let context;
 let serverHandle = { started: false, child: null };
-const userDataDir = await mkdtemp(join(tmpdir(), 'sightline-ext-loop-'));
+const userDataDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-loop-'));
 
 try {
   if (!existsSync(join(extPath, 'manifest.json'))) {
@@ -99,7 +99,7 @@ try {
   }
   serverHandle = await ensureServer();
   record.server = { started_by_harness: serverHandle.started, origin: serverOrigin };
-  const executablePath = process.env.SIGHTLINE_CHROMIUM || defaultChromium;
+  const executablePath = process.env.DHRISTI_CHROMIUM || defaultChromium;
 
   // --- Production manifest: prove activeTab still required ---
   const productionId = deriveExtensionId(extPath);
@@ -177,7 +177,7 @@ try {
   context = null;
 
   // --- Overlay: drive real #capture button through UI ---
-  const overlayDir = await mkdtemp(join(tmpdir(), 'sightline-ext-loop-overlay-'));
+  const overlayDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-loop-overlay-'));
   await cp(extPath, overlayDir, { recursive: true });
   const overlayManifest = JSON.parse(await readFile(join(overlayDir, 'manifest.json'), 'utf8'));
   if (!overlayManifest.host_permissions.includes('<all_urls>')) {
@@ -192,7 +192,7 @@ try {
     extension_id: overlayId,
   };
 
-  const overlayProfile = await mkdtemp(join(tmpdir(), 'sightline-ext-loop-overlay-profile-'));
+  const overlayProfile = await mkdtemp(join(tmpdir(), 'dhristi-ext-loop-overlay-profile-'));
   context = await chromium.launchPersistentContext(overlayProfile, {
     executablePath,
     headless: false,
@@ -244,7 +244,7 @@ try {
       stages,
       payloadBytes: payloadText.length,
       payloadHasPixels: forbidden,
-      loop: globalThis.__sightlineLoop || null,
+      loop: globalThis.__dhristiLoop || null,
     };
   });
 
@@ -269,7 +269,7 @@ try {
   if (ui.loop?.sanitized === true && Array.isArray(ui.loop.stagesCompleted)) {
     pass('loop_summary_sanitized', ui.loop);
   } else if (ui.planEnabled && !ui.payloadHasPixels) {
-    pass('loop_summary_sanitized', { note: 'payload sanitized; __sightlineLoop optional', loop: ui.loop });
+    pass('loop_summary_sanitized', { note: 'payload sanitized; __dhristiLoop optional', loop: ui.loop });
   } else {
     fail('loop_summary_sanitized', ui.loop);
   }

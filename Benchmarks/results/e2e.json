@@ -15,7 +15,7 @@
       "detail": {
         "data": {
           "status": "ready",
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "modelConnection": "checked-on-request"
         }
       }
