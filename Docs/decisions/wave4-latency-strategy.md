@@ -23,3 +23,7 @@ G11 requires p95 full-flow &lt;200 ms over ≥100 attempts including capture, mo
 
 - `Prototype/shared/latency-strategy.mjs` + unit tests
 - `Benchmarks/results/core-latency.json` (status **fail**)
+
+## 72h product labels (2026-09-14)
+
+Fast / Score / Reason naming is productized in UI + docs (`brain-72h-three-path.md`). Privacy-only = **Fast**. Planner-assisted = **Reason**. Score remains planned. **G11 still fail**; Fast local ms still must not be scored as full-flow pass.

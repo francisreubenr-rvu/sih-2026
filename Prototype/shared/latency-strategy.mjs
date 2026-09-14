@@ -17,6 +17,38 @@ export const OPERATING_MODES = Object.freeze({
   planner_assisted: 'planner_assisted',
 });
 
+/** Architect three-path product labels (honesty contract). */
+export const THREE_PATHS = Object.freeze({
+  fast: {
+    id: 'fast',
+    label: 'Fast',
+    stages: 'capture→detect→mask→privacy review',
+    llm: false,
+    status: 'implemented',
+    g11: 'NOT a G11 full-flow measurement. Local protect timing only.',
+    slo: 'Local protect diagnostic; no p95<200ms claim for G11.',
+  },
+  score: {
+    id: 'score',
+    label: 'Score',
+    stages: 'heuristic / risk score (planned)',
+    llm: false,
+    status: 'planned_partial',
+    g11: 'Not implemented as a runnable product path. Do not fabricate UI.',
+    slo: 'No Score-path SLO until wired and measured.',
+  },
+  reason: {
+    id: 'reason',
+    label: 'Reason',
+    stages: 'Ollama/Qwen plan + human confirm',
+    llm: true,
+    status: 'implemented',
+    g11: 'Included in G11 full-flow. Historically seconds; gate remains fail until p95<200ms at n≥100.',
+    slo: 'Outside <200ms budget today; G11 stays fail.',
+  },
+});
+
+
 export const PREVIEW_STRATEGIES = Object.freeze({
   selective: 'selective',
   wireframe: 'wireframe',
@@ -32,8 +64,8 @@ export function resolveOperatingMode(mode) {
       skipPlanner: true,
       skipExecute: true,
       networkRequired: false,
-      label: 'Privacy-only · local protect loop',
-      note: 'Capture→filter→sanitize→review completes without LLM. Not a full agent task.',
+      label: 'Fast · local protect (no LLM)',
+      note: 'capture→detect→mask→privacy review. Not a G11 full-flow pass.',
     };
   }
   return {
@@ -41,8 +73,8 @@ export function resolveOperatingMode(mode) {
     skipPlanner: false,
     skipExecute: false,
     networkRequired: true,
-    label: 'Planner-assisted · local LLM required',
-    note: 'Includes local Qwen/Ollama plan round-trip; historically seconds, fails G11.',
+    label: 'Reason · Ollama/Qwen plan+confirm',
+    note: 'Outside <200ms budget historically; G11 remains fail until p95<200 at n≥100.',
   };
 }
 

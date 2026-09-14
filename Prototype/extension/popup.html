@@ -35,9 +35,24 @@
         <h1 id="scan-heading" data-i18n="headline">Review what leaves your browser.</h1>
         <span class="status-pip" aria-hidden="true"></span>
       </div>
-      <p class="lede" data-i18n="lede">Local capture → privacy filter → protected layout → optional local planner. Confirm every action.</p>
+      <p class="lede" data-i18n="lede">Three paths: Fast (local protect), Score (planned), Reason (local LLM). Confirm every action.</p>
+      <ul class="path-strip" id="path-strip" aria-label="Operating paths Fast, Score, and Reason">
+        <li class="path-chip" data-path="fast" data-state="available" aria-current="true">
+          <strong data-i18n="path_fast_name">Fast</strong>
+          <span data-i18n="path_fast_blurb">capture→detect→mask→review · no LLM</span>
+        </li>
+        <li class="path-chip" data-path="score" data-state="planned" aria-disabled="true">
+          <strong data-i18n="path_score_name">Score</strong>
+          <span data-i18n="path_score_blurb">heuristic risk · planned / partial</span>
+        </li>
+        <li class="path-chip" data-path="reason" data-state="available">
+          <strong data-i18n="path_reason_name">Reason</strong>
+          <span data-i18n="path_reason_blurb">Ollama/Qwen · outside &lt;200&nbsp;ms</span>
+        </li>
+      </ul>
+      <p class="path-policy" id="path-policy" data-i18n="path_policy">Fast timing is not a G11 pass. G11 measures planner-inclusive full-flow p95&nbsp;&lt;200&nbsp;ms at n≥100.</p>
       <p class="toolbar-note" id="toolbar-note" data-i18n="toolbar_note">Open from the toolbar icon so Chrome grants activeTab for tab capture.</p>
-      <ol class="stage-strip" id="stage-strip" aria-label="Capture pipeline stages">
+      <ol class="stage-strip" id="stage-strip" aria-label="Fast-path pipeline stages">
         <li data-stage="inject">Inject</li>
         <li data-stage="collect">Collect</li>
         <li data-stage="capture">Capture</li>
@@ -59,9 +74,11 @@
         </select>
       </label>
       <fieldset class="mode-row">
-        <legend data-i18n="mode_legend">Operating mode</legend>
-        <label class="check"><input id="mode-privacy" type="checkbox" checked> <span data-i18n="mode_privacy">Privacy-only (skip planner)</span></label>
-        <label class="check"><input id="preview-wireframe" type="checkbox"> <span data-i18n="mode_wireframe">Faster wireframe preview</span></label>
+        <legend data-i18n="mode_legend">Path selection</legend>
+        <label class="check"><input id="mode-privacy" type="checkbox" checked aria-describedby="path-policy"> <span data-i18n="mode_privacy">Fast path — privacy-only (no LLM)</span></label>
+        <label class="check check-planned" aria-disabled="true"><input id="mode-score" type="checkbox" disabled> <span data-i18n="mode_score">Score path — planned / not wired</span></label>
+        <label class="check"><input id="preview-wireframe" type="checkbox"> <span data-i18n="mode_wireframe">Faster wireframe preview (Fast only)</span></label>
+        <p class="mode-hint" data-i18n="mode_hint">Uncheck Fast to enable Reason (plan+confirm). Score has no runnable UI yet.</p>
       </fieldset>
       <p id="status" role="status" data-i18n="status_ready">Capture the active tab. Filtering runs here before any network call.</p>
       <button id="capture" type="button" class="cta-primary" data-i18n="capture">Capture &amp; protect</button>
@@ -79,8 +96,9 @@
       <p id="metrics" class="telemetry"></p>
     </section>
 
-    <section class="panel panel-actions" aria-label="Review actions">
-      <button id="plan" type="button" class="cta-secondary" disabled data-i18n="plan">Send protected layout</button>
+    <section class="panel panel-actions" aria-label="Reason path — plan and confirm">
+      <p class="path-tag" data-i18n="reason_tag">Reason path · local Ollama/Qwen · outside &lt;200&nbsp;ms G11 budget</p>
+      <button id="plan" type="button" class="cta-secondary" disabled data-i18n="plan">Send protected layout (Reason)</button>
       <p id="proposal" data-i18n="proposal_empty">No action proposed.</p>
       <button id="execute" type="button" class="cta-ghost" disabled data-i18n="execute">Confirm this action</button>
     </section>
