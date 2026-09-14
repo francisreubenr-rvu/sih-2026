@@ -4,20 +4,19 @@ An implemented local demonstration of browser vision → protected semantic layo
 
 ## Start
 
-Requires Node.js 22+ with `node:sqlite`, npm, and Ollama. Verified locally on Node26 / Apple M1 Pro (16 GB memory). Model assets are packaged locally; no browser CDN is used.
+Requires Node.js 22+ with `node:sqlite` and npm. **Ollama is optional** (Reason / planner path only). Privacy-only **Fast** Capture & protect and `npm test` / `npm run test:ci` do **not** need Ollama. Verified locally on Node26 / Apple M1 Pro (16 GB memory). Model assets are packaged locally; no browser CDN is used.
 
 ```sh
 cd Prototype
 npm ci
 node ../scripts/build-prototype.mjs
-ollama serve
-# In another terminal, only if the model is not installed:
-ollama pull qwen2.5:7b-instruct
-# In another terminal from Prototype:
+# Optional planner (Reason path) — skip for privacy-only Fast / CI:
+# ollama serve
+# ollama pull qwen2.5:7b-instruct
 npm start
 ```
 
-Open `http://127.0.0.1:9041/`. The model is a separate server process. Never expose the Ollama port publicly. Settings are in `.env.example`; export environment variables yourself or use Node's `--env-file` option. `.env.example` is documentation, not loaded implicitly.
+Open `http://127.0.0.1:9041/`. When used, the model is a separate server process. Never expose the Ollama port publicly. Settings are in `.env.example`; export environment variables yourself or use Node's `--env-file` option. `.env.example` is documentation, not loaded implicitly.
 
 1. Select **Review a pending request**.
 2. **Capture & protect** runs local WASM face inference and builds the preview.
@@ -40,13 +39,18 @@ Open the popup's **Server setup**, copy its exact extension origin into `ALLOWED
 ## Tests and builds
 
 ```sh
-npm test
+npm test          # local unit/integration — test-double providers only
+npm run test:ci   # CI entry: same suite with OLLAMA_URL forced unreachable
 node ../scripts/build-prototype.mjs
 node ../scripts/build-extension.mjs
 npm audit --omit=dev
 ```
 
-Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/origins, request-size/rate limits, provider error handling and detector math. Browser evidence is recorded separately in `Benchmarks/results/prototype-v01-browser.json`; unit tests use explicit model test doubles, while recorded manual workflow uses real Qwen2.5.
+Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/origins, request-size/rate limits, provider error handling and detector math. **CI never starts Ollama** — see `../Docs/decisions/brain-72h-ci-demo.md` and `.github/workflows/prototype-test.yml`. Browser evidence is recorded separately in `Benchmarks/results/prototype-v01-browser.json`; unit tests and load-soak scripts use explicit model test doubles (`infer` / `fetchImpl`); recorded manual Reason-path workflow uses real Qwen2.5 when available.
+
+### Human toolbar Capture & protect (not automated)
+
+Production Chrome toolbar glyph + privacy-only Fast path: follow `../Docs/demo-toolbar-capture-protocol.md`. Log stub (empty until first real run): `../Benchmarks/results/toolbar-capture-log-v01.json`. **Do not claim G03 pass** from harness overlay scripts.
 
 ## Data and security
 

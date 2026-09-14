@@ -1,0 +1,33 @@
+{
+  "name": "toolbar-capture-log-v01",
+  "generatedAt": "2026-09-14T17:40:00.000Z",
+  "status": "not_run",
+  "g03_claim": false,
+  "g03_status_in_guardrails": "unknown",
+  "protocol": "Docs/demo-toolbar-capture-protocol.md",
+  "path": "fast-privacy-only",
+  "acceptance_note": "Empty stub for the first logged human production Chrome toolbar Capture & protect run. Fields below stay blank until a real operator completes the protocol. Do not mark G03 pass from this file alone. Harness overlay e2e is not toolbar-glyph evidence.",
+  "runs": [],
+  "run_template": {
+    "run_id": "",
+    "operator": "",
+    "recorded_at": "",
+    "git_sha": "",
+    "browser": "",
+    "os": "",
+    "extension_version": "",
+    "path": "fast-privacy-only",
+    "ollama_used": false,
+    "stages_observed": "",
+    "preview_ok": null,
+    "semantics_only_ok": null,
+    "activeTab_ok": null,
+    "metrics": {
+      "fast_path_display_ms": null,
+      "note": "Fast path display only — never cite as G11"
+    },
+    "screenshots": [],
+    "notes": "",
+    "g03_claim": false
+  }
+}
