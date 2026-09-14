@@ -5,6 +5,7 @@
  */
 
 import { scoreRedactionPrecision } from './selective-redaction.mjs';
+import { summarizeClientResources } from './client-resources.mjs';
 
 export const RUBRIC_WEIGHTS = Object.freeze({
   'visual-context': 25,
@@ -135,5 +136,24 @@ export function emptyRubricLedger(extra = {}) {
         : 'Awaiting labeled dataset measurement beyond unit fixtures.',
     })),
     ...extra,
+  };
+}
+
+export {
+  readJsHeap,
+  readClientEnvironment,
+  measureStage,
+  summarizeClientResources,
+} from './client-resources.mjs';
+
+/**
+ * Rubric-facing client-resources hook.
+ * Always returns observed:null unless a future protocol explicitly saturates budgets.
+ */
+export function scoreClientResources({ stages = [], env } = {}) {
+  const summary = summarizeClientResources(stages, env);
+  return {
+    ...summary,
+    weightPercent: RUBRIC_WEIGHTS['client-resources'],
   };
 }

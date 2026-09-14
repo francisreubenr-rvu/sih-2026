@@ -2,12 +2,13 @@ import { createVisionDetector } from '../shared/vision.mjs';
 import { makeScene, paintScene } from '../shared/privacy.mjs';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
 import { paintSelectivePreview } from '../shared/selective-redaction.mjs';
-import { assertSanitizedPayload } from '../shared/rubric-hooks.mjs';
+import { assertSanitizedPayload, readJsHeap, readClientEnvironment } from '../shared/rubric-hooks.mjs';
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = s => document.querySelector(s);
 const endpoint = 'http://127.0.0.1:9041/api/v1/plans';
 let prepared, plan, tabId, detector, busy = false, lang = 'en'; lastCaptureMs = null;
+let resourceStages = [];
 
 const STRINGS = {
   en: {
@@ -95,6 +96,7 @@ const clear = () => {
   prepared = null;
   plan = null;
   lastCaptureMs = null;
+  resourceStages = [];
   $('#plan').disabled = true;
   $('#execute').disabled = true;
   $('#proposal').textContent = t('proposal_empty');
@@ -190,15 +192,28 @@ $('#capture').addEventListener('click', async () => {
     }
 
     lastCaptureMs = performance.now() - captureStarted;
+    resourceStages.push({
+      stage: 'capture-protect',
+      elapsedMs: lastCaptureMs,
+      inferenceMs: result.inferenceMs,
+      previewElapsedMs: previewMeta.elapsedMs ?? null,
+      heapAfter: readJsHeap(),
+      environment: readClientEnvironment(),
+      status: 'partial_diagnostic_only',
+    });
     $('#preview').hidden = false;
     $('#payload').textContent = JSON.stringify(prepared, null, 2);
     const preserved = previewMeta.preservedRatio != null
       ? ` · ${(previewMeta.preservedRatio * 100).toFixed(0)}% layout pixels kept locally`
       : '';
+    const heap = readJsHeap();
+    const heapTxt = heap.available
+      ? ` · heap ${(heap.usedJSHeapSize / (1024 * 1024)).toFixed(1)} MiB JS`
+      : '';
     $('#metrics').textContent =
       `${result.detections.length} face(s) · ${result.inferenceMs.toFixed(1)} ms WASM · ` +
       `${prepared.scene.controls.length} controls · ${prepared.scene.regions.length} regions · ` +
-      `preview ${previewMeta.mode}${preserved} · capture ${lastCaptureMs.toFixed(0)} ms`;
+      `preview ${previewMeta.mode}${preserved} · capture ${lastCaptureMs.toFixed(0)} ms${heapTxt}`;
     $('#plan').disabled = false;
     status(t('review'));
   } catch (e) {
