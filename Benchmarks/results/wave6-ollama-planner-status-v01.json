@@ -1,0 +1,10 @@
+{
+  "name": "wave6-ollama-planner-status",
+  "generatedAt": "2026-09-14T11:22:29.930108+00:00",
+  "ports": {
+    "11434": "unreachable",
+    "11436": "unreachable"
+  },
+  "planner_e2e": "skipped",
+  "note": "Do not fake planner E2E. Retry when Ollama is available."
+}

@@ -1,7 +1,7 @@
 {
   "scope": "preparation website + synthetic prototype fixture notes",
   "date": "2026-09-14",
-  "wave": 5,
+  "wave": 6,
   "viewports": [
     1440,
     390,
@@ -26,7 +26,29 @@
     "viewport_390_overflow": false,
     "note": "Experiment pages recorded no document-level horizontal overflow at 390px."
   },
-  "zoom_200_percent": "not_performed",
+  "zoom_200_percent": {
+    "status": "approximate_css_zoom_only",
+    "probes": [
+      {
+        "url": "file:///workspace/sih-2026/Website/index.html",
+        "method": "css_zoom_200_percent_approximation",
+        "innerWidth": 1280,
+        "scrollWidth": 1280,
+        "horizontal_overflow": false,
+        "vertical_overflow_informational": true,
+        "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+      },
+      {
+        "url": "file:///workspace/sih-2026/Prototype/extension-build/popup.html",
+        "method": "css_zoom_200_percent_approximation",
+        "innerWidth": 1280,
+        "scrollWidth": 1280,
+        "horizontal_overflow": false,
+        "vertical_overflow_informational": true,
+        "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+      }
+    ]
+  },
   "observed_console_errors": 0,
   "full_WCAG_review": "not_performed",
   "domain_workflows": "synthetic_fixture_only",
@@ -36,5 +58,11 @@
     "Docs/website-desktop.jpg",
     "Docs/website-mobile.jpg",
     "Benchmarks/results/browser-experiments-2026-09-11/"
-  ]
+  ],
+  "extension_popup_axe": {
+    "url": "file:///workspace/sih-2026/Prototype/extension-build/popup.html",
+    "violations": [],
+    "passes": 39,
+    "incomplete": 1
+  }
 }

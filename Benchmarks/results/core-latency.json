@@ -1,6 +1,6 @@
 {
-  "name": "wave5-core-latency",
-  "generatedAt": "2026-09-14T11:12:43.195Z",
+  "name": "wave6-core-latency",
+  "generatedAt": "2026-09-14T11:20:51.069Z",
   "mode": "planner_assisted",
   "budgetMs": 200,
   "warmups": 10,
@@ -8,17 +8,17 @@
   "localProtectLoop": {
     "unit": "ms",
     "n": 120,
-    "min": 0.05743000000001075,
-    "max": 0.8245259999999988,
-    "p50": 0.06791299999999012,
-    "p95": 0.2487649999999988,
-    "mean": 0.12376558333333385,
+    "min": 0.06967899999999361,
+    "max": 1.0401099999999985,
+    "p50": 0.08516199999999685,
+    "p95": 0.4741739999999979,
+    "mean": 0.17094681666666542,
     "gate_if_misused_as_full_flow": {
       "metric": "task-latency",
-      "elapsedMs": 0.2487649999999988,
+      "elapsedMs": 0.4741739999999979,
       "budgetMs": 200,
       "status": "pass",
-      "observed": 0.2487649999999988,
+      "observed": 0.4741739999999979,
       "note": "Within 200 ms budget."
     },
     "note": "Local protect-only timings. MUST NOT be reported as G11 full-flow pass."
@@ -48,7 +48,8 @@
     "Wave3 harness single-run protect captureMs≈188ms is cited separately as browser evidence, not merged into this Node distribution.",
     "G11 acceptance requires p95 full-flow <200ms over ≥100 attempts after 10 warmups including model/network/action. That remains fail.",
     "Privacy-only skip-LLM path implemented in extension popup; does not constitute a G11 pass.",
-    "Detector session cache + optional wireframe preview reduce repeat local cost; planner path still seconds."
+    "Detector session cache + optional wireframe preview reduce repeat local cost; planner path still seconds.",
+    "Wave6: mosaic subsample stride-2 for large blocks; staged Node microbench (dom heuristic / mosaic / sanitize proxy)."
   ],
   "strategies": {
     "privacy_only_skip_llm": true,
@@ -63,21 +64,29 @@
       "skipPlanner": true,
       "stages": [
         {
-          "name": "selective_redact_heuristic",
-          "elapsedMs": 0.2487649999999988
+          "name": "dom_allowlist_heuristic",
+          "elapsedMs": 0.0056730000000015934
+        },
+        {
+          "name": "selective_redact_mosaic",
+          "elapsedMs": 0.22504599999999186
+        },
+        {
+          "name": "sanitize_serialize_proxy",
+          "elapsedMs": 0.003038000000003649
         }
       ],
-      "localProtectMs": 0.2487649999999988,
+      "localProtectMs": 0.2337569999999971,
       "plannerMs": 0,
-      "fullFlowMs": 0.2487649999999988,
+      "fullFlowMs": 0.2337569999999971,
       "budgetMs": 200,
       "gate": {
         "metric": "task-latency",
         "status": "fail",
         "budgetMs": 200,
-        "elapsedMs": 0.2487649999999988,
+        "elapsedMs": 0.2337569999999971,
         "observed": null,
-        "note": "Privacy-only local protect 0.2487649999999988 ms is not full-flow (no planner/confirm). G11 remains fail; budget 200 ms unchanged."
+        "note": "Privacy-only local protect 0.2337569999999971 ms is not full-flow (no planner/confirm). G11 remains fail; budget 200 ms unchanged."
       },
       "strategiesApplied": [
         "skip_llm_privacy_only",
@@ -92,20 +101,20 @@
       "stages": [
         {
           "name": "local_protect_proxy",
-          "elapsedMs": 0.06791299999999012
+          "elapsedMs": 0.08516199999999685
         }
       ],
-      "localProtectMs": 0.06791299999999012,
+      "localProtectMs": 0.08516199999999685,
       "plannerMs": 3029,
-      "fullFlowMs": 3029.067913,
+      "fullFlowMs": 3029.085162,
       "budgetMs": 200,
       "gate": {
         "metric": "task-latency",
-        "elapsedMs": 3029.067913,
+        "elapsedMs": 3029.085162,
         "budgetMs": 200,
         "status": "fail",
         "observed": null,
-        "note": "Full-flow latency 3029.067913 ms exceeds 200 ms gate. Gate must not be weakened."
+        "note": "Full-flow latency 3029.085162 ms exceeds 200 ms gate. Gate must not be weakened."
       },
       "strategiesApplied": [
         "planner_required",
@@ -117,8 +126,19 @@
   },
   "wave3_browser_protect_single_run_ms": 188,
   "judge_latency_breakdown": {
-    "title": "Latency breakdown for judges (Wave5)",
+    "title": "Latency breakdown for judges (Wave6)",
     "budgetMs": 200,
+    "node_stage_p95_ms": {
+      "dom_allowlist_heuristic": 0.0056730000000015934,
+      "selective_redact_mosaic": 0.22504599999999186,
+      "sanitize_serialize_proxy": 0.003038000000003649
+    },
+    "optimizations": [
+      "privacy_only_skip_llm (extension default)",
+      "detector_session_cache",
+      "optional_wireframe_preview",
+      "mosaic_subsample_average_stride2_for_large_blocks"
+    ],
     "paths": [
       {
         "name": "privacy_only_local_protect",
@@ -135,7 +155,12 @@
           "network plan round-trip",
           "confirm/execute"
         ],
-        "node_microbench_p95_ms": 0.2487649999999988,
+        "node_microbench_p95_ms": 0.4741739999999979,
+        "node_stage_p95_ms": {
+          "dom_allowlist_heuristic": 0.0056730000000015934,
+          "selective_redact_mosaic": 0.22504599999999186,
+          "sanitize_serialize_proxy": 0.003038000000003649
+        },
         "browser_single_run_protect_ms": 188,
         "g11_claim": "NOT a G11 pass — privacy-only omits planner/confirm required by full-flow definition"
       },
@@ -152,11 +177,12 @@
           2276
         ],
         "p95_ms": 3029,
+        "dominant_cost": "local LLM generation (seconds)",
         "g11_status": "fail",
         "budget_weakened": false
       }
     ],
-    "note": "Organizers requiring <200ms full-flow must treat planner-assisted path as fail until measured under budget. Do not substitute privacy-only ms."
+    "note": "Organizers requiring <200ms full-flow must treat planner-assisted path as fail until measured under budget. Do not substitute privacy-only ms. Wave6 adds stage p95 breakdown + mosaic subsample optimization."
   },
   "acceptance": {
     "rule": "G11",
