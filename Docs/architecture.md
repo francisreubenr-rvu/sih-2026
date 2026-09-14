@@ -18,9 +18,9 @@ Status: engineering candidate v0.1. Bound to a single primary user journey.
 | **Score** | heuristic / risk score | No | **Planned / partial** | No SLO until wired; no fake UI. |
 | **Reason** | Ollama/Qwen plan + confirm | Yes (local) | Implemented | Outside &lt;200 ms today; G11 full-flow stays **fail** until p95&lt;200 at n≥100. |
 
-DigiLocker-looking trust chrome is **inspired UX only**.
+DigiLocker-looking trust chrome is **inspired UX / trust pattern only** — not DigiLocker partnership, APIs, credentials, or custody. See `Docs/decisions/brain-72h-contracts-copy.md`.
 
-Policy: `Docs/decisions/brain-72h-three-path.md`. Latency strategy: `Docs/decisions/wave4-latency-strategy.md`.
+Policy: `Docs/decisions/brain-72h-three-path.md`. Contracts/copy: `Docs/decisions/brain-72h-contracts-copy.md`. Latency strategy: `Docs/decisions/wave4-latency-strategy.md`.
 
 ## Services (≤2)
 

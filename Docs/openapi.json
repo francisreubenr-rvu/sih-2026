@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Dhristi sanitized-context API",
-    "version": "0.1.0",
-    "description": "SIH26171 candidate. Dynamic rectangle/viewport consistency and target-membership validation supplement JSON Schema. No image, raw DOM, free text, URL or field-value input exists."
+    "version": "0.1.1",
+    "description": "SIH26171 candidate. Dynamic rectangle/viewport consistency and target-membership validation supplement JSON Schema. No image, raw DOM, free text, URL or field-value input exists. `/api/v2/local-plans` is experimental (local-reference pilot)."
   },
   "servers": [
     {
@@ -97,6 +97,55 @@
             "description": "Ephemeral client bootstrap of private local token"
           },
           "403": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          }
+        }
+      }
+    },
+    "/api/v2/local-plans": {
+      "post": {
+        "summary": "EXPERIMENTAL: plan a local-reference fill from a protected scene",
+        "description": "Experimental pilot route (`dhristi-local-references-v1`). Same auth, origin, body-size, and rate limits as `/api/v1/plans`. Pixels, raw values, and credentials are never accepted. Currently scoped to synthetic report-contact email bindings; not a general PII/custody API. Mark as experimental in any public claim.",
+        "x-experimental": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalReferenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validated fill-local or done action; provider model/mode, latencyMs and expiry. Audit stores counts only."
+          },
+          "400": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "401": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "403": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "413": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "415": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "422": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "429": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "502": {
+            "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
+          },
+          "503": {
             "description": "Controlled error envelope with code, message and requestId; never raw provider output or stack traces."
           }
         }
@@ -243,7 +292,8 @@
                         "private",
                         "media",
                         "face",
-                        "field"
+                        "field",
+                        "password"
                       ]
                     },
                     "rect": {
@@ -347,6 +397,31 @@
           },
           {
             "type": "object",
+            "description": "EXPERIMENTAL local-reference action from /api/v2/local-plans only.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "fill-local"
+              },
+              "targetId": {
+                "type": "string",
+                "pattern": "^f\\d{1,2}$"
+              },
+              "referenceId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            },
+            "required": [
+              "type",
+              "targetId",
+              "referenceId"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
             "properties": {
               "type": {
                 "type": "string",
@@ -359,6 +434,279 @@
             "additionalProperties": false
           }
         ]
+      },
+      "LocalReferenceRequest": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "description": "Experimental local-reference contract. Top-level scheme is dhristi-local-references-v1. Field bindings carry UUID references only \u2014 never the private value. Runtime superRefine currently accepts email kind only for prepare-report-contact.",
+        "properties": {
+          "scheme": {
+            "type": "string",
+            "const": "dhristi-local-references-v1"
+          },
+          "task": {
+            "type": "string",
+            "const": "prepare-report-contact"
+          },
+          "scene": {
+            "type": "object",
+            "properties": {
+              "scheme": {
+                "type": "string",
+                "const": "dhristi-semantic-v1"
+              },
+              "revision": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "viewport": {
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 8192
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 8192
+                  }
+                },
+                "required": [
+                  "width",
+                  "height"
+                ],
+                "additionalProperties": false
+              },
+              "controls": {
+                "maxItems": 200,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^c\\d{1,4}$"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "button",
+                        "link"
+                      ]
+                    },
+                    "label": {
+                      "type": "string",
+                      "enum": [
+                        "Pending",
+                        "Completed",
+                        "Review",
+                        "Details",
+                        "Next",
+                        "Previous",
+                        "Back",
+                        "Close",
+                        "Search",
+                        "Help",
+                        "Cancel"
+                      ]
+                    },
+                    "rect": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "width": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "role",
+                    "label",
+                    "rect"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "regions": {
+                "maxItems": 2000,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "private",
+                        "media",
+                        "face",
+                        "field",
+                        "password"
+                      ]
+                    },
+                    "rect": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "y": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 8192
+                        },
+                        "width": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        },
+                        "height": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 8192
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "width",
+                        "height"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "rect"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "scheme",
+              "revision",
+              "viewport",
+              "controls",
+              "regions"
+            ],
+            "additionalProperties": false
+          },
+          "fields": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 10,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^f\\d{1,2}$"
+                },
+                "label": {
+                  "type": "string",
+                  "const": "Report contact"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "email",
+                    "person-name",
+                    "phone",
+                    "employee-id",
+                    "location-code"
+                  ],
+                  "description": "VALUE_KINDS allowlist. prepare-report-contact currently requires email at runtime."
+                },
+                "referenceId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                },
+                "empty": {
+                  "type": "boolean"
+                },
+                "rect": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "y": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 8192
+                    },
+                    "width": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 8192
+                    },
+                    "height": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 8192
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y",
+                    "width",
+                    "height"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "kind",
+                "referenceId",
+                "empty",
+                "rect"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "scheme",
+          "task",
+          "scene",
+          "fields"
+        ],
+        "additionalProperties": false
       }
     }
   }
