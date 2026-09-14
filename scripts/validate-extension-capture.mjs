@@ -31,7 +31,7 @@ const playwrightChromium = join(
   process.env.HOME || '',
   '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome'
 );
-const defaultChromium = process.env.SIGHTLINE_CHROMIUM
+const defaultChromium = process.env.DHRISTI_CHROMIUM
   || (existsSync(playwrightChromium) ? playwrightChromium : '/usr/bin/google-chrome');
 
 const argv = process.argv.slice(2);
@@ -76,7 +76,7 @@ const fail = (name, detail) => { record.checks[name] = { status: 'fail', detail 
 const note = (name, detail) => { record.checks[name] = { status: 'info', detail }; };
 
 function findChromium() {
-  return process.env.SIGHTLINE_CHROMIUM || defaultChromium;
+  return process.env.DHRISTI_CHROMIUM || defaultChromium;
 }
 
 async function ensureServer() {
@@ -108,7 +108,7 @@ async function ensureServer() {
   return { started: true, child };
 }
 
-const userDataDir = await mkdtemp(join(tmpdir(), 'sightline-ext-cap-'));
+const userDataDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-cap-'));
 let context;
 let serverHandle = { started: false, child: null };
 
@@ -186,7 +186,7 @@ try {
 
       // Semantics-only outbound body — never attach capture bytes.
       const scene = {
-        scheme: 'sightline-semantic-v1',
+        scheme: 'dhristi-semantic-v1',
         revision: collected.data.revision,
         viewport: collected.data.viewport,
         controls: collected.data.controls,
@@ -282,7 +282,7 @@ try {
   await context.close();
   context = null;
 
-  const overlayDir = await mkdtemp(join(tmpdir(), 'sightline-ext-overlay-'));
+  const overlayDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-overlay-'));
   record.harness_overlay = {
     purpose: 'Exercise chrome.tabs.captureVisibleTab when activeTab user gesture cannot be simulated',
     shipped_manifest_unchanged: true,
@@ -298,7 +298,7 @@ try {
   const overlayId = deriveExtensionId(overlayDir);
   record.harness_overlay.extension_id = overlayId;
 
-  const overlayUserData = await mkdtemp(join(tmpdir(), 'sightline-ext-overlay-profile-'));
+  const overlayUserData = await mkdtemp(join(tmpdir(), 'dhristi-ext-overlay-profile-'));
   context = await chromium.launchPersistentContext(overlayUserData, {
     executablePath,
     headless: false,
@@ -331,7 +331,7 @@ try {
     const body = {
       task: 'review-pending',
       scene: {
-        scheme: 'sightline-semantic-v1',
+        scheme: 'dhristi-semantic-v1',
         revision: collected.data.revision,
         viewport: collected.data.viewport,
         controls: collected.data.controls,

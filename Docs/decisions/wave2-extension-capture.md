@@ -26,7 +26,7 @@ Native load/inject refresh: `Benchmarks/results/extension-native-v02.json`.
 ```
 cd Prototype && npm run build:extension
 # optional: start server, or let the harness spawn it
-SIGHTLINE_CHROMIUM=$HOME/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
+DHRISTI_CHROMIUM=$HOME/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome \
   xvfb-run -a node ../scripts/validate-extension-capture.mjs \
   --json ../Benchmarks/results/extension-capture-v01.json
 ```

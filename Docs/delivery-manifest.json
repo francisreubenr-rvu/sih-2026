@@ -287,132 +287,132 @@
       "sha256": "7362c24bceffbba1ae8404a2fa0e5b137b72d7ab37e0626f24da2fd42f9c0fd3"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01-summary.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01-summary.json",
       "bytes": 6461,
       "sha256": "07258b203b957c22f2ed5afc471a69c3192dd9713a7e2a88da0f83869bceca4a"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/desktop-1.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/desktop-1.report.html",
       "bytes": 825613,
       "sha256": "6103396ac7d3fb3621e04f5388c61ac92ecd20badec9a35a4bcadd5c32f7f7b8"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/desktop-1.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/desktop-1.report.json",
       "bytes": 729881,
       "sha256": "a1342e006ac5c1db16ca902d1ba478ba12d4fcf6c3204bc493c785d85f3b6550"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/desktop-2.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/desktop-2.report.html",
       "bytes": 841588,
       "sha256": "8dc925f042c24a8905cd4efe5db8dac6a4f89b2171b00b95d5b6873d6a6147f5"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/desktop-2.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/desktop-2.report.json",
       "bytes": 745771,
       "sha256": "a0d62bfd7b061fa715667d07961c58cc989e72929934a3a1288e934bd368b9c7"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/desktop-3.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/desktop-3.report.html",
       "bytes": 841584,
       "sha256": "7eb18adb7d36acdbfcb99ae3939c5b41dbb77f2085ad342e1cf548fedd6747a7"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/desktop-3.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/desktop-3.report.json",
       "bytes": 745852,
       "sha256": "8ac61611ff7ba696553885bd1e45dc27bebadadfbbbd28b1faab77ee76d0fe9e"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/mobile-1.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/mobile-1.report.html",
       "bytes": 751290,
       "sha256": "8019158df638813f5cbaa90e7485083cb4713874dfd23d95e13890ba871d27fc"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/mobile-1.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/mobile-1.report.json",
       "bytes": 658366,
       "sha256": "32074b10feb9a22263dd8ab683903dcc96e40d9894bbb178a0dab14ca43fc4df"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/mobile-2.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/mobile-2.report.html",
       "bytes": 798302,
       "sha256": "cc96a8053a0d9fcfe1a6fc72404851956683b47bbe60afa23e45e8b245e6f683"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/mobile-2.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/mobile-2.report.json",
       "bytes": 705300,
       "sha256": "e808ce951fbd8b529dcca1ed39b3d8f6be0f13fab4763a0efc51158190ea8203"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/mobile-3.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/mobile-3.report.html",
       "bytes": 797367,
       "sha256": "ccc9a99e9af7936495e2126f23c7c376875fa91bc25983eae33190b539b1c072"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v01/mobile-3.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v01/mobile-3.report.json",
       "bytes": 704365,
       "sha256": "c4d16b64e4a023f3deca5f9ab2691dbdd59ae36052da01003d7c0370f03cf3d5"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02-summary.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02-summary.json",
       "bytes": 6467,
       "sha256": "c15308b52a8944b5d7c38f85714117024041ecd1428ca87a4a026a72fd350cef"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/desktop-1.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/desktop-1.report.html",
       "bytes": 848759,
       "sha256": "eddbc85a16cd1b6a872bd257116b7b86b842e4862c2ceec7f581e0d3c0daac53"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/desktop-1.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/desktop-1.report.json",
       "bytes": 754197,
       "sha256": "961e7963c63b294145428fff2da80bbe1eccd7d5a720961005c742ae2a319b2b"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/desktop-2.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/desktop-2.report.html",
       "bytes": 848784,
       "sha256": "48fcdc9e538a469539d0768db4a7e42a4bfdfcf5d95f2733585765e2853b4707"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/desktop-2.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/desktop-2.report.json",
       "bytes": 754187,
       "sha256": "f16f625c6147f1dcfe59b0380bf212f4fbf356edc85f66002140c8af86ffbc91"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/desktop-3.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/desktop-3.report.html",
       "bytes": 848656,
       "sha256": "aa0cd7edca985a8d4632dc13bebc25c74f61189008f1d72d7e5df275a0a92f5a"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/desktop-3.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/desktop-3.report.json",
       "bytes": 754044,
       "sha256": "ee65fcb204b4d174a527c6c07530a85620221ddc8981f88508e59860f5cc84a9"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/mobile-1.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/mobile-1.report.html",
       "bytes": 798880,
       "sha256": "e2a0369b07022eca6cf29966b1c916591f56828a7eec2f8165f34282a985ba57"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/mobile-1.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/mobile-1.report.json",
       "bytes": 708179,
       "sha256": "fc48b451c333a554c1462f8a4daa487b74a38086231397cccfc5d307c394f149"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/mobile-2.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/mobile-2.report.html",
       "bytes": 798029,
       "sha256": "b2afd905be2eb31595ec2bcf34d11cf2ec16417dad764e5ba5821649a9fd3914"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/mobile-2.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/mobile-2.report.json",
       "bytes": 706667,
       "sha256": "ae3fa6bcf2d95ba55c25135764a5c03e3b1a44c1fc342235496f802828edb287"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/mobile-3.report.html",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/mobile-3.report.html",
       "bytes": 798187,
       "sha256": "45113ae1eb395744c8bd672f92f1e6351123334c799956f5a01ea743e48d6975"
     },
     {
-      "path": "Benchmarks/results/lighthouse-sightline-v02/mobile-3.report.json",
+      "path": "Benchmarks/results/lighthouse-dhristi-v02/mobile-3.report.json",
       "bytes": 706825,
       "sha256": "9e82da76f8ef7389796506af2795ecb5ab7b81ba1bead2e83c522fb796224c0f"
     },
@@ -682,12 +682,12 @@
       "sha256": "f838d660fcf81da94ea072054f74d38a0228456e167035b15f3e747269346218"
     },
     {
-      "path": "Benchmarks/results/pages-sightline-v01.json",
+      "path": "Benchmarks/results/pages-dhristi-v01.json",
       "bytes": 1762,
       "sha256": "4cc53f38305dcad75708922005a14062deb37aff833fcb7df2d6c4bd6aecde1b"
     },
     {
-      "path": "Benchmarks/results/pages-sightline-v02.json",
+      "path": "Benchmarks/results/pages-dhristi-v02.json",
       "bytes": 1634,
       "sha256": "e65d52facacf102987de5fe7cabcbe6f98293ba71a42a9213595cec95719c34a"
     },
@@ -967,12 +967,12 @@
       "sha256": "58936f7bc805ff0e41bfc328f6934f15ec8851a85a6666405e73508c3c3bbd1c"
     },
     {
-      "path": "Docs/demo-recording/sightline-browser-v02.mp4",
+      "path": "Docs/demo-recording/dhristi-browser-v02.mp4",
       "bytes": 761436,
       "sha256": "4c83d2849d95ba60758e07ed545b733b82a458b8e7c7dfae2d6de7dc7b47c29d"
     },
     {
-      "path": "Docs/demo-recording/sightline-browser-v02.webm",
+      "path": "Docs/demo-recording/dhristi-browser-v02.webm",
       "bytes": 389930,
       "sha256": "eda7efcdfc2a38ea224bcc63db53bbe1a34358dfab22b332d2d0a0362020c792"
     },
@@ -1357,12 +1357,12 @@
       "sha256": "c645338e445032f8f0ea4fd2b9c5413cc250534b9f034d317d2ddecb8f7023e5"
     },
     {
-      "path": "Docs/sightline-extension-v01.zip",
+      "path": "Docs/dhristi-extension-v01.zip",
       "bytes": 5379599,
       "sha256": "e165671066f6423c158d7d3435ee1e3750942b0048701948eeddc7679ff0d6ef"
     },
     {
-      "path": "Docs/sightline-template.potx",
+      "path": "Docs/dhristi-template.potx",
       "bytes": 48757,
       "sha256": "66ecb8df23b65620bb353f3119698019ff90d983d1f7ae9724a05d7fb646a088"
     },
@@ -2947,12 +2947,12 @@
       "sha256": "ed01ba4880ca3a1d26666b325dd45afc1abd5db4208b24a3f819dcc8760cf25f"
     },
     {
-      "path": "Website/assets/sightline-browser-v02.mp4",
+      "path": "Website/assets/dhristi-browser-v02.mp4",
       "bytes": 761436,
       "sha256": "4c83d2849d95ba60758e07ed545b733b82a458b8e7c7dfae2d6de7dc7b47c29d"
     },
     {
-      "path": "Website/assets/sightline-mark.svg",
+      "path": "Website/assets/dhristi-mark.svg",
       "bytes": 264,
       "sha256": "1173c8bcfca2eef7b7d221d88494cd0b29ec63202fa01a5b8e312c251af9dc8f"
     },
@@ -2977,7 +2977,7 @@
       "sha256": "eebf2fc47311097be3cfc21f230382c8b1a14e3497430b5032339f6d52823897"
     },
     {
-      "path": "Website/downloads/sightline-extension-v01.zip",
+      "path": "Website/downloads/dhristi-extension-v01.zip",
       "bytes": 5379599,
       "sha256": "e165671066f6423c158d7d3435ee1e3750942b0048701948eeddc7679ff0d6ef"
     },

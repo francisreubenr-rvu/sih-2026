@@ -8,7 +8,7 @@
  * The operator's own Chrome profile is never touched: each run gets a fresh
  * temporary --user-data-dir which is deleted afterwards.
  *
- * The Sightline manifest declares no background service worker, so the
+ * The Dhristi manifest declares no background service worker, so the
  * extension is popup-driven and Chromium exposes no service worker to wait on.
  * The extension id is derived from the unpacked path hash and then verified
  * against the browser rather than assumed.
@@ -28,7 +28,7 @@ const extPath = resolve(join(root, 'Prototype/extension-build'));
 const serverOrigin = 'http://127.0.0.1:9041';
 const playwrightChromiumLinux = join(process.env.HOME || '', '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome');
 const playwrightChromiumMac = join(process.env.HOME || '', 'Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
-const defaultChromium = process.env.SIGHTLINE_CHROMIUM
+const defaultChromium = process.env.DHRISTI_CHROMIUM
   || (process.platform === 'darwin'
     ? playwrightChromiumMac
     : (existsSync(playwrightChromiumLinux) ? playwrightChromiumLinux : '/usr/bin/google-chrome'));
@@ -67,10 +67,10 @@ const pass = (name, detail) => { record.checks[name] = { status: 'pass', detail 
 const fail = (name, detail) => { record.checks[name] = { status: 'fail', detail }; };
 const note = (name, detail) => { record.checks[name] = { status: 'info', detail }; };
 
-const userDataDir = await mkdtemp(join(tmpdir(), 'sightline-ext-'));
+const userDataDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-'));
 let context;
 try {
-  const executablePath = process.env.SIGHTLINE_CHROMIUM || defaultChromium;
+  const executablePath = process.env.DHRISTI_CHROMIUM || defaultChromium;
   const manifestOnDisk = JSON.parse(await readFile(join(extPath, 'manifest.json'), 'utf8'));
   const derivedId = deriveExtensionId(extPath);
   record.extension_id = derivedId;
@@ -139,12 +139,12 @@ try {
   await page.waitForLoadState('domcontentloaded');
   try {
     await page.addScriptTag({ path: join(extPath, 'content.js') });
-    const injected = await page.evaluate(() => Boolean(globalThis.__sightlineController));
+    const injected = await page.evaluate(() => Boolean(globalThis.__dhristiController));
     if (injected) {
-      pass('content_script_injection', 'content.js executed in a real page and registered __sightlineController.');
+      pass('content_script_injection', 'content.js executed in a real page and registered __dhristiController.');
       const collected = await page.evaluate(() => {
         try {
-          const s = globalThis.__sightlineController.collect();
+          const s = globalThis.__dhristiController.collect();
           return { ok: true, revision: s.revision, controls: s.controls.length, viewport: s.viewport };
         } catch (e) { return { ok: false, error: e.message }; }
       });
@@ -167,7 +167,7 @@ try {
       injected.id = 'arbitrary';
       injected.textContent = 'Approve transfer';
       document.body.appendChild(injected);
-      const scene = globalThis.__sightlineController.collect();
+      const scene = globalThis.__dhristiController.collect();
       const exported = JSON.stringify(scene);
       return { controls: scene.controls.length, leaked: exported.includes('Approve transfer') };
     });

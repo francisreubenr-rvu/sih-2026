@@ -14,10 +14,10 @@
       "elapsedMs": 18.88220799999999,
       "modelRequests": 1,
       "request": {
-        "scheme": "sightline-local-references-v1",
+        "scheme": "dhristi-local-references-v1",
         "task": "prepare-report-contact",
         "scene": {
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "revision": "0a111f85-2652-4ddf-b2c0-0599a30fdd01",
           "viewport": {
             "width": 800,
@@ -60,10 +60,10 @@
       "elapsedMs": 13.483875000000012,
       "modelRequests": 1,
       "request": {
-        "scheme": "sightline-local-references-v1",
+        "scheme": "dhristi-local-references-v1",
         "task": "prepare-report-contact",
         "scene": {
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "revision": "4167122f-0ef9-410c-9634-78ffe5e8a950",
           "viewport": {
             "width": 800,
@@ -106,10 +106,10 @@
       "elapsedMs": 5.1522919999999885,
       "modelRequests": 1,
       "request": {
-        "scheme": "sightline-local-references-v1",
+        "scheme": "dhristi-local-references-v1",
         "task": "prepare-report-contact",
         "scene": {
-          "scheme": "sightline-semantic-v1",
+          "scheme": "dhristi-semantic-v1",
           "revision": "3a7fa537-4b91-4e14-bfe2-4c77c45b8cd5",
           "viewport": {
             "width": 800,

@@ -55,7 +55,7 @@ const STRINGS = {
     capturing: 'Running local vision and selective redaction. No screen data is sent.',
     review: 'Review the selective preview. Outbound JSON is semantics-only — original pixels excluded.',
     sending: 'Sending approved semantics to the local reasoning server.',
-    err_activeTab: 'Tab capture needs the toolbar gesture. Close this window and open Sightline from the toolbar icon, then Capture again.',
+    err_activeTab: 'Tab capture needs the toolbar gesture. Close this window and open Dhristi from the toolbar icon, then Capture again.',
     err_connection: 'Page connection lost. Retrying injection…',
     err_restricted: 'This page blocks extension capture. Open the local fixture or an allowed http(s) page.',
     mode_legend: 'Operating mode',
@@ -91,7 +91,7 @@ const STRINGS = {
     capturing: 'स्थानीय दृष्टि और चयनात्मक रेडक्शन चल रहा है। स्क्रीन डेटा नहीं भेजा जाता।',
     review: 'चयनात्मक पूर्वावलोकन देखें। आउटबाउंड JSON केवल अर्थ है — मूल पिक्सेल नहीं।',
     sending: 'अनुमोदित अर्थ स्थानीय रीज़निंग सर्वर को भेजे जा रहे हैं।',
-    err_activeTab: 'टैब कैप्चर के लिए टूलबार जेस्चर चाहिए। इस विंडो को बंद कर टूलबार आइकन से Sightline खोलें, फिर फिर से कैप्चर करें।',
+    err_activeTab: 'टैब कैप्चर के लिए टूलबार जेस्चर चाहिए। इस विंडो को बंद कर टूलबार आइकन से Dhristi खोलें, फिर फिर से कैप्चर करें।',
     err_connection: 'पृष्ठ कनेक्शन खो गया। इंजेक्शन पुनः प्रयास…',
     err_restricted: 'यह पृष्ठ एक्सटेंशन कैप्चर रोकता है। स्थानीय फ़िक्स्चर या अनुमत पृष्ठ खोलें।',
     mode_legend: 'ऑपरेटिंग मोड',
@@ -240,7 +240,7 @@ $('#capture').addEventListener('click', async () => {
   const completed = [];
   try {
     const tab = await resolveTargetTab();
-    if (!tab?.id) throw new Error('No captureable tab. Focus an http(s) page, then open Sightline from the toolbar.');
+    if (!tab?.id) throw new Error('No captureable tab. Focus an http(s) page, then open Dhristi from the toolbar.');
     tabId = tab.id;
     // Ensure captureVisibleTab sees the page, not a popup-as-tab document.
     try { await api.tabs.update(tabId, { active: true }); } catch { /* ignore */ }
@@ -435,7 +435,7 @@ $('#execute').addEventListener('click', async () => {
 $('#task').addEventListener('change', clear);
 
 // Expose loop summary for harnesses opened as extension documents.
-Object.defineProperty(globalThis, '__sightlineLoop', {
+Object.defineProperty(globalThis, '__dhristiLoop', {
   get: () => lastLoopSummary,
   configurable: true,
 });

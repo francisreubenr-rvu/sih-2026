@@ -5,17 +5,17 @@
   "note": "Rebuild after privacy-only popup wiring; same packaging pipeline as Wave3",
   "artifacts": [
     {
-      "path": "Docs/sightline-extension-wave3.zip",
+      "path": "Docs/dhristi-extension-wave3.zip",
       "bytes": 4324588,
       "sha256": "99c1f7a7081b4bfc644a5c18b56499955a693dfdff7a2f57c31c5f76aa79f90f"
     },
     {
-      "path": "Docs/sightline-extension-firefox-wave3.zip",
+      "path": "Docs/dhristi-extension-firefox-wave3.zip",
       "bytes": 4324979,
       "sha256": "cda5a1371d0ee6dd4cf07af70e303969717ec48ebebd37bc644c2e27a5707f0b"
     },
     {
-      "path": "Website/downloads/sightline-extension-v01.zip",
+      "path": "Website/downloads/dhristi-extension-v01.zip",
       "bytes": 4324588,
       "sha256": "99c1f7a7081b4bfc644a5c18b56499955a693dfdff7a2f57c31c5f76aa79f90f"
     }

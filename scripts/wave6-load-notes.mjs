@@ -32,7 +32,7 @@ const origin = `http://127.0.0.1:${port}`;
 const body = () => ({
   task: 'review-pending',
   scene: {
-    scheme: 'sightline-semantic-v1',
+    scheme: 'dhristi-semantic-v1',
     revision: randomUUID(),
     viewport: { width: 400, height: 300 },
     controls: [{ id: 'c0', role: 'button', label: 'Pending', rect: { x: 1, y: 1, width: 40, height: 20 } }],

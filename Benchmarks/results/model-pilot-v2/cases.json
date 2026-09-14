@@ -6,7 +6,7 @@
       "task": "review-pending",
       "expected": "Pending",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "04afec10-fed4-4378-94c5-604e8d887688",
         "viewport": {
           "width": 960,
@@ -110,7 +110,7 @@
       "task": "review-pending",
       "expected": "Pending",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "669044c9-07e8-484b-a798-ae0b453740f0",
         "viewport": {
           "width": 960,
@@ -214,7 +214,7 @@
       "task": "review-pending",
       "expected": "Review",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "727e0106-7e66-4a84-9da1-729773daf593",
         "viewport": {
           "width": 960,
@@ -327,7 +327,7 @@
       "task": "review-pending",
       "expected": "Review",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "83d35f74-3367-417b-aad5-51039036ff84",
         "viewport": {
           "width": 960,
@@ -440,7 +440,7 @@
       "task": "review-pending",
       "expected": "Details",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "85aedd3e-02fa-49cf-9b7f-cab8b952f70d",
         "viewport": {
           "width": 960,
@@ -551,7 +551,7 @@
       "task": "review-pending",
       "expected": "Details",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "47e1a683-c17b-409d-8127-b57cf80cfe56",
         "viewport": {
           "width": 960,
@@ -662,7 +662,7 @@
       "task": "review-pending",
       "expected": "done",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "056abda7-6c1d-40d3-88b7-15c776ba4428",
         "viewport": {
           "width": 960,
@@ -771,7 +771,7 @@
       "task": "review-pending",
       "expected": "done",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7ba0f424-7267-43d5-8263-fb329bfeb9c7",
         "viewport": {
           "width": 960,
@@ -880,7 +880,7 @@
       "task": "show-completed",
       "expected": "Completed",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "042ab665-e4b6-4c7f-b40f-bc0565c73ae8",
         "viewport": {
           "width": 960,
@@ -1020,7 +1020,7 @@
       "task": "show-completed",
       "expected": "Completed",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2ed9110f-a6c2-4000-be06-cde46e5b4f80",
         "viewport": {
           "width": 960,
@@ -1160,7 +1160,7 @@
       "task": "show-completed",
       "expected": "done",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "3e023b40-e2d1-4aea-a9dd-9420407cc8c4",
         "viewport": {
           "width": 960,
@@ -1298,7 +1298,7 @@
       "task": "show-completed",
       "expected": "done",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "bcb28c04-8724-4534-b7cf-77b7edc3aba4",
         "viewport": {
           "width": 960,
@@ -1436,7 +1436,7 @@
       "task": "next-page",
       "expected": "Next",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "0cf7543c-8f5e-4fc5-8e18-2ca633d822d2",
         "viewport": {
           "width": 960,
@@ -1594,7 +1594,7 @@
       "task": "next-page",
       "expected": "Next",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "c5ef5aec-87ec-413a-94b5-3c08b85123c8",
         "viewport": {
           "width": 960,
@@ -1752,7 +1752,7 @@
       "task": "next-page",
       "expected": "scroll-down",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d5222090-d347-4ce7-a31f-0014611b6ee3",
         "viewport": {
           "width": 960,
@@ -1908,7 +1908,7 @@
       "task": "next-page",
       "expected": "scroll-down",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "26807be4-b281-4645-b556-09bf16e03d81",
         "viewport": {
           "width": 960,
@@ -2064,7 +2064,7 @@
       "task": "review-pending",
       "expected": "done",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "68928f31-760e-47a0-ab0a-dc32da79a8c5",
         "viewport": {
           "width": 960,
@@ -2206,7 +2206,7 @@
       "task": "review-pending",
       "expected": "done",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d8a27d9e-cba3-42db-87fc-f80332b3475b",
         "viewport": {
           "width": 960,
@@ -2348,7 +2348,7 @@
       "task": "next-page",
       "expected": "scroll-down",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "e0cbe6a3-37c2-4128-810f-8506841ad341",
         "viewport": {
           "width": 960,
@@ -2499,7 +2499,7 @@
       "task": "next-page",
       "expected": "scroll-down",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "dca847e3-c8e3-4fd2-b77f-945543239de2",
         "viewport": {
           "width": 960,
@@ -2650,7 +2650,7 @@
       "task": "review-pending",
       "expected": "Pending",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2c0430ef-6bf6-4132-a543-9e039858c347",
         "viewport": {
           "width": 960,
@@ -2844,7 +2844,7 @@
       "task": "review-pending",
       "expected": "Pending",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "66d97740-4f8f-4a24-bf80-420d4c5e1060",
         "viewport": {
           "width": 960,
@@ -3038,7 +3038,7 @@
       "task": "show-completed",
       "expected": "Completed",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "739734f8-27b6-4e72-baa8-aae45c131243",
         "viewport": {
           "width": 960,
@@ -3252,7 +3252,7 @@
       "task": "show-completed",
       "expected": "Completed",
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "a40a3adc-bda3-4d2a-a7de-fb4a45911112",
         "viewport": {
           "width": 960,

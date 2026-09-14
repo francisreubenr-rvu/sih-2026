@@ -76,7 +76,7 @@ $('#execute').addEventListener('click',()=>{
 });
 $('#task').addEventListener('change',clear);
 $('#reset').addEventListener('click',()=>{clear();frame.src='/app/fixture.html';$('#protected').hidden=true;$('#empty').hidden=false;$('#payload').textContent='No request prepared.';status('Demo reset. Capture the page to begin.');});
-$('#pair').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(await getToken());status('Pairing token copied. Paste it only into your locally installed Sightline extension.');}catch{status('Clipboard access failed. Retry from this local server page.',true);}});
+$('#pair').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(await getToken());status('Pairing token copied. Paste it only into your locally installed Dhristi extension.');}catch{status('Clipboard access failed. Retry from this local server page.',true);}});
 // Revoke the ready state while the user is reviewing, before an obsolete action
 // can be offered. The executor also revalidates synchronously at click time.
 setInterval(()=>{

@@ -5,7 +5,7 @@
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
-    "source": "Docs/demo-recording/sightline-browser-v02.webm",
+    "source": "Docs/demo-recording/dhristi-browser-v02.webm",
     "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
     "offline_playable": true
   },

@@ -1,4 +1,4 @@
-# Sightline — SIH26171 prototype
+# Dhristi — SIH26171 prototype
 
 An implemented local demonstration of browser vision → protected semantic layout → open-weight server reasoning → reviewed browser action. This is an engineering candidate, not a completed competition submission.
 
@@ -54,7 +54,7 @@ Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/o
 
 For a consistent backup, stop Node and copy the entire local `data/` directory to a private location; restore while stopped. Do not commit backups. The app does not need seeded database rows. **Reset demo** resets synthetic browser state independently of audit history.
 
-The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `SIGHTLINE_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
+The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `DHRISTI_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
 
 ## Known limitations
 

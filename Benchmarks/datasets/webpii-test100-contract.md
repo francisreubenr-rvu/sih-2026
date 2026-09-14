@@ -1,6 +1,6 @@
 # WebPII test100 — frozen evaluation contract
 
-Declared 10 September 2026 before running Sightline on the sample. Baseline implementation: b7b2f33 (provider v4; shared vision/privacy unchanged from v0.1).
+Declared 10 September 2026 before running Dhristi on the sample. Baseline implementation: b7b2f33 (provider v4; shared vision/privacy unchanged from v0.1).
 
 ## Selection and scope
 
@@ -18,6 +18,6 @@ Input adapter: display each released synthetic screenshot as a raster image in a
 
 ## Attribution and limitations
 
-Primary dataset: https://huggingface.co/datasets/WebPII/webpii (root dataset card: Apache-2.0). Sample directory has separate CC-BY-4.0 metadata; this selection comes from the full test split. Synthetic-only release confirmed by https://huggingface.co/datasets/WebPII/webpii/blob/main/sample/README.md. Project https://webpii.github.io/ and paper https://arxiv.org/abs/2603.17357. Record retrieval and repository revision. Source logos/page styles identify dataset reproductions, not Sightline partnerships.
+Primary dataset: https://huggingface.co/datasets/WebPII/webpii (root dataset card: Apache-2.0). Sample directory has separate CC-BY-4.0 metadata; this selection comes from the full test split. Synthetic-only release confirmed by https://huggingface.co/datasets/WebPII/webpii/blob/main/sample/README.md. Project https://webpii.github.io/ and paper https://arxiv.org/abs/2603.17357. Record retrieval and repository revision. Source logos/page styles identify dataset reproductions, not Dhristi partnerships.
 
 This test does not supply ground truth for useful interactive controls, task completion, broad face accuracy or privacy in arbitrary pages. The complete official metrics remain incomplete after this diagnostic. Its purpose is to quantify a concrete limitation and guide actual implementation changes.

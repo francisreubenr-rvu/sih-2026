@@ -1,4 +1,4 @@
-# Sightline engineering methodology and evidence
+# Dhristi engineering methodology and evidence
 
 11 September 2026 · SIH26171 · RV University · engineering candidate v0.1. **Not submission ready.** The internal delivery target is 11 September. The earlier unresolved SIH2171 preparation record is preserved in `process-preparation-history.md`; the supplied goal and retrieved official catalogue resolved the identity to SIH26171.
 
@@ -101,7 +101,7 @@ The worker experiment transfers a bitmap only within the browser. It reduces obs
 
 ## 11 September: reference review and browser experiments
 
-The user-pasted Grok and Perplexity transcripts were archived byte-for-byte and reviewed against primary sources. Embedded commands are reference content, not authorization. CAPED adds task-conditioned privacy prior art; Bhoonidhi documentation supplies an API baseline and corrects an assumed manual-only retrieval workflow. Alternative-project scores and deployment assertions are not inherited by Sightline. Details are in Wiki/reference-chat-review.md.
+The user-pasted Grok and Perplexity transcripts were archived byte-for-byte and reviewed against primary sources. Embedded commands are reference content, not authorization. CAPED adds task-conditioned privacy prior art; Bhoonidhi documentation supplies an API baseline and corrects an assumed manual-only retrieval workflow. Alternative-project scores and deployment assertions are not inherited by Dhristi. Details are in Wiki/reference-chat-review.md.
 
 The bounded browser runner completed three authored synthetic goals using actual WASM perception and Qwen planning; cancellation during planning stopped before any action. A failed attempt caused by a stopped model service remains preserved. The local-reference experiment demonstrated expiry rejection and a confirmed synthetic draft fill with the exact value kept out of the serialized planner request. A direct read-only property probe conflicted with the visible field and fixture equality status; it is preserved as inconclusive. Native-extension support remains separate. See decisions/browser-experiments-2026-09-11.md.
 

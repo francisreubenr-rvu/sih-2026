@@ -1,4 +1,4 @@
-# Sightline · SIH26171
+# Dhristi · SIH26171
 
 Browser-local visual perception and protected-context reasoning for the ISRO Smart India Hackathon statement. Built for the RV University six-person CSE team: Gopreet, Hiranmayi, Varun, Koushaik, Francis and Niharika.
 
@@ -21,9 +21,9 @@ The website is hosted on GitHub Pages; the Node/Ollama prototype runs locally. P
 | Guardrails and measurements | [Guardrails](Guardrails/guardrails.json), [official rubric](Benchmarks/official-rubric.json), [browser evidence](Benchmarks/results/prototype-v01-browser.json) |
 | Supplied-format presentation | [Six-slide PPTX](Docs/submission-deck.pptx), [PDF](Docs/submission-deck.pdf) |
 | Technical talk | [15-slide PPTX](Docs/pitch-deck.pptx), [PDF](Docs/pitch-deck.pdf), [speaker notes](Docs/pitch-speaker-notes.md) |
-| Reusable template | [POTX](Docs/sightline-template.potx); open it, replace placeholders, save a new PPTX |
+| Reusable template | [POTX](Docs/dhristi-template.potx); open it, replace placeholders, save a new PPTX |
 | Design and methodology | [Design comparison](Docs/design-comparison.md), [process documentation](Docs/process-documentation.md), [client audit](Docs/decisions/client-audit.md) |
-| Native extension candidate | [Unpacked test package](Docs/sightline-extension-v01.zip) |
+| Native extension candidate | [Unpacked test package](Docs/dhristi-extension-v01.zip) |
 
 ## Limits that remain open
 
@@ -41,4 +41,4 @@ npm run build
 npm run build:extension
 ```
 
-From the repository root, serve Website on port 4173 and run `python3 scripts/run_lighthouse.py --label sightline-v01` for new local measurements. `python3 scripts/check_release.py` deliberately returns a nonzero exit while mandatory gates fail or remain unknown. GitHub Actions publishes only Website when master receives a website change.
+From the repository root, serve Website on port 4173 and run `python3 scripts/run_lighthouse.py --label dhristi-v01` for new local measurements. `python3 scripts/check_release.py` deliberately returns a nonzero exit while mandatory gates fail or remain unknown. GitHub Actions publishes only Website when master receives a website change.

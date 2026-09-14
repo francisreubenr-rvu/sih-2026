@@ -1,5 +1,5 @@
 
-> sightline-sih26171@0.1.0 test
+> dhristi-sih26171@0.1.0 test
 > node --test tests/*.test.mjs
 
 ✔ v2 local-reference API uses common auth, validates before model call and stores counts only (30.979125ms)

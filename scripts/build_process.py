@@ -18,7 +18,7 @@ def markup(s):
  return re.sub(r'`([^`]+)`',r'<font name="Courier">\1</font>',s)
 def footer(c,d):
  c.setFont('Helvetica',8);c.setFillColor(colors.HexColor('#52645c'))
- c.drawString(42,28,'SIGHTLINE / SIH26171 / ENGINEERING CANDIDATE - NOT SUBMISSION READY');c.drawRightString(553,28,str(d.page))
+ c.drawString(42,28,'DHRISTI / SIH26171 / ENGINEERING CANDIDATE - NOT SUBMISSION READY');c.drawRightString(553,28,str(d.page))
 story=[]
 for block in (R/'Docs/process-documentation.md').read_text().split('\n\n'):
  block=block.strip()
@@ -34,4 +34,4 @@ for block in (R/'Docs/process-documentation.md').read_text().split('\n\n'):
  elif block.startswith('# '):story.append(Paragraph(markup(block[2:]),styles['Title']))
  elif block.startswith('## '):story.append(Paragraph(markup(block[3:]),styles['Heading2']))
  else:story.append(Paragraph(markup(block).replace('\n','<br/>'),styles['BodyCopy']))
-SimpleDocTemplate(str(R/'Docs/process-documentation.pdf'),pagesize=A4,leftMargin=44,rightMargin=44,topMargin=42,bottomMargin=55,title='Sightline engineering methodology and evidence').build(story,onFirstPage=footer,onLaterPages=footer)
+SimpleDocTemplate(str(R/'Docs/process-documentation.pdf'),pagesize=A4,leftMargin=44,rightMargin=44,topMargin=42,bottomMargin=55,title='Dhristi engineering methodology and evidence').build(story,onFirstPage=footer,onLaterPages=footer)

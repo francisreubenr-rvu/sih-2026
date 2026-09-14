@@ -20,8 +20,8 @@ export const CAPTURE_STAGES = Object.freeze([
 
 /** Honest product requirement: Chrome grants activeTab from the toolbar action. */
 export const TOOLBAR_ACTIVETAB_NOTE = Object.freeze({
-  en: 'Open Sightline from the toolbar icon so Chrome grants activeTab for tab capture. Opening popup.html as a plain tab does not grant capture.',
-  hi: 'टैब कैप्चर के लिए टूलबार आइकन से Sightline खोलें ताकि Chrome activeTab दे। popup.html को सामान्य टैब के रूप में खोलने से कैप्चर नहीं मिलता।',
+  en: 'Open Dhristi from the toolbar icon so Chrome grants activeTab for tab capture. Opening popup.html as a plain tab does not grant capture.',
+  hi: 'टैब कैप्चर के लिए टूलबार आइकन से Dhristi खोलें ताकि Chrome activeTab दे। popup.html को सामान्य टैब के रूप में खोलने से कैप्चर नहीं मिलता।',
   automation: 'Playwright/Chromium cannot click the Chrome toolbar glyph; production captureVisibleTab without a human toolbar gesture requires activeTab or host <all_urls>. Shipped manifest keeps activeTab only.',
 });
 

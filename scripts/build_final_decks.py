@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate current Sightline decks without altering historical preparation files.
+"""Generate current Dhristi decks without altering historical preparation files.
 
 Requires python-pptx, Pillow and PyMuPDF; PDF conversion requires LibreOffice.
 Run: bundled-python scripts/build_final_decks.py
@@ -71,7 +71,7 @@ def fresh():
 def base(p,n,family,title,sub,dark=False):
  s=p.slides.add_slide(p.slide_layouts[6]);s.background.fill.solid();s.background.fill.fore_color.rgb=color(INK if dark else PAPER)
  text(s,family,.6,.29,9.1,.3,11,LIME if dark else FOREST,True)
- text(s,'SIGHTLINE / SIH26171',10,.29,2.75,.3,11,PAPER if dark else INK,True)
+ text(s,'DHRISTI / SIH26171',10,.29,2.75,.3,11,PAPER if dark else INK,True)
  text(s,title,.6,.95,12.1,1.17,40,PAPER if dark else INK,True)
  text(s,sub,.63,2.48 if '\n' in title else 2.18,12,.62,18,PAPER if dark else MUTED)
  line(s,.6,6.99,12.1,FOREST if dark else MUTED)
@@ -89,14 +89,14 @@ def submission():
  for i,s in enumerate(p.slides):
   if i:
    s.shapes[2].text=''
-   settext(s.shapes[5],'SIGHTLINE\nPROJECT',11,INK,True)
+   settext(s.shapes[5],'DHRISTI\nPROJECT',11,INK,True)
    s.shapes[1].left=Inches(1.92);s.shapes[1].top=Inches(.27);s.shapes[1].width=Inches(8.55);s.shapes[1].height=Inches(.9)
    settext(s.shapes[1],F[i],27,INK,True)
   text(s,'2026 content · supplied 2025 reference format · registered team ID/name pending',.6,6.57,12.1,.28,11,CAUTION)
-  s.notes_slide.notes_text_frame.text='Uses the six content slides and heading/pointer structure from Raw/provided-template.pptx; retained supplied logos are template assets, not endorsement. The user supplied a 2025 reference. Its 2026 organizer applicability and registered team ID/name still require confirmation. Sightline is a working project name. Sources: '+SRC['official']+'; '+EVID
+  s.notes_slide.notes_text_frame.text='Uses the six content slides and heading/pointer structure from Raw/provided-template.pptx; retained supplied logos are template assets, not endorsement. The user supplied a 2025 reference. Its 2026 organizer applicability and registered team ID/name still require confirmation. Dhristi is a working project name. Sources: '+SRC['official']+'; '+EVID
  s=p.slides[0]
  q=s.shapes[4];q.left=Inches(.5);q.top=Inches(.16);q.width=Inches(10.1);q.height=Inches(.95);settext(q,'SMART INDIA HACKATHON 2026',29,INK,True)
- q=s.shapes[3];q.left=Inches(.55);q.top=Inches(1.18);q.width=Inches(6.5);q.height=Inches(.6);settext(q,'TITLE PAGE · SIGHTLINE',25,INK,True)
+ q=s.shapes[3];q.left=Inches(.55);q.top=Inches(1.18);q.width=Inches(6.5);q.height=Inches(.6);settext(q,'TITLE PAGE · DHRISTI',25,INK,True)
  q=s.shapes[5];q.left=Inches(.58);q.top=Inches(2.03);q.width=Inches(6.72);q.height=Inches(4.37)
  settext(q,'Problem Statement ID – SIH26171\nProblem Statement Title – On-device Visual Perception for Light-weight Browser Agents\nTheme – Smart Automation\nPS Category – Software\nTeam ID – pending registration detail\nTeam Name (Registered on portal) – pending\nRV University · Gopreet, Hiranmayi, Varun, Koushaik, Francis, Niharika',19)
  s=p.slides[1]
@@ -128,18 +128,18 @@ def submission():
  for i,(label,url) in enumerate(refs):
   y=2.06+i*.77;text(s,label,.6,y,12,.33,18,INK,True);text(s,url,.6,y+.36,12,.29,13,FOREST,link=url)
  text(s,'Prototype evidence: Benchmarks/results/prototype-v01-browser.json · model hashes/licenses in Prototype/models/manifest.json',.6,6.07,12,.38,12,MUTED)
- p.core_properties.title='Sightline | SIH26171 | Six-slide submission candidate'
+ p.core_properties.title='Dhristi | SIH26171 | Six-slide submission candidate'
  p.save(D/'submission-deck.pptx')
  assert len(p.slides)==6
 
 def talk():
  p=fresh()
- s=base(p,1,F[0],'Let the agent see\nwhat it needs.','Sightline · On-device Visual Perception for Light-weight Browser Agents',True)
+ s=base(p,1,F[0],'Let the agent see\nwhat it needs.','Dhristi · On-device Visual Perception for Light-weight Browser Agents',True)
  shape(s,.62,3.54,8.04,2.24,LIME)
  text(s,'Local perception.\nA smaller privacy boundary.',.87,3.9,7.55,1.42,32,INK,True)
  text(s,'SIH26171\nISRO · Smart Automation\nSoftware',9.16,3.87,3.54,1.58,22,PAPER)
  source(s,'Working project name · RV University · Registered team ID/name pending',dark=True)
- note(s,'1 · Sightline',20,'Sightline is our working response to SIH26171: on-device visual perception for lightweight browser agents. The central idea is simple: the browser retains the original screen, constructs a protected description and sends only that description to a reasoning server. The user then reviews a bounded action before it executes. This is an implemented engineering candidate, with its limits visible.',SRC['official'])
+ note(s,'1 · Dhristi',20,'Dhristi is our working response to SIH26171: on-device visual perception for lightweight browser agents. The central idea is simple: the browser retains the original screen, constructs a protected description and sends only that description to a reasoning server. The user then reviews a bounded action before it executes. This is an implemented engineering candidate, with its limits visible.',SRC['official'])
  s=base(p,2,F[1],'A screen contains more than a task.','The same view can expose identity, account information, a password field and useful controls.')
  for x,label,body,fill in [(.62,'Sensitive context','Face · account · form values',WHITE),(4.78,'Useful structure','Geometry · approved controls',LIME),(8.94,'Agent task','Find a pending request',WHITE)]:
   shape(s,x,3.43,3.76,2.34,fill);text(s,label,x+.2,3.68,3.35,.8,26,INK,True);text(s,body,x+.2,4.71,3.35,.8,21,MUTED)
@@ -149,7 +149,7 @@ def talk():
  for i,(label,v) in enumerate([('Visual-context accuracy',25),('PII recall and precision',20),('Redaction precision',20),('Client resource use',20),('Overall task latency',15)]):
   y=3.12+i*.59;text(s,label,.63,y,4.38,.35,20,INK,True);shape(s,5.22,y+.05,v*.235,.25,FOREST);text(s,f'{v}%',11.57,y,.9,.4,21,INK,True)
  source(s,'Official weights: SIH 2026 catalogue. Complete scoring formulas are not supplied.',SRC['official'])
- note(s,'3 · Evaluation contract',45,'The official statement allocates twenty-five percent to visual-context accuracy; twenty percent each to PII detection, redaction precision and client resource use; and fifteen percent to overall task latency. These are organizer weights, not measured scores for Sightline. They make the trade-off explicit: removing everything may control exposure while failing utility. We therefore need separate detection, redaction and task-success measurements. The organizer has not published complete normalization formulas, so we will not invent a weighted total. Current integration observations are useful for debugging, but they cannot stand in for dataset accuracy or a predicted jury outcome.',SRC['official']+'; Benchmarks/official-rubric.json')
+ note(s,'3 · Evaluation contract',45,'The official statement allocates twenty-five percent to visual-context accuracy; twenty percent each to PII detection, redaction precision and client resource use; and fifteen percent to overall task latency. These are organizer weights, not measured scores for Dhristi. They make the trade-off explicit: removing everything may control exposure while failing utility. We therefore need separate detection, redaction and task-success measurements. The organizer has not published complete normalization formulas, so we will not invent a weighted total. Current integration observations are useful for debugging, but they cannot stand in for dataset accuracy or a predicted jury outcome.',SRC['official']+'; Benchmarks/official-rubric.json')
  s=base(p,4,F[2],'The privacy decision stays in the browser.','Actual v0.1 flow: local CV + DOM → protected scene → server reasoning → reviewed local action.')
  for x,label,body in [(.62,'Capture','Screen remains local'),(3.76,'Protect','CV + strict scene'),(6.9,'Reason','Qwen2.5 server'),(10.04,'Confirm','Validated action')]:
   shape(s,x,3.39,2.65,1.77,WHITE);text(s,label,x+.18,3.64,2.29,.5,25,INK,True);text(s,body,x+.18,4.37,2.29,.6,18,MUTED)
@@ -224,13 +224,13 @@ def talk():
  shape(s,.63,5.65,12.07,.63,LIME);text(s,'09 SEP  Build evidence    →    10 SEP  Validate + rehearse    →    11 SEP  Internal delivery',.83,5.85,11.67,.31,16,INK,True)
  source(s,'User-supplied team names and institution. Registered team name/ID and consented portraits remain pending.')
  note(s,'14 · Team and delivery',55,'The six team members are second-year B.Tech CSE students at RV University, as supplied in the brief. These roles are proposed ownership rather than evidence of prior expertise. Francis integrates the build and technical pitch; Gopreet owns API and persistence; Hiranmayi owns UX and accessibility; Varun owns domain implementation; Koushaik owns testing and reliability; and Niharika owns research and narrative. Each contribution should be linked to a real artifact before rehearsal. The internal target is eleven September, separate from the catalogue’s displayed date. The next checkpoint is validation and a timed run, with optional scope cut before correctness or evidence. Registered team details and consented portraits still need to be supplied.','Docs/team-plan.md; user brief; current PLAN.md')
- s=base(p,15,F[5],'Useful context.\nA smaller exposure.','Sightline demonstrates a reviewed browser-agent loop; evaluation determines how far it can go.',True)
+ s=base(p,15,F[5],'Useful context.\nA smaller exposure.','Dhristi demonstrates a reviewed browser-agent loop; evaluation determines how far it can go.',True)
  shape(s,.63,3.55,12.07,1.22,LIME);text(s,'Next decision: test the boundary on held-out tasks.',.9,3.88,11.54,.68,32,INK,True)
  text(s,'Inspect the context. Challenge the action. Measure the trade-off.',.64,5.4,12,.66,27,PAPER,True)
  source(s,'Run locally: Prototype/README.md · Evidence: Benchmarks/results/ · Source ledger: Wiki/source-index.md',dark=True)
- note(s,'15 · Closing and next decision',30,'Sightline already connects real browser-local inference, a protected scene, a real reasoning model and a reviewed action on a synthetic task. Its current result is an inspectable engineering boundary, not a promise of zero leakage or universal automation. The next decision is to evaluate that boundary on held-out tasks and measure what is protected, what remains useful and what it costs. We invite evaluation of the demonstrated mechanism and its explicit limits. The complete source and evidence registers travel with the build.','Wiki/source-index.md; '+EVID)
+ note(s,'15 · Closing and next decision',30,'Dhristi already connects real browser-local inference, a protected scene, a real reasoning model and a reviewed action on a synthetic task. Its current result is an inspectable engineering boundary, not a promise of zero leakage or universal automation. The next decision is to evaluate that boundary on held-out tasks and measure what is protected, what remains useful and what it costs. We invite evaluation of the demonstrated mechanism and its explicit limits. The complete source and evidence registers travel with the build.','Wiki/source-index.md; '+EVID)
  assert len(p.slides)==15
- p.core_properties.title='Sightline | SIH26171 | 15-slide technical pitch'
+ p.core_properties.title='Dhristi | SIH26171 | 15-slide technical pitch'
  p.core_properties.subject='Implemented candidate with measured integration evidence and explicit limits'
  p.save(D/'pitch-deck.pptx')
 
@@ -241,28 +241,28 @@ def template():
   title=s.shapes.title;title.left=Inches(.62);title.top=Inches(1);title.width=Inches(12.05);title.height=Inches(1.1);settext(title,heading,38,INK,True)
   body=s.placeholders[1];body.left=Inches(.65);body.top=Inches(2.65);body.width=Inches(11.7);body.height=Inches(3.5)
   settext(body,'Replace with one evidence-backed assertion.\nAdd a diagram, result or screenshot of the actual build.\nLabel measured results, external facts and projections separately.\nAdd the source URL and measurement conditions in notes.',24,MUTED)
-  shape(s,.62,.42,1.0,.12,LIME);text(s,'SIGHTLINE · EDITABLE PRESENTATION TEMPLATE',1.85,.28,10.7,.34,11,FOREST,True)
+  shape(s,.62,.42,1.0,.12,LIME);text(s,'DHRISTI · EDITABLE PRESENTATION TEMPLATE',1.85,.28,10.7,.34,11,FOREST,True)
   line(s,.62,6.8,12.05);text(s,'Source / date / evidence scope → replace before presenting',.62,7.05,12,.3,12,MUTED)
   s.notes_slide.notes_text_frame.text='Reusable template. Title and content are genuine PowerPoint placeholders. Open this POTX to create a new presentation, replace placeholder content, then Save As PPTX. This original design template is not the official SIH portal template; use submission-deck.pptx for the supplied-format candidate. Never delete evidence limitations until verified. Change colors/fonts consistently through the theme or selected shapes.'
- p.core_properties.title='Sightline | Reusable editorial template'
+ p.core_properties.title='Dhristi | Reusable editorial template'
  buf=BytesIO();p.save(buf);out=BytesIO()
  with ZipFile(buf) as zin,ZipFile(out,'w',ZIP_DEFLATED) as zout:
   for item in zin.infolist():
    b=zin.read(item.filename)
    if item.filename=='[Content_Types].xml':b=b.replace(b'application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml',b'application/vnd.openxmlformats-officedocument.presentationml.template.main+xml')
    zout.writestr(item,b)
- (D/'sightline-template.potx').write_bytes(out.getvalue())
+ (D/'dhristi-template.potx').write_bytes(out.getvalue())
 
 submission();talk();template()
 total=sum(n[1] for n in NOTES)
-lines=['# Sightline — 15-slide speaker notes','',f'Planned talk slots: {total} seconds ({total//60}m {total%60}s). Approximately 12 minutes; not a measured rehearsal. Allow operator time on slide 9. Sources and limitations are retained in the PPTX notes.','',
+lines=['# Dhristi — 15-slide speaker notes','',f'Planned talk slots: {total} seconds ({total//60}m {total%60}s). Approximately 12 minutes; not a measured rehearsal. Allow operator time on slide 9. Sources and limitations are retained in the PPTX notes.','',
  '## Files and template use','',
- '- `submission-deck.pptx/pdf`: six content slides derived from the supplied 2025 reference. Registered team details and current organizer-format applicability remain open. Sightline is the working project name.',
+ '- `submission-deck.pptx/pdf`: six content slides derived from the supplied 2025 reference. Registered team details and current organizer-format applicability remain open. Dhristi is the working project name.',
  '- `pitch-deck.pptx/pdf`: separate 15-slide technical talk; it is not the six-slide portal submission.',
- '- `sightline-template.potx`: open in PowerPoint to create a new presentation. Replace its title/content placeholders, preserve evidence labels, and save the new file as PPTX. Editing a POTX does not automatically update presentations already created from it. The reusable visual template is an original design, not an organizer-issued template.',
+ '- `dhristi-template.potx`: open in PowerPoint to create a new presentation. Replace its title/content placeholders, preserve evidence labels, and save the new file as PPTX. Editing a POTX does not automatically update presentations already created from it. The reusable visual template is an original design, not an organizer-issued template.',
  '', '## Evidence discipline','',
  'Every timing on these slides is a single local observation on Apple M1 Pro / 16 GB, not a p95, dataset accuracy or cross-browser certification. The 9-20 ms face-inference range comes from the 11 September face-scale matrix; the 92-108 ms capture-and-protection range and the 3,029 ms first-model-step figure come from the 9 September v0.1 record. Seventy-five tests is the recorded count at deck generation, not a promise that future revisions retain it.',
  'The 58-of-100 retained-PII figure is a failed privacy result on frozen synthetic screens. It is published deliberately and it constrains the product: text export stays disabled and the outbound request carries structure rather than reconstructed text. The full-flow 200 ms guardrail remains failed. Future measurements must replace these only with traceable new evidence.','']
 for title,secs,script,refs in NOTES:lines += ['## '+title,'',f'**Timing: {secs} seconds**','',script,'','Sources: '+refs,'']
 (D/'pitch-speaker-notes.md').write_text('\n'.join(lines))
-print(json.dumps({'submissionSlides':6,'talkSlides':15,'talkPlannedSeconds':total,'templateSlides':6,'outputs':['submission-deck.pptx','pitch-deck.pptx','sightline-template.potx','pitch-speaker-notes.md']}))
+print(json.dumps({'submissionSlides':6,'talkSlides':15,'talkPlannedSeconds':total,'templateSlides':6,'outputs':['submission-deck.pptx','pitch-deck.pptx','dhristi-template.potx','pitch-speaker-notes.md']}))

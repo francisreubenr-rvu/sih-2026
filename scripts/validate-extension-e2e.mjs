@@ -31,7 +31,7 @@ const playwrightChromium = join(
   process.env.HOME || '',
   '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome'
 );
-const defaultChromium = process.env.SIGHTLINE_CHROMIUM
+const defaultChromium = process.env.DHRISTI_CHROMIUM
   || (existsSync(playwrightChromium) ? playwrightChromium : '/usr/bin/google-chrome');
 
 const argv = process.argv.slice(2);
@@ -105,7 +105,7 @@ async function shot(page, name) {
 
 let context;
 let serverHandle = { started: false, child: null };
-const userDataDir = await mkdtemp(join(tmpdir(), 'sightline-ext-e2e-'));
+const userDataDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-e2e-'));
 
 try {
   if (!existsSync(join(extPath, 'manifest.json'))) {
@@ -118,7 +118,7 @@ try {
   if (health) pass('clean_setup_health', health);
   else fail('clean_setup_health', 'health endpoint failed');
 
-  const executablePath = process.env.SIGHTLINE_CHROMIUM || defaultChromium;
+  const executablePath = process.env.DHRISTI_CHROMIUM || defaultChromium;
   const productionId = deriveExtensionId(extPath);
   context = await chromium.launchPersistentContext(userDataDir, {
     executablePath,
@@ -230,7 +230,7 @@ try {
   context = null;
 
   // Overlay UI loop with screenshots
-  const overlayDir = await mkdtemp(join(tmpdir(), 'sightline-ext-e2e-overlay-'));
+  const overlayDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-e2e-overlay-'));
   await cp(extPath, overlayDir, { recursive: true });
   const overlayManifest = JSON.parse(await readFile(join(overlayDir, 'manifest.json'), 'utf8'));
   if (!overlayManifest.host_permissions.includes('<all_urls>')) {
@@ -244,7 +244,7 @@ try {
     temporary_permission_added: '<all_urls>',
   };
 
-  const overlayProfile = await mkdtemp(join(tmpdir(), 'sightline-ext-e2e-overlay-profile-'));
+  const overlayProfile = await mkdtemp(join(tmpdir(), 'dhristi-ext-e2e-overlay-profile-'));
   context = await chromium.launchPersistentContext(overlayProfile, {
     executablePath,
     headless: false,
@@ -302,7 +302,7 @@ try {
       payloadBytes: payloadText.length,
       payloadHasPixels: forbidden,
       payloadSnippet: payloadText.slice(0, 400),
-      loop: globalThis.__sightlineLoop || null,
+      loop: globalThis.__dhristiLoop || null,
     };
   });
   record.ui_loop = {

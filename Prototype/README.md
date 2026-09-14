@@ -1,4 +1,4 @@
-# Sightline — SIH26171 prototype
+# Dhristi — SIH26171 prototype
 
 An implemented local demonstration of browser vision → protected semantic layout → open-weight server reasoning → reviewed browser action. This is an engineering candidate, not a completed competition submission.
 
@@ -54,7 +54,7 @@ Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/o
 
 For a consistent backup, stop Node and copy the entire local `data/` directory to a private location; restore while stopped. Do not commit backups. The app does not need seeded database rows. **Reset demo** resets synthetic browser state independently of audit history.
 
-The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `SIGHTLINE_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
+The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `DHRISTI_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
 
 
 
@@ -89,7 +89,7 @@ The extension and web workspace now paint a **local selective pixelation preview
 
 Run `npm test` for the current 71 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
 
-`Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/sightline-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.
+`Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/dhristi-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.
 
 ## External raster diagnostic and worker experiment
 

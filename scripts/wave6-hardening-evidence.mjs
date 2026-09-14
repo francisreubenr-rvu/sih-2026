@@ -16,7 +16,7 @@ const token = 'synthetic-wave6-hardening-token-not-secret!!';
 const body = () => ({
   task: 'review-pending',
   scene: {
-    scheme: 'sightline-semantic-v1',
+    scheme: 'dhristi-semantic-v1',
     revision: randomUUID(),
     viewport: { width: 800, height: 600 },
     controls: [{ id: 'c0', role: 'button', label: 'Pending', rect: { x: 10, y: 10, width: 80, height: 44 } }],
@@ -129,7 +129,7 @@ const failed = checks.filter(c => !c.ok).length;
 const recordOut = {
   name: 'wave6-node-api-hardening',
   generatedAt: new Date().toISOString(),
-  scope: 'Local createApp instance. Public deployment remains GitHub Pages (static HTTPS). Node binds loopback unless HTTPS PUBLIC_ORIGIN + SIGHTLINE_TOKEN.',
+  scope: 'Local createApp instance. Public deployment remains GitHub Pages (static HTTPS). Node binds loopback unless HTTPS PUBLIC_ORIGIN + DHRISTI_TOKEN.',
   checks,
   summary: { passed, failed, total: checks.length },
   production_debug: {

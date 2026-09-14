@@ -86,7 +86,7 @@
       "predictions": [],
       "collectMs": 4,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "191f16d7-986c-43a9-aa1f-7c9d4fcbd3d9",
         "viewport": {
           "width": 800,
@@ -126,7 +126,7 @@
       "predictions": [],
       "collectMs": 1.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "11bf649f-fbda-4f6b-b8b0-40e47dd42bc3",
         "viewport": {
           "width": 800,
@@ -166,7 +166,7 @@
       "predictions": [],
       "collectMs": 1.600000023841858,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "b7984b02-f0e7-4414-bd9a-ba131649cab7",
         "viewport": {
           "width": 800,
@@ -206,7 +206,7 @@
       "predictions": [],
       "collectMs": 11,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "c56a6be8-e328-45ed-a5a0-9dfda2eed11a",
         "viewport": {
           "width": 800,
@@ -246,7 +246,7 @@
       "predictions": [],
       "collectMs": 1.100000023841858,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "96318dc1-c150-4e46-941c-8d6c9634f901",
         "viewport": {
           "width": 800,
@@ -286,7 +286,7 @@
       "predictions": [],
       "collectMs": 0.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "9000998f-4150-4a79-8982-5023e942502d",
         "viewport": {
           "width": 800,
@@ -326,7 +326,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2e80ea7e-bbff-4e01-b970-a85e3fbacd09",
         "viewport": {
           "width": 800,
@@ -366,7 +366,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7a7251c0-a48e-4ca9-a4d4-9aaab5eef77e",
         "viewport": {
           "width": 800,
@@ -406,7 +406,7 @@
       "predictions": [],
       "collectMs": 1.600000023841858,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d1c0b545-d216-4498-b79a-e200c14ca6d9",
         "viewport": {
           "width": 800,
@@ -446,7 +446,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ada7836b-981c-4cef-b869-47904d3ab219",
         "viewport": {
           "width": 800,
@@ -486,7 +486,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2ccdabb5-d874-46ca-97ee-65b83f10e27d",
         "viewport": {
           "width": 800,
@@ -526,7 +526,7 @@
       "predictions": [],
       "collectMs": 0.19999992847442627,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "1ff0525b-a7a3-4704-8e42-8f542f168368",
         "viewport": {
           "width": 800,
@@ -566,7 +566,7 @@
       "predictions": [],
       "collectMs": 1.6999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "06d519ef-de3e-469f-996a-1dd62b7b9f72",
         "viewport": {
           "width": 800,
@@ -606,7 +606,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "56d09304-f6e5-4294-a781-a89df761b066",
         "viewport": {
           "width": 800,
@@ -646,7 +646,7 @@
       "predictions": [],
       "collectMs": 0.20000004768371582,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "8ea728db-fc66-4ce1-9568-91e1fc6565a3",
         "viewport": {
           "width": 800,
@@ -686,7 +686,7 @@
       "predictions": [],
       "collectMs": 7.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "b4ec48ed-3729-4514-9af5-e3ef432f7cf1",
         "viewport": {
           "width": 800,
@@ -726,7 +726,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "156c337e-c28b-47e5-b8f7-fccc9ad1ffa0",
         "viewport": {
           "width": 800,
@@ -766,7 +766,7 @@
       "predictions": [],
       "collectMs": 0.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "995a4b56-9744-48c4-8281-0dd759a10c37",
         "viewport": {
           "width": 800,
@@ -806,7 +806,7 @@
       "predictions": [],
       "collectMs": 2.100000023841858,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "bebdfb6b-8cd3-45ff-bb50-a1d03ef923eb",
         "viewport": {
           "width": 800,
@@ -846,7 +846,7 @@
       "predictions": [],
       "collectMs": 0.40000009536743164,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7b9eb989-91d9-48f0-b583-662ebd14e1a5",
         "viewport": {
           "width": 800,
@@ -886,7 +886,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7b77adf6-9c65-42a6-91f0-df2342d3d1e8",
         "viewport": {
           "width": 800,
@@ -926,7 +926,7 @@
       "predictions": [],
       "collectMs": 0.30000007152557373,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "c8176fb6-4d5d-4400-bee3-ffefaeb2e490",
         "viewport": {
           "width": 800,
@@ -966,7 +966,7 @@
       "predictions": [],
       "collectMs": 5.399999976158142,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "701f5f54-a887-4fa5-843c-70f6a0ede74b",
         "viewport": {
           "width": 800,
@@ -1006,7 +1006,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ad9deae7-f523-41d1-aa35-3834cfb20c3d",
         "viewport": {
           "width": 800,
@@ -1046,7 +1046,7 @@
       "predictions": [],
       "collectMs": 0.7999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "cdc80f68-8fe8-4787-8e1c-2b7220a85bd3",
         "viewport": {
           "width": 800,
@@ -1086,7 +1086,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "9076da72-0d74-4435-8365-ba9edc74d03e",
         "viewport": {
           "width": 800,
@@ -1126,7 +1126,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "94becca3-ebbb-4400-bb24-20324a9f1ad9",
         "viewport": {
           "width": 800,
@@ -1166,7 +1166,7 @@
       "predictions": [],
       "collectMs": 0.5999999046325684,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "dd617b1f-968f-4519-a666-3e2b24c3cb3f",
         "viewport": {
           "width": 800,
@@ -1206,7 +1206,7 @@
       "predictions": [],
       "collectMs": 0.30000007152557373,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "68eee100-7d81-420c-bf8b-59277825865f",
         "viewport": {
           "width": 800,
@@ -1246,7 +1246,7 @@
       "predictions": [],
       "collectMs": 0.30000007152557373,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d7d979ac-66d3-4f99-894f-48e9bb6d3286",
         "viewport": {
           "width": 800,
@@ -1286,7 +1286,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "b2a9d19d-a4cf-4403-ac69-1f1253154f8b",
         "viewport": {
           "width": 800,
@@ -1326,7 +1326,7 @@
       "predictions": [],
       "collectMs": 0.20000004768371582,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d32759c3-2b22-4991-bb09-63b93e04f1a2",
         "viewport": {
           "width": 800,
@@ -1366,7 +1366,7 @@
       "predictions": [],
       "collectMs": 0.19999992847442627,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "be00db19-2087-45fd-b438-89ec094cbaa0",
         "viewport": {
           "width": 800,
@@ -1406,7 +1406,7 @@
       "predictions": [],
       "collectMs": 0.30000007152557373,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ab6eb7d2-f10f-4c2d-b2aa-6660512a4d87",
         "viewport": {
           "width": 800,
@@ -1446,7 +1446,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "0839f79a-b7c5-4a0f-9f37-66aa6ecc192a",
         "viewport": {
           "width": 800,
@@ -1486,7 +1486,7 @@
       "predictions": [],
       "collectMs": 0.10000002384185791,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "fe947e92-34ff-4d08-ae9b-65168c6732ce",
         "viewport": {
           "width": 800,
@@ -1526,7 +1526,7 @@
       "predictions": [],
       "collectMs": 0.10000002384185791,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "4f0b0edd-351b-4805-ad98-6db3c4f54d87",
         "viewport": {
           "width": 800,
@@ -1566,7 +1566,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "44b70aa4-c32f-43a7-bd6d-ff62da91e846",
         "viewport": {
           "width": 800,
@@ -1606,7 +1606,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "402334f8-94f3-4580-82e8-4f7bd72ff54e",
         "viewport": {
           "width": 800,
@@ -1646,7 +1646,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7cb0e933-6cbc-4679-92c1-12dcd2a7ccdd",
         "viewport": {
           "width": 800,
@@ -1686,7 +1686,7 @@
       "predictions": [],
       "collectMs": 1.100000023841858,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "bcb51acc-1d64-4ec1-9909-5cfede4aa34a",
         "viewport": {
           "width": 800,
@@ -1726,7 +1726,7 @@
       "predictions": [],
       "collectMs": 3.1999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "8f2a6b32-308f-4e28-8434-09c7df67d42f",
         "viewport": {
           "width": 800,
@@ -1766,7 +1766,7 @@
       "predictions": [],
       "collectMs": 0.7999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "db196727-784e-4b79-b6db-f7b5aba7ff12",
         "viewport": {
           "width": 800,
@@ -1806,7 +1806,7 @@
       "predictions": [],
       "collectMs": 0.7999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "77d1116b-7db4-4116-9837-42e908bc42eb",
         "viewport": {
           "width": 800,
@@ -1846,7 +1846,7 @@
       "predictions": [],
       "collectMs": 0.20000004768371582,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "33383536-40b1-45f7-96d5-db103110ede3",
         "viewport": {
           "width": 800,
@@ -1886,7 +1886,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "b94be63e-8355-4ea0-81dd-325e6bb4d4e7",
         "viewport": {
           "width": 800,
@@ -1926,7 +1926,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2f80437e-080b-41e4-8778-f757f16c3b68",
         "viewport": {
           "width": 800,
@@ -1966,7 +1966,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "f9bf5e09-5cc5-4b0a-9cca-d3ea4572265b",
         "viewport": {
           "width": 800,
@@ -2006,7 +2006,7 @@
       "predictions": [],
       "collectMs": 0.6999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2ad75210-4e96-4dc7-a8c5-7d6385443a33",
         "viewport": {
           "width": 800,
@@ -2046,7 +2046,7 @@
       "predictions": [],
       "collectMs": 0.30000007152557373,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "251da613-9946-405a-aa4e-fc6c45f6fc0b",
         "viewport": {
           "width": 800,
@@ -2086,7 +2086,7 @@
       "predictions": [],
       "collectMs": 1.6999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2471a6d7-1ac4-40e5-b821-9ed398b1197e",
         "viewport": {
           "width": 800,
@@ -2126,7 +2126,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ef748acc-c8ce-4bdb-a22f-eb7c3831102e",
         "viewport": {
           "width": 800,
@@ -2166,7 +2166,7 @@
       "predictions": [],
       "collectMs": 0.40000009536743164,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "80230e8a-c456-43bd-a897-a267499114d4",
         "viewport": {
           "width": 800,
@@ -2206,7 +2206,7 @@
       "predictions": [],
       "collectMs": 0.20000004768371582,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d4fab4e7-efc9-49b2-b550-e8ddc5dd8a10",
         "viewport": {
           "width": 800,
@@ -2246,7 +2246,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ea4627b2-12ad-4360-94f4-4b719239d763",
         "viewport": {
           "width": 800,
@@ -2286,7 +2286,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "6b223dff-ebd7-4723-816d-65d8d5ee57f0",
         "viewport": {
           "width": 800,
@@ -2326,7 +2326,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "e682e776-46a5-435a-8b9d-581b2c3482b0",
         "viewport": {
           "width": 800,
@@ -2366,7 +2366,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "6b0d086b-df4a-4b7e-9139-befe2efc0110",
         "viewport": {
           "width": 800,
@@ -2406,7 +2406,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "75f33667-08c3-4221-aaaa-a00eb3ec7256",
         "viewport": {
           "width": 800,
@@ -2446,7 +2446,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "d028856d-863f-4cd2-b941-fcdaac96e0d0",
         "viewport": {
           "width": 800,
@@ -2486,7 +2486,7 @@
       "predictions": [],
       "collectMs": 2.100000023841858,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "8a8ba2df-1c9d-440e-890a-cae5de724f79",
         "viewport": {
           "width": 800,
@@ -2526,7 +2526,7 @@
       "predictions": [],
       "collectMs": 0.7999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2d26e38b-c479-492b-b2ee-8e27560d8a52",
         "viewport": {
           "width": 800,
@@ -2566,7 +2566,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "0dd61e3d-aab2-4f9e-9b67-e6f74b4b4a96",
         "viewport": {
           "width": 800,
@@ -2606,7 +2606,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "b4bc7aa7-30b3-493f-b6dc-4b34c5e7a41d",
         "viewport": {
           "width": 800,
@@ -2646,7 +2646,7 @@
       "predictions": [],
       "collectMs": 5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "46afdb32-c6ec-450e-a2a3-c86dd8f4bb3c",
         "viewport": {
           "width": 800,
@@ -2686,7 +2686,7 @@
       "predictions": [],
       "collectMs": 0.6999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "4a017d5e-326f-4873-a96d-50619881b2d5",
         "viewport": {
           "width": 800,
@@ -2726,7 +2726,7 @@
       "predictions": [],
       "collectMs": 1.0999999046325684,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2c18f645-6fec-445d-9e73-3218be7af48e",
         "viewport": {
           "width": 800,
@@ -2766,7 +2766,7 @@
       "predictions": [],
       "collectMs": 0.5999999046325684,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7b3dc89b-38d6-4f56-bde1-43297418298b",
         "viewport": {
           "width": 800,
@@ -2806,7 +2806,7 @@
       "predictions": [],
       "collectMs": 0.6999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "a9abe8b9-7bcd-4e75-bd02-648c87ec470d",
         "viewport": {
           "width": 800,
@@ -2846,7 +2846,7 @@
       "predictions": [],
       "collectMs": 0.7999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "eb918c12-d2e3-4ccd-a784-6fd12a0c7857",
         "viewport": {
           "width": 800,
@@ -2886,7 +2886,7 @@
       "predictions": [],
       "collectMs": 2.0999999046325684,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "c8819d97-9b2f-4b27-bb0d-2f49c801af60",
         "viewport": {
           "width": 800,
@@ -2926,7 +2926,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "9edd9327-2054-448d-b62f-92c6f4fa28df",
         "viewport": {
           "width": 800,
@@ -2966,7 +2966,7 @@
       "predictions": [],
       "collectMs": 0.6999999284744263,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "298f49e4-25f8-454a-b407-3e55a572384e",
         "viewport": {
           "width": 800,
@@ -3006,7 +3006,7 @@
       "predictions": [],
       "collectMs": 0.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ceee39fa-88d4-4d45-8d59-637c897500c9",
         "viewport": {
           "width": 800,
@@ -3046,7 +3046,7 @@
       "predictions": [],
       "collectMs": 0.6000000238418579,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "10ec43ef-f36f-4b6f-9058-772356c0fff2",
         "viewport": {
           "width": 800,
@@ -3086,7 +3086,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "5199e370-3112-4e43-9195-0f80d481ba10",
         "viewport": {
           "width": 800,
@@ -3126,7 +3126,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "3ae52f52-fea6-4863-a6af-a19144df2f74",
         "viewport": {
           "width": 800,
@@ -3166,7 +3166,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "b714c627-5f4b-4475-b6ea-6f161284e949",
         "viewport": {
           "width": 800,
@@ -3206,7 +3206,7 @@
       "predictions": [],
       "collectMs": 0.2999999523162842,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "ae59328a-2766-4ca2-a59c-20c36e023afb",
         "viewport": {
           "width": 800,
@@ -3246,7 +3246,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "a9b3aea9-74b8-4d35-973a-86af007a21bb",
         "viewport": {
           "width": 800,
@@ -3286,7 +3286,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7a0c68fe-f71e-4ddc-a70c-7b7c55b58531",
         "viewport": {
           "width": 800,
@@ -3326,7 +3326,7 @@
       "predictions": [],
       "collectMs": 1.399999976158142,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "143b248e-e16f-4ac4-b730-17e9ee9aa3f3",
         "viewport": {
           "width": 800,
@@ -3366,7 +3366,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "f3024f30-263b-4645-a466-955e551d80d3",
         "viewport": {
           "width": 800,
@@ -3406,7 +3406,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "5737d972-9229-433a-83c3-2509cae071e0",
         "viewport": {
           "width": 800,
@@ -3446,7 +3446,7 @@
       "predictions": [],
       "collectMs": 1.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "bf294765-e284-4951-a75b-3b73d3681213",
         "viewport": {
           "width": 800,
@@ -3486,7 +3486,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "97b21f35-6ebf-4297-8c24-b0ef9d434ece",
         "viewport": {
           "width": 800,
@@ -3526,7 +3526,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "e4564454-b6f3-44ba-820f-8896296ef8fd",
         "viewport": {
           "width": 800,
@@ -3566,7 +3566,7 @@
       "predictions": [],
       "collectMs": 0.8999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "8757c249-8312-4b25-830a-bc5180409f91",
         "viewport": {
           "width": 800,
@@ -3606,7 +3606,7 @@
       "predictions": [],
       "collectMs": 0.40000009536743164,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "f27ced64-e0b5-420d-ac76-06f9b88ff3f4",
         "viewport": {
           "width": 800,
@@ -3646,7 +3646,7 @@
       "predictions": [],
       "collectMs": 1,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "668a336e-c095-4d1b-a2cc-f99a880a4b5d",
         "viewport": {
           "width": 800,
@@ -3686,7 +3686,7 @@
       "predictions": [],
       "collectMs": 0.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "50dea286-21cd-4fbb-906e-e654f9b99aa2",
         "viewport": {
           "width": 800,
@@ -3726,7 +3726,7 @@
       "predictions": [],
       "collectMs": 0.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "99deb33a-d48c-4909-af43-14279b24db9a",
         "viewport": {
           "width": 800,
@@ -3766,7 +3766,7 @@
       "predictions": [],
       "collectMs": 0.8000000715255737,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "7c8bd88d-03e1-438f-8df4-6e0815dc0f49",
         "viewport": {
           "width": 800,
@@ -3806,7 +3806,7 @@
       "predictions": [],
       "collectMs": 0.6000000238418579,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "f65bd879-5548-4947-94eb-77918606607a",
         "viewport": {
           "width": 800,
@@ -3846,7 +3846,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "8315dbdc-9b90-4894-a6cd-c6ed6977de14",
         "viewport": {
           "width": 800,
@@ -3886,7 +3886,7 @@
       "predictions": [],
       "collectMs": 0.7000000476837158,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "c3fe007a-6f48-445f-9622-91acc4c75ebd",
         "viewport": {
           "width": 800,
@@ -3926,7 +3926,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "2b79a788-90ad-48ca-a293-de07d6218b18",
         "viewport": {
           "width": 800,
@@ -3966,7 +3966,7 @@
       "predictions": [],
       "collectMs": 0.5,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "37b82410-ecfb-44e3-9919-e5720c3fbed8",
         "viewport": {
           "width": 800,
@@ -4006,7 +4006,7 @@
       "predictions": [],
       "collectMs": 0.3999999761581421,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "62596a68-592c-48d6-8446-f6b4408a30fc",
         "viewport": {
           "width": 800,
@@ -4046,7 +4046,7 @@
       "predictions": [],
       "collectMs": 0.19999992847442627,
       "scene": {
-        "scheme": "sightline-semantic-v1",
+        "scheme": "dhristi-semantic-v1",
         "revision": "180a5dd6-bf33-41a6-ab10-38c13674b085",
         "viewport": {
           "width": 800,

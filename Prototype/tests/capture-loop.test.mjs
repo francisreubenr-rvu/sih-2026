@@ -40,7 +40,7 @@ test('buildSanitizedPlanRequest rejects pixel fields', () => {
   assert.throws(
     () => buildSanitizedPlanRequest({
       task: 'review-pending',
-      scene: { scheme: 'sightline-semantic-v1', screenshot: 'data:image/png;base64,xx' },
+      scene: { scheme: 'dhristi-semantic-v1', screenshot: 'data:image/png;base64,xx' },
     }),
     /forbidden|pixel|raw/i
   );
@@ -50,7 +50,7 @@ test('buildSanitizedPlanRequest accepts semantics-only scene', () => {
   const body = buildSanitizedPlanRequest({
     task: 'review-pending',
     scene: {
-      scheme: 'sightline-semantic-v1',
+      scheme: 'dhristi-semantic-v1',
       revision: 'rev-1',
       viewport: { width: 100, height: 80 },
       controls: [{ id: 'c1', role: 'button', label: 'Pending', bounds: { x: 0, y: 0, width: 10, height: 10 } }],

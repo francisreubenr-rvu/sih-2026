@@ -1,8 +1,8 @@
 import { createPageAgent } from '../shared/page-agent.mjs';
 const api = globalThis.browser ?? globalThis.chrome;
-if (!globalThis.__sightlineController) {
+if (!globalThis.__dhristiController) {
   const controller = createPageAgent();
-  globalThis.__sightlineController = controller;
+  globalThis.__dhristiController = controller;
   api.runtime.onMessage.addListener((message, sender, respond) => {
     if (sender.id !== api.runtime.id) return false;
     try {

@@ -16,7 +16,7 @@ import { extname as extn } from 'node:path';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outPath = join(root, 'Benchmarks/results/accessibility.json');
 const browserReviewPath = join(root, 'Benchmarks/results/browser-review.json');
-const chrome = process.env.SIGHTLINE_CHROMIUM
+const chrome = process.env.DHRISTI_CHROMIUM
   || (existsSync(join(process.env.HOME || '', '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome'))
     ? join(process.env.HOME || '', '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome')
     : '/usr/bin/google-chrome');

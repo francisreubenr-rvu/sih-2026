@@ -12,7 +12,7 @@ import { spawn } from 'node:child_process';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outPath = join(root, 'Benchmarks/results/accessibility.json');
-const chrome = process.env.SIGHTLINE_CHROMIUM
+const chrome = process.env.DHRISTI_CHROMIUM
   || (existsSync(join(process.env.HOME || '', '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome'))
     ? join(process.env.HOME || '', '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome')
     : '/usr/bin/google-chrome');
@@ -109,7 +109,7 @@ const record = {
     status: 'unknown',
     reason: 'axe probe recorded. Full criterion-level manual + AT review still required. Do not mark G09 pass from axe alone.',
   },
-  related: ['Docs/accessibility-review.md', 'Benchmarks/results/lighthouse-sightline-v02-summary.json'],
+  related: ['Docs/accessibility-review.md', 'Benchmarks/results/lighthouse-dhristi-v02-summary.json'],
 };
 
 await mkdir(dirname(outPath), { recursive: true });

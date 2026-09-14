@@ -1,23 +1,23 @@
-# Sightline — 15-slide speaker notes
+# Dhristi — 15-slide speaker notes
 
 Planned talk slots: 700 seconds (11m 40s). Approximately 12 minutes; not a measured rehearsal. Allow operator time on slide 9. Sources and limitations are retained in the PPTX notes.
 
 ## Files and template use
 
-- `submission-deck.pptx/pdf`: six content slides derived from the supplied 2025 reference. Registered team details and current organizer-format applicability remain open. Sightline is the working project name.
+- `submission-deck.pptx/pdf`: six content slides derived from the supplied 2025 reference. Registered team details and current organizer-format applicability remain open. Dhristi is the working project name.
 - `pitch-deck.pptx/pdf`: separate 15-slide technical talk; it is not the six-slide portal submission.
-- `sightline-template.potx`: open in PowerPoint to create a new presentation. Replace its title/content placeholders, preserve evidence labels, and save the new file as PPTX. Editing a POTX does not automatically update presentations already created from it. The reusable visual template is an original design, not an organizer-issued template.
+- `dhristi-template.potx`: open in PowerPoint to create a new presentation. Replace its title/content placeholders, preserve evidence labels, and save the new file as PPTX. Editing a POTX does not automatically update presentations already created from it. The reusable visual template is an original design, not an organizer-issued template.
 
 ## Evidence discipline
 
 Every timing on these slides is a single local observation on Apple M1 Pro / 16 GB, not a p95, dataset accuracy or cross-browser certification. The 9-20 ms face-inference range comes from the 11 September face-scale matrix; the 92-108 ms capture-and-protection range and the 3,029 ms first-model-step figure come from the 9 September v0.1 record. Seventy-five tests is the recorded count at deck generation, not a promise that future revisions retain it.
 The 58-of-100 retained-PII figure is a failed privacy result on frozen synthetic screens. It is published deliberately and it constrains the product: text export stays disabled and the outbound request carries structure rather than reconstructed text. The full-flow 200 ms guardrail remains failed. Future measurements must replace these only with traceable new evidence.
 
-## 1 · Sightline
+## 1 · Dhristi
 
 **Timing: 20 seconds**
 
-Sightline is our working response to SIH26171: on-device visual perception for lightweight browser agents. The central idea is simple: the browser retains the original screen, constructs a protected description and sends only that description to a reasoning server. The user then reviews a bounded action before it executes. This is an implemented engineering candidate, with its limits visible.
+Dhristi is our working response to SIH26171: on-device visual perception for lightweight browser agents. The central idea is simple: the browser retains the original screen, constructs a protected description and sends only that description to a reasoning server. The user then reviews a bounded action before it executes. This is an implemented engineering candidate, with its limits visible.
 
 Sources: https://www.sih.gov.in/sih2026PS
 
@@ -33,7 +33,7 @@ Sources: https://www.sih.gov.in/sih2026PS; https://arxiv.org/abs/2603.17357
 
 **Timing: 45 seconds**
 
-The official statement allocates twenty-five percent to visual-context accuracy; twenty percent each to PII detection, redaction precision and client resource use; and fifteen percent to overall task latency. These are organizer weights, not measured scores for Sightline. They make the trade-off explicit: removing everything may control exposure while failing utility. We therefore need separate detection, redaction and task-success measurements. The organizer has not published complete normalization formulas, so we will not invent a weighted total. Current integration observations are useful for debugging, but they cannot stand in for dataset accuracy or a predicted jury outcome.
+The official statement allocates twenty-five percent to visual-context accuracy; twenty percent each to PII detection, redaction precision and client resource use; and fifteen percent to overall task latency. These are organizer weights, not measured scores for Dhristi. They make the trade-off explicit: removing everything may control exposure while failing utility. We therefore need separate detection, redaction and task-success measurements. The organizer has not published complete normalization formulas, so we will not invent a weighted total. Current integration observations are useful for debugging, but they cannot stand in for dataset accuracy or a predicted jury outcome.
 
 Sources: https://www.sih.gov.in/sih2026PS; Benchmarks/official-rubric.json
 
@@ -129,6 +129,6 @@ Sources: Docs/team-plan.md; user brief; current PLAN.md
 
 **Timing: 30 seconds**
 
-Sightline already connects real browser-local inference, a protected scene, a real reasoning model and a reviewed action on a synthetic task. Its current result is an inspectable engineering boundary, not a promise of zero leakage or universal automation. The next decision is to evaluate that boundary on held-out tasks and measure what is protected, what remains useful and what it costs. We invite evaluation of the demonstrated mechanism and its explicit limits. The complete source and evidence registers travel with the build.
+Dhristi already connects real browser-local inference, a protected scene, a real reasoning model and a reviewed action on a synthetic task. Its current result is an inspectable engineering boundary, not a promise of zero leakage or universal automation. The next decision is to evaluate that boundary on held-out tasks and measure what is protected, what remains useful and what it costs. We invite evaluation of the demonstrated mechanism and its explicit limits. The complete source and evidence registers travel with the build.
 
 Sources: Wiki/source-index.md; Benchmarks/results/operations-v01/summary.json; Benchmarks/results/operations-v01/face-scale-v01.json; Benchmarks/results/webpii-text-v01-summary.json; Benchmarks/results/prototype-unit-tests.txt

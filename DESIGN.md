@@ -1,4 +1,4 @@
-# Sightline design baseline
+# Dhristi design baseline
 
 Selected through the actual rendered Stitch/current-site comparison in Docs/design-comparison.md. The generated HTML is research material; Website is the authored implementation.
 

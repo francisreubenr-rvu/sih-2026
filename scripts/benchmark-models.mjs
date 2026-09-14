@@ -6,19 +6,19 @@ import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import os from 'node:os';
 const root=new URL('../',import.meta.url);
-const runId=process.env.SIGHTLINE_PILOT_RUN||`model-pilot-${new Date().toISOString().replaceAll(':','-')}`;
+const runId=process.env.DHRISTI_PILOT_RUN||`model-pilot-${new Date().toISOString().replaceAll(':','-')}`;
 if(!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$/.test(runId))throw new Error('Invalid pilot run identifier');
 const out=new URL(`Benchmarks/results/${runId}/`,root);
 // Refuse an existing run directory; failed and completed evidence is immutable.
 await mkdir(out);
 // Reuse the frozen first-run inputs by default for subsequent comparisons.
-const caseSource=new URL(process.env.SIGHTLINE_PILOT_CASES||'Benchmarks/results/model-pilot-v1/cases.json',root);
+const caseSource=new URL(process.env.DHRISTI_PILOT_CASES||'Benchmarks/results/model-pilot-v1/cases.json',root);
 const cases=JSON.parse(await readFile(caseSource,'utf8')).cases;
 if(!Array.isArray(cases)||!cases.length)throw new Error('Pilot case set is empty');
 for(const c of cases)requestSchema.parse({task:c.task,scene:c.scene});
 await writeFile(new URL('cases.json',out),JSON.stringify({scope:'authored synthetic semantic-layout pilot; 12 states in 2 layouts; not held-out browser pages',cases},null,2)+'\n');
 const providerHash=createHash('sha256').update(await readFile(new URL('Prototype/server/provider.mjs',root))).digest('hex');
-const models=(process.env.SIGHTLINE_PILOT_MODELS||'qwen2.5:0.5b,qwen2.5:7b-instruct').split(',');
+const models=(process.env.DHRISTI_PILOT_MODELS||'qwen2.5:0.5b,qwen2.5:7b-instruct').split(',');
 const tags=await (await fetch('http://127.0.0.1:11434/api/tags')).json();
 const results=[];
 const percentile=(a,p)=>[...a].sort((x,y)=>x-y)[Math.ceil(a.length*p)-1];

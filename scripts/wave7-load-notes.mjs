@@ -15,7 +15,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const outPath = join(root, 'Benchmarks/results/load.json');
 const token = 'synthetic-wave7-load-token-not-a-real-secret';
 
-const SOAK_MS = Number(process.env.SIGHTLINE_SOAK_MS || 5 * 60 * 1000);
+const SOAK_MS = Number(process.env.DHRISTI_SOAK_MS || 5 * 60 * 1000);
 const CONCURRENCY = 20;
 const WRITE_TARGET = 1000;
 
@@ -36,7 +36,7 @@ const origin = `http://127.0.0.1:${port}`;
 const body = () => ({
   task: 'review-pending',
   scene: {
-    scheme: 'sightline-semantic-v1',
+    scheme: 'dhristi-semantic-v1',
     revision: randomUUID(),
     viewport: { width: 400, height: 300 },
     controls: [{ id: 'c0', role: 'button', label: 'Pending', rect: { x: 1, y: 1, width: 40, height: 20 } }],
