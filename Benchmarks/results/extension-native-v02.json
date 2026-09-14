@@ -1,0 +1,79 @@
+{
+  "harness": "scripts/validate-extension.mjs",
+  "scope": "native MV3 extension in a real Chromium browser",
+  "started_at": "2026-09-14T10:45:58.167Z",
+  "extension_path": "Prototype/extension-build",
+  "server_origin": "http://127.0.0.1:9041",
+  "extension_id_derivation": "sha256(absolute extension path), first 32 hex chars, nibbles mapped 0-f -> a-p",
+  "checks": {
+    "background_service_worker": {
+      "status": "info",
+      "detail": "No background key in the manifest. This extension is popup-driven; the content script is injected on demand with chrome.scripting.executeScript."
+    },
+    "extension_loaded": {
+      "status": "pass",
+      "detail": "chrome-extension://nkejlhpdhocmbapjdfaegfdipnjinekb/manifest.json -> 200"
+    },
+    "manifest_parsed": {
+      "status": "pass",
+      "detail": "MV3 \"Sightline — Local privacy review\" v0.1.0 read from the browser"
+    },
+    "content_script_injection": {
+      "status": "pass",
+      "detail": "content.js executed in a real page and registered __sightlineController."
+    },
+    "collect_protected_scene": {
+      "status": "pass",
+      "detail": "revision e94630b3-afac-4212-bc69-61f279f6b1eb, 3 allow-listed controls, viewport 1280x720"
+    },
+    "unlisted_control_refused": {
+      "status": "pass",
+      "detail": "Arbitrary label stayed out of the exported scene; 3 allow-listed controls remained."
+    },
+    "popup_loaded": {
+      "status": "pass",
+      "detail": "title=\"Sightline — local privacy review\", #status=\"Capture the active tab. Filtering runs here before any network call.\"",
+      "extension_origin": "",
+      "buttons": [
+        "EN",
+        "हिं",
+        "Capture & protect",
+        "Send protected layout",
+        "Confirm this action"
+      ]
+    },
+    "popup_module_executed": {
+      "status": "pass",
+      "detail": "popup.js ran: module bundle executed and bound its controls."
+    },
+    "host_permission_reachable": {
+      "status": "info",
+      "detail": "Skipped: no server answering on http://127.0.0.1:9041. Start it with \"cd Prototype && node --env-file-if-exists=.env server/index.mjs\" and re-run."
+    }
+  },
+  "console_errors": [],
+  "page_errors": [
+    "Cannot read properties of undefined (reading 'onMessage')",
+    "popup: lastCaptureMs is not defined"
+  ],
+  "limitations": [
+    "Chromium only. A Firefox manifest is shipped but Firefox is not exercised here.",
+    "The popup is opened as an extension document, not through the toolbar action UI, so chrome.tabs.captureVisibleTab is not driven.",
+    "No pairing token is read, printed or stored; the planner round-trip is not re-run in this harness.",
+    "This proves extension load, content-script injection and host-permission reachability. It is not a PII-accuracy or performance measurement.",
+    "Step 2 injects content.js with page.addScriptTag, which runs in the page's main world, not the isolated content-script world Chrome gives scripts injected by chrome.scripting.executeScript (the real production path). chrome.runtime is therefore absent here and content.js's own chrome.runtime.onMessage.addListener call throws after the controller is already registered; expect a page error naming \"onMessage\" every run. That call succeeds in production because the popup injects through chrome.scripting.executeScript, which this harness does not drive (see the captureVisibleTab limitation above)."
+  ],
+  "extension_id": "nkejlhpdhocmbapjdfaegfdipnjinekb",
+  "browser": {
+    "executablePath": "/home/box/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+    "version": "151.0.7922.34"
+  },
+  "finished_at": "2026-09-14T10:46:01.423Z",
+  "summary": {
+    "passed": 7,
+    "failed": 0,
+    "informational": 2,
+    "total": 7
+  },
+  "verdict": "pass"
+}

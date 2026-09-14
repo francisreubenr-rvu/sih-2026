@@ -174,3 +174,30 @@ test('classifySensitive expands Indic Aadhaar and PAN telemetry without authoriz
   });
   assert.equal(scene.controls.length, 0);
 });
+
+test('held-out wave2 fixture file is loadable and separates coverage from preservation', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const { fileURLToPath } = await import('node:url');
+  const { join, dirname } = await import('node:path');
+  const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
+  const raw = JSON.parse(await readFile(join(root, 'Benchmarks/datasets/wave2-heldout-pii-fixtures.json'), 'utf8'));
+  assert.ok(raw.cases.length >= 5);
+  const over = raw.cases.find(c => c.id === 'full-image-over-redaction');
+  const scored = scoreRedactionPrecision({
+    width: over.width,
+    height: over.height,
+    groundTruthPii: over.groundTruthPii,
+    redactedRegions: over.detectorRegions,
+  });
+  assert.equal(scored.piiPixelCoverage, 1);
+  assert.ok(scored.nonPiiPreservation < 0.01);
+  const miss = raw.cases.find(c => c.id === 'missed-face-under-redaction');
+  const missed = scoreRedactionPrecision({
+    width: miss.width,
+    height: miss.height,
+    groundTruthPii: miss.groundTruthPii,
+    redactedRegions: miss.detectorRegions,
+  });
+  assert.equal(missed.piiPixelCoverage, 0);
+  assert.equal(missed.instanceRecall, 0);
+});

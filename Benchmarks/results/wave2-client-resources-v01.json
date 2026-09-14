@@ -1,0 +1,135 @@
+{
+  "name": "wave2-client-resources-hooks",
+  "timestamp": "2026-09-14T10:46:12.426Z",
+  "scope": "Node harness for shared hooks; heap may be unavailable outside Chromium. Extension popup now records capture-stage heap when performance.memory exists.",
+  "score": {
+    "metric": "client-resources",
+    "status": "partial_diagnostic_only",
+    "observed": null,
+    "environment": {
+      "hardwareConcurrency": 8,
+      "deviceMemoryGB": null,
+      "userAgentPresent": true
+    },
+    "stageCount": 3,
+    "stageElapsedMs": {
+      "min": 1.2132840000000016,
+      "max": 5.309570000000004,
+      "mean": 3.3404413333333367
+    },
+    "peakUsedJsHeapSize": null,
+    "stages": [
+      {
+        "stage": "synthetic-redact",
+        "elapsedMs": 5.309570000000004,
+        "startedAt": "2026-09-14T10:46:12.414Z",
+        "heapBefore": {
+          "available": false,
+          "usedJSHeapSize": null,
+          "totalJSHeapSize": null,
+          "jsHeapSizeLimit": null,
+          "note": "performance.memory unavailable in this runtime (common outside Chromium)."
+        },
+        "heapAfter": {
+          "available": false,
+          "usedJSHeapSize": null,
+          "totalJSHeapSize": null,
+          "jsHeapSizeLimit": null,
+          "note": "performance.memory unavailable in this runtime (common outside Chromium)."
+        },
+        "heapDeltaBytes": null,
+        "ok": true,
+        "error": null,
+        "status": "partial_diagnostic_only",
+        "limitations": [
+          "Stage timing is local wall/high-res time for one operation, not official full-flow latency.",
+          "JS heap excludes total process memory, WASM allocator RSS, and energy."
+        ]
+      },
+      {
+        "stage": "synthetic-sanitize",
+        "elapsedMs": 1.2132840000000016,
+        "startedAt": "2026-09-14T10:46:12.421Z",
+        "heapBefore": {
+          "available": false,
+          "usedJSHeapSize": null,
+          "totalJSHeapSize": null,
+          "jsHeapSizeLimit": null,
+          "note": "performance.memory unavailable in this runtime (common outside Chromium)."
+        },
+        "heapAfter": {
+          "available": false,
+          "usedJSHeapSize": null,
+          "totalJSHeapSize": null,
+          "jsHeapSizeLimit": null,
+          "note": "performance.memory unavailable in this runtime (common outside Chromium)."
+        },
+        "heapDeltaBytes": null,
+        "ok": true,
+        "error": null,
+        "status": "partial_diagnostic_only",
+        "limitations": [
+          "Stage timing is local wall/high-res time for one operation, not official full-flow latency.",
+          "JS heap excludes total process memory, WASM allocator RSS, and energy."
+        ]
+      },
+      {
+        "stage": "synthetic-collect",
+        "elapsedMs": 3.4984700000000046,
+        "startedAt": "2026-09-14T10:46:12.422Z",
+        "heapBefore": {
+          "available": false,
+          "usedJSHeapSize": null,
+          "totalJSHeapSize": null,
+          "jsHeapSizeLimit": null,
+          "note": "performance.memory unavailable in this runtime (common outside Chromium)."
+        },
+        "heapAfter": {
+          "available": false,
+          "usedJSHeapSize": null,
+          "totalJSHeapSize": null,
+          "jsHeapSizeLimit": null,
+          "note": "performance.memory unavailable in this runtime (common outside Chromium)."
+        },
+        "heapDeltaBytes": null,
+        "ok": true,
+        "error": null,
+        "status": "partial_diagnostic_only",
+        "limitations": [
+          "Stage timing is local wall/high-res time for one operation, not official full-flow latency.",
+          "JS heap excludes total process memory, WASM allocator RSS, and energy."
+        ]
+      }
+    ],
+    "note": "Diagnostic only. Not a process-memory or energy budget pass.",
+    "weightPercent": 20
+  },
+  "latency_gate": {
+    "metric": "task-latency",
+    "elapsedMs": 3029,
+    "budgetMs": 200,
+    "status": "fail",
+    "observed": null,
+    "note": "Full-flow latency 3029 ms exceeds 200 ms gate. Gate must not be weakened."
+  },
+  "ollama": {
+    "probed": [
+      "http://127.0.0.1:11434",
+      "http://127.0.0.1:11436"
+    ],
+    "reachable": false,
+    "planner_e2e": "skipped_optional"
+  },
+  "firefox": {
+    "binary": null,
+    "status": "unverified",
+    "shipped": [
+      "manifest.firefox.json",
+      "browser ?? chrome polyfill"
+    ]
+  },
+  "notes": [
+    "observed remains null — not a process RSS/CPU/energy budget pass.",
+    "Do not weaken the 200ms full-flow gate."
+  ]
+}

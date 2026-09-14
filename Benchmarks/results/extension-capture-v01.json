@@ -1,0 +1,156 @@
+{
+  "harness": "scripts/validate-extension-capture.mjs",
+  "wave": 2,
+  "scope": "Chromium MV3: production injection path + captureVisibleTab on host-permission tab + sanitized payload",
+  "started_at": "2026-09-14T10:45:27.319Z",
+  "extension_path": "Prototype/extension-build",
+  "server_origin": "http://127.0.0.1:9041",
+  "fixture": "http://127.0.0.1:9041/app/fixture.html",
+  "checks": {
+    "fixture_tab_ready": {
+      "status": "pass",
+      "detail": "GET /app/fixture.html -> 200; buttons=[\"Pending\",\"Completed\",\"Next\"]"
+    },
+    "popup_document_loaded": {
+      "status": "pass",
+      "detail": "popup.html -> 200; title=\"Sightline — local privacy review\""
+    },
+    "host_permission_tab_found": {
+      "status": "pass",
+      "detail": "tab 747797470 url=http://127.0.0.1:9041/app/fixture.html"
+    },
+    "production_execute_script": {
+      "status": "pass",
+      "detail": "chrome.scripting.executeScript injected content.js into the fixture tab"
+    },
+    "tabs_send_message_collect": {
+      "status": "pass",
+      "detail": "revision=99bc0f01-f6a4-4177-bf1b-6d9b7ba3b332, controls=3, labels=[\"Pending\",\"Completed\",\"Next\"]"
+    },
+    "sanitized_payload_excludes_pixels": {
+      "status": "pass",
+      "detail": "semantics JSON 1463 bytes; capture bytes excluded"
+    },
+    "capture_visible_tab_requires_activeTab": {
+      "status": "pass",
+      "detail": "Production manifest correctly refused capture without toolbar gesture: Either the '<all_urls>' or 'activeTab' permission is required."
+    },
+    "toolbar_action_ui": {
+      "status": "info",
+      "detail": "Toolbar glyph not driven. Production capture path depends on activeTab from user invoking the action."
+    },
+    "firefox_unverified": {
+      "status": "info",
+      "detail": "Firefox binary not exercised in this harness. Do not claim cross-browser extension readiness."
+    },
+    "manifest_capture_permissions": {
+      "status": "pass",
+      "detail": "activeTab + host_permissions for local server present (shipped; unchanged)"
+    },
+    "capture_visible_tab_harness_overlay": {
+      "status": "pass",
+      "detail": "png≈78174B in 37.6ms; outbound semantics 1463B exclude capture bytes"
+    }
+  },
+  "console_errors": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "page_errors": [
+    "popup: lastCaptureMs is not defined"
+  ],
+  "firefox_path": {
+    "status": "unverified",
+    "shipped": [
+      "Prototype/extension-build/manifest.firefox.json",
+      "browser ?? chrome polyfill in popup/content"
+    ],
+    "browser_binary": null,
+    "note": "Firefox binary not exercised in this harness. Do not claim cross-browser extension readiness."
+  },
+  "limitations": [
+    "Popup opened as chrome-extension:// document, not via toolbar action UI — activeTab user gesture is not simulated.",
+    "Production captureVisibleTab requires activeTab from the toolbar action; harness proves the refusal, then re-runs with a temporary <all_urls> overlay (shipped manifest unchanged).",
+    "No pairing-token planner / Ollama round-trip in this harness.",
+    "Not a PII-accuracy or full-flow <200ms measurement.",
+    "Chromium only."
+  ],
+  "server": {
+    "started_by_harness": true,
+    "origin": "http://127.0.0.1:9041"
+  },
+  "extension_id": "nkejlhpdhocmbapjdfaegfdipnjinekb",
+  "browser": {
+    "executablePath": "/home/box/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+    "version": "151.0.7922.34"
+  },
+  "drive": {
+    "ok": true,
+    "error": null,
+    "steps": {
+      "tab_query": {
+        "ok": true,
+        "tabCount": 3,
+        "matchedUrl": "http://127.0.0.1:9041/app/fixture.html",
+        "tabId": 747797470
+      },
+      "execute_script": {
+        "ok": true
+      },
+      "send_message_collect": {
+        "ok": true,
+        "error": null,
+        "controls": 3,
+        "revision": "99bc0f01-f6a4-4177-bf1b-6d9b7ba3b332",
+        "regions": 15,
+        "viewport": {
+          "width": 1280,
+          "height": 720
+        },
+        "labels": [
+          "Pending",
+          "Completed",
+          "Next"
+        ]
+      },
+      "sanitized_payload": {
+        "ok": true,
+        "bytes": 1463,
+        "controlLabels": [
+          "Pending",
+          "Completed",
+          "Next"
+        ],
+        "includesCaptureBytes": false
+      },
+      "capture_visible_tab": {
+        "ok": false,
+        "error": "Either the '<all_urls>' or 'activeTab' permission is required.",
+        "note": "Production manifest uses activeTab; without a toolbar user gesture Chrome refuses captureVisibleTab even with host_permissions."
+      }
+    }
+  },
+  "harness_overlay": {
+    "purpose": "Exercise chrome.tabs.captureVisibleTab when activeTab user gesture cannot be simulated",
+    "shipped_manifest_unchanged": true,
+    "temporary_permission_added": "<all_urls>",
+    "path": "/tmp/sightline-ext-overlay-VzsfML",
+    "extension_id": "nbcnhkaffhaamppboelkgpmoeaokibmp",
+    "result": {
+      "ok": true,
+      "captureMs": 37.60000000055879,
+      "byteLengthApprox": 78174,
+      "prefix": "data:image/png;base64,",
+      "sanitizedOk": true,
+      "outboundBytes": 1463,
+      "controls": 3
+    }
+  },
+  "finished_at": "2026-09-14T10:45:48.710Z",
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "informational": 2,
+    "total": 9
+  },
+  "verdict": "pass"
+}

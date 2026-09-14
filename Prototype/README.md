@@ -56,6 +56,11 @@ For a consistent backup, stop Node and copy the entire local `data/` directory t
 
 The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `SIGHTLINE_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
 
+
+## Wave 2 — capture harness + held-out fixtures (14 September 2026)
+
+Chromium harness `../scripts/validate-extension-capture.mjs` proves production `scripting.executeScript` injection, scene collect, sanitized semantics egress, the shipped `activeTab` gate for `captureVisibleTab`, and a temporary harness-only overlay that captures a real PNG without changing the shipped manifest. Held-out synthetic PII/redaction/utility scores land in `../Benchmarks/results/wave2-pii-redaction-utility-v01.json` (official score still null; <200 ms gate still fail). Client resource hooks: `shared/client-resources.mjs`. Firefox live run and Ollama planner E2E remain optional/unverified when binaries/services are absent.
+
 ## Wave 1 P0 — selective local preview (14 September 2026)
 
 The extension and web workspace now paint a **local selective pixelation preview** (sensitive face/private/field/media regions mosaicked; surrounding layout pixels kept) before any planner call. The outbound `/api/v1/plans` body remains the existing semantic scene JSON — `assertSanitizedPayload` rejects screenshot/dataUrl/pixel fields. Trust chip copy: "on this device" / "इस उपकरण पर". EN/HI string map is wired in the extension popup. Rubric hooks live in `shared/rubric-hooks.mjs`; official score stays null and the <200 ms full-flow gate stays failed.

@@ -1,3 +1,13 @@
+## Wave 2 — capture harness + held-out fixtures + resources — 14 September 2026
+
+- Chromium capture harness (`scripts/validate-extension-capture.mjs`): production inject/collect on `http://127.0.0.1:9041/app/fixture.html`; production `captureVisibleTab` correctly requires `activeTab`; harness-only temp `<all_urls>` overlay proves PNG capture + sanitized semantics egress (shipped manifest unchanged). Record: `Benchmarks/results/extension-capture-v01.json` (9 pass / 0 fail). Native refresh: `extension-native-v02.json`.
+- Held-out synthetic PII/redaction/utility fixtures: `Benchmarks/datasets/wave2-heldout-pii-fixtures.json` → `Benchmarks/results/wave2-pii-redaction-utility-v01.json`. Separates coverage vs preservation; includes intentional miss and over-redaction cases. Official score remains null.
+- Client resource hooks: `Prototype/shared/client-resources.mjs`; extension popup records capture-stage JS heap when available. Evidence: `wave2-client-resources-v01.json` (observed null).
+- Firefox: shipped manifest + polyfill only; live run unverified (`wave2-firefox-status-v01.json`).
+- Ollama unreachable — planner E2E skipped (`wave2-ollama-planner-status-v01.json`).
+- Automated tests: 92 pass / 0 fail. G11 full-flow <200ms remains **fail** — not weakened.
+- Still open for wave 3 / submission: real toolbar glyph click, Firefox live validation, WebPII/official saturation, human/domain review, packaging, live planner when Ollama available.
+
 ## Wave 1 P0 — extension + selective redaction — 14 September 2026
 
 - Implemented local selective pixelation (`Prototype/shared/selective-redaction.mjs`) for human review previews; non-sensitive pixels preserved; sensitive regions (face/private/field/media/password kinds) mosaicked. **Outbound API still forbids raw screenshots** — `assertSanitizedPayload` + existing Zod scene schema.

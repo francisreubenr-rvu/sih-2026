@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-11T08:21:58.662974+00:00",
+  "timestamp": "2026-09-14T10:46:00.000000+00:00",
   "scope": "complete SIH26171 competition entry",
   "status": "fail",
   "submission_ready": false,
@@ -31,9 +31,11 @@
       "id": "G03",
       "name": "Reproducible complete workflow",
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. The native MV3 extension now loads, injects and reaches its declared server in a real Chromium (8 passed / 0 failed / 1 informational, Benchmarks/results/extension-native-v01.json), but the toolbar capture path, Firefox and the full clean-setup-to-reload journey remain unproven.",
+      "reason": "Chromium MV3 load/inject/reach remains evidenced (extension-native-v02). Wave2 adds production scripting inject + collect and captureVisibleTab evidence (production activeTab gate + harness-only overlay PNG; extension-capture-v01.json). Toolbar glyph click, Firefox live run, and full clean-setup-to-reload journey remain unproven.",
       "missing_evidence": [
-        "Benchmarks/results/e2e.json"
+        "Benchmarks/results/e2e.json",
+        "Firefox live extension run",
+        "Toolbar glyph / true activeTab gesture automation"
       ]
     },
     {
@@ -102,7 +104,7 @@
       "id": "G11",
       "name": "Core response time",
       "status": "fail",
-      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms. Full workflow exceeds 200ms; a 108ms local capture does not satisfy this rule.",
+      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms historically. Wave2 capture-only overlay ~38ms does not satisfy full-flow <200ms. Gate not weakened.",
       "missing_evidence": [
         "Benchmarks/results/core-latency.json"
       ]

@@ -1,3 +1,16 @@
+## Round 12 — wave 2 capture path + held-out fixtures (14 September 2026)
+
+- [x] Chromium production injection path (`chrome.scripting.executeScript`) + `tabs.sendMessage` collect proven on host-permission fixture.
+- [x] Production `captureVisibleTab` permission gate recorded: refuses without toolbar `activeTab` / `<all_urls>` (honest).
+- [x] Harness-only temporary overlay exercises real PNG `captureVisibleTab`; outbound JSON excludes capture bytes; shipped manifest unchanged.
+- [x] Held-out synthetic fixture scoring written with separable coverage/preservation and intentional fail cases; official score null; latency gate fail retained.
+- [x] Client resource measurement hooks + extension heap/timing; observed remains null (no invented RSS/energy).
+- [ ] Toolbar action UI (glyph click / true activeTab user gesture) still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Ollama planner E2E not run (service unreachable); do not fake.
+
 ## Round 11 — wave 1 selective redaction + extension UI (14 September 2026)
 
 - [x] Selective local preview preserves non-sensitive pixels while pixelating face/private/field/media regions; unit coverage and preservation scores exist. Egress unchanged (semantics-only).

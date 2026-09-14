@@ -16,9 +16,12 @@
         "Benchmarks/results/webpii-raster-v02-summary.json",
         "Benchmarks/results/webpii-raster-worker-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json"
       ],
-      "latest_diagnostic_note": "Wave1 unit hook scoreVisualContext exists (fixture-only). Selective local preview preserves non-sensitive layout pixels for human review; egress remains semantic wireframe. Interactive-control accuracy on held-out pages still unmeasured."
+      "latest_diagnostic_note": "Wave2 held-out synthetic fixtures report mean visual precision 1.0 / recall ~0.78 (fixture-only). Extension collect on real fixture exports 3 allow-listed controls. Not interactive held-out page saturation."
     },
     {
       "id": "pii-detection",
@@ -31,9 +34,12 @@
         "Benchmarks/results/webpii-raster-v02-summary.json",
         "Benchmarks/results/webpii-raster-worker-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json"
       ],
-      "latest_diagnostic_note": "Wave1 expands classifySensitive with Aadhaar/PAN telemetry and keeps UltraFace face-only. Unit instance P/R hooks exist; external raster recall remains 0 for faces on WebPII slice. Not a saturated PII classifier."
+      "latest_diagnostic_note": "Wave2 held-out fixtures mean instance recall ~0.67 / precision 0.8 including intentional detector-miss case. UltraFace still face-only; external WebPII raster recall unchanged. Not a saturated PII classifier."
     },
     {
       "id": "redaction",
@@ -46,9 +52,12 @@
         "Benchmarks/results/webpii-raster-v02-summary.json",
         "Benchmarks/results/webpii-raster-worker-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json"
       ],
-      "latest_diagnostic_note": "Wave1 selective pixelation: unit fixture shows separable piiPixelCoverage vs nonPiiPreservation. Full-image exclusion diagnostic retained historically. Selective preview is local-only; not approved as raster egress."
+      "latest_diagnostic_note": "Wave2 selective scores separate mean piiPixelCoverage ~0.83 vs nonPiiPreservation ~0.82 on held-out synthetics; full-image over-redaction and miss cases retained. Local preview only; egress semantics-only."
     },
     {
       "id": "client-resources",
@@ -63,9 +72,12 @@
         "Benchmarks/results/webpii-raster-v03-summary.json",
         "Benchmarks/results/webpii-raster-worker-v02-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json"
       ],
-      "latest_diagnostic_note": "Unchanged: OCR/NER p95 and worker diagnostics only. No new process-memory measurement in wave 1."
+      "latest_diagnostic_note": "Wave2 adds shared client-resources hooks and extension capture-stage JS heap/timing when performance.memory exists. observed still null; no process RSS/CPU/energy claim. See wave2-client-resources-v01.json."
     },
     {
       "id": "task-latency",
@@ -74,13 +86,17 @@
       "observed": null,
       "status": "fail",
       "diagnostic_note": "Provider pilot and continuous task recording exist, but no 100-attempt full-flow latency distribution. Under-200ms gate remains failed.",
-      "latest_diagnostic_note": "Under-200ms full-flow gate remains fail. Wave1 capture timing is recorded in extension metrics text when run; no 100-attempt distribution. Do not weaken the gate.",
+      "latest_diagnostic_note": "Under-200ms full-flow gate remains fail. Overlay captureVisibleTab ~38ms is capture-only, not full-flow. Do not weaken.",
       "diagnostic_evidence": [
-        "Benchmarks/results/browser-experiments-2026-09-11/summary.json"
+        "Benchmarks/results/browser-experiments-2026-09-11/summary.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json"
       ]
     }
   ],
   "score": null,
-  "scoreReason": "No authoritative normalization and no complete dataset measurements. Wave1 adds unit-fixture hooks only. Do not estimate judge probability.",
-  "wave1_updated": "2026-09-14"
+  "scoreReason": "No authoritative normalization. Wave2 adds held-out synthetic fixtures + Chromium capture harness diagnostics only. Do not estimate judge probability.",
+  "wave1_updated": "2026-09-14",
+  "wave2_updated": "2026-09-14"
 }
