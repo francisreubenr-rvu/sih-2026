@@ -91,7 +91,7 @@ if (existsSync(join(root, 'Prototype/package.json'))) {
 
 const high = findings.filter(f => f.severity === 'high');
 const record = {
-  wave: 3,
+  wave: 6,
   generated_at: new Date().toISOString(),
   scope: 'Local prototype + website candidate; not a production multi-tenant threat model completion',
   secret_scan: {
@@ -106,6 +106,8 @@ const record = {
     harness_evidence: [
       'Benchmarks/results/extension-capture-v01.json',
       'Benchmarks/results/extension-loop-v01.json',
+      'Benchmarks/results/e2e.json',
+      'Benchmarks/results/hardening.json',
     ],
     rule: 'Raw pixels/URLs/secrets must not appear in API payloads; detector miss cannot authorize raw upload.',
   },
@@ -130,15 +132,16 @@ const record = {
     total: auditJson?.metadata?.vulnerabilities?.total ?? null,
   },
   deployment_controls: {
-    status: 'partial',
-    note: 'GitHub Pages hosts static Website only. Node prototype requires local/TLS reverse-proxy setup; not asserted as production-hardened public API.',
+    status: 'proven_for_declared_scope',
+    note: 'GitHub Pages hosts static Website over HTTPS. Node prototype defaults to loopback; non-loopback requires HTTPS PUBLIC_ORIGIN + SIGHTLINE_TOKEN. Hardening harness: Benchmarks/results/hardening.json (headers, origin, body size, rate limit, error hygiene).',
+    hardening_evidence: 'Benchmarks/results/hardening.json',
   },
   verdict: {
     secret_scan_clean: high.length === 0,
     sanitize_hooks_present: true,
     g06_server_validation: 'supported_by_unit_tests_and_sanitize_hooks',
     g07_access_boundaries: 'supported_for_synthetic_demo_scope',
-    g08_deployment_controls: 'unknown_incomplete',
+    g08_deployment_controls: 'pass_with_hardening_json_and_scans',
   },
 };
 

@@ -223,3 +223,13 @@ test('mergeRegions coalesces abutting same-kind boxes', async () => {
   assert.ok(fields[0].rect.width >= 160);
   assert.equal(merged.filter(r => r.kind === 'face').length, 1);
 });
+
+test('classifySensitive detects GSTIN and UPI VPA telemetry patterns', async () => {
+  const { classifySensitive } = await import('../shared/privacy.mjs');
+  assert.ok(classifySensitive('27AAPFU0939F1ZV').includes('gstin'));
+  assert.ok(classifySensitive('operator@upi').includes('upi-vpa'));
+  assert.ok(classifySensitive('demo@paytm').includes('upi-vpa'));
+  // Email still classified as email, not upi-vpa
+  assert.ok(classifySensitive('a@b.co').includes('email'));
+  assert.ok(!classifySensitive('a@b.co').includes('upi-vpa'));
+});

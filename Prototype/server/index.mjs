@@ -14,6 +14,8 @@ const token=process.env.SIGHTLINE_TOKEN||readFileSync(tokenFile,'utf8').trim();
 const port=Number(process.env.PORT||9041);
 const host=process.env.HOST||'127.0.0.1';
 if(host!=='127.0.0.1' && (!process.env.SIGHTLINE_TOKEN||!process.env.PUBLIC_ORIGIN?.startsWith('https://'))) throw new Error('Public hosting requires SIGHTLINE_TOKEN and an HTTPS PUBLIC_ORIGIN');
+// Production posture: refuse non-loopback bind when NODE_ENV=production without HTTPS origin (defense in depth).
+if(process.env.NODE_ENV==='production' && host!=='127.0.0.1' && !process.env.PUBLIC_ORIGIN?.startsWith('https://')) throw new Error('NODE_ENV=production requires HTTPS PUBLIC_ORIGIN when binding beyond loopback');
 const db=new DatabaseSync(`${dataDir}/audit.sqlite`);
 db.exec('PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS audit(id TEXT PRIMARY KEY, createdAt TEXT NOT NULL, model TEXT NOT NULL, mode TEXT NOT NULL, controls INTEGER NOT NULL, regions INTEGER NOT NULL, latencyMs REAL NOT NULL, actionType TEXT NOT NULL)');
 const insert=db.prepare('INSERT INTO audit VALUES (?,?,?,?,?,?,?,?)');

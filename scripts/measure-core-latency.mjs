@@ -31,13 +31,40 @@ function runOnce() {
     buf[i] = 30; buf[i + 1] = 40; buf[i + 2] = 50; buf[i + 3] = 255;
   }
   const t0 = performance.now();
+  // Stage: classify telemetry (DOM/text heuristic stand-in)
+  const labels = ['Pending', 'Review', 'Next', 'Approve transfer', '27AAPFU0939F1ZV', 'demo@upi'];
+  let allow = 0;
+  for (const l of labels) if (/^(Pending|Review|Next|Cancel|Help|Back|Compose|Archive|OK|Continue|Submit)$/i.test(l)) allow++;
+  void allow;
+  // Stage: selective mosaic (optimized subsample average)
   redactSelective(buf, W, H, regions, { blockSize: 8, padding: 0 });
-  // Cheap DOM-heuristic stand-in: classify a few label strings.
+  // Stage: sanitize-shaped object build (allocation only)
+  const sanitized = { scheme: 'sightline-semantic-v1', controls: allow, regions: regions.length };
+  void sanitized;
+  return performance.now() - t0;
+}
+
+/** Multi-stage timing for judge-facing breakdown (Node microbench only). */
+function runStagedOnce() {
+  const buf = new Uint8ClampedArray(W * H * 4);
+  for (let i = 0; i < buf.length; i += 4) {
+    buf[i] = 30; buf[i + 1] = 40; buf[i + 2] = 50; buf[i + 3] = 255;
+  }
+  const stages = [];
+  let t = performance.now();
   const labels = ['Pending', 'Review', 'Next', 'Approve transfer'];
   let allow = 0;
   for (const l of labels) if (/^(Pending|Review|Next|Cancel|Help|Back|Compose|Archive|OK|Continue|Submit)$/i.test(l)) allow++;
   void allow;
-  return performance.now() - t0;
+  stages.push({ name: 'dom_allowlist_heuristic', elapsedMs: performance.now() - t });
+  t = performance.now();
+  redactSelective(buf, W, H, regions, { blockSize: 8, padding: 0 });
+  stages.push({ name: 'selective_redact_mosaic', elapsedMs: performance.now() - t });
+  t = performance.now();
+  const sanitized = { scheme: 'sightline-semantic-v1', controls: allow, regions: regions.length, revision: 'bench' };
+  void JSON.stringify(sanitized);
+  stages.push({ name: 'sanitize_serialize_proxy', elapsedMs: performance.now() - t });
+  return stages;
 }
 
 const warmSamples = [];
@@ -55,8 +82,18 @@ try {
   }
 } catch { /* optional */ }
 
+// Staged microbench for judge breakdown (warm + measured)
+for (let i = 0; i < 5; i++) runStagedOnce();
+const stagedRuns = [];
+for (let i = 0; i < 40; i++) stagedRuns.push(runStagedOnce());
+const stageNames = stagedRuns[0].map(s => s.name);
+const stageP95 = Object.fromEntries(stageNames.map(name => {
+  const vals = stagedRuns.map(run => run.find(s => s.name === name).elapsedMs);
+  return [name, percentile(vals, 95)];
+}));
+
 const privacyBreakdown = summarizeLatencyBreakdown({
-  stages: [{ name: 'selective_redact_heuristic', elapsedMs: percentile(samples, 95) }],
+  stages: stageNames.map(name => ({ name, elapsedMs: stageP95[name] })),
   mode: OPERATING_MODES.privacy_only,
 });
 const plannerBreakdown = summarizeLatencyBreakdown({
@@ -66,7 +103,7 @@ const plannerBreakdown = summarizeLatencyBreakdown({
 });
 
 const record = buildLatencyDistributionRecord({
-  name: 'wave5-core-latency',
+  name: 'wave6-core-latency',
   samples,
   warmups: WARM,
   mode: OPERATING_MODES.planner_assisted,
@@ -78,6 +115,7 @@ const record = buildLatencyDistributionRecord({
     'G11 acceptance requires p95 full-flow <200ms over ≥100 attempts after 10 warmups including model/network/action. That remains fail.',
     'Privacy-only skip-LLM path implemented in extension popup; does not constitute a G11 pass.',
     'Detector session cache + optional wireframe preview reduce repeat local cost; planner path still seconds.',
+    'Wave6: mosaic subsample stride-2 for large blocks; staged Node microbench (dom heuristic / mosaic / sanitize proxy).',
   ],
 });
 
@@ -91,14 +129,22 @@ record.strategies = {
 record.breakdowns = { privacy_only: privacyBreakdown, planner_assisted: plannerBreakdown };
 record.wave3_browser_protect_single_run_ms = 188;
 record.judge_latency_breakdown = {
-  title: 'Latency breakdown for judges (Wave5)',
+  title: 'Latency breakdown for judges (Wave6)',
   budgetMs: FULL_FLOW_LATENCY_MS,
+  node_stage_p95_ms: stageP95,
+  optimizations: [
+    'privacy_only_skip_llm (extension default)',
+    'detector_session_cache',
+    'optional_wireframe_preview',
+    'mosaic_subsample_average_stride2_for_large_blocks',
+  ],
   paths: [
     {
       name: 'privacy_only_local_protect',
       includes: ['capture (browser)', 'DOM collect', 'UltraFace (optional cache)', 'selective/wireframe preview', 'sanitize assert', 'human review UI'],
       excludes: ['Ollama/Qwen planner', 'network plan round-trip', 'confirm/execute'],
       node_microbench_p95_ms: record.localProtectLoop.p95,
+      node_stage_p95_ms: stageP95,
       browser_single_run_protect_ms: 188,
       g11_claim: 'NOT a G11 pass — privacy-only omits planner/confirm required by full-flow definition',
     },
@@ -107,11 +153,12 @@ record.judge_latency_breakdown = {
       includes: ['local protect', 'local LLM plan', 'human confirm', 'optional execute'],
       historical_samples_ms: [...new Set(historicalFullFlowMs)],
       p95_ms: record.fullFlowHistorical.p95,
+      dominant_cost: 'local LLM generation (seconds)',
       g11_status: 'fail',
       budget_weakened: false,
     },
   ],
-  note: 'Organizers requiring <200ms full-flow must treat planner-assisted path as fail until measured under budget. Do not substitute privacy-only ms.',
+  note: 'Organizers requiring <200ms full-flow must treat planner-assisted path as fail until measured under budget. Do not substitute privacy-only ms. Wave6 adds stage p95 breakdown + mosaic subsample optimization.',
 };
 
 record.acceptance = {

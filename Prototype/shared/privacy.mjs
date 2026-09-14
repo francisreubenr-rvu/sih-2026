@@ -25,6 +25,10 @@ export function classifySensitive(text) {
   if (/\b[A-Z]{3}\d{7}\b/i.test(text)) found.push('voter-id');
   // Card-like 13–19 digit runs (Luhn not required; telemetry / mosaic hint only).
   if (/\b(?:\d[ -]*?){13,19}\b/.test(text.replace(/\s+/g, ' '))) found.push('card-like');
+  // GSTIN: 15-char Indian GST style — telemetry only.
+  if (/\b\d{2}[A-Z]{5}\d{4}[A-Z][A-Z0-9]Z[A-Z0-9]\b/i.test(text)) found.push('gstin');
+  // UPI VPA-like local@psp without a DNS TLD — telemetry only.
+  if (/\b[\w.+-]{2,}@(?:upi|ybl|ibl|axl|paytm|okaxis|oksbi|okhdfcbank)\b/i.test(text)) found.push('upi-vpa');
   if (/(?:\+?\d[\d\s().-]{7,}\d)/.test(text)) found.push('number');
   if (/\b(?:password|secret|token|account|address|passport|aadhaar|आधार|pan|पैन|ifsc|voter|otp|cvv|pin)\b/i.test(text)) found.push('sensitive-label');
   return found;

@@ -1,4 +1,4 @@
-# Human evaluation protocol (G20) — Wave 5
+# Human evaluation protocol (G20) — Wave 6
 
 **Status:** Protocol template only. No non-author participant results are recorded. Do not mark G20 pass.
 
@@ -36,3 +36,8 @@ Prompts: privacy understanding, trust chip clarity, preview usefulness, honest-l
 ## Team-only rehearsal
 
 Record separately under `team_rehearsal` — never counted toward G20 acceptance.
+
+
+## Forms
+
+Participant and reviewer sheets: `Docs/human-evaluation-forms.md`.

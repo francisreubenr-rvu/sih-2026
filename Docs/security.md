@@ -27,3 +27,22 @@ Public GitHub Pages remains **static HTTPS** only (no Node). Local prototype dep
 | Multi-tenant auth | Out of scope |
 
 G08 stays **unknown** until production Node hardening is verified. Do not treat Pages HTTPS as prototype API hardening.
+
+## Wave 6 Node/API hardening (14 September 2026)
+
+Evidence harness: `scripts/wave6-hardening-evidence.mjs` → `Benchmarks/results/hardening.json`.
+
+| Control | Proof |
+|---------|--------|
+| Security headers | `nosniff`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, CORP/COOP, CSP `frame-ancestors` |
+| Origin allowlist | Untrusted `Origin` → 403 `origin_denied` |
+| Bearer auth | Missing token → 401 |
+| Body size | >256 KiB → 413 `too_large` |
+| Rate limit | 21st POST/min → 429 + `Retry-After: 60` |
+| Error hygiene | Fixed message catalog; no stack / provider endpoint leakage |
+| Screenshot field | Extra `screenshot` → 422 before provider |
+| Public HTTPS | GitHub Pages static site; Node loopback default; non-loopback requires `HTTPS` `PUBLIC_ORIGIN` + `SIGHTLINE_TOKEN` |
+| Production debug | Off for API error bodies; `NODE_ENV=production` non-loopback guard in `server/index.mjs` |
+| Scans | `security.json` + `dependency-audit.json` re-run each wave |
+
+G08 may pass for this **declared scope** when hardening.json, security.json, and dependency-audit.json are clean. This is not a multi-tenant production threat-model completion.

@@ -1,3 +1,18 @@
+## Round 16 — wave 6 hardening + a11y + latency (14 September 2026)
+
+- [x] Node/API hardening evidence harness (headers, origin, size, rate limit, error hygiene); G08 pass on declared scope.
+- [x] axe on Website + extension popup; contrast/reveal fixes; G09/G10 remain unknown (no fake WCAG pass).
+- [x] Latency stage instrumentation + mosaic subsample; G11 fail retained.
+- [x] Expanded held-out fixtures to 24; GSTIN/UPI telemetry; official score null.
+- [x] G14/G20 human-path templates without marking pass.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) participants not yet collected.
+- [ ] G05 full 5-minute capacity floor still open.
+
 ## Round 15 — wave 5 e2e + saturation + gate evidence (14 September 2026)
 
 - [x] E2E harness maximizes automation + screenshotable synthetic flow; activeTab gate retained; toolbar glyph not faked.

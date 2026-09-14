@@ -1,3 +1,15 @@
+## Wave 6 — Node hardening + a11y + latency + fixtures — 14 September 2026
+
+- G08: `scripts/wave6-hardening-evidence.mjs` → `hardening.json` (8/8); security headers + production guards; G08 → **pass** (declared local scope).
+- G09/G10: axe Website + extension popup + prototype (0 violations after contrast/reveal fixes); CSS zoom approx; statuses **unknown**.
+- G11: stage p95 + mosaic subsample; full-flow **fail** retained; judge breakdown enriched.
+- WebPII-style: 24 held-out synthetic cases → `wave6-pii-redaction-utility-v01.json`; GSTIN/UPI telemetry; official score **null**.
+- G05: load.json concurrent health + 1000 durable rows (wall-clock short) — **unknown**.
+- G14/G20: rehearsal checklist + human forms templates — **unknown** (no fake human passes).
+- Security rescan 0 high; Ollama skipped; Firefox live unverified.
+- Automated tests: **112 pass / 0 fail**.
+- Counts → pass **13** / fail **1** / unknown **6**. submission_ready **false**.
+
 ## Wave 5 — e2e maximize + redaction saturation + gate evidence — 14 September 2026
 
 - G03: `scripts/validate-extension-e2e.mjs` → `e2e.json` + `wave5-demo-screens/` (9/9 harness pass). Toolbar glyph still human-required; G03 remains **unknown**.

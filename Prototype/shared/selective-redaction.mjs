@@ -38,18 +38,21 @@ export function pixelateRegion(data, width, height, rect, blockSize = 12) {
     for (let bx = region.x; bx < region.x + region.width; bx += blockSize) {
       const bw = Math.min(blockSize, region.x + region.width - bx);
       const bh = Math.min(blockSize, region.y + region.height - by);
+      // Subsample average for large blocks (stride 2) — faster local preview, same mosaic intent.
+      const stride = (bw >= 8 && bh >= 8) ? 2 : 1;
       let r = 0, g = 0, b = 0, a = 0, n = 0;
-      for (let y = by; y < by + bh; y++) {
-        for (let x = bx; x < bx + bw; x++) {
+      for (let y = by; y < by + bh; y += stride) {
+        for (let x = bx; x < bx + bw; x += stride) {
           const i = (y * width + x) * 4;
           r += data[i]; g += data[i + 1]; b += data[i + 2]; a += data[i + 3]; n++;
         }
       }
       if (!n) continue;
-      r = Math.round(r / n); g = Math.round(g / n); b = Math.round(b / n); a = Math.round(a / n);
+      r = (r / n) | 0; g = (g / n) | 0; b = (b / n) | 0; a = (a / n) | 0;
       for (let y = by; y < by + bh; y++) {
+        const row = y * width;
         for (let x = bx; x < bx + bw; x++) {
-          const i = (y * width + x) * 4;
+          const i = (row + x) * 4;
           data[i] = r; data[i + 1] = g; data[i + 2] = b; data[i + 3] = a;
           covered++;
         }

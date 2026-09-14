@@ -90,7 +90,7 @@
         "Benchmarks/results/load.json"
       ],
       "status": "unknown",
-      "reason": "Wave5 load.json records a short concurrent health + malformed-reject probe only. Full 5-minute / 1000-record durable capacity floor not executed \u2014 status stays unknown."
+      "reason": "Wave6 load.json: 20 concurrent health workers (1000 ok), 1000 durable audit rows, 1000 API writes under simulated rate windows. Wall-clock seconds, not 5-minute soak \u2014 status stays unknown."
     },
     {
       "id": "G06",
@@ -130,8 +130,8 @@
         "Benchmarks/results/security.json",
         "Benchmarks/results/dependency-audit.json"
       ],
-      "status": "unknown",
-      "reason": "dependency-audit.json + security.json present (0 critical/high omit=dev; 0 high secrets). Pages is static HTTPS. Node prototype TLS reverse-proxy / production hardening incomplete \u2014 status stays unknown. See Docs/security.md Wave 5 checklist."
+      "status": "pass",
+      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification."
     },
     {
       "id": "G09",
@@ -145,7 +145,7 @@
         "Docs/accessibility-review.md"
       ],
       "status": "unknown",
-      "reason": "accessibility.json axe probe + Docs/accessibility-review.md + Lighthouse a11y 100 exist. Full WCAG 2.1 A/AA criterion-level + AT review incomplete \u2014 status stays unknown."
+      "reason": "Wave6 accessibility.json axe: Website + extension popup + prototype pages 0 violations (after contrast fix + reveal-ready visibility). Docs/accessibility-review.md updated. Full WCAG criterion-level + AT review incomplete \u2014 status stays unknown."
     },
     {
       "id": "G10",
@@ -158,7 +158,7 @@
         "Benchmarks/results/browser-review.json"
       ],
       "status": "unknown",
-      "reason": "browser-review.json records 320/390/1440 website viewports without document overflow and reduced-motion checks. Prototype fixture 390px checks exist in browser-experiments. 200% zoom / complete motion-safety review incomplete \u2014 status stays unknown."
+      "reason": "browser-review.json Wave6 adds CSS zoom 200% approximation for Website + popup. Native 200% zoom / complete motion-safety incomplete \u2014 status stays unknown."
     },
     {
       "id": "G11",
@@ -171,7 +171,7 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "core-latency.json (Wave5) keeps planner-inclusive full-flow fail vs 200ms. Judge_latency_breakdown separates privacy-only local protect from planner-assisted path. Budget not weakened. Evidence: Benchmarks/results/core-latency.json."
+      "reason": "core-latency.json (Wave6) keeps planner-inclusive full-flow fail vs 200ms. Judge_latency_breakdown adds stage p95 + mosaic subsample optimization. Budget not weakened."
     },
     {
       "id": "G12",
@@ -212,7 +212,7 @@
         "Benchmarks/results/demo-rehearsal.json"
       ],
       "status": "unknown",
-      "reason": "Docs/demo-runbook.md, Docs/demo-fallback.webm (from verified recording), and demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
+      "reason": "Docs/demo-rehearsal-checklist.md + demo-fallback.webm + demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
     },
     {
       "id": "G15",
@@ -294,7 +294,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Docs/human-evaluation-protocol.md + Benchmarks/results/human-evaluation.json publish the protocol with zero non-author participants recorded \u2014 status stays unknown."
+      "reason": "Docs/human-evaluation-protocol.md + Docs/human-evaluation-forms.md + human-evaluation.json publish templates with zero non-author participants \u2014 status stays unknown."
     }
   ],
   "iteration_policy": {
