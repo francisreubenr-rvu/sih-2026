@@ -130,3 +130,16 @@ export function summarizeProtectLoop({
     privacy: 'egress_semantics_only',
   };
 }
+
+/**
+ * Mark a privacy-only loop complete at review (no planner).
+ * @param {ReturnType<typeof summarizeProtectLoop>} summary
+ */
+export function privacyOnlyCompletion(summary = {}) {
+  return {
+    ...summarizeProtectLoop(summary),
+    mode: 'privacy_only',
+    plannerSkipped: true,
+    completeWithoutNetwork: true,
+  };
+}

@@ -6,6 +6,7 @@ import {
   buildSanitizedPlanRequest,
   advanceStage,
   summarizeProtectLoop,
+  privacyOnlyCompletion,
   TOOLBAR_ACTIVETAB_NOTE,
 } from '../shared/capture-loop.mjs';
 
@@ -80,4 +81,16 @@ test('summarizeProtectLoop never embeds pixels and documents toolbar honesty', (
   assert.ok(!JSON.stringify(summary).includes('data:image'));
   assert.match(TOOLBAR_ACTIVETAB_NOTE.automation, /toolbar glyph/i);
   assert.match(TOOLBAR_ACTIVETAB_NOTE.hi, /टूलबार/);
+});
+
+test('privacyOnlyCompletion marks planner skipped without pixels', () => {
+  const done = privacyOnlyCompletion({
+    stagesCompleted: ['review'],
+    captureMs: 50,
+    sanitized: true,
+  });
+  assert.equal(done.mode, 'privacy_only');
+  assert.equal(done.plannerSkipped, true);
+  assert.equal(done.completeWithoutNetwork, true);
+  assert.ok(!JSON.stringify(done).includes('data:image'));
 });

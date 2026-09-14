@@ -45,6 +45,11 @@
         <option value="next-page" data-i18n="task_next">Go to the next page</option>
       </select>
     </label>
+    <fieldset class="mode-row">
+      <legend data-i18n="mode_legend">Operating mode</legend>
+      <label class="check"><input id="mode-privacy" type="checkbox" checked> <span data-i18n="mode_privacy">Privacy-only (skip planner)</span></label>
+      <label class="check"><input id="preview-wireframe" type="checkbox"> <span data-i18n="mode_wireframe">Faster wireframe preview</span></label>
+    </fieldset>
     <p id="status" role="status" data-i18n="status_ready">Capture the active tab. Filtering runs here before any network call.</p>
     <button id="capture" type="button" data-i18n="capture">Capture &amp; protect</button>
     <div class="preview-meta">

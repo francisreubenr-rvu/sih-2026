@@ -7,13 +7,21 @@ import {
   classifyCaptureError,
   advanceStage,
   summarizeProtectLoop,
+  privacyOnlyCompletion,
   TOOLBAR_ACTIVETAB_NOTE,
 } from '../shared/capture-loop.mjs';
+import {
+  OPERATING_MODES,
+  resolveOperatingMode,
+  createDetectorCache,
+  resolvePreviewStrategy,
+} from '../shared/latency-strategy.mjs';
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = s => document.querySelector(s);
 const endpoint = 'http://127.0.0.1:9041/api/v1/plans';
-let prepared, plan, tabId, detector, busy = false, lang = 'en', lastCaptureMs = null;
+let prepared, plan, tabId, busy = false, lang = 'en', lastCaptureMs = null;
+const detectorCache = createDetectorCache();
 let resourceStages = [];
 let currentStage = 'idle';
 let lastLoopSummary = null;
@@ -50,6 +58,10 @@ const STRINGS = {
     err_activeTab: 'Tab capture needs the toolbar gesture. Close this window and open Sightline from the toolbar icon, then Capture again.',
     err_connection: 'Page connection lost. Retrying injection…',
     err_restricted: 'This page blocks extension capture. Open the local fixture or an allowed http(s) page.',
+    mode_legend: 'Operating mode',
+    mode_privacy: 'Privacy-only (skip planner)',
+    mode_wireframe: 'Faster wireframe preview',
+    privacy_done: 'Privacy-only review complete. No network call. Enable planner mode to send protected layout.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
@@ -82,6 +94,10 @@ const STRINGS = {
     err_activeTab: 'टैब कैप्चर के लिए टूलबार जेस्चर चाहिए। इस विंडो को बंद कर टूलबार आइकन से Sightline खोलें, फिर फिर से कैप्चर करें।',
     err_connection: 'पृष्ठ कनेक्शन खो गया। इंजेक्शन पुनः प्रयास…',
     err_restricted: 'यह पृष्ठ एक्सटेंशन कैप्चर रोकता है। स्थानीय फ़िक्स्चर या अनुमत पृष्ठ खोलें।',
+    mode_legend: 'ऑपरेटिंग मोड',
+    mode_privacy: 'केवल गोपनीयता (प्लानर छोड़ें)',
+    mode_wireframe: 'तेज़ वायरफ़्रेम पूर्वावलोकन',
+    privacy_done: 'गोपनीयता-केवल समीक्षा पूर्ण। कोई नेटवर्क कॉल नहीं। सुरक्षित लेआउट भेजने के लिए प्लानर मोड चालू करें।',
   },
 };
 
@@ -223,10 +239,11 @@ $('#capture').addEventListener('click', async () => {
     try { await api.tabs.update(tabId, { active: true }); } catch { /* ignore */ }
     await ensureInjected(tabId);
     completed.push('inject');
-    detector ??= await createVisionDetector({
+    const { detector, cacheHit } = await detectorCache.get(() => createVisionDetector({
       runtimeUrl: api.runtime.getURL('models/ort/ort.wasm.min.mjs'),
       modelUrl: api.runtime.getURL('models/ultraface-rfb320.onnx'),
-    });
+    }));
+    void cacheHit;
     const captureStarted = performance.now();
     setStage('collect');
     const scene = await call({ kind: 'collect' });
@@ -262,17 +279,24 @@ $('#capture').addEventListener('click', async () => {
 
     const previewCtx = $('#preview').getContext('2d');
     let previewMeta;
+    const previewPref = $('#preview-wireframe')?.checked ? 'wireframe' : 'selective';
+    const previewStrategy = resolvePreviewStrategy(previewPref);
     try {
-      const scaled = new OffscreenCanvas(scene.viewport.width, scene.viewport.height);
-      const sctx = scaled.getContext('2d', { willReadFrequently: true });
-      sctx.drawImage(bitmap, 0, 0, scene.viewport.width, scene.viewport.height);
-      const source = sctx.getImageData(0, 0, scene.viewport.width, scene.viewport.height);
-      previewMeta = paintSelectivePreview(previewCtx, source, prepared.scene, {
-        blockSize: 14,
-        paintFallback: paintScene,
-      });
-      scaled.width = 0;
-      scaled.height = 0;
+      if (!previewStrategy.useSelectiveMosaic) {
+        paintScene(previewCtx, prepared.scene);
+        previewMeta = { mode: 'wireframe', localOnly: true, elapsedMs: 0 };
+      } else {
+        const scaled = new OffscreenCanvas(scene.viewport.width, scene.viewport.height);
+        const sctx = scaled.getContext('2d', { willReadFrequently: true });
+        sctx.drawImage(bitmap, 0, 0, scene.viewport.width, scene.viewport.height);
+        const source = sctx.getImageData(0, 0, scene.viewport.width, scene.viewport.height);
+        previewMeta = paintSelectivePreview(previewCtx, source, prepared.scene, {
+          blockSize: 14,
+          paintFallback: paintScene,
+        });
+        scaled.width = 0;
+        scaled.height = 0;
+      }
     } catch {
       paintScene(previewCtx, prepared.scene);
       previewMeta = { mode: 'wireframe-fallback', localOnly: true };
@@ -313,8 +337,26 @@ $('#capture').addEventListener('click', async () => {
       `${result.detections.length} face(s) · ${result.inferenceMs.toFixed(1)} ms WASM · ` +
       `${prepared.scene.controls.length} controls · ${prepared.scene.regions.length} regions · ` +
       `preview ${previewMeta.mode}${preserved} · capture ${lastCaptureMs.toFixed(0)} ms${heapTxt}`;
-    $('#plan').disabled = false;
-    status(t('review'));
+    const privacyOnly = Boolean($('#mode-privacy')?.checked);
+    const opMode = resolveOperatingMode(privacyOnly ? OPERATING_MODES.privacy_only : OPERATING_MODES.planner_assisted);
+    if (opMode.skipPlanner) {
+      lastLoopSummary = privacyOnlyCompletion({
+        ...lastLoopSummary,
+        stagesCompleted: completed,
+        captureMs: lastCaptureMs,
+        inferenceMs: result.inferenceMs,
+        controlCount: prepared.scene.controls.length,
+        regionCount: prepared.scene.regions.length,
+        previewMode: previewMeta.mode,
+        sanitized: true,
+        toolbarGesture: 'assumed_from_action_popup',
+      });
+      $('#plan').disabled = true;
+      status(t('privacy_done'));
+    } else {
+      $('#plan').disabled = false;
+      status(t('review'));
+    }
   } catch (e) {
     clear();
     status(formatCaptureFailure(e));
@@ -326,6 +368,10 @@ $('#capture').addEventListener('click', async () => {
 
 $('#plan').addEventListener('click', async () => {
   if (busy || !prepared) return;
+  if ($('#mode-privacy')?.checked) {
+    status(t('privacy_done'));
+    return;
+  }
   setBusy(true);
   $('#plan').disabled = true;
   try {
