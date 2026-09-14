@@ -56,6 +56,10 @@ For a consistent backup, stop Node and copy the entire local `data/` directory t
 
 The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `SIGHTLINE_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
 
+## Wave 1 P0 — selective local preview (14 September 2026)
+
+The extension and web workspace now paint a **local selective pixelation preview** (sensitive face/private/field/media regions mosaicked; surrounding layout pixels kept) before any planner call. The outbound `/api/v1/plans` body remains the existing semantic scene JSON — `assertSanitizedPayload` rejects screenshot/dataUrl/pixel fields. Trust chip copy: "on this device" / "इस उपकरण पर". EN/HI string map is wired in the extension popup. Rubric hooks live in `shared/rubric-hooks.mjs`; official score stays null and the <200 ms full-flow gate stays failed.
+
 ## Known limitations
 
 - Current export is conservative semantic layout, not a redacted original screenshot. Useful text/images are removed. Visual-context accuracy and redaction precision need dataset evaluation.

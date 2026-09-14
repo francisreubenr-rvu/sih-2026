@@ -1,3 +1,14 @@
+## Round 11 — wave 1 selective redaction + extension UI (14 September 2026)
+
+- [x] Selective local preview preserves non-sensitive pixels while pixelating face/private/field/media regions; unit coverage and preservation scores exist. Egress unchanged (semantics-only).
+- [x] Extension popup: DigiLocker-credible styling, trust chip, EN/HI strings, `browser ?? chrome`, sanitize assert before fetch.
+- [x] Rubric hooks land with honest `unit_fixture_only` / latency `fail`; no invented saturation.
+- [ ] Toolbar capture + pairing-token planner round-trip still not driven by harness (popup opened as document only).
+- [ ] Firefox unpacked execution unverified despite shipped firefox manifest + API polyfill.
+- [ ] Selective preview is not a general PII detector; UltraFace remains face-only; DOM/regex cover fields and Indic patterns as telemetry only.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; keep OCR local-only.
+
 # Roast Loop — 9 September 2026
 
 ## Round 10 — integrated operations simulation

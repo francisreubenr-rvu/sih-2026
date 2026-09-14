@@ -18,7 +18,7 @@
         "Benchmarks/results/webpii-text-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-analysis.json"
       ],
-      "latest_diagnostic_note": "External OCR preview retains 1237/2243 selected product tokens (55.1%); this is not annotated interactive-control accuracy or task completion."
+      "latest_diagnostic_note": "Wave1 unit hook scoreVisualContext exists (fixture-only). Selective local preview preserves non-sensitive layout pixels for human review; egress remains semantic wireframe. Interactive-control accuracy on held-out pages still unmeasured."
     },
     {
       "id": "pii-detection",
@@ -33,7 +33,7 @@
         "Benchmarks/results/webpii-text-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-analysis.json"
       ],
-      "latest_diagnostic_note": "External OCR/NER diagnostic marks 568/1433 expected PII value tokens. These are grouped exact-token matches, not instance precision/recall; some annotation values are not painted."
+      "latest_diagnostic_note": "Wave1 expands classifySensitive with Aadhaar/PAN telemetry and keeps UltraFace face-only. Unit instance P/R hooks exist; external raster recall remains 0 for faces on WebPII slice. Not a saturated PII classifier."
     },
     {
       "id": "redaction",
@@ -48,7 +48,7 @@
         "Benchmarks/results/webpii-text-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-analysis.json"
       ],
-      "latest_diagnostic_note": "External local text preview retains 219 exact annotated sensitive tokens on 58/100 screens. Intended-redraw diagnostic only; arbitrary-text export rejected."
+      "latest_diagnostic_note": "Wave1 selective pixelation: unit fixture shows separable piiPixelCoverage vs nonPiiPreservation. Full-image exclusion diagnostic retained historically. Selective preview is local-only; not approved as raster egress."
     },
     {
       "id": "client-resources",
@@ -65,21 +65,22 @@
         "Benchmarks/results/webpii-text-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-analysis.json"
       ],
-      "latest_diagnostic_note": "External OCR/NER 100-screen processing p95 2888.4ms; 102 main-page long tasks total 35190ms. Worker/process memory and CPU remain unmeasured."
+      "latest_diagnostic_note": "Unchanged: OCR/NER p95 and worker diagnostics only. No new process-memory measurement in wave 1."
     },
     {
       "id": "task-latency",
       "weightPercent": 15,
       "measurement": "User trigger to verified correct end-state, including capture, model, network and action; report human review separately without omitting it from full time.",
       "observed": null,
-      "status": "partial_diagnostic_only",
+      "status": "fail",
       "diagnostic_note": "Provider pilot and continuous task recording exist, but no 100-attempt full-flow latency distribution. Under-200ms gate remains failed.",
-      "latest_diagnostic_note": "Three bounded synthetic browser goals completed in 10635.5, 3868.4 and 3440ms; one provider-unavailable failure and cancellation preserved. Not a 100-attempt full-flow distribution.",
+      "latest_diagnostic_note": "Under-200ms full-flow gate remains fail. Wave1 capture timing is recorded in extension metrics text when run; no 100-attempt distribution. Do not weaken the gate.",
       "diagnostic_evidence": [
         "Benchmarks/results/browser-experiments-2026-09-11/summary.json"
       ]
     }
   ],
   "score": null,
-  "scoreReason": "No authoritative normalization and no complete dataset measurements. Do not estimate judge probability."
+  "scoreReason": "No authoritative normalization and no complete dataset measurements. Wave1 adds unit-fixture hooks only. Do not estimate judge probability.",
+  "wave1_updated": "2026-09-14"
 }

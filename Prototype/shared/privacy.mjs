@@ -11,10 +11,15 @@ export function clipRect(rect, viewport, padding = 0) {
 
 export function classifySensitive(text) {
   // Detection is explanatory telemetry only. Unclassified text is ALSO excluded.
+  // Indic patterns (Aadhaar / PAN) widen local telemetry; they never authorize export.
   const found = [];
   if (/\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/i.test(text)) found.push('email');
+  // Aadhaar: 12 digits, optional spaces/hyphens in 4-4-4 groups (synthetic fixtures only).
+  if (/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/.test(text)) found.push('aadhaar');
+  // PAN: five letters, four digits, one letter (e.g. ABCDE1234F).
+  if (/\b[A-Z]{5}\d{4}[A-Z]\b/i.test(text)) found.push('pan');
   if (/(?:\+?\d[\d\s().-]{7,}\d)/.test(text)) found.push('number');
-  if (/\b(?:password|secret|token|account|address|passport|aadhaar|pan)\b/i.test(text)) found.push('sensitive-label');
+  if (/\b(?:password|secret|token|account|address|passport|aadhaar|आधार|pan|पैन)\b/i.test(text)) found.push('sensitive-label');
   return found;
 }
 

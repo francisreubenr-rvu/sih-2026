@@ -1,0 +1,20 @@
+{
+  "name": "wave1-selective-redaction-unit",
+  "timestamp": "2026-09-14T10:38:02.700123+00:00",
+  "suite": "Prototype/tests/selective-redaction.test.mjs",
+  "prototype_unit_tests": {
+    "total": 86,
+    "pass": 86,
+    "fail": 0
+  },
+  "scope": "unit_fixture_only",
+  "egress": "semantics_only",
+  "selective_redaction": "local_preview_only",
+  "latency_gate_ms": 200,
+  "latency_gate_status": "fail",
+  "notes": [
+    "Does not close native-extension toolbar path or Firefox live run.",
+    "Does not saturate official rubric weights.",
+    "Ollama/Qwen optional for live planner E2E; not required for these tests."
+  ]
+}

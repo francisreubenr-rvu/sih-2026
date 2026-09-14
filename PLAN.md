@@ -1,3 +1,12 @@
+## Wave 1 P0 — extension + selective redaction — 14 September 2026
+
+- Implemented local selective pixelation (`Prototype/shared/selective-redaction.mjs`) for human review previews; non-sensitive pixels preserved; sensitive regions (face/private/field/media/password kinds) mosaicked. **Outbound API still forbids raw screenshots** — `assertSanitizedPayload` + existing Zod scene schema.
+- Wired into MV3 extension popup and web workspace capture path. Trust chip + EN/HI-ready strings on extension surfaces. DigiLocker-credible navy/paper palette.
+- Rubric measurement hooks: visual P/R, PII instance P/R, redaction coverage vs preservation, latency gate (200ms). Unit fixtures only; ledger score remains null; latency status remains fail.
+- Indic PII telemetry: Aadhaar 4-4-4 and PAN ABCDE1234F patterns in `classifySensitive` (export still allow-list only).
+- Automated tests: 86 pass / 0 fail. `npm run build` and `npm run build:extension` succeed.
+- Still open for wave 2: toolbar-driven `captureVisibleTab` harness, Firefox live validation, labeled held-out PII/redaction datasets, client resource budgets, full-flow latency (G11 fail — do not weaken), human/domain review, Ollama E2E when available.
+
 # SIH26171 delivery plan
 
 ## Integrated simulation checkpoint — 11 September 2026
