@@ -7,65 +7,89 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <header>
+  <header class="popup-header">
     <div class="brand">
-      <strong>DHRISTI</strong>
-      <span class="subtitle" data-i18n="subtitle">SIH26171 · on-device review</span>
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <strong>DHRISTI</strong>
+        <span class="subtitle" data-i18n="subtitle">SIH26171 · on-device review</span>
+      </div>
     </div>
     <span class="trust-chip" title="Capture and privacy filter run in this browser. Raw pixels are not sent." data-i18n-title="trust_title">
-      <span class="trust-dot" aria-hidden="true"></span>
-      <span data-i18n="trust">on this device</span>
-      <span class="trust-hi" lang="hi" data-i18n="trust_hi">इस उपकरण पर</span>
+      <span class="trust-glyph" aria-hidden="true"></span>
+      <span class="trust-labels">
+        <span data-i18n="trust">on this device</span>
+        <span class="trust-hi" lang="hi" data-i18n="trust_hi">इस उपकरण पर</span>
+      </span>
     </span>
   </header>
-  <div class="tricolor" aria-hidden="true"></div>
+
   <main>
     <p class="lang-row" role="group" aria-label="Language">
       <button type="button" class="lang" id="lang-en" aria-pressed="true" aria-label="English">EN</button>
       <button type="button" class="lang" id="lang-hi" aria-pressed="false" aria-label="हिन्दी">हिं</button>
     </p>
-    <h1 data-i18n="headline">Review what leaves<br>your browser.</h1>
-    <p class="lede" data-i18n="lede">Local capture → privacy filter → protected layout → optional local planner. Confirm every action.</p>
-    <p class="toolbar-note" id="toolbar-note" data-i18n="toolbar_note">Open from the toolbar icon so Chrome grants activeTab for tab capture.</p>
-    <ol class="stage-strip" id="stage-strip" aria-label="Capture pipeline stages">
-      <li data-stage="inject">Inject</li>
-      <li data-stage="collect">Collect</li>
-      <li data-stage="capture">Capture</li>
-      <li data-stage="filter">Filter</li>
-      <li data-stage="sanitize">Sanitize</li>
-      <li data-stage="review">Review</li>
-    </ol>
-    <label for="token"><span data-i18n="token_label">Local pairing token</span>
-      <input id="token" type="password" autocomplete="off" data-i18n-placeholder="token_ph" placeholder="Paste from the local workspace">
-    </label>
-    <label for="task"><span data-i18n="task_label">Task</span>
-      <select id="task">
-        <option value="review-pending" data-i18n="task_pending">Review a pending request</option>
-        <option value="show-completed" data-i18n="task_completed">Show completed requests</option>
-        <option value="next-page" data-i18n="task_next">Go to the next page</option>
-      </select>
-    </label>
-    <fieldset class="mode-row">
-      <legend data-i18n="mode_legend">Operating mode</legend>
-      <label class="check"><input id="mode-privacy" type="checkbox" checked> <span data-i18n="mode_privacy">Privacy-only (skip planner)</span></label>
-      <label class="check"><input id="preview-wireframe" type="checkbox"> <span data-i18n="mode_wireframe">Faster wireframe preview</span></label>
-    </fieldset>
-    <p id="status" role="status" data-i18n="status_ready">Capture the active tab. Filtering runs here before any network call.</p>
-    <button id="capture" type="button" data-i18n="capture">Capture &amp; protect</button>
-    <div class="preview-meta">
-      <span class="badge" data-i18n="badge_local">Local selective preview</span>
-      <span class="badge badge-muted" data-i18n="badge_egress">Egress: semantics only</span>
-    </div>
-    <canvas id="preview" aria-label="Protected page layout with selective redaction" hidden></canvas>
-    <p id="metrics"></p>
-    <button id="plan" type="button" disabled data-i18n="plan">Send protected layout</button>
-    <p id="proposal" data-i18n="proposal_empty">No action proposed.</p>
-    <button id="execute" type="button" disabled data-i18n="execute">Confirm this action</button>
-    <details>
+
+    <section class="panel panel-scan" aria-labelledby="scan-heading">
+      <div class="panel-head">
+        <h1 id="scan-heading" data-i18n="headline">Review what leaves your browser.</h1>
+        <span class="status-pip" aria-hidden="true"></span>
+      </div>
+      <p class="lede" data-i18n="lede">Local capture → privacy filter → protected layout → optional local planner. Confirm every action.</p>
+      <p class="toolbar-note" id="toolbar-note" data-i18n="toolbar_note">Open from the toolbar icon so Chrome grants activeTab for tab capture.</p>
+      <ol class="stage-strip" id="stage-strip" aria-label="Capture pipeline stages">
+        <li data-stage="inject">Inject</li>
+        <li data-stage="collect">Collect</li>
+        <li data-stage="capture">Capture</li>
+        <li data-stage="filter">Filter</li>
+        <li data-stage="sanitize">Sanitize</li>
+        <li data-stage="review">Review</li>
+      </ol>
+    </section>
+
+    <section class="panel" aria-label="Capture controls">
+      <label for="token"><span data-i18n="token_label">Local pairing token</span>
+        <input id="token" type="password" autocomplete="off" data-i18n-placeholder="token_ph" placeholder="Paste from the local workspace">
+      </label>
+      <label for="task"><span data-i18n="task_label">Task</span>
+        <select id="task">
+          <option value="review-pending" data-i18n="task_pending">Review a pending request</option>
+          <option value="show-completed" data-i18n="task_completed">Show completed requests</option>
+          <option value="next-page" data-i18n="task_next">Go to the next page</option>
+        </select>
+      </label>
+      <fieldset class="mode-row">
+        <legend data-i18n="mode_legend">Operating mode</legend>
+        <label class="check"><input id="mode-privacy" type="checkbox" checked> <span data-i18n="mode_privacy">Privacy-only (skip planner)</span></label>
+        <label class="check"><input id="preview-wireframe" type="checkbox"> <span data-i18n="mode_wireframe">Faster wireframe preview</span></label>
+      </fieldset>
+      <p id="status" role="status" data-i18n="status_ready">Capture the active tab. Filtering runs here before any network call.</p>
+      <button id="capture" type="button" class="cta-primary" data-i18n="capture">Capture &amp; protect</button>
+    </section>
+
+    <section class="panel panel-preview" aria-label="Protected preview">
+      <div class="preview-meta">
+        <span class="badge" data-i18n="badge_local">Local selective preview</span>
+        <span class="badge badge-muted" data-i18n="badge_egress">Egress: semantics only</span>
+      </div>
+      <div class="preview-slot">
+        <canvas id="preview" aria-label="Protected page layout with selective redaction" hidden></canvas>
+        <p class="preview-empty" id="preview-empty">No capture yet. Protected layout appears here.</p>
+      </div>
+      <p id="metrics" class="telemetry"></p>
+    </section>
+
+    <section class="panel panel-actions" aria-label="Review actions">
+      <button id="plan" type="button" class="cta-secondary" disabled data-i18n="plan">Send protected layout</button>
+      <p id="proposal" data-i18n="proposal_empty">No action proposed.</p>
+      <button id="execute" type="button" class="cta-ghost" disabled data-i18n="execute">Confirm this action</button>
+    </section>
+
+    <details class="details-panel">
       <summary data-i18n="inspect">Inspect outbound data</summary>
       <pre id="payload">No context prepared.</pre>
     </details>
-    <details>
+    <details class="details-panel">
       <summary data-i18n="setup">Server setup</summary>
       <p data-i18n="setup_body">Start the local server at http://127.0.0.1:9041. Add this exact origin to ALLOWED_ORIGINS, then restart it:</p>
       <code id="origin"></code>

@@ -1,10 +1,33 @@
 # Dhristi design baseline
 
-Selected through the actual rendered Stitch/current-site comparison in Docs/design-comparison.md. The generated HTML is research material; Website is the authored implementation.
+Pixel-informed instrument UI distilled from Docs/design-pixel-direction.md (board inventory: sightline-research/PINTEREST_PIXEL_REFS.md). Website is the authored implementation; Stitch/Pinterest pins are research only and are not committed.
 
-- Large asymmetric headline and optical-aperture illustration explain the privacy boundary immediately.
-- Ivory/forest/lime palette, local Geist font under its included OFL, strong type hierarchy and generous section spacing.
-- Real prototype screenshots are evidence; diagrams are explicitly illustrations. No generated telemetry, portraits, awards or partner claims.
-- Primary route: understand the problem → inspect the boundary → run local demo → inspect source/evidence.
-- Responsive layout, semantic headings, 44px-class controls, focus visibility, native modal behavior, reduced motion and no runtime CDN.
-- Six local Lighthouse runs score 100 across all categories. Independent accessibility and user-comprehension validation remain open.
+## Tokens
+
+| Token | Value | Role |
+|---|---|---|
+| `--ink` | `#101827` | Body text, keylines, pressed chrome |
+| `--navy` | `#162b46` | Headers, panels, primary structure |
+| `--paper` | `#f3ead8` | Page canvas, card bodies |
+| `--mist` | `#c7d5d2` | Secondary surfaces, quiet fills |
+| `--saffron` | `#d88732` | Action / attention only |
+| `--trust` | `#5c8b63` | Verified / healthy only |
+
+## Rules
+
+- **8px rhythm.** Padding, card gaps, and hit areas use 8px multiples; 4px for micro-label spacing.
+- **1–2px dark keylines.** Prefer ink/navy borders over soft shadows; at most one 2px offset shadow on primary surfaces.
+- **Stepped corners.** 2–4px radii (or clip-path chamfers); no large SaaS pills except compact trust chips.
+- **Meaning colors.** Saffron = CTA/attention; trust green = verified/local. Never ambient neon, glow, or gradient morphs.
+- **Typography.** Readable sans (Geist / system-ui) for body; bitmap/monospace only for IDs, timestamps, scopes, telemetry.
+- **Trust chips.** Label + reason (hover/focus title). Keep EN/HI: `on this device` / `इस उपकरण पर`.
+- **Extension popup.** ~360–420px wide, fixed header, one primary CTA, secondary details/history.
+- **Empty/loading.** Low-opacity (~6–10%) pixel-grid or noise behind calm copy; never hurt text contrast.
+- **Motion.** Discrete 1–2 frame state changes and instant focus outlines; respect `prefers-reduced-motion`.
+- **A11y.** Contrast, visible focus, keyboard, semantic headings, 44px-class controls where practical.
+
+## Surfaces
+
+- Website: `Website/index.html` + `Website/style.css` (+ original SVG under `Website/assets/`).
+- Extension: `Prototype/extension/popup.html` + `popup.css`.
+- Local workspace: light chrome alignment in `Prototype/app/` — privacy boundary copy unchanged.
