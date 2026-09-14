@@ -57,6 +57,11 @@ For a consistent backup, stop Node and copy the entire local `data/` directory t
 The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `SIGHTLINE_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
 
 
+
+## Wave 3 — popup loop + packaging (14 September 2026)
+
+Production popup UI shows a stage strip and toolbar/activeTab guidance (EN/HI). Capture re-injects the content script on disconnect and prefers an http(s) page when the popup is opened as a document tab. Harness `../scripts/validate-extension-loop.mjs` drives `#capture` through selective preview + sanitize (overlay for capture only; shipped `activeTab` manifest unchanged). Extension version **0.1.1** packages Chrome + Firefox zips via `npm run build:extension` (UltraFace+ORT only). Toolbar glyph click and Firefox live validation remain human/host-dependent. Ollama planner E2E skipped when unreachable.
+
 ## Wave 2 — capture harness + held-out fixtures (14 September 2026)
 
 Chromium harness `../scripts/validate-extension-capture.mjs` proves production `scripting.executeScript` injection, scene collect, sanitized semantics egress, the shipped `activeTab` gate for `captureVisibleTab`, and a temporary harness-only overlay that captures a real PNG without changing the shipped manifest. Held-out synthetic PII/redaction/utility scores land in `../Benchmarks/results/wave2-pii-redaction-utility-v01.json` (official score still null; <200 ms gate still fail). Client resource hooks: `shared/client-resources.mjs`. Firefox live run and Ollama planner E2E remain optional/unverified when binaries/services are absent.

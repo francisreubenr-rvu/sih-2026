@@ -18,6 +18,7 @@
       <span class="trust-hi" lang="hi" data-i18n="trust_hi">इस उपकरण पर</span>
     </span>
   </header>
+  <div class="tricolor" aria-hidden="true"></div>
   <main>
     <p class="lang-row">
       <button type="button" class="lang" id="lang-en" aria-pressed="true">EN</button>
@@ -25,6 +26,15 @@
     </p>
     <h1 data-i18n="headline">Review what leaves<br>your browser.</h1>
     <p class="lede" data-i18n="lede">Local capture → privacy filter → protected layout → optional local planner. Confirm every action.</p>
+    <p class="toolbar-note" id="toolbar-note" data-i18n="toolbar_note">Open from the toolbar icon so Chrome grants activeTab for tab capture.</p>
+    <ol class="stage-strip" id="stage-strip" aria-label="Capture pipeline stages">
+      <li data-stage="inject">Inject</li>
+      <li data-stage="collect">Collect</li>
+      <li data-stage="capture">Capture</li>
+      <li data-stage="filter">Filter</li>
+      <li data-stage="sanitize">Sanitize</li>
+      <li data-stage="review">Review</li>
+    </ol>
     <label for="token"><span data-i18n="token_label">Local pairing token</span>
       <input id="token" type="password" autocomplete="off" data-i18n-placeholder="token_ph" placeholder="Paste from the local workspace">
     </label>

@@ -3,12 +3,20 @@ import { makeScene, paintScene } from '../shared/privacy.mjs';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
 import { paintSelectivePreview } from '../shared/selective-redaction.mjs';
 import { assertSanitizedPayload, readJsHeap, readClientEnvironment } from '../shared/rubric-hooks.mjs';
+import {
+  classifyCaptureError,
+  advanceStage,
+  summarizeProtectLoop,
+  TOOLBAR_ACTIVETAB_NOTE,
+} from '../shared/capture-loop.mjs';
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = s => document.querySelector(s);
 const endpoint = 'http://127.0.0.1:9041/api/v1/plans';
-let prepared, plan, tabId, detector, busy = false, lang = 'en'; lastCaptureMs = null;
+let prepared, plan, tabId, detector, busy = false, lang = 'en', lastCaptureMs = null;
 let resourceStages = [];
+let currentStage = 'idle';
+let lastLoopSummary = null;
 
 const STRINGS = {
   en: {
@@ -18,6 +26,7 @@ const STRINGS = {
     trust_title: 'Capture and privacy filter run in this browser. Raw pixels are not sent.',
     headline: 'Review what leaves\nyour browser.',
     lede: 'Local capture → privacy filter → protected layout → optional local planner. Confirm every action.',
+    toolbar_note: TOOLBAR_ACTIVETAB_NOTE.en,
     token_label: 'Local pairing token',
     token_ph: 'Paste from the local workspace',
     task_label: 'Task',
@@ -38,6 +47,9 @@ const STRINGS = {
     capturing: 'Running local vision and selective redaction. No screen data is sent.',
     review: 'Review the selective preview. Outbound JSON is semantics-only — original pixels excluded.',
     sending: 'Sending approved semantics to the local reasoning server.',
+    err_activeTab: 'Tab capture needs the toolbar gesture. Close this window and open Sightline from the toolbar icon, then Capture again.',
+    err_connection: 'Page connection lost. Retrying injection…',
+    err_restricted: 'This page blocks extension capture. Open the local fixture or an allowed http(s) page.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
@@ -46,6 +58,7 @@ const STRINGS = {
     trust_title: 'कैप्चर और गोपनीयता फ़िल्टर इस ब्राउज़र में चलते हैं। कच्चे पिक्सेल नहीं भेजे जाते।',
     headline: 'देखें कि आपके ब्राउज़र से\nक्या बाहर जाता है।',
     lede: 'स्थानीय कैप्चर → गोपनीयता फ़िल्टर → सुरक्षित लेआउट → वैकल्पिक स्थानीय प्लानर। प्रत्येक क्रिया की पुष्टि करें।',
+    toolbar_note: TOOLBAR_ACTIVETAB_NOTE.hi,
     token_label: 'स्थानीय पेयरिंग टोकन',
     token_ph: 'स्थानीय वर्कस्पेस से चिपकाएँ',
     task_label: 'कार्य',
@@ -66,6 +79,9 @@ const STRINGS = {
     capturing: 'स्थानीय दृष्टि और चयनात्मक रेडक्शन चल रहा है। स्क्रीन डेटा नहीं भेजा जाता।',
     review: 'चयनात्मक पूर्वावलोकन देखें। आउटबाउंड JSON केवल अर्थ है — मूल पिक्सेल नहीं।',
     sending: 'अनुमोदित अर्थ स्थानीय रीज़निंग सर्वर को भेजे जा रहे हैं।',
+    err_activeTab: 'टैब कैप्चर के लिए टूलबार जेस्चर चाहिए। इस विंडो को बंद कर टूलबार आइकन से Sightline खोलें, फिर फिर से कैप्चर करें।',
+    err_connection: 'पृष्ठ कनेक्शन खो गया। इंजेक्शन पुनः प्रयास…',
+    err_restricted: 'यह पृष्ठ एक्सटेंशन कैप्चर रोकता है। स्थानीय फ़िक्स्चर या अनुमत पृष्ठ खोलें।',
   },
 };
 
@@ -91,12 +107,36 @@ function applyLang() {
   $('#lang-hi').setAttribute('aria-pressed', String(lang === 'hi'));
 }
 
+function setStage(next) {
+  const step = advanceStage(currentStage, next);
+  currentStage = step.to;
+  const order = ['inject', 'collect', 'capture', 'filter', 'sanitize', 'review'];
+  const idx = order.indexOf(next);
+  for (const li of document.querySelectorAll('#stage-strip [data-stage]')) {
+    const name = li.getAttribute('data-stage');
+    const pos = order.indexOf(name);
+    li.setAttribute('data-active', String(name === next));
+    li.setAttribute('data-done', String(pos >= 0 && idx >= 0 && pos < idx));
+  }
+  return step;
+}
+
+function resetStages() {
+  currentStage = 'idle';
+  for (const li of document.querySelectorAll('#stage-strip [data-stage]')) {
+    li.setAttribute('data-active', 'false');
+    li.setAttribute('data-done', 'false');
+  }
+}
+
 const status = message => { $('#status').textContent = message; };
 const clear = () => {
   prepared = null;
   plan = null;
   lastCaptureMs = null;
+  lastLoopSummary = null;
   resourceStages = [];
+  resetStages();
   $('#plan').disabled = true;
   $('#execute').disabled = true;
   $('#proposal').textContent = t('proposal_empty');
@@ -117,19 +157,55 @@ $('#lang-en').addEventListener('click', () => { lang = 'en'; applyLang(); });
 $('#lang-hi').addEventListener('click', () => { lang = 'hi'; applyLang(); });
 applyLang();
 
-async function call(message) {
-  const response = await api.tabs.sendMessage(tabId, message);
-  if (response?.error) throw new Error(response.error);
-  if (!response) throw new Error('Page connection lost. Reopen the extension.');
-  return response.data;
+async function ensureInjected(id) {
+  setStage('inject');
+  await api.scripting.executeScript({ target: { tabId: id }, files: ['content.js'] });
 }
 
-function bitmapToImageData(bitmap) {
-  const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-  const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  if (!ctx) throw new Error('Preview canvas unavailable');
-  ctx.drawImage(bitmap, 0, 0);
-  return ctx.getImageData(0, 0, bitmap.width, bitmap.height);
+async function call(message, { reinject = true } = {}) {
+  try {
+    const response = await api.tabs.sendMessage(tabId, message);
+    if (response?.error) throw new Error(response.error);
+    if (!response) throw new Error('Page connection lost. Reopen the extension.');
+    return response.data;
+  } catch (e) {
+    const classified = classifyCaptureError(e);
+    if (reinject && classified.code === 'content_script_missing') {
+      status(t('err_connection'));
+      await ensureInjected(tabId);
+      const response = await api.tabs.sendMessage(tabId, message);
+      if (response?.error) throw new Error(response.error);
+      if (!response) throw new Error('Page connection lost. Reopen the extension.');
+      return response.data;
+    }
+    throw e;
+  }
+}
+
+function formatCaptureFailure(err) {
+  const c = classifyCaptureError(err);
+  if (c.code === 'needs_activeTab') return t('err_activeTab');
+  if (c.code === 'restricted_page') return t('err_restricted');
+  if (c.code === 'content_script_missing') return `${t('err_connection')} ${c.message}`;
+  return `Capture blocked: ${c.message}`;
+}
+
+
+async function resolveTargetTab() {
+  const [active] = await api.tabs.query({ active: true, currentWindow: true });
+  const isPage = t => t?.id && t.url && /^https?:/i.test(t.url);
+  if (isPage(active)) return active;
+  const all = await api.tabs.query({ currentWindow: true });
+  const hostMatch = all.find(t => isPage(t) && t.url.includes('127.0.0.1:9041'));
+  if (hostMatch) return hostMatch;
+  const anyHttp = all.find(isPage);
+  if (anyHttp) return anyHttp;
+  // Last resort: other windows (popup-as-tab can be alone in a window).
+  const everywhere = await api.tabs.query({});
+  return everywhere.find(t => isPage(t) && t.url.includes('127.0.0.1:9041'))
+    || everywhere.find(isPage)
+    || active
+    || null;
 }
 
 $('#capture').addEventListener('click', async () => {
@@ -138,21 +214,31 @@ $('#capture').addEventListener('click', async () => {
   setBusy(true);
   status(t('capturing'));
   let bitmap;
+  const completed = [];
   try {
-    const [tab] = await api.tabs.query({ active: true, currentWindow: true });
+    const tab = await resolveTargetTab();
+    if (!tab?.id) throw new Error('No captureable tab. Focus an http(s) page, then open Sightline from the toolbar.');
     tabId = tab.id;
-    await api.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+    // Ensure captureVisibleTab sees the page, not a popup-as-tab document.
+    try { await api.tabs.update(tabId, { active: true }); } catch { /* ignore */ }
+    await ensureInjected(tabId);
+    completed.push('inject');
     detector ??= await createVisionDetector({
       runtimeUrl: api.runtime.getURL('models/ort/ort.wasm.min.mjs'),
       modelUrl: api.runtime.getURL('models/ultraface-rfb320.onnx'),
     });
     const captureStarted = performance.now();
+    setStage('collect');
     const scene = await call({ kind: 'collect' });
+    completed.push('collect');
+    setStage('capture');
     const dataUrl = await api.tabs.captureVisibleTab(tab.windowId, { format: 'png' });
+    completed.push('capture');
     const image = new Image();
     image.src = dataUrl;
     await image.decode();
     bitmap = await createImageBitmap(image);
+    setStage('filter');
     const result = await detector.detect(bitmap);
     await call({ kind: 'fresh', revision: scene.revision });
     const ratioX = scene.viewport.width / bitmap.width;
@@ -168,11 +254,12 @@ $('#capture').addEventListener('click', async () => {
         },
       });
     }
+    completed.push('filter');
+    setStage('sanitize');
     prepared = requestSchema.parse({ task: $('#task').value, scene: makeScene(scene) });
     assertSanitizedPayload(prepared);
+    completed.push('sanitize');
 
-    // Local selective preview: pixelate sensitive regions, keep layout context.
-    // Egress remains prepared.scene (no pixels). Wireframe is fallback only.
     const previewCtx = $('#preview').getContext('2d');
     let previewMeta;
     try {
@@ -201,6 +288,18 @@ $('#capture').addEventListener('click', async () => {
       environment: readClientEnvironment(),
       status: 'partial_diagnostic_only',
     });
+    setStage('review');
+    completed.push('review');
+    lastLoopSummary = summarizeProtectLoop({
+      stagesCompleted: completed,
+      captureMs: lastCaptureMs,
+      inferenceMs: result.inferenceMs,
+      controlCount: prepared.scene.controls.length,
+      regionCount: prepared.scene.regions.length,
+      previewMode: previewMeta.mode,
+      sanitized: true,
+      toolbarGesture: 'assumed_from_action_popup',
+    });
     $('#preview').hidden = false;
     $('#payload').textContent = JSON.stringify(prepared, null, 2);
     const preserved = previewMeta.preservedRatio != null
@@ -218,7 +317,7 @@ $('#capture').addEventListener('click', async () => {
     status(t('review'));
   } catch (e) {
     clear();
-    status(`Capture blocked: ${e.message}`);
+    status(formatCaptureFailure(e));
   } finally {
     bitmap?.close();
     setBusy(false);
@@ -281,3 +380,9 @@ $('#execute').addEventListener('click', async () => {
 });
 
 $('#task').addEventListener('change', clear);
+
+// Expose loop summary for harnesses opened as extension documents.
+Object.defineProperty(globalThis, '__sightlineLoop', {
+  get: () => lastLoopSummary,
+  configurable: true,
+});

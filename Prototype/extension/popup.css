@@ -208,3 +208,52 @@ code {
   border-radius: 6px;
   border-left: 3px solid var(--saffron);
 }
+
+/* Wave 3 — DigiLocker-credible pixel accents + pipeline stages */
+.tricolor {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 3px;
+  background: linear-gradient(90deg, var(--saffron) 0 33.33%, #fff 33.33% 66.66%, var(--india-green) 66.66% 100%);
+}
+.tricolor::before,
+.tricolor::after { content: none; }
+.toolbar-note {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--saffron);
+  background: #fffaf3;
+  color: var(--navy);
+  font-size: 12px;
+  line-height: 1.45;
+  border-radius: 0 6px 6px 0;
+}
+.stage-strip {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+}
+.stage-strip li {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: #fff;
+}
+.stage-strip li[data-active="true"] {
+  border-color: var(--navy);
+  color: var(--navy);
+  background: var(--paper-deep);
+}
+.stage-strip li[data-done="true"] {
+  border-color: #b8d4c4;
+  color: var(--trust);
+  background: #f0f7f2;
+}
