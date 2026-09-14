@@ -66,7 +66,7 @@ const plannerBreakdown = summarizeLatencyBreakdown({
 });
 
 const record = buildLatencyDistributionRecord({
-  name: 'wave4-core-latency',
+  name: 'wave5-core-latency',
   samples,
   warmups: WARM,
   mode: OPERATING_MODES.planner_assisted,
@@ -90,6 +90,30 @@ record.strategies = {
 };
 record.breakdowns = { privacy_only: privacyBreakdown, planner_assisted: plannerBreakdown };
 record.wave3_browser_protect_single_run_ms = 188;
+record.judge_latency_breakdown = {
+  title: 'Latency breakdown for judges (Wave5)',
+  budgetMs: FULL_FLOW_LATENCY_MS,
+  paths: [
+    {
+      name: 'privacy_only_local_protect',
+      includes: ['capture (browser)', 'DOM collect', 'UltraFace (optional cache)', 'selective/wireframe preview', 'sanitize assert', 'human review UI'],
+      excludes: ['Ollama/Qwen planner', 'network plan round-trip', 'confirm/execute'],
+      node_microbench_p95_ms: record.localProtectLoop.p95,
+      browser_single_run_protect_ms: 188,
+      g11_claim: 'NOT a G11 pass — privacy-only omits planner/confirm required by full-flow definition',
+    },
+    {
+      name: 'planner_assisted_full_flow',
+      includes: ['local protect', 'local LLM plan', 'human confirm', 'optional execute'],
+      historical_samples_ms: [...new Set(historicalFullFlowMs)],
+      p95_ms: record.fullFlowHistorical.p95,
+      g11_status: 'fail',
+      budget_weakened: false,
+    },
+  ],
+  note: 'Organizers requiring <200ms full-flow must treat planner-assisted path as fail until measured under budget. Do not substitute privacy-only ms.',
+};
+
 record.acceptance = {
   rule: 'G11',
   required: 'p95 end-to-end <200ms, n≥100 after 10 warmups per frozen core flow',

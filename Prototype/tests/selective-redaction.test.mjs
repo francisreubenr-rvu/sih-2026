@@ -201,3 +201,25 @@ test('held-out wave2 fixture file is loadable and separates coverage from preser
   assert.equal(missed.piiPixelCoverage, 0);
   assert.equal(missed.instanceRecall, 0);
 });
+
+test('classifySensitive detects IFSC, voter-id, and card-like telemetry patterns', () => {
+  assert.ok(classifySensitive('SBIN0001234').includes('ifsc'));
+  assert.ok(classifySensitive('ABC1234567').includes('voter-id'));
+  assert.ok(classifySensitive('4111 1111 1111 1111').includes('card-like'));
+  assert.ok(classifySensitive('otp please').includes('sensitive-label'));
+  assert.deepEqual(classifySensitive('hello world'), []);
+  assert.deepEqual(classifySensitive(''), []);
+});
+
+test('mergeRegions coalesces abutting same-kind boxes', async () => {
+  const { mergeRegions } = await import('../shared/privacy.mjs');
+  const merged = mergeRegions([
+    { kind: 'field', rect: { x: 10, y: 40, width: 80, height: 20 } },
+    { kind: 'field', rect: { x: 92, y: 40, width: 80, height: 20 } },
+    { kind: 'face', rect: { x: 0, y: 0, width: 20, height: 20 } },
+  ], { gap: 4 });
+  const fields = merged.filter(r => r.kind === 'field');
+  assert.equal(fields.length, 1);
+  assert.ok(fields[0].rect.width >= 160);
+  assert.equal(merged.filter(r => r.kind === 'face').length, 1);
+});

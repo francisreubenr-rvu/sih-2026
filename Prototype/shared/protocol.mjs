@@ -10,7 +10,7 @@ export const sceneSchema = z.object({
   revision: z.string().uuid(),
   viewport: z.object({ width: size, height: size }).strict(),
   controls: z.array(z.object({ id: z.string().regex(/^c\d{1,4}$/), role: z.enum(['button', 'link']), label: z.enum(SAFE_LABELS), rect }).strict()).max(200),
-  regions: z.array(z.object({ kind: z.enum(['private', 'media', 'face', 'field']), rect }).strict()).max(2000),
+  regions: z.array(z.object({ kind: z.enum(['private', 'media', 'face', 'field', 'password']), rect }).strict()).max(2000),
 }).strict().superRefine((v, ctx) => {
   const ids = new Set();
   for (const [i, c] of v.controls.entries()) {

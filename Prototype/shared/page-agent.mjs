@@ -1,4 +1,4 @@
-import { makeScene, clipRect, classifySensitive } from './privacy.mjs';
+import { makeScene, clipRect, classifySensitive, mergeRegions } from './privacy.mjs';
 import { SAFE_LABELS, validateAction } from './protocol.mjs';
 import { newRevisionId } from './random-id.mjs';
 
@@ -91,13 +91,34 @@ export function createPageAgent(doc = document) {
         if (++visited > MAX_NODES) throw new Error('Page too complex. No context exported.');
         if (node.nodeType === 3) {
           if (!node.textContent.trim() || ['SCRIPT','STYLE','NOSCRIPT','TEMPLATE'].includes(node.parentElement?.tagName)) continue;
-          for(const kind of classifySensitive(node.textContent)) detections.push({kind});
-          const range=doc.createRange();range.selectNodeContents(node);
-          for (const r of range.getClientRects()) region('private',r);
+          const kinds = classifySensitive(node.textContent);
+          for (const kind of kinds) detections.push({kind});
+          // Wave5: only mosaic text that classifiers flag. Unknown text still never
+          // becomes an allow-listed control label; omitting non-sensitive text boxes
+          // improves selective-preview utility without authorizing raw export.
+          if (kinds.length) {
+            const range=doc.createRange();range.selectNodeContents(node);
+            for (const r of range.getClientRects()) region('private',r);
+          }
         } else if(node.nodeType === 1) {
           const el=node;const style=win.getComputedStyle(el); const rect=el.getBoundingClientRect();
           if (style.display==='none'||style.visibility!=='visible'||!clipRect(rect,viewport)) continue;
-          if (['INPUT','TEXTAREA','SELECT'].includes(el.tagName) || el.isContentEditable) {region('field',rect);if(el.type==='password')detections.push({kind:'password'});}
+          if (['INPUT','TEXTAREA','SELECT'].includes(el.tagName) || el.isContentEditable) {
+            const type = (el.type || '').toLowerCase();
+            const auto = (el.getAttribute?.('autocomplete') || el.attrs?.autocomplete || '').toLowerCase();
+            const name = (el.getAttribute?.('name') || el.name || el.attrs?.name || '').toLowerCase();
+            const sensitiveField = type === 'password' || type === 'email' || type === 'tel'
+              || /password|email|tel|phone|otp|cvv|ssn|aadhaar|pan/.test(auto + ' ' + name);
+            if (type === 'password') {
+              region('password', rect);
+              detections.push({kind:'password'});
+            } else if (sensitiveField) {
+              region('field', rect);
+              for (const kind of classifySensitive(`${auto} ${name} ${type}`)) detections.push({kind});
+            } else {
+              region('field', rect);
+            }
+          }
           if (['IMG','SVG','CANVAS','VIDEO','IFRAME','OBJECT','EMBED'].includes(el.tagName)||style.backgroundImage!=='none') region('media',rect);
           // Original pixels, unknown text and closed shadow contents never enter
           // the exported scene, regardless of detector coverage.
@@ -112,7 +133,8 @@ export function createPageAgent(doc = document) {
       } while((node=walker.nextNode()));
     }
     visit(doc.body);
-    scene=makeScene({revision,viewport,controls:entries,regions});
+    const mergedRegions = mergeRegions(regions, { gap: 4, maxRegions: 200 });
+    scene=makeScene({revision,viewport,controls:entries,regions:mergedRegions});
     controls=nextControls;capturedAt=performance.now();
     return scene;
   }
