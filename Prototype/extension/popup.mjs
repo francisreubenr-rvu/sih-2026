@@ -131,8 +131,11 @@ function setStage(next) {
   for (const li of document.querySelectorAll('#stage-strip [data-stage]')) {
     const name = li.getAttribute('data-stage');
     const pos = order.indexOf(name);
-    li.setAttribute('data-active', String(name === next));
+    const active = name === next;
+    li.setAttribute('data-active', String(active));
     li.setAttribute('data-done', String(pos >= 0 && idx >= 0 && pos < idx));
+    if (active) li.setAttribute('aria-current', 'step');
+    else li.removeAttribute('aria-current');
   }
   return step;
 }
@@ -142,6 +145,7 @@ function resetStages() {
   for (const li of document.querySelectorAll('#stage-strip [data-stage]')) {
     li.setAttribute('data-active', 'false');
     li.setAttribute('data-done', 'false');
+    li.removeAttribute('aria-current');
   }
 }
 

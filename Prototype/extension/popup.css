@@ -5,7 +5,7 @@
   --paper: #f7f4ef;
   --paper-deep: #ebe6dc;
   --ink: #1a2332;
-  --muted: #5a6573;
+  --muted: #4a5563;
   --line: #d4cfc4;
   --saffron: #ff9933;
   --india-green: #138808;
@@ -265,4 +265,11 @@ code {
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+/* Wave8: clearer current-stage affordance for keyboard/AT users */
+.stage-strip li[aria-current="step"] {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  background: #e8eef8;
 }
