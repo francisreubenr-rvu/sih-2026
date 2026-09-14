@@ -1,3 +1,17 @@
+## Round 15 — wave 5 e2e + saturation + gate evidence (14 September 2026)
+
+- [x] E2E harness maximizes automation + screenshotable synthetic flow; activeTab gate retained; toolbar glyph not faked.
+- [x] Expanded held-out fixtures to 18; classifySensitive/mergeRegions/password kind; honest scores; official null.
+- [x] G17/G18 closed with real deck/README evidence.
+- [x] Protocol/templates for G05/G09/G14/G20 evidence files; statuses stay unknown without acceptance.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) participants not yet collected.
+- [ ] G05 capacity floor, G08 production hardening, G09 full WCAG, G10 200% zoom still open.
+
 ## Round 14 — wave 4 latency + rubric diagnostics (14 September 2026)
 
 - [x] Privacy-only skip-LLM path + detector cache + wireframe preview implemented; G11 remains fail with core-latency evidence.

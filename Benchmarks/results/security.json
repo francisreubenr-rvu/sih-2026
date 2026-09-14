@@ -1,9 +1,9 @@
 {
-  "wave": 3,
-  "generated_at": "2026-09-14T11:05:15.571Z",
+  "wave": 5,
+  "generated_at": "2026-09-14T11:15:54.579611+00:00",
   "scope": "Local prototype + website candidate; not a production multi-tenant threat model completion",
   "secret_scan": {
-    "files_scanned": 447,
+    "files_scanned": 459,
     "high_severity_findings": 0,
     "findings": [
       {
@@ -24,7 +24,8 @@
     "capture_loop": "Prototype/shared/capture-loop.mjs#buildSanitizedPlanRequest",
     "harness_evidence": [
       "Benchmarks/results/extension-capture-v01.json",
-      "Benchmarks/results/extension-loop-v01.json"
+      "Benchmarks/results/extension-loop-v01.json",
+      "Benchmarks/results/e2e.json"
     ],
     "rule": "Raw pixels/URLs/secrets must not appear in API payloads; detector miss cannot authorize raw upload."
   },

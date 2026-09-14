@@ -1,6 +1,7 @@
 {
-  "scope": "preparation website",
-  "date": "2026-09-09",
+  "scope": "preparation website + synthetic prototype fixture notes",
+  "date": "2026-09-14",
+  "wave": 5,
   "viewports": [
     1440,
     390,
@@ -20,12 +21,20 @@
     "smooth_scroll": false,
     "pin_spacers": 0
   },
+  "prototype_fixture": {
+    "source": "Benchmarks/results/browser-experiments-2026-09-11/",
+    "viewport_390_overflow": false,
+    "note": "Experiment pages recorded no document-level horizontal overflow at 390px."
+  },
+  "zoom_200_percent": "not_performed",
   "observed_console_errors": 0,
   "full_WCAG_review": "not_performed",
-  "domain_workflows": "not_implemented",
+  "domain_workflows": "synthetic_fixture_only",
+  "g10_status": "unknown",
   "evidence": [
     "Docs/verification.md",
     "Docs/website-desktop.jpg",
-    "Docs/website-mobile.jpg"
+    "Docs/website-mobile.jpg",
+    "Benchmarks/results/browser-experiments-2026-09-11/"
   ]
 }

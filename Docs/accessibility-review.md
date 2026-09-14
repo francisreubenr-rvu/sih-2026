@@ -9,3 +9,9 @@ Verified: Lighthouse final accessibility scores 100 across six runs, no failing 
 Pending: complete keyboard traversal/focus order, screen-reader announcements in a real assistive technology, 200% text zoom, text-spacing override, criterion-level conformance, external PDF accessibility and non-author accessibility testing. PDF exports are visually reviewed but are not claimed tagged/accessible. Domain workflows cannot be evaluated until implemented.
 
 Lighthouse is an automated subset. Do not mark G09 pass based on these measurements.
+
+## Wave 5 axe probe (14 September 2026)
+
+Automated axe-core CDN inject recorded in `Benchmarks/results/accessibility.json` for Website file URL and local prototype pages when the server is up. Lighthouse accessibility 100 remains historical automated evidence only.
+
+**G09 remains unknown:** criterion-level WCAG 2.1 A/AA documentation, real assistive-technology review, 200% zoom and text-spacing checks are still incomplete. Axe/Lighthouse alone must not flip G09 to pass.

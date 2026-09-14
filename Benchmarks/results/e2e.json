@@ -1,0 +1,179 @@
+{
+  "harness": "scripts/validate-extension-e2e.mjs",
+  "wave": 5,
+  "name": "extension-synthetic-e2e-maximized",
+  "scope": "Clean local setup → synthetic fixture → MV3 inject/collect → activeTab gate → overlay UI protect loop → sanitize → privacy-only review. Toolbar glyph NOT automated.",
+  "started_at": "2026-09-14T11:14:51.717Z",
+  "human_toolbar_gesture": {
+    "required_for_shipped_manifest": true,
+    "automated": false,
+    "note": "Chrome toolbar action UI cannot be clicked by Playwright. Production captureVisibleTab needs activeTab from that gesture. This harness uses a deleted-temp <all_urls> overlay only for the UI loop; shipped manifest unchanged."
+  },
+  "checks": {
+    "clean_setup_health": {
+      "status": "pass",
+      "detail": {
+        "data": {
+          "status": "ready",
+          "scheme": "sightline-semantic-v1",
+          "modelConnection": "checked-on-request"
+        }
+      }
+    },
+    "fixture_ready": {
+      "status": "pass",
+      "detail": "loaded /app/fixture.html"
+    },
+    "fixture_reload": {
+      "status": "pass",
+      "detail": "reload ok; heading=\"Riya Test\""
+    },
+    "trust_chip_en_hi": {
+      "status": "pass",
+      "detail": "on this device इस उपकरण पर"
+    },
+    "privacy_only_default": {
+      "status": "info",
+      "detail": {
+        "checked": true
+      }
+    },
+    "production_inject_collect": {
+      "status": "pass",
+      "detail": "controls=3; regions=7"
+    },
+    "collect_semantics_only": {
+      "status": "pass",
+      "detail": "collected scene JSON has no screenshot/dataUrl"
+    },
+    "shipped_manifest_requires_activeTab": {
+      "status": "pass",
+      "detail": "Either the '<all_urls>' or 'activeTab' permission is required."
+    },
+    "toolbar_glyph": {
+      "status": "info",
+      "detail": "Chrome toolbar action UI cannot be clicked by Playwright. Production captureVisibleTab needs activeTab from that gesture. This harness uses a deleted-temp <all_urls> overlay only for the UI loop; shipped manifest unchanged."
+    },
+    "popup_capture_filter_sanitize_review": {
+      "status": "pass",
+      "detail": {
+        "planEnabled": false,
+        "privacyOnlyReview": true,
+        "previewVisible": true,
+        "payloadBytes": 1975,
+        "metrics": "0 face(s) · 35.0 ms WASM · 3 controls · 7 regions · preview selective-pixelate · 94% layout pixels kept locally · capture 121 ms · heap 15.8 MiB JS"
+      }
+    },
+    "assert_sanitized_payload": {
+      "status": "info",
+      "detail": "payload panel not pure JSON; pixel-pattern check already passed"
+    },
+    "privacy_only_review_ready": {
+      "status": "pass",
+      "detail": {
+        "reviewActive": true,
+        "planEnabled": false,
+        "status": "Privacy-only review complete. No network call. Enable planner mode to send protected layout.",
+        "metrics": "0 face(s) · 35.0 ms WASM · 3 controls · 7 regions · preview selective-pixelate · 94% layout pixels kept locally · capture 121 ms · heap 15.8 MiB JS"
+      }
+    },
+    "demo_script": {
+      "status": "info",
+      "detail": "Docs/demo-judge-checklist.md + Docs/demo-runbook.md — human must click toolbar glyph for shipped activeTab"
+    },
+    "firefox": {
+      "status": "info",
+      "detail": "Package may exist; live Firefox run not part of this e2e"
+    }
+  },
+  "screenshots": [
+    {
+      "name": "01-fixture",
+      "path": "Benchmarks/results/wave5-demo-screens/01-fixture.png"
+    },
+    {
+      "name": "02-popup-idle",
+      "path": "Benchmarks/results/wave5-demo-screens/02-popup-idle.png"
+    },
+    {
+      "name": "03-popup-after-capture",
+      "path": "Benchmarks/results/wave5-demo-screens/03-popup-after-capture.png"
+    },
+    {
+      "name": "04-fixture-after-capture",
+      "path": "Benchmarks/results/wave5-demo-screens/04-fixture-after-capture.png"
+    }
+  ],
+  "limitations": [
+    "Toolbar glyph / true activeTab user gesture not simulated.",
+    "Overlay grants capture without toolbar; shipped Prototype/extension/manifest.json unchanged.",
+    "No live Ollama planner round-trip; privacy-only path exercised.",
+    "Chromium only; Firefox live run unverified.",
+    "Not a full clean-DB multi-scenario persistence suite beyond audit health + fixture reload."
+  ],
+  "server": {
+    "started_by_harness": true,
+    "origin": "http://127.0.0.1:9041"
+  },
+  "browser": {
+    "executablePath": "/home/box/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+    "version": "151.0.7922.34"
+  },
+  "harness_overlay": {
+    "purpose": "Screenshotable capture→filter→sanitize→review without toolbar glyph",
+    "shipped_manifest_unchanged": true,
+    "temporary_permission_added": "<all_urls>"
+  },
+  "ui_loop": {
+    "planEnabled": false,
+    "previewVisible": true,
+    "payloadBytes": 1975,
+    "payloadHasPixels": false,
+    "stages": [
+      {
+        "stage": "inject",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "collect",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "capture",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "filter",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "sanitize",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "review",
+        "active": true,
+        "done": false
+      }
+    ],
+    "metrics": "0 face(s) · 35.0 ms WASM · 3 controls · 7 regions · preview selective-pixelate · 94% layout pixels kept locally · capture 121 ms · heap 15.8 MiB JS",
+    "status": "Privacy-only review complete. No network call. Enable planner mode to send protected layout."
+  },
+  "finished_at": "2026-09-14T11:14:57.371Z",
+  "summary": {
+    "passed": 9,
+    "failed": 0,
+    "informational": 5,
+    "total": 9
+  },
+  "verdict": "pass",
+  "g03_gate": {
+    "status": "unknown",
+    "reason": "Maximized harness proof + screenshots recorded. True toolbar glyph automation and full multi-scenario clean-setup persistence remain open. Do not mark G03 pass from this file alone until acceptance scenarios are complete."
+  }
+}

@@ -67,6 +67,13 @@
       "value": null,
       "source": "Benchmarks/official-rubric.json",
       "limit": "Official score null"
+    },
+    {
+      "id": "wave5-e2e-maximized",
+      "claim": "Wave5 Chromium e2e harness passes inject/collect, activeTab refusal, overlay privacy-only protect loop, and writes demo screenshots; toolbar glyph remains human-required.",
+      "type": "empirical",
+      "source": "Benchmarks/results/e2e.json",
+      "limits": "Not a G03 pass for full clean-setup multi-scenario persistence; overlay is harness-only."
     }
   ]
 }

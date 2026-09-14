@@ -1,3 +1,13 @@
+## Wave 5 — e2e maximize + redaction saturation + gate evidence — 14 September 2026
+
+- G03: `scripts/validate-extension-e2e.mjs` → `e2e.json` + `wave5-demo-screens/` (9/9 harness pass). Toolbar glyph still human-required; G03 remains **unknown**.
+- WebPII/redaction: 18 held-out synthetic cases → `wave5-pii-redaction-utility-v01.json`. Detector/merge improvements; official score **null**.
+- G11: clearer `judge_latency_breakdown` in `core-latency.json`; full-flow **fail** retained.
+- Gate evidence without fake passes: G05 load notes, G09 axe probe, G14 fallback+rehearsal protocol, G20 human-eval protocol. Closed **G17/G18**.
+- Security rescan 0 high; Ollama skipped; Firefox live unverified.
+- Automated tests: **109 pass / 0 fail**.
+- Counts → pass **12** / fail **1** / unknown **7**. submission_ready **false**.
+
 ## Wave 4 — rubric diagnostics + latency strategy + deck/site honesty — 14 September 2026
 
 - Expanded held-out synthetic fixtures (12 cases) → `Benchmarks/results/wave4-pii-redaction-utility-v01.json`. Official score **null**.

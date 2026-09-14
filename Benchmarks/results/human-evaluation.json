@@ -1,0 +1,18 @@
+{
+  "name": "wave5-human-evaluation",
+  "generatedAt": "2026-09-14T00:00:00Z",
+  "status": "unknown",
+  "protocol": "Docs/human-evaluation-protocol.md",
+  "acceptance": {
+    "required_participants": 5,
+    "required_narrative_reviewers": 3,
+    "non_author": true
+  },
+  "participants": [],
+  "narrative_reviewers": [],
+  "team_rehearsal": {
+    "note": "Team-only rehearsals must not be counted toward G20.",
+    "sessions": []
+  },
+  "g20_reason": "Protocol published; zero non-author participants recorded. Do not mark G20 pass."
+}

@@ -1,6 +1,6 @@
 {
-  "name": "wave4-core-latency",
-  "generatedAt": "2026-09-14T11:05:14.396Z",
+  "name": "wave5-core-latency",
+  "generatedAt": "2026-09-14T11:12:43.195Z",
   "mode": "planner_assisted",
   "budgetMs": 200,
   "warmups": 10,
@@ -8,17 +8,17 @@
   "localProtectLoop": {
     "unit": "ms",
     "n": 120,
-    "min": 0.0553859999999986,
-    "max": 0.7454460000000012,
-    "p50": 0.07495299999999361,
-    "p95": 0.18137500000000273,
-    "mean": 0.11724532499999972,
+    "min": 0.05743000000001075,
+    "max": 0.8245259999999988,
+    "p50": 0.06791299999999012,
+    "p95": 0.2487649999999988,
+    "mean": 0.12376558333333385,
     "gate_if_misused_as_full_flow": {
       "metric": "task-latency",
-      "elapsedMs": 0.18137500000000273,
+      "elapsedMs": 0.2487649999999988,
       "budgetMs": 200,
       "status": "pass",
-      "observed": 0.18137500000000273,
+      "observed": 0.2487649999999988,
       "note": "Within 200 ms budget."
     },
     "note": "Local protect-only timings. MUST NOT be reported as G11 full-flow pass."
@@ -64,20 +64,20 @@
       "stages": [
         {
           "name": "selective_redact_heuristic",
-          "elapsedMs": 0.18137500000000273
+          "elapsedMs": 0.2487649999999988
         }
       ],
-      "localProtectMs": 0.18137500000000273,
+      "localProtectMs": 0.2487649999999988,
       "plannerMs": 0,
-      "fullFlowMs": 0.18137500000000273,
+      "fullFlowMs": 0.2487649999999988,
       "budgetMs": 200,
       "gate": {
         "metric": "task-latency",
         "status": "fail",
         "budgetMs": 200,
-        "elapsedMs": 0.18137500000000273,
+        "elapsedMs": 0.2487649999999988,
         "observed": null,
-        "note": "Privacy-only local protect 0.18137500000000273 ms is not full-flow (no planner/confirm). G11 remains fail; budget 200 ms unchanged."
+        "note": "Privacy-only local protect 0.2487649999999988 ms is not full-flow (no planner/confirm). G11 remains fail; budget 200 ms unchanged."
       },
       "strategiesApplied": [
         "skip_llm_privacy_only",
@@ -92,20 +92,20 @@
       "stages": [
         {
           "name": "local_protect_proxy",
-          "elapsedMs": 0.07495299999999361
+          "elapsedMs": 0.06791299999999012
         }
       ],
-      "localProtectMs": 0.07495299999999361,
+      "localProtectMs": 0.06791299999999012,
       "plannerMs": 3029,
-      "fullFlowMs": 3029.074953,
+      "fullFlowMs": 3029.067913,
       "budgetMs": 200,
       "gate": {
         "metric": "task-latency",
-        "elapsedMs": 3029.074953,
+        "elapsedMs": 3029.067913,
         "budgetMs": 200,
         "status": "fail",
         "observed": null,
-        "note": "Full-flow latency 3029.074953 ms exceeds 200 ms gate. Gate must not be weakened."
+        "note": "Full-flow latency 3029.067913 ms exceeds 200 ms gate. Gate must not be weakened."
       },
       "strategiesApplied": [
         "planner_required",
@@ -116,6 +116,48 @@
     }
   },
   "wave3_browser_protect_single_run_ms": 188,
+  "judge_latency_breakdown": {
+    "title": "Latency breakdown for judges (Wave5)",
+    "budgetMs": 200,
+    "paths": [
+      {
+        "name": "privacy_only_local_protect",
+        "includes": [
+          "capture (browser)",
+          "DOM collect",
+          "UltraFace (optional cache)",
+          "selective/wireframe preview",
+          "sanitize assert",
+          "human review UI"
+        ],
+        "excludes": [
+          "Ollama/Qwen planner",
+          "network plan round-trip",
+          "confirm/execute"
+        ],
+        "node_microbench_p95_ms": 0.2487649999999988,
+        "browser_single_run_protect_ms": 188,
+        "g11_claim": "NOT a G11 pass — privacy-only omits planner/confirm required by full-flow definition"
+      },
+      {
+        "name": "planner_assisted_full_flow",
+        "includes": [
+          "local protect",
+          "local LLM plan",
+          "human confirm",
+          "optional execute"
+        ],
+        "historical_samples_ms": [
+          3029,
+          2276
+        ],
+        "p95_ms": 3029,
+        "g11_status": "fail",
+        "budget_weakened": false
+      }
+    ],
+    "note": "Organizers requiring <200ms full-flow must treat planner-assisted path as fail until measured under budget. Do not substitute privacy-only ms."
+  },
   "acceptance": {
     "rule": "G11",
     "required": "p95 end-to-end <200ms, n≥100 after 10 warmups per frozen core flow",

@@ -36,4 +36,8 @@
 
 ## Evidence links
 
-`Benchmarks/results/extension-loop-v01.json` · `core-latency.json` · `wave4-pii-redaction-utility-v01.json` · `Docs/decisions/wave4-latency-strategy.md`
+`Benchmarks/results/e2e.json` · `extension-loop-v01.json` · `core-latency.json` · `wave5-pii-redaction-utility-v01.json` · `wave5-demo-screens/` · `Docs/decisions/wave4-latency-strategy.md`
+
+## Screenshotable synthetic flow (automation-maximized)
+
+Harness `scripts/validate-extension-e2e.mjs` produces PNGs under `Benchmarks/results/wave5-demo-screens/` for fixture + popup stages using a **temporary** `<all_urls>` overlay. That is **not** a toolbar glyph click. Use those stills for storyboard fallback only.

@@ -1,0 +1,11 @@
+{
+  "name": "wave5-ollama-planner-status",
+  "generatedAt": "2026-09-14T11:12:50.976034+00:00",
+  "ports_probed": [
+    11434,
+    11436
+  ],
+  "reachable": false,
+  "planner_e2e": "skipped",
+  "reason": "Neither :11434 nor :11436 answered /api/tags. Do not fake planner E2E."
+}

@@ -1,0 +1,35 @@
+{
+  "name": "wave5-axe-probe",
+  "generatedAt": "2026-09-14T11:13:33.176Z",
+  "tool": "axe-core 4.10.2 via CDN inject in Chromium",
+  "scope": "Automated axe subset only. Not WCAG 2.1 AA criterion-level conformance. Not screen-reader evidence.",
+  "targets": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "violations": [],
+      "passes": 41,
+      "incomplete": 3
+    },
+    {
+      "url": "http://127.0.0.1:9041/",
+      "violations": [],
+      "passes": 38,
+      "incomplete": 1
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/fixture.html",
+      "violations": [],
+      "passes": 26,
+      "incomplete": 0
+    }
+  ],
+  "g09_acceptance": {
+    "required": "All applicable WCAG 2.1 A/AA criteria documented and checked; no known blocker",
+    "status": "unknown",
+    "reason": "axe probe recorded. Full criterion-level manual + AT review still required. Do not mark G09 pass from axe alone."
+  },
+  "related": [
+    "Docs/accessibility-review.md",
+    "Benchmarks/results/lighthouse-sightline-v02-summary.json"
+  ]
+}

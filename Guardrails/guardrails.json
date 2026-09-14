@@ -63,7 +63,7 @@
         "Benchmarks/results/extension-native-v01.json"
       ],
       "status": "unknown",
-      "reason": "Chromium MV3 load/inject/reach evidenced (extension-native-v03). Wave2\u20134 prove production scripting inject + collect, activeTab capture gate, popup protect loop, privacy-only skip-LLM path, and judge/demo checklist for human toolbar. Toolbar glyph automation, Firefox live run, and full clean-setup-to-reload e2e.json remain open \u2014 status stays unknown."
+      "reason": "Wave5 e2e harness writes Benchmarks/results/e2e.json maximizing inject/collect, activeTab gate, overlay UI protect loop, and demo screenshots. Toolbar glyph automation, Firefox live, and full multi-scenario clean-setup persistence remain open \u2014 status stays unknown."
     },
     {
       "id": "G04",
@@ -90,7 +90,7 @@
         "Benchmarks/results/load.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "Wave5 load.json records a short concurrent health + malformed-reject probe only. Full 5-minute / 1000-record durable capacity floor not executed \u2014 status stays unknown."
     },
     {
       "id": "G06",
@@ -131,7 +131,7 @@
         "Benchmarks/results/dependency-audit.json"
       ],
       "status": "unknown",
-      "reason": "dependency-audit.json present (0 critical/high on omit=dev audit this wave). Secret scan clean. Public GitHub Pages is static-only; Node prototype deployment controls (HTTPS reverse proxy, CSRF for cookie auth, production hardening) remain incomplete \u2014 status stays unknown."
+      "reason": "dependency-audit.json + security.json present (0 critical/high omit=dev; 0 high secrets). Pages is static HTTPS. Node prototype TLS reverse-proxy / production hardening incomplete \u2014 status stays unknown. See Docs/security.md Wave 5 checklist."
     },
     {
       "id": "G09",
@@ -145,7 +145,7 @@
         "Docs/accessibility-review.md"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "accessibility.json axe probe + Docs/accessibility-review.md + Lighthouse a11y 100 exist. Full WCAG 2.1 A/AA criterion-level + AT review incomplete \u2014 status stays unknown."
     },
     {
       "id": "G10",
@@ -158,7 +158,7 @@
         "Benchmarks/results/browser-review.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. A 390 px document-width check with no document-level horizontal overflow is recorded per experiment in Benchmarks/results/browser-experiments-2026-09-11/, but no motion-safety or reduced-motion review is complete."
+      "reason": "browser-review.json records 320/390/1440 website viewports without document overflow and reduced-motion checks. Prototype fixture 390px checks exist in browser-experiments. 200% zoom / complete motion-safety review incomplete \u2014 status stays unknown."
     },
     {
       "id": "G11",
@@ -171,7 +171,7 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "core-latency.json records historical planner-inclusive samples in seconds (p95 fail vs 200ms). Privacy-only skip-LLM and detector cache reduce local cost but are explicitly not a G11 pass. Gate not weakened. Evidence: Benchmarks/results/core-latency.json."
+      "reason": "core-latency.json (Wave5) keeps planner-inclusive full-flow fail vs 200ms. Judge_latency_breakdown separates privacy-only local protect from planner-assisted path. Budget not weakened. Evidence: Benchmarks/results/core-latency.json."
     },
     {
       "id": "G12",
@@ -212,7 +212,7 @@
         "Benchmarks/results/demo-rehearsal.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "Docs/demo-runbook.md, Docs/demo-fallback.webm (from verified recording), and demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
     },
     {
       "id": "G15",
@@ -252,8 +252,8 @@
         "Docs/submission-deck.pptx",
         "Docs/presentation-render/"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Docs/template-audit.md verifies six-slide supplied structure; Docs/submission-deck.pptx and Docs/presentation-render/ exist; longer pitch deck is separate. SIH26171 identity and honesty caveats visible. Evidence: Docs/template-audit.md, Docs/submission-deck.pptx, Docs/presentation-render/."
     },
     {
       "id": "G18",
@@ -266,8 +266,8 @@
         "Prototype/README.md",
         "Docs/deployment-verification.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API."
     },
     {
       "id": "G19",
@@ -294,7 +294,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "Docs/human-evaluation-protocol.md + Benchmarks/results/human-evaluation.json publish the protocol with zero non-author participants recorded \u2014 status stays unknown."
     }
   ],
   "iteration_policy": {

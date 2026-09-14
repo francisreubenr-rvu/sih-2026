@@ -1,0 +1,8 @@
+{
+  "name": "wave5-firefox-status",
+  "generatedAt": "2026-09-14T11:12:50.976799+00:00",
+  "firefox_binary": null,
+  "package_present": true,
+  "live_run": "unverified",
+  "reason": "Firefox binary absent on this box; package-only."
+}
