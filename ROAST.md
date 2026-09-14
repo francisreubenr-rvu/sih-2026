@@ -1,3 +1,95 @@
+## Round 17 — wave 7 a11y + load soak (14 September 2026)
+
+- [x] G09/G10 enriched evidence (axe 0 violations, keyboard, text-spacing, EN/HI); remain unknown (no fake WCAG pass).
+- [x] G05 5-minute local soak with heap snapshots → pass on declared local scope.
+- [x] G11 honest mosaic/merge opts; full-flow fail retained.
+- [x] Popup runtime.getURL guard so lang controls work in HTTP preview.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation (G03).
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) participants not yet collected.
+- [ ] G14 3 consecutive live rehearsals not logged.
+
+## Round 16 — wave 6 hardening + a11y + latency (14 September 2026)
+
+- [x] Node/API hardening evidence harness (headers, origin, size, rate limit, error hygiene); G08 pass on declared scope.
+- [x] axe on Website + extension popup; contrast/reveal fixes; G09/G10 remain unknown (no fake WCAG pass).
+- [x] Latency stage instrumentation + mosaic subsample; G11 fail retained.
+- [x] Expanded held-out fixtures to 24; GSTIN/UPI telemetry; official score null.
+- [x] G14/G20 human-path templates without marking pass.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) participants not yet collected.
+- [ ] G05 full 5-minute capacity floor still open.
+
+## Round 15 — wave 5 e2e + saturation + gate evidence (14 September 2026)
+
+- [x] E2E harness maximizes automation + screenshotable synthetic flow; activeTab gate retained; toolbar glyph not faked.
+- [x] Expanded held-out fixtures to 18; classifySensitive/mergeRegions/password kind; honest scores; official null.
+- [x] G17/G18 closed with real deck/README evidence.
+- [x] Protocol/templates for G05/G09/G14/G20 evidence files; statuses stay unknown without acceptance.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) participants not yet collected.
+- [ ] G05 capacity floor, G08 production hardening, G09 full WCAG, G10 200% zoom still open.
+
+## Round 14 — wave 4 latency + rubric diagnostics (14 September 2026)
+
+- [x] Privacy-only skip-LLM path + detector cache + wireframe preview implemented; G11 remains fail with core-latency evidence.
+- [x] Expanded held-out synthetic fixture scoring (12 cases); official score null.
+- [x] Judge/demo checklist for human toolbar activeTab (no faked glyph automation).
+- [x] Recovery + differentiation + architecture/scope evidence closed additional gates honestly.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) and several presentation/ops unknowns remain.
+
+## Round 13 — wave 3 loop + packaging (14 September 2026)
+
+- [x] Production popup capture→filter→sanitize→review reliability: stages, reinject, tab fallback, toolbar guidance.
+- [x] Loop harness proves UI path under overlay; shipped activeTab gate retained.
+- [x] Packaging refresh 0.1.1 + Firefox unpacked tree/zip; lean models (no OCR/PII in extension zip).
+- [x] Security scan + dependency audit evidence; G06/G07 pass on honest scope.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+
+## Round 12 — wave 2 capture path + held-out fixtures (14 September 2026)
+
+- [x] Chromium production injection path (`chrome.scripting.executeScript`) + `tabs.sendMessage` collect proven on host-permission fixture.
+- [x] Production `captureVisibleTab` permission gate recorded: refuses without toolbar `activeTab` / `<all_urls>` (honest).
+- [x] Harness-only temporary overlay exercises real PNG `captureVisibleTab`; outbound JSON excludes capture bytes; shipped manifest unchanged.
+- [x] Held-out synthetic fixture scoring written with separable coverage/preservation and intentional fail cases; official score null; latency gate fail retained.
+- [x] Client resource measurement hooks + extension heap/timing; observed remains null (no invented RSS/energy).
+- [ ] Toolbar action UI (glyph click / true activeTab user gesture) still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Ollama planner E2E not run (service unreachable); do not fake.
+
+## Round 11 — wave 1 selective redaction + extension UI (14 September 2026)
+
+- [x] Selective local preview preserves non-sensitive pixels while pixelating face/private/field/media regions; unit coverage and preservation scores exist. Egress unchanged (semantics-only).
+- [x] Extension popup: DigiLocker-credible styling, trust chip, EN/HI strings, `browser ?? chrome`, sanitize assert before fetch.
+- [x] Rubric hooks land with honest `unit_fixture_only` / latency `fail`; no invented saturation.
+- [ ] Toolbar capture + pairing-token planner round-trip still not driven by harness (popup opened as document only).
+- [ ] Firefox unpacked execution unverified despite shipped firefox manifest + API polyfill.
+- [ ] Selective preview is not a general PII detector; UltraFace remains face-only; DOM/regex cover fields and Indic patterns as telemetry only.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; keep OCR local-only.
+
 # Roast Loop — 9 September 2026
 
 ## Round 10 — integrated operations simulation

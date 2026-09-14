@@ -1,14 +1,32 @@
-# Demonstration and fallback runbook
+# Demonstration and fallback runbook (Wave 5)
 
-**Status: planned; domain prototype and fallback recording do not exist.** A recording of the preparation website would not demonstrate SIH2171 functionality.
+**Status:** Live path documented; recorded fallback present; 3 consecutive judged rehearsals not yet logged (G14 remains unknown).
 
-1. Freeze the verified statement, critical workflow, build identifier, seed data and environment.
-2. Run clean setup, database seed and health check. Prepare one valid input and one safe invalid input.
-3. Complete input → validated processing → usable result → save/revisit, only where required by the statement.
-4. Show a controlled error, correction and successful recovery. Verify no duplicate write.
-5. Restart and check retained state. Reset for the next run. Repeat three times; preserve pass/fail logs.
-6. Record a 60–90-second screen capture of the tested domain flow. Add captions or a transcript and show recorded-build provenance. Avoid credentials, personal data and notification popups.
-7. Export a broadly playable local MP4/WebM, verify duration and playback without internet, and save alongside a static screenshot storyboard. Keep a second copy on the presentation machine.
-8. Rehearse the 10–15-minute pitch with one narrator and one operator. Record actual timings; the current 700-second speaker plan is only an allocation.
+## Live path (preferred)
 
-Failure ladder: live local/domain service → recording of that same build → labelled screenshot storyboard. Say which is being shown. No real-provider claim unless the provider path was actually exercised.
+1. Freeze build id (`git rev-parse HEAD`), extension **0.1.1**, Node 22+.
+2. `cd Prototype && npm ci && npm start` → `http://127.0.0.1:9041/`.
+3. Optional Ollama + `qwen2.5:7b-instruct`. If down, leave **Privacy-only** checked.
+4. Load unpacked `Prototype/extension-build/` in Chrome.
+5. Open synthetic fixture (`/app/fixture.html` or operations desk).
+6. **Click the Sightline toolbar icon** (human required for `activeTab`).
+7. Capture & protect → stage strip → selective/wireframe preview → inspect semantics-only JSON.
+8. Privacy-only: stop and narrate boundary. Planner: Ask model → Confirm.
+9. Show one controlled failure (capture without toolbar → reopen from glyph) and recovery.
+10. Reset demo; repeat. Log each rehearsal in `Benchmarks/results/demo-rehearsal.json`.
+
+## Recorded fallback
+
+- File: `Docs/demo-fallback.webm` (copy of `Docs/demo-recording/sightline-browser-v02.webm`).
+- Scope: web workspace Pending→Review with local protect + Qwen (not toolbar-glyph MV3 capture).
+- Say aloud which path is shown. Offline-safe local playback verified historically in Pages checkpoint notes.
+
+## Failure ladder
+
+Live local domain service → recording of that same build → labelled screenshot storyboard (`Benchmarks/results/wave5-demo-screens/`). No real-provider claim unless exercised.
+
+## Honest limits to state
+
+- UltraFace face-only; WebPII text retained exact PII on 58/100 screens.
+- Full-flow &lt;200 ms **fails** (planner seconds). Privacy-only is not a G11 pass.
+- Firefox package exists; live Firefox unverified here.

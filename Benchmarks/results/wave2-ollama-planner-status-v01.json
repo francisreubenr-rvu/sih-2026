@@ -1,0 +1,8 @@
+{
+  "name": "wave2-ollama-planner-status",
+  "timestamp": "2026-09-14T10:46:00.000Z",
+  "probed": ["http://127.0.0.1:11434/api/tags", "http://127.0.0.1:11436/api/tags"],
+  "reachable": false,
+  "planner_e2e": "skipped_optional",
+  "note": "Ollama was not available. No fabricated planner E2E. Client/extension/redaction/resource evidence does not require it."
+}

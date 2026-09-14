@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "created_at": "2026-09-08T18:18:59.042063+00:00",
-  "scope": "SIH2171 preparation; problem identity unverified",
+  "scope": "SIH26171 privacy-preserving visual browser agent; prototype v0.1 in validation",
   "deadline": {
     "date": "2026-09-11",
     "timezone": "Asia/Kolkata",
@@ -26,14 +26,15 @@
       "category": "eligibility",
       "name": "Verified problem identity",
       "mandatory": true,
-      "acceptance": "Exact SIH2171 identifier, year, issuing organization, full problem text and official source captured; otherwise domain work and submission blocked.",
+      "acceptance": "Exact corrected SIH26171 identifier, 2026 year, issuing organization, full statement and official source captured.",
       "verification_method": "Inspect official problem page or organizer-issued record and preserve provenance.",
       "required_evidence": [
         "Wiki/problem-statement.md",
-        "Raw/official-problem-source"
+        "Raw/domain/sih-official.txt",
+        "Raw/domain/sih26171-official-extract.txt"
       ],
-      "status": "fail",
-      "reason": "SIH2171 has not been verified in the current research. No domain is assumed."
+      "status": "pass",
+      "reason": "Full user supplied statement cross-checked against retrieved organizer catalogue on 9 September 2026. Initial SIH2171 shorthand superseded."
     },
     {
       "id": "G02",
@@ -46,8 +47,8 @@
         "Docs/architecture.md",
         "Docs/scope.md"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Architecture and scope docs record one primary journey, \u22642 services (browser client + Node server), \u22641 SQLite audit store, \u22641 optional local Ollama provider. No custom training or specialized hardware required for the candidate. Evidence: Docs/architecture.md, Docs/scope.md."
     },
     {
       "id": "G03",
@@ -58,10 +59,11 @@
       "verification_method": "Run end-to-end tests against a clean database and verify restart persistence.",
       "required_evidence": [
         "Benchmarks/results/e2e.json",
-        "Prototype/README.md"
+        "Prototype/README.md",
+        "Benchmarks/results/extension-native-v01.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Wave5 e2e harness writes Benchmarks/results/e2e.json maximizing inject/collect, activeTab gate, overlay UI protect loop, and demo screenshots. Toolbar glyph automation, Firefox live, and full multi-scenario clean-setup persistence remain open \u2014 status stays unknown."
     },
     {
       "id": "G04",
@@ -74,8 +76,8 @@
         "Wiki/competitors.md",
         "Benchmarks/results/differentiation.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Wiki/competitors.md compares \u22655 adjacent solutions. Implemented differentiator (pixel-free egress + selective local preview + expiring references) demonstrated against full-image mask baseline via held-out fixtures and extension sanitize evidence. No first/unique global claims. Evidence: Benchmarks/results/differentiation.json."
     },
     {
       "id": "G05",
@@ -87,8 +89,8 @@
       "required_evidence": [
         "Benchmarks/results/load.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale."
     },
     {
       "id": "G06",
@@ -100,8 +102,8 @@
       "required_evidence": [
         "Benchmarks/results/security.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production."
     },
     {
       "id": "G07",
@@ -114,8 +116,8 @@
         "Docs/security.md",
         "Benchmarks/results/security.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope."
     },
     {
       "id": "G08",
@@ -128,8 +130,8 @@
         "Benchmarks/results/security.json",
         "Benchmarks/results/dependency-audit.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification."
     },
     {
       "id": "G09",
@@ -143,7 +145,7 @@
         "Docs/accessibility-review.md"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Wave7 accessibility.json: axe Website + extension popup (file+HTTP) + prototype 0 violations; keyboard Tab sampling, 1.4.12 text-spacing, EN/HI lang switch evidence, partial criterion checklist. Full WCAG criterion-level + AT review incomplete \u2014 status stays unknown."
     },
     {
       "id": "G10",
@@ -156,7 +158,7 @@
         "Benchmarks/results/browser-review.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "browser-review.json Wave7: CSS zoom 200% + 320/390/1440 reflow + text-spacing notes for Website + popup. Native 200% zoom / complete motion-safety incomplete \u2014 status stays unknown."
     },
     {
       "id": "G11",
@@ -168,8 +170,8 @@
       "required_evidence": [
         "Benchmarks/results/core-latency.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "fail",
+      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened."
     },
     {
       "id": "G12",
@@ -179,10 +181,10 @@
       "acceptance": "For both mobile and desktop, median of 3 runs is strictly >90 in performance, accessibility, best-practices and SEO; no category omitted. Record all runs and environment.",
       "verification_method": "Run production build in clean Chrome profile; preserve JSON/HTML reports and exact URL/version. A rounded 90 fails.",
       "required_evidence": [
-        "Benchmarks/results/lighthouse/"
+        "Benchmarks/results/lighthouse-sightline-v02-summary.json"
       ],
       "status": "pass",
-      "reason": "Local preparation website only: 3 runs per profile; all category medians 100; raw Lighthouse reports preserved. Does not establish domain application or public deployment readiness."
+      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance."
     },
     {
       "id": "G13",
@@ -194,8 +196,8 @@
       "required_evidence": [
         "Benchmarks/results/recovery.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json."
     },
     {
       "id": "G14",
@@ -210,7 +212,7 @@
         "Benchmarks/results/demo-rehearsal.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Docs/demo-rehearsal-checklist.md + demo-fallback.webm + demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
     },
     {
       "id": "G15",
@@ -222,8 +224,8 @@
       "required_evidence": [
         "Docs/claim-ledger.json"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Docs/claim-ledger.json lists empirical claims with source, type and limits; fabricated metrics forbidden. Official score null; G11 fail retained; WebPII failure published."
     },
     {
       "id": "G16",
@@ -235,8 +237,8 @@
       "required_evidence": [
         "Docs/impact-model.md"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Docs/impact-model.md defines outcome specification, pilot design, cost ledger and environmental account with null parameters until sourced. No projected results reported as observed outcomes."
     },
     {
       "id": "G17",
@@ -250,8 +252,8 @@
         "Docs/submission-deck.pptx",
         "Docs/presentation-render/"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Docs/template-audit.md verifies six-slide supplied structure; Docs/submission-deck.pptx and Docs/presentation-render/ exist; longer pitch deck is separate. SIH26171 identity and honesty caveats visible. Evidence: Docs/template-audit.md, Docs/submission-deck.pptx, Docs/presentation-render/."
     },
     {
       "id": "G18",
@@ -264,8 +266,8 @@
         "Prototype/README.md",
         "Docs/deployment-verification.md"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API."
     },
     {
       "id": "G19",
@@ -278,8 +280,8 @@
         "Raw/sources.json",
         "Wiki/source-index.md"
       ],
-      "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "status": "pass",
+      "reason": "Raw/sources.json and Wiki/source-index.md retain attribution; failed private channels recorded as inaccessible in reference intake. Competitor and problem citations mapped in Wiki."
     },
     {
       "id": "G20",
@@ -292,7 +294,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Not yet evaluated against a verified SIH2171 implementation."
+      "reason": "Docs/human-evaluation-protocol.md + Docs/human-evaluation-forms.md + human-evaluation.json publish templates with zero non-author participants \u2014 status stays unknown."
     }
   ],
   "iteration_policy": {

@@ -1,3 +1,77 @@
+## Wave 7 — a11y depth + load soak + latency opts — 14 September 2026
+
+- G09/G10: axe + keyboard Tab + 1.4.12 text-spacing + EN/HI (Website + popup HTTP harness); statuses **unknown**.
+- G05: `scripts/wave7-load-notes.mjs` → `load.json` 5-minute soak, 20 workers, 1000 durable rows, heap snapshots → **pass** (local scope).
+- G11: mergeOverlappingRegions + stride-4; full-flow **fail** retained.
+- Popup: guard `runtime.getURL` so EN/HI listeners register outside extension context.
+- Security rescan 0 high; Ollama skipped; Firefox live unverified.
+- Automated tests: **113 pass / 0 fail**.
+- Counts → pass **14** / fail **1** / unknown **5**. submission_ready **false**.
+- Do not mark G14/G20/G03 human toolbar as pass.
+
+## Wave 6 — Node hardening + a11y + latency + fixtures — 14 September 2026
+
+- G08: `scripts/wave6-hardening-evidence.mjs` → `hardening.json` (8/8); security headers + production guards; G08 → **pass** (declared local scope).
+- G09/G10: axe Website + extension popup + prototype (0 violations after contrast/reveal fixes); CSS zoom approx; statuses **unknown**.
+- G11: stage p95 + mosaic subsample; full-flow **fail** retained; judge breakdown enriched.
+- WebPII-style: 24 held-out synthetic cases → `wave6-pii-redaction-utility-v01.json`; GSTIN/UPI telemetry; official score **null**.
+- G05: load.json concurrent health + 1000 durable rows (wall-clock short) — **unknown**.
+- G14/G20: rehearsal checklist + human forms templates — **unknown** (no fake human passes).
+- Security rescan 0 high; Ollama skipped; Firefox live unverified.
+- Automated tests: **112 pass / 0 fail**.
+- Counts → pass **13** / fail **1** / unknown **6**. submission_ready **false**.
+
+## Wave 5 — e2e maximize + redaction saturation + gate evidence — 14 September 2026
+
+- G03: `scripts/validate-extension-e2e.mjs` → `e2e.json` + `wave5-demo-screens/` (9/9 harness pass). Toolbar glyph still human-required; G03 remains **unknown**.
+- WebPII/redaction: 18 held-out synthetic cases → `wave5-pii-redaction-utility-v01.json`. Detector/merge improvements; official score **null**.
+- G11: clearer `judge_latency_breakdown` in `core-latency.json`; full-flow **fail** retained.
+- Gate evidence without fake passes: G05 load notes, G09 axe probe, G14 fallback+rehearsal protocol, G20 human-eval protocol. Closed **G17/G18**.
+- Security rescan 0 high; Ollama skipped; Firefox live unverified.
+- Automated tests: **109 pass / 0 fail**.
+- Counts → pass **12** / fail **1** / unknown **7**. submission_ready **false**.
+
+## Wave 4 — rubric diagnostics + latency strategy + deck/site honesty — 14 September 2026
+
+- Expanded held-out synthetic fixtures (12 cases) → `Benchmarks/results/wave4-pii-redaction-utility-v01.json`. Official score **null**.
+- G11 strategy: privacy-only skip-LLM (extension default), detector session cache, optional wireframe preview. `core-latency.json` distribution evidence; full-flow **fail** retained (not weakened).
+- Judge/demo checklist: `Docs/demo-judge-checklist.md` (human toolbar activeTab).
+- Closed with evidence: G02 (architecture/scope), G04 (differentiation), G13 (recovery), G15 (claim ledger), G16 (impact framework), G19 (sources). Counts → pass 10 / fail 1 / unknown 9.
+- Website Wave 4 panels + DigiLocker pixel-abstract accents; submission deck refresh attempted.
+- Security rescan 0 high; Ollama unreachable; Firefox live unverified.
+- Automated tests: **107 pass / 0 fail**.
+- Still open for submission_ready: G11 fail, e2e.json / toolbar glyph automation, Firefox live, WebPII saturation, human eval (G20), G08/G09/G10/G14/G17/G18 unknowns as applicable.
+
+## Wave 3 — toolbar path reliability + packaging + evidence — 14 September 2026
+
+- Production popup path: stage strip, toolbar/activeTab guidance (EN/HI), content-script reinject on disconnect, http(s) tab fallback when popup is opened as a document.
+- Loop harness `scripts/validate-extension-loop.mjs`: shipped activeTab gate + overlay-driven `#capture` UI completing capture→filter→sanitize→review (8/8). Record: `Benchmarks/results/extension-loop-v01.json`. Native refresh: `extension-native-v03.json`.
+- Packaging: extension **0.1.1** icons; `npm run build:extension` writes Chrome + Firefox unpacked trees and zips (`Docs/sightline-extension-wave3.zip`, firefox zip, Website download alias). OCR/PII lab weights excluded from MV3 package.
+- Security: `scripts/wave3-security-scan.mjs` → `Benchmarks/results/security.json` + `dependency-audit.json` (0 high secrets; 0 critical/high npm audit omit=dev). G06/G07 → **pass**. G11 remains **fail**.
+- Website: DigiLocker-credible trust bar (EN/HI) + wave3 evidence panels.
+- Ollama unreachable; Firefox binary absent — status JSON skipped honestly.
+- Automated tests: **100 pass / 0 fail**.
+- Still open for wave 4 / submission: true toolbar glyph automation, Firefox live run, WebPII/official saturation, human/domain review, deck refresh, live planner when Ollama available.
+
+## Wave 2 — capture harness + held-out fixtures + resources — 14 September 2026
+
+- Chromium capture harness (`scripts/validate-extension-capture.mjs`): production inject/collect on `http://127.0.0.1:9041/app/fixture.html`; production `captureVisibleTab` correctly requires `activeTab`; harness-only temp `<all_urls>` overlay proves PNG capture + sanitized semantics egress (shipped manifest unchanged). Record: `Benchmarks/results/extension-capture-v01.json` (9 pass / 0 fail). Native refresh: `extension-native-v02.json`.
+- Held-out synthetic PII/redaction/utility fixtures: `Benchmarks/datasets/wave2-heldout-pii-fixtures.json` → `Benchmarks/results/wave2-pii-redaction-utility-v01.json`. Separates coverage vs preservation; includes intentional miss and over-redaction cases. Official score remains null.
+- Client resource hooks: `Prototype/shared/client-resources.mjs`; extension popup records capture-stage JS heap when available. Evidence: `wave2-client-resources-v01.json` (observed null).
+- Firefox: shipped manifest + polyfill only; live run unverified (`wave2-firefox-status-v01.json`).
+- Ollama unreachable — planner E2E skipped (`wave2-ollama-planner-status-v01.json`).
+- Automated tests: 92 pass / 0 fail. G11 full-flow <200ms remains **fail** — not weakened.
+- Still open for wave 3 / submission: real toolbar glyph click, Firefox live validation, WebPII/official saturation, human/domain review, packaging, live planner when Ollama available.
+
+## Wave 1 P0 — extension + selective redaction — 14 September 2026
+
+- Implemented local selective pixelation (`Prototype/shared/selective-redaction.mjs`) for human review previews; non-sensitive pixels preserved; sensitive regions (face/private/field/media/password kinds) mosaicked. **Outbound API still forbids raw screenshots** — `assertSanitizedPayload` + existing Zod scene schema.
+- Wired into MV3 extension popup and web workspace capture path. Trust chip + EN/HI-ready strings on extension surfaces. DigiLocker-credible navy/paper palette.
+- Rubric measurement hooks: visual P/R, PII instance P/R, redaction coverage vs preservation, latency gate (200ms). Unit fixtures only; ledger score remains null; latency status remains fail.
+- Indic PII telemetry: Aadhaar 4-4-4 and PAN ABCDE1234F patterns in `classifySensitive` (export still allow-list only).
+- Automated tests: 86 pass / 0 fail. `npm run build` and `npm run build:extension` succeed.
+- Still open for wave 2: toolbar-driven `captureVisibleTab` harness, Firefox live validation, labeled held-out PII/redaction datasets, client resource budgets, full-flow latency (G11 fail — do not weaken), human/domain review, Ollama E2E when available.
+
 # SIH26171 delivery plan
 
 ## Integrated simulation checkpoint — 11 September 2026

@@ -16,9 +16,19 @@
         "Benchmarks/results/webpii-raster-v02-summary.json",
         "Benchmarks/results/webpii-raster-worker-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+        "Benchmarks/results/core-latency.json",
+        "Benchmarks/results/recovery.json",
+        "Benchmarks/results/differentiation.json"
       ],
-      "latest_diagnostic_note": "External OCR preview retains 1237/2243 selected product tokens (55.1%); this is not annotated interactive-control accuracy or task completion."
+      "latest_diagnostic_note": "Wave4 expands held-out synthetic fixtures to 12 cases (means in wave4-pii-redaction-utility-v01). Still not interactive WebPII/page saturation. observed null."
     },
     {
       "id": "pii-detection",
@@ -31,9 +41,19 @@
         "Benchmarks/results/webpii-raster-v02-summary.json",
         "Benchmarks/results/webpii-raster-worker-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+        "Benchmarks/results/core-latency.json",
+        "Benchmarks/results/recovery.json",
+        "Benchmarks/results/differentiation.json"
       ],
-      "latest_diagnostic_note": "External OCR/NER diagnostic marks 568/1433 expected PII value tokens. These are grouped exact-token matches, not instance precision/recall; some annotation values are not painted."
+      "latest_diagnostic_note": "Wave4 fixture means update diagnostics only. UltraFace face-only; WebPII raster zero detections unchanged; text retention failure 58/100 unchanged."
     },
     {
       "id": "redaction",
@@ -46,9 +66,19 @@
         "Benchmarks/results/webpii-raster-v02-summary.json",
         "Benchmarks/results/webpii-raster-worker-v01-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+        "Benchmarks/results/core-latency.json",
+        "Benchmarks/results/recovery.json",
+        "Benchmarks/results/differentiation.json"
       ],
-      "latest_diagnostic_note": "External local text preview retains 219 exact annotated sensitive tokens on 58/100 screens. Intended-redraw diagnostic only; arbitrary-text export rejected."
+      "latest_diagnostic_note": "Wave4 selective vs over-redaction/miss/FP cases scored separately for coverage vs preservation. Official score null."
     },
     {
       "id": "client-resources",
@@ -63,23 +93,47 @@
         "Benchmarks/results/webpii-raster-v03-summary.json",
         "Benchmarks/results/webpii-raster-worker-v02-summary.json",
         "Benchmarks/results/webpii-text-v01-summary.json",
-        "Benchmarks/results/webpii-text-v01-analysis.json"
+        "Benchmarks/results/webpii-text-v01-analysis.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+        "Benchmarks/results/core-latency.json",
+        "Benchmarks/results/recovery.json",
+        "Benchmarks/results/differentiation.json"
       ],
-      "latest_diagnostic_note": "External OCR/NER 100-screen processing p95 2888.4ms; 102 main-page long tasks total 35190ms. Worker/process memory and CPU remain unmeasured."
+      "latest_diagnostic_note": "Wave4 adds Node microbench distribution for selective-redaction heuristics + privacy-only path; process RSS/CPU/energy still unobserved (null)."
     },
     {
       "id": "task-latency",
       "weightPercent": 15,
       "measurement": "User trigger to verified correct end-state, including capture, model, network and action; report human review separately without omitting it from full time.",
       "observed": null,
-      "status": "partial_diagnostic_only",
+      "status": "fail",
       "diagnostic_note": "Provider pilot and continuous task recording exist, but no 100-attempt full-flow latency distribution. Under-200ms gate remains failed.",
-      "latest_diagnostic_note": "Three bounded synthetic browser goals completed in 10635.5, 3868.4 and 3440ms; one provider-unavailable failure and cancellation preserved. Not a 100-attempt full-flow distribution.",
+      "latest_diagnostic_note": "core-latency.json: historical full-flow seconds \u2192 fail. Privacy-only skip-LLM implemented; not counted as G11 pass. Budget 200ms unchanged.",
       "diagnostic_evidence": [
-        "Benchmarks/results/browser-experiments-2026-09-11/summary.json"
+        "Benchmarks/results/browser-experiments-2026-09-11/summary.json",
+        "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
+        "Benchmarks/results/extension-capture-v01.json",
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json",
+        "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+        "Benchmarks/results/core-latency.json",
+        "Benchmarks/results/recovery.json",
+        "Benchmarks/results/differentiation.json"
       ]
     }
   ],
   "score": null,
-  "scoreReason": "No authoritative normalization and no complete dataset measurements. Do not estimate judge probability."
+  "scoreReason": "No authoritative normalization. Wave4 expands synthetic fixture diagnostics and records latency strategy evidence. Do not estimate judge probability.",
+  "wave1_updated": "2026-09-14",
+  "wave2_updated": "2026-09-14",
+  "wave3_updated": "2026-09-14",
+  "wave4_updated": "2026-09-14"
 }

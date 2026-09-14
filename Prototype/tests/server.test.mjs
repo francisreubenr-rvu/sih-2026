@@ -56,3 +56,33 @@ test('real provider adapter submits only validated semantics and checks JSON',as
 test("serves the real app entry and fixture",()=>fixture(async url=>{for(const path of ["/","/app/fixture.html"]) {const r=await fetch(url+path);assert.equal(r.status,200);assert.match(r.headers.get("content-type"),/text\/html/);}}));
 
 test("no-control scenes omit an impossible empty click enum",()=>{const schema=outputSchema([]);assert.deepEqual(schema.properties.choice.enum,["done","scroll-down","scroll-up"]);});
+
+test('API responses advertise hardening headers and keep error bodies hygienic', () => fixture(async url => {
+  const health = await fetch(url + '/api/v1/health');
+  assert.equal(health.status, 200);
+  assert.equal(health.headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(health.headers.get('referrer-policy'), 'no-referrer');
+  assert.equal(health.headers.get('x-frame-options'), 'SAMEORIGIN');
+  assert.match(health.headers.get('permissions-policy') || '', /camera=\(\)/);
+  assert.equal(health.headers.get('cross-origin-resource-policy'), 'same-origin');
+  assert.equal(health.headers.get('cross-origin-opener-policy'), 'same-origin');
+  assert.match(health.headers.get('content-security-policy') || '', /frame-ancestors 'self'/);
+  const denied = await post(url, body(), { Origin: 'https://evil.example' });
+  assert.equal(denied.status, 403);
+  const err = await denied.json();
+  assert.equal(err.error.code, 'origin_denied');
+  assert.doesNotMatch(JSON.stringify(err), /stack|at Object|node:internal|11434|OLLAMA/i);
+  assert.ok(err.error.requestId);
+}));
+
+test('oversized body is rejected before provider and returns controlled 413', () => {
+  let called = 0;
+  return fixture(async url => {
+    const r = await post(url, 'x'.repeat(300000));
+    assert.equal(r.status, 413);
+    const err = await r.json();
+    assert.equal(err.error.code, 'too_large');
+    assert.doesNotMatch(JSON.stringify(err), /stack|Buffer|chunk/i);
+    assert.equal(called, 0);
+  }, { infer: async () => { called++; } });
+});

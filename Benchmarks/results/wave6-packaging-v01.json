@@ -1,0 +1,14 @@
+{
+  "name": "wave6-packaging",
+  "generatedAt": "2026-09-14T11:22:29.930108+00:00",
+  "extension_version": "0.1.1",
+  "builds": [
+    "Prototype/extension-build",
+    "Prototype/extension-build-firefox"
+  ],
+  "zips": [
+    "Docs/sightline-extension-v01.zip",
+    "Docs/sightline-extension-wave3.zip",
+    "Docs/sightline-extension-firefox-wave3.zip"
+  ]
+}

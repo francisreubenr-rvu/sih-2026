@@ -111,9 +111,9 @@ def submission():
  for x,t,b in [(.6,'Capture','Local only'),(3.73,'Protect','Typed scene'),(6.86,'Reason','Server LLM'),(9.99,'Confirm','Local action')]:
   shape(s,x,3.75,2.69,1.29,PAPER,FOREST);text(s,t,x+.16,3.97,2.37,.4,24,INK,True);text(s,b,x+.16,4.55,2.37,.3,17,MUTED)
  for x in [3.35,6.48,9.61]:arrow(s,x,4.26,.24)
- text(s,'Observed: Pending → Review → Request ready for review (synthetic fixture).\nCurrent LLM reads protected geometry/labels, not PNG pixels; native extension QA pending.',.6,5.46,12,.9,20)
+ text(s,'Observed: Pending → Review → Request ready for review (synthetic fixture).\nWaves 1–4: selective preview, protect loop harness, privacy-only mode; G11 fail honest.',.6,5.46,12,.9,20)
  s=p.slides[3]
- for y,label,body in [(1.55,'Analysis of the feasibility of the idea','Local browser + Qwen workflow observed; 75 recorded Node tests pass.\nSingle desktop observation: capture 92 ms; face inference 9.6 ms.'),(3.12,'Potential challenges and risks','Real model step: 3,029 ms; full-flow <200 ms target fails.\nFace-only CV; context removal costs utility; no dataset PII accuracy yet.'),(4.7,'Strategies for overcoming these challenges','Measure detection/utility on labeled held-out pages; profile cold/warm costs.\nFail closed on CV errors; explicit action review; expiry and schema checks.')]:
+ for y,label,body in [(1.55,'Analysis of the feasibility of the idea','Local browser + optional Qwen; 107 Node tests pass (Wave4).\nPrivacy-only mode skips planner; Chromium protect loop harness-verified.'),(3.12,'Potential challenges and risks','Real model step: 3,029 ms; full-flow <200 ms target fails (G11).\nFace-only CV; WebPII text retained PII on 58/100; toolbar needs human.'),(4.7,'Strategies for overcoming these challenges','Held-out fixtures + privacy-only path + detector cache (Wave4).\nFail closed on sanitize; expiry/cancel recovery evidenced; judge checklist.')]:
   text(s,label,.6,y,12,.33,14,FOREST,True);text(s,body,.6,y+.45,12,1.03,23)
  s=p.slides[4]
  text(s,'Potential impact on the target audience',.6,1.53,12,.35,14,FOREST,True)

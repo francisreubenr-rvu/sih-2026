@@ -1,0 +1,8 @@
+{
+  "name": "wave7-packaging",
+  "generatedAt": "2026-09-14T11:28:46.946819+00:00",
+  "extension_version": "0.1.1",
+  "chrome_build": "Prototype/extension-build",
+  "firefox_build": "Prototype/extension-build-firefox",
+  "note": "Rebuild after wave7 a11y/lang fixes; OCR/PII still excluded."
+}

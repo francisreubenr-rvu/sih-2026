@@ -1,6 +1,7 @@
 {
-  "scope": "preparation website",
-  "date": "2026-09-09",
+  "scope": "preparation website + synthetic prototype fixture notes",
+  "date": "2026-09-14",
+  "wave": 7,
   "viewports": [
     1440,
     390,
@@ -20,12 +21,372 @@
     "smooth_scroll": false,
     "pin_spacers": 0
   },
+  "prototype_fixture": {
+    "source": "Benchmarks/results/browser-experiments-2026-09-11/",
+    "viewport_390_overflow": false,
+    "note": "Experiment pages recorded no document-level horizontal overflow at 390px."
+  },
+  "zoom_200_percent": {
+    "status": "approximate_css_zoom_only",
+    "probes": [
+      {
+        "url": "file:///workspace/sih-2026/Website/index.html",
+        "method": "css_zoom_200_percent_approximation",
+        "innerWidth": 1280,
+        "scrollWidth": 1376,
+        "horizontal_overflow": true,
+        "vertical_overflow_informational": true,
+        "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+      },
+      {
+        "url": "file:///workspace/sih-2026/Prototype/extension-build/popup.html",
+        "method": "css_zoom_200_percent_approximation",
+        "innerWidth": 1280,
+        "scrollWidth": 1280,
+        "horizontal_overflow": false,
+        "vertical_overflow_informational": true,
+        "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+      },
+      {
+        "url": "http://127.0.0.1:40519/popup.html",
+        "method": "css_zoom_200_percent_approximation",
+        "innerWidth": 1280,
+        "scrollWidth": 1280,
+        "horizontal_overflow": false,
+        "vertical_overflow_informational": true,
+        "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+      }
+    ]
+  },
   "observed_console_errors": 0,
   "full_WCAG_review": "not_performed",
-  "domain_workflows": "not_implemented",
+  "domain_workflows": "synthetic_fixture_only",
+  "g10_status": "unknown",
   "evidence": [
     "Docs/verification.md",
     "Docs/website-desktop.jpg",
-    "Docs/website-mobile.jpg"
+    "Docs/website-mobile.jpg",
+    "Benchmarks/results/browser-experiments-2026-09-11/"
+  ],
+  "extension_popup_axe": {
+    "url": "file:///workspace/sih-2026/Prototype/extension-build/popup.html",
+    "violations": [],
+    "passes": 39,
+    "incomplete": [
+      {
+        "id": "color-contrast",
+        "nodes": 2
+      }
+    ],
+    "incomplete_count": 1
+  },
+  "viewport_reflow": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "viewports": [
+        {
+          "width": 320,
+          "innerWidth": 320,
+          "scrollWidth": 367,
+          "horizontal_overflow": true
+        },
+        {
+          "width": 390,
+          "innerWidth": 390,
+          "scrollWidth": 390,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 1440,
+          "innerWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontal_overflow": false
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "viewports": [
+        {
+          "width": 320,
+          "innerWidth": 320,
+          "scrollWidth": 600,
+          "horizontal_overflow": true
+        },
+        {
+          "width": 390,
+          "innerWidth": 390,
+          "scrollWidth": 600,
+          "horizontal_overflow": true
+        },
+        {
+          "width": 1440,
+          "innerWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontal_overflow": false
+        }
+      ]
+    }
+  ],
+  "text_spacing": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "method": "wcag_1_4_12_text_spacing_override",
+      "horizontal_overflow": false,
+      "samples": [
+        {
+          "tag": "p",
+          "text": "EN\n    हिं",
+          "width": 97.25,
+          "height": 36,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "EN",
+          "width": 40,
+          "height": 36,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "हिं",
+          "width": 40,
+          "height": 36,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "Run local demo ↗",
+          "width": 170.5,
+          "height": 44,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "ON-DEVICE VISUAL PERCEPTION",
+          "width": 595.859375,
+          "height": 18,
+          "clipped": false
+        },
+        {
+          "tag": "h1",
+          "text": "Your screen.Your boundary.",
+          "width": 595.859375,
+          "height": 476.125,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "Browser agents that reason from protecte",
+          "width": 460,
+          "height": 81,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "on this deviceइस उपकरण पर",
+          "width": 255.828125,
+          "height": 37.5,
+          "clipped": false
+        }
+      ],
+      "note": "CSS override approximation of 1.4.12; not a full criterion-level pass."
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "method": "wcag_1_4_12_text_spacing_override",
+      "horizontal_overflow": false,
+      "samples": [
+        {
+          "tag": "p",
+          "text": "EN\n      हिं",
+          "width": 552,
+          "height": 32,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "EN",
+          "width": 27.9375,
+          "height": 32,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "हिं",
+          "width": 20.296875,
+          "height": 32,
+          "clipped": false
+        },
+        {
+          "tag": "h1",
+          "text": "Review what leavesyour browser.",
+          "width": 552,
+          "height": 90,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "Local capture → privacy filter → protect",
+          "width": 336.328125,
+          "height": 63,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "Open Sightline from the toolbar icon so ",
+          "width": 552,
+          "height": 56,
+          "clipped": false
+        },
+        {
+          "tag": "label",
+          "text": "Local pairing token",
+          "width": 552,
+          "height": 70,
+          "clipped": false
+        },
+        {
+          "tag": "label",
+          "text": "Task\n      \n        Review a pending req",
+          "width": 552,
+          "height": 70,
+          "clipped": false
+        }
+      ],
+      "note": "CSS override approximation of 1.4.12; not a full criterion-level pass."
+    }
+  ],
+  "keyboard_tab_sampling": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "tab_stops_sampled": 24,
+      "unique_focusable_reached": 19,
+      "first_five": [
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "Skip to content",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "Sightline home",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "The demo",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "How it works",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "The team",
+          "hasVisibleFocusHint": true
+        }
+      ],
+      "note": "Automated Tab sampling; not a full keyboard traversal or AT proof."
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "tab_stops_sampled": 22,
+      "unique_focusable_reached": 9,
+      "first_five": [
+        {
+          "tag": "button",
+          "id": "lang-en",
+          "role": "",
+          "label": "English",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "button",
+          "id": "lang-hi",
+          "role": "",
+          "label": "हिन्दी",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "input",
+          "id": "token",
+          "role": "",
+          "label": "",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "select",
+          "id": "task",
+          "role": "",
+          "label": "Review a pending request\n        Show completed requests\n   ",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "input",
+          "id": "mode-privacy",
+          "role": "",
+          "label": "",
+          "hasVisibleFocusHint": true
+        }
+      ],
+      "note": "Automated Tab sampling; not a full keyboard traversal or AT proof."
+    }
+  ],
+  "lang_en_hi": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "htmlLang": "en",
+      "hi_lang_nodes": [
+        {
+          "tag": "span",
+          "text": "इस उपकरण पर"
+        }
+      ],
+      "site_lang_toggle": true,
+      "has_popup_lang": false,
+      "lang_switch": {
+        "kind": "website",
+        "htmlLangAfterHi": "hi",
+        "hiPressed": "true",
+        "enPressed": "false",
+        "hiAriaLabel": "हिन्दी",
+        "enAriaLabel": "English",
+        "trustEnHidden": true
+      }
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "htmlLang": "en",
+      "hi_lang_nodes": [
+        {
+          "tag": "span",
+          "text": "इस उपकरण पर"
+        }
+      ],
+      "site_lang_toggle": false,
+      "has_popup_lang": true,
+      "lang_switch": {
+        "kind": "popup",
+        "htmlLangAfterHi": "hi",
+        "hiPressed": "true",
+        "enPressed": "false",
+        "hiAriaLabel": "हिन्दी",
+        "enAriaLabel": "English"
+      }
+    }
   ]
 }

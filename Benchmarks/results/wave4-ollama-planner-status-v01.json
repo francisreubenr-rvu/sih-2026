@@ -1,0 +1,9 @@
+{
+  "name": "wave4-ollama-planner-status",
+  "timestamp": "2026-09-14T11:05:00.000Z",
+  "ports_checked": [11434, 11436],
+  "reachable": false,
+  "http_status": [0, 0],
+  "planner_e2e": "skipped",
+  "honesty": "Service unreachable; E2E not faked. Privacy-only mode remains available."
+}

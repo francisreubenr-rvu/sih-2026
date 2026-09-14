@@ -1,0 +1,8 @@
+{
+  "name": "wave4-firefox-status",
+  "timestamp": "2026-09-14T11:05:00.000Z",
+  "firefox_binary": "absent",
+  "package_built": true,
+  "package_note": "Wave3 firefox zip / extension-build-firefox present; live unpacked run still unverified",
+  "status": "skipped_honestly"
+}

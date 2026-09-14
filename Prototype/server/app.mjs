@@ -42,6 +42,12 @@ export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:904
     const fail=code=>{const [status,message]=errors[code]||errors.internal_error;send(status,{error:{code:errors[code]?code:'internal_error',message,requestId}},status===429?{'Retry-After':'60'}:{});};
     res.setHeader('X-Content-Type-Options','nosniff');
     res.setHeader('Referrer-Policy','no-referrer');
+    res.setHeader('X-Frame-Options','SAMEORIGIN');
+    res.setHeader('Permissions-Policy','camera=(), microphone=(), geolocation=(), payment=()');
+    res.setHeader('Cross-Origin-Resource-Policy','same-origin');
+    res.setHeader('Cross-Origin-Opener-Policy','same-origin');
+    // Production debug off: never expose stack/provider endpoint in JSON error bodies (fail() uses fixed messages).
+    if (process.env.NODE_ENV === 'production') res.setHeader('X-Sightline-Debug','off');
     res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; img-src 'self' data: blob:; connect-src 'self'; style-src 'self'; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'");
     const origin=req.headers.origin;
     if(origin && !allowed.has(origin)) return fail('origin_denied');

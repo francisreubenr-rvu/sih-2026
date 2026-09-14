@@ -3,6 +3,8 @@ import { createPageAgent } from '../shared/page-agent.mjs';
 import { createVisionDetector } from '../shared/vision.mjs';
 import { makeScene, paintScene } from '../shared/privacy.mjs';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
+import { paintSelectivePreview } from '../shared/selective-redaction.mjs';
+import { assertSanitizedPayload } from '../shared/rubric-hooks.mjs';
 const $=s=>document.querySelector(s);
 const frame=$('#fixture');$('#capture').disabled=true;let pageAgent,detector,detectorPromise,prepared,plan,token,busy=false;
 const status=(message,error=false)=>{$('#status').textContent=message;$('#status').classList.toggle('error',error);};
@@ -30,7 +32,15 @@ $('#capture').addEventListener('click',async()=>{
   for(const face of faces.detections)scene.regions.push({kind:'face',rect:{x:face.x,y:face.y,width:face.width,height:face.height}});
   const safe=makeScene(scene);
   prepared=requestSchema.parse({task:$('#task').value,scene:safe});
-  paintScene($('#protected').getContext('2d'),safe);
+  assertSanitizedPayload(prepared);
+  // Local selective preview keeps non-sensitive layout pixels; egress is semantics-only.
+  const previewCtx=$('#protected').getContext('2d');
+  try {
+    const source=raw.getContext('2d').getImageData(0,0,safe.viewport.width,safe.viewport.height);
+    paintSelectivePreview(previewCtx,source,safe,{blockSize:14,paintFallback:paintScene});
+  } catch {
+    paintScene(previewCtx,safe);
+  }
   // Release the local screenshot backing store. No image serialization or upload.
   raw.width=0;raw.height=0;
   $('#protected').hidden=false;$('#empty').hidden=true;
@@ -40,7 +50,7 @@ $('#capture').addEventListener('click',async()=>{
   values[1].textContent=String(faces.detections.length);
   values[2].textContent=`${(new TextEncoder().encode(JSON.stringify(prepared)).length/1024).toFixed(1)} KiB`;
   $('#plan').disabled=false;
-  status(`Protected in ${(performance.now()-start).toFixed(0)} ms. ${safe.controls.length} approved controls; ${safe.regions.length} opaque regions. Review the agent’s view before sending.`);
+  status(`Protected in ${(performance.now()-start).toFixed(0)} ms. ${safe.controls.length} approved controls; ${safe.regions.length} regions (selective local preview). Review before sending — outbound JSON has no pixels.`);
  }catch(e){clear();status(`Capture blocked: ${e.message}. Retry after the page settles.`,true);}finally{if(raw){raw.width=0;raw.height=0;}setBusy(false);}
 });
 $('#plan').addEventListener('click',async()=>{
@@ -48,6 +58,7 @@ $('#plan').addEventListener('click',async()=>{
  try {
   const auth=await getToken();pageAgent.assertFresh(prepared.scene.revision);
   const body=requestSchema.parse(prepared);
+  assertSanitizedPayload(body);
   const response=await fetch('/api/v1/plans',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${auth}`},body:JSON.stringify(body),signal:AbortSignal.timeout(28000)});
   const result=await response.json();if(!response.ok)throw new Error(result.error?.message||'Reasoning request failed.');
   pageAgent.assertFresh(result.data.revision);

@@ -1,0 +1,14 @@
+{
+  "name": "wave2-firefox-status",
+  "timestamp": "2026-09-14T10:46:00.000Z",
+  "status": "unverified",
+  "shipped": {
+    "manifest_firefox": "Prototype/extension-build/manifest.firefox.json",
+    "api_polyfill": "globalThis.browser ?? globalThis.chrome in popup.mjs and content.mjs",
+    "gecko_id": "sightline-sih26171@rvu.example",
+    "strict_min_version": "128.0"
+  },
+  "browser_binary_on_box": null,
+  "live_run": false,
+  "note": "Firefox path remains shipped but not executed on this box. Chromium capture harness is the Wave 2 browser evidence. Do not claim cross-browser readiness."
+}

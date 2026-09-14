@@ -1,0 +1,102 @@
+{
+  "name": "wave6-node-api-hardening",
+  "generatedAt": "2026-09-14T11:20:50.791Z",
+  "scope": "Local createApp instance. Public deployment remains GitHub Pages (static HTTPS). Node binds loopback unless HTTPS PUBLIC_ORIGIN + SIGHTLINE_TOKEN.",
+  "checks": [
+    {
+      "id": "security_headers",
+      "ok": true,
+      "detail": {
+        "x-content-type-options": "nosniff",
+        "referrer-policy": "no-referrer",
+        "x-frame-options": "SAMEORIGIN",
+        "permissions-policy": "camera=(), microphone=(), geolocation=(), payment=()",
+        "cross-origin-resource-policy": "same-origin",
+        "cross-origin-opener-policy": "same-origin",
+        "content-security-policy": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; img-src 'self' data: blob:; connect-src 'self'; style-src 'self'; frame-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'none'",
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "id": "origin_allowlist",
+      "ok": true,
+      "detail": {
+        "status": 403,
+        "code": "origin_denied"
+      }
+    },
+    {
+      "id": "bearer_auth_required",
+      "ok": true,
+      "detail": {
+        "status": 401
+      }
+    },
+    {
+      "id": "body_size_limit_256kib",
+      "ok": true,
+      "detail": {
+        "status": 413,
+        "code": "too_large"
+      }
+    },
+    {
+      "id": "screenshot_field_rejected",
+      "ok": true,
+      "detail": {
+        "status": 422,
+        "code": "validation_error"
+      }
+    },
+    {
+      "id": "error_hygiene_no_stack",
+      "ok": true,
+      "detail": {
+        "sample_codes": [
+          "origin_denied",
+          "too_large",
+          "validation_error"
+        ]
+      }
+    },
+    {
+      "id": "rate_limit_429_retry_after",
+      "ok": true,
+      "detail": {
+        "status": 429,
+        "retryAfter": "60"
+      }
+    },
+    {
+      "id": "csrf_model_bearer_no_cookie_session",
+      "ok": true,
+      "detail": {
+        "auth": "Authorization Bearer pairing token",
+        "cookies": "none",
+        "origin_policy": "exact allowlist"
+      }
+    }
+  ],
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "total": 8
+  },
+  "production_debug": {
+    "status": "off_for_api_errors",
+    "evidence": "fail() returns fixed message catalog only; unit + this harness assert no stack/endpoint leakage",
+    "node_env_guard": "Prototype/server/index.mjs refuses non-loopback production bind without HTTPS PUBLIC_ORIGIN"
+  },
+  "public_https": {
+    "pages": "GitHub Pages static Website (HTTPS)",
+    "node_api": "Not publicly hosted on this candidate; loopback default; HTTPS origin required beyond 127.0.0.1"
+  },
+  "g08_acceptance_mapping": {
+    "HTTPS on public deployments": "pass — Pages static HTTPS; Node not public without HTTPS origin gate",
+    "origin policy and CSRF defenses appropriate to auth model": "pass — exact Origin allowlist + Bearer token (no cookie CSRF surface)",
+    "bounded request bodies and write rate limits": "pass — 256 KiB + 20/min + inFlight cap (proven here)",
+    "production debug off": "pass — fixed error catalog; no stack in bodies",
+    "dependency/secret scans with no unresolved critical or high findings": "see security.json + dependency-audit.json (re-run Wave6)"
+  },
+  "verdict": "hardening_controls_proven"
+}

@@ -1,0 +1,497 @@
+{
+  "name": "wave7-axe-keyboard-spacing-lang",
+  "generatedAt": "2026-09-14T11:29:50.107Z",
+  "tool": "axe-core 4.10.2 via local inject in Chromium + Playwright Tab/text-spacing/lang probes",
+  "scope": "Automated axe subset + keyboard sampling + text-spacing override + lang EN/HI + CSS-zoom + viewport reflow. Not WCAG 2.1 AA criterion-level conformance. Not screen-reader evidence.",
+  "targets": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "violations": [],
+      "passes": 41,
+      "incomplete": [
+        {
+          "id": "aria-prohibited-attr",
+          "nodes": 1
+        },
+        {
+          "id": "color-contrast",
+          "nodes": 9
+        },
+        {
+          "id": "video-caption",
+          "nodes": 1
+        }
+      ],
+      "incomplete_count": 3
+    },
+    {
+      "url": "file:///workspace/sih-2026/Prototype/extension-build/popup.html",
+      "violations": [],
+      "passes": 39,
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 2
+        }
+      ],
+      "incomplete_count": 1
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "violations": [],
+      "passes": 39,
+      "incomplete": [
+        {
+          "id": "color-contrast",
+          "nodes": 2
+        }
+      ],
+      "incomplete_count": 1
+    },
+    {
+      "url": "http://127.0.0.1:9041/",
+      "violations": [],
+      "passes": 38,
+      "incomplete": [
+        {
+          "id": "frame-tested",
+          "nodes": 1
+        }
+      ],
+      "incomplete_count": 1
+    },
+    {
+      "url": "http://127.0.0.1:9041/app/fixture.html",
+      "violations": [],
+      "passes": 26,
+      "incomplete": [],
+      "incomplete_count": 0
+    }
+  ],
+  "zoom_200_approximation": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "method": "css_zoom_200_percent_approximation",
+      "innerWidth": 1280,
+      "scrollWidth": 1376,
+      "horizontal_overflow": true,
+      "vertical_overflow_informational": true,
+      "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+    },
+    {
+      "url": "file:///workspace/sih-2026/Prototype/extension-build/popup.html",
+      "method": "css_zoom_200_percent_approximation",
+      "innerWidth": 1280,
+      "scrollWidth": 1280,
+      "horizontal_overflow": false,
+      "vertical_overflow_informational": true,
+      "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "method": "css_zoom_200_percent_approximation",
+      "innerWidth": 1280,
+      "scrollWidth": 1280,
+      "horizontal_overflow": false,
+      "vertical_overflow_informational": true,
+      "note": "CSS zoom is an approximation of 200% browser zoom; not a full WCAG 1.4.4 proof."
+    }
+  ],
+  "keyboard_tab_sampling": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "tab_stops_sampled": 24,
+      "unique_focusable_reached": 19,
+      "first_five": [
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "Skip to content",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "Sightline home",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "The demo",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "How it works",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "a",
+          "id": "",
+          "role": "",
+          "label": "The team",
+          "hasVisibleFocusHint": true
+        }
+      ],
+      "note": "Automated Tab sampling; not a full keyboard traversal or AT proof."
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "tab_stops_sampled": 22,
+      "unique_focusable_reached": 9,
+      "first_five": [
+        {
+          "tag": "button",
+          "id": "lang-en",
+          "role": "",
+          "label": "English",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "button",
+          "id": "lang-hi",
+          "role": "",
+          "label": "हिन्दी",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "input",
+          "id": "token",
+          "role": "",
+          "label": "",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "select",
+          "id": "task",
+          "role": "",
+          "label": "Review a pending request\n        Show completed requests\n   ",
+          "hasVisibleFocusHint": true
+        },
+        {
+          "tag": "input",
+          "id": "mode-privacy",
+          "role": "",
+          "label": "",
+          "hasVisibleFocusHint": true
+        }
+      ],
+      "note": "Automated Tab sampling; not a full keyboard traversal or AT proof."
+    }
+  ],
+  "text_spacing_1_4_12": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "method": "wcag_1_4_12_text_spacing_override",
+      "horizontal_overflow": false,
+      "samples": [
+        {
+          "tag": "p",
+          "text": "EN\n    हिं",
+          "width": 97.25,
+          "height": 36,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "EN",
+          "width": 40,
+          "height": 36,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "हिं",
+          "width": 40,
+          "height": 36,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "Run local demo ↗",
+          "width": 170.5,
+          "height": 44,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "ON-DEVICE VISUAL PERCEPTION",
+          "width": 595.859375,
+          "height": 18,
+          "clipped": false
+        },
+        {
+          "tag": "h1",
+          "text": "Your screen.Your boundary.",
+          "width": 595.859375,
+          "height": 476.125,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "Browser agents that reason from protecte",
+          "width": 460,
+          "height": 81,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "on this deviceइस उपकरण पर",
+          "width": 255.828125,
+          "height": 37.5,
+          "clipped": false
+        }
+      ],
+      "note": "CSS override approximation of 1.4.12; not a full criterion-level pass."
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "method": "wcag_1_4_12_text_spacing_override",
+      "horizontal_overflow": false,
+      "samples": [
+        {
+          "tag": "p",
+          "text": "EN\n      हिं",
+          "width": 552,
+          "height": 32,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "EN",
+          "width": 27.9375,
+          "height": 32,
+          "clipped": false
+        },
+        {
+          "tag": "button",
+          "text": "हिं",
+          "width": 20.296875,
+          "height": 32,
+          "clipped": false
+        },
+        {
+          "tag": "h1",
+          "text": "Review what leavesyour browser.",
+          "width": 552,
+          "height": 90,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "Local capture → privacy filter → protect",
+          "width": 336.328125,
+          "height": 63,
+          "clipped": false
+        },
+        {
+          "tag": "p",
+          "text": "Open Sightline from the toolbar icon so ",
+          "width": 552,
+          "height": 56,
+          "clipped": false
+        },
+        {
+          "tag": "label",
+          "text": "Local pairing token",
+          "width": 552,
+          "height": 70,
+          "clipped": false
+        },
+        {
+          "tag": "label",
+          "text": "Task\n      \n        Review a pending req",
+          "width": 552,
+          "height": 70,
+          "clipped": false
+        }
+      ],
+      "note": "CSS override approximation of 1.4.12; not a full criterion-level pass."
+    }
+  ],
+  "lang_en_hi": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "htmlLang": "en",
+      "hi_lang_nodes": [
+        {
+          "tag": "span",
+          "text": "इस उपकरण पर"
+        }
+      ],
+      "site_lang_toggle": true,
+      "has_popup_lang": false,
+      "lang_switch": {
+        "kind": "website",
+        "htmlLangAfterHi": "hi",
+        "hiPressed": "true",
+        "enPressed": "false",
+        "hiAriaLabel": "हिन्दी",
+        "enAriaLabel": "English",
+        "trustEnHidden": true
+      }
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "htmlLang": "en",
+      "hi_lang_nodes": [
+        {
+          "tag": "span",
+          "text": "इस उपकरण पर"
+        }
+      ],
+      "site_lang_toggle": false,
+      "has_popup_lang": true,
+      "lang_switch": {
+        "kind": "popup",
+        "htmlLangAfterHi": "hi",
+        "hiPressed": "true",
+        "enPressed": "false",
+        "hiAriaLabel": "हिन्दी",
+        "enAriaLabel": "English"
+      }
+    }
+  ],
+  "viewport_reflow": [
+    {
+      "url": "file:///workspace/sih-2026/Website/index.html",
+      "viewports": [
+        {
+          "width": 320,
+          "innerWidth": 320,
+          "scrollWidth": 367,
+          "horizontal_overflow": true
+        },
+        {
+          "width": 390,
+          "innerWidth": 390,
+          "scrollWidth": 390,
+          "horizontal_overflow": false
+        },
+        {
+          "width": 1440,
+          "innerWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontal_overflow": false
+        }
+      ]
+    },
+    {
+      "url": "http://127.0.0.1:40519/popup.html",
+      "viewports": [
+        {
+          "width": 320,
+          "innerWidth": 320,
+          "scrollWidth": 600,
+          "horizontal_overflow": true
+        },
+        {
+          "width": 390,
+          "innerWidth": 390,
+          "scrollWidth": 600,
+          "horizontal_overflow": true
+        },
+        {
+          "width": 1440,
+          "innerWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontal_overflow": false
+        }
+      ]
+    }
+  ],
+  "clear_serious_or_critical_failures": [],
+  "criterion_partial_checklist": [
+    {
+      "id": "1.1.1",
+      "name": "Non-text Content",
+      "status": "partial",
+      "note": "Decorative aperture aria-hidden; meaningful images have labels where present"
+    },
+    {
+      "id": "1.3.1",
+      "name": "Info and Relationships",
+      "status": "partial",
+      "note": "Semantic landmarks/headings present; axe landmarked"
+    },
+    {
+      "id": "1.4.3",
+      "name": "Contrast (Minimum)",
+      "status": "partial",
+      "note": "axe color-contrast; DigiLocker navy/paper tuned"
+    },
+    {
+      "id": "1.4.4",
+      "name": "Resize text",
+      "status": "partial",
+      "note": "CSS zoom 200% approx only"
+    },
+    {
+      "id": "1.4.10",
+      "name": "Reflow",
+      "status": "partial",
+      "note": "320/390/1440 viewport overflow probes"
+    },
+    {
+      "id": "1.4.12",
+      "name": "Text Spacing",
+      "status": "partial",
+      "note": "CSS override probe recorded"
+    },
+    {
+      "id": "2.1.1",
+      "name": "Keyboard",
+      "status": "partial",
+      "note": "Tab sampling on Website + popup; not full traversal"
+    },
+    {
+      "id": "2.4.1",
+      "name": "Bypass Blocks",
+      "status": "partial",
+      "note": "Skip link on Website"
+    },
+    {
+      "id": "2.4.7",
+      "name": "Focus Visible",
+      "status": "partial",
+      "note": "focus-visible outlines present"
+    },
+    {
+      "id": "3.1.1",
+      "name": "Language of Page",
+      "status": "partial",
+      "note": "html lang + EN/HI switch sets documentElement.lang on popup; Website toggle"
+    },
+    {
+      "id": "3.1.2",
+      "name": "Language of Parts",
+      "status": "partial",
+      "note": "lang=hi on Hindi trust strings"
+    },
+    {
+      "id": "4.1.2",
+      "name": "Name Role Value",
+      "status": "partial",
+      "note": "aria-pressed on lang/architecture controls; labels on inputs"
+    }
+  ],
+  "g09_acceptance": {
+    "required": "All applicable WCAG 2.1 A/AA criteria documented and checked; no known blocker",
+    "status": "unknown",
+    "reason": "Wave7 enriched axe + keyboard + text-spacing + lang EN/HI + reflow. Full criterion-level manual + real AT review still required. Do not mark G09 pass from axe alone."
+  },
+  "g10_notes": {
+    "status": "unknown",
+    "reason": "Wave7: CSS zoom 200% + 320/390/1440 reflow + reduced-motion CSS present. Native browser 200% zoom / complete motion-safety / AT still incomplete."
+  },
+  "related": [
+    "Docs/accessibility-review.md",
+    "Benchmarks/results/browser-review.json"
+  ]
+}

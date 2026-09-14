@@ -18,6 +18,7 @@
 import { chromium } from '../Prototype/node_modules/playwright-core/index.mjs';
 import { createHash } from 'node:crypto';
 import { mkdtemp, rm, writeFile, mkdir, readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -25,10 +26,12 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const extPath = resolve(join(root, 'Prototype/extension-build'));
 const serverOrigin = 'http://127.0.0.1:9041';
-const defaultChromium = join(
-  process.env.HOME,
-  'Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing'
-);
+const playwrightChromiumLinux = join(process.env.HOME || '', '.cache/ms-playwright/chromium-1234/chrome-linux64/chrome');
+const playwrightChromiumMac = join(process.env.HOME || '', 'Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing');
+const defaultChromium = process.env.SIGHTLINE_CHROMIUM
+  || (process.platform === 'darwin'
+    ? playwrightChromiumMac
+    : (existsSync(playwrightChromiumLinux) ? playwrightChromiumLinux : '/usr/bin/google-chrome'));
 
 const argv = process.argv.slice(2);
 const jsonFlag = argv.indexOf('--json');
@@ -74,7 +77,7 @@ try {
 
   context = await chromium.launchPersistentContext(userDataDir, {
     executablePath,
-    headless: true,
+    headless: false,
     args: [
       `--disable-extensions-except=${extPath}`,
       `--load-extension=${extPath}`,

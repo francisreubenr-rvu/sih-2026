@@ -16,3 +16,7 @@ The supplied file contains six content slides and one instruction slide. Its ins
 Delivery resolution: preserve an editable six-slide copy of the supplied format as the submission blueprint; provide a separate 15-slide presentation blueprint for the requested 10–15 minute pitch. Do not represent the expanded file as portal compliant. Both are marked NOT SUBMISSION READY because the problem, registered team name/ID, solution, validation and authentic media are missing.
 
 No official title, theme, ministry or problem description is inferred from SIH2171. The user's 11 September 2026 deadline is the internal delivery deadline; no official national submission deadline has been verified.
+
+## Wave 5 verification (14 September 2026)
+
+Evidence present: `Docs/submission-deck.pptx`, `Docs/pitch-deck.pptx`, rendered slides under `Docs/presentation-render/`, and this audit. Six-slide submission structure retained; longer talk deck is separate. Problem identity SIH26171 and honesty caveats (official score null, G11 fail, WebPII 58/100) are visible in Wave4+ deck refreshes. Registered team portal ID may still need operator fill-in before portal upload — narrative caveats remain visible.

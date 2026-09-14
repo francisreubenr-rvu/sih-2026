@@ -1,0 +1,17 @@
+{
+  "name": "wave6-demo-rehearsal",
+  "generatedAt": "2026-09-14T11:20:28.981289Z",
+  "status": "unknown",
+  "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
+  "fallback": {
+    "path": "Docs/demo-fallback.webm",
+    "source": "Docs/demo-recording/sightline-browser-v02.webm",
+    "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
+    "offline_playable": true
+  },
+  "runbook": "Docs/demo-runbook.md",
+  "judge_checklist": "Docs/demo-judge-checklist.md",
+  "rehearsal_checklist": "Docs/demo-rehearsal-checklist.md",
+  "consecutive_rehearsals": [],
+  "g14_reason": "Wave6 adds rehearsal checklist template. Fallback WebM linked. 3 consecutive live rehearsals from reset not yet logged. Do not mark G14 pass."
+}

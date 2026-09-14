@@ -56,6 +56,25 @@ For a consistent backup, stop Node and copy the entire local `data/` directory t
 
 The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `SIGHTLINE_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
 
+
+
+## Wave 3 — popup loop + packaging (14 September 2026)
+
+Production popup UI shows a stage strip and toolbar/activeTab guidance (EN/HI). Capture re-injects the content script on disconnect and prefers an http(s) page when the popup is opened as a document tab. Harness `../scripts/validate-extension-loop.mjs` drives `#capture` through selective preview + sanitize (overlay for capture only; shipped `activeTab` manifest unchanged). Extension version **0.1.1** packages Chrome + Firefox zips via `npm run build:extension` (UltraFace+ORT only). Toolbar glyph click and Firefox live validation remain human/host-dependent. Ollama planner E2E skipped when unreachable.
+
+## Wave 2 — capture harness + held-out fixtures (14 September 2026)
+
+Chromium harness `../scripts/validate-extension-capture.mjs` proves production `scripting.executeScript` injection, scene collect, sanitized semantics egress, the shipped `activeTab` gate for `captureVisibleTab`, and a temporary harness-only overlay that captures a real PNG without changing the shipped manifest. Held-out synthetic PII/redaction/utility scores land in `../Benchmarks/results/wave2-pii-redaction-utility-v01.json` (official score still null; <200 ms gate still fail). Client resource hooks: `shared/client-resources.mjs`. Firefox live run and Ollama planner E2E remain optional/unverified when binaries/services are absent.
+
+## Wave 1 P0 — selective local preview (14 September 2026)
+
+The extension and web workspace now paint a **local selective pixelation preview** (sensitive face/private/field/media regions mosaicked; surrounding layout pixels kept) before any planner call. The outbound `/api/v1/plans` body remains the existing semantic scene JSON — `assertSanitizedPayload` rejects screenshot/dataUrl/pixel fields. Trust chip copy: "on this device" / "इस उपकरण पर". EN/HI string map is wired in the extension popup. Rubric hooks live in `shared/rubric-hooks.mjs`; official score stays null and the <200 ms full-flow gate stays failed.
+
+
+## Wave 5 — e2e harness + redaction saturation (14 September 2026)
+
+`../scripts/validate-extension-e2e.mjs` maximizes automated proof (inject/collect, activeTab gate, overlay UI loop, screenshots) without faking the toolbar glyph. Held-out fixtures expand to 18 cases (`wave5-pii-redaction-utility-v01.json`). `classifySensitive` adds IFSC/voter/card-like telemetry; page-agent mosaics only classifier-flagged text and merges abutting regions. Official score null; G11 fail retained. Human-eval protocol: `../Docs/human-evaluation-protocol.md`.
+
 ## Known limitations
 
 - Current export is conservative semantic layout, not a redacted original screenshot. Useful text/images are removed. Visual-context accuracy and redaction precision need dataset evaluation.

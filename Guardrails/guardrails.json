@@ -47,8 +47,8 @@
         "Docs/architecture.md",
         "Docs/scope.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Architecture and scope docs record one primary journey, \u22642 services (browser client + Node server), \u22641 SQLite audit store, \u22641 optional local Ollama provider. No custom training or specialized hardware required for the candidate. Evidence: Docs/architecture.md, Docs/scope.md."
     },
     {
       "id": "G03",
@@ -63,7 +63,7 @@
         "Benchmarks/results/extension-native-v01.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. The native MV3 extension now loads, injects and reaches its declared server in a real Chromium (8 passed / 0 failed / 1 informational, Benchmarks/results/extension-native-v01.json), but the toolbar capture path, Firefox and the full clean-setup-to-reload journey remain unproven."
+      "reason": "Wave5 e2e harness writes Benchmarks/results/e2e.json maximizing inject/collect, activeTab gate, overlay UI protect loop, and demo screenshots. Toolbar glyph automation, Firefox live, and full multi-scenario clean-setup persistence remain open \u2014 status stays unknown."
     },
     {
       "id": "G04",
@@ -76,8 +76,8 @@
         "Wiki/competitors.md",
         "Benchmarks/results/differentiation.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Wiki/competitors.md compares \u22655 adjacent solutions. Implemented differentiator (pixel-free egress + selective local preview + expiring references) demonstrated against full-image mask baseline via held-out fixtures and extension sanitize evidence. No first/unique global claims. Evidence: Benchmarks/results/differentiation.json."
     },
     {
       "id": "G05",
@@ -89,8 +89,8 @@
       "required_evidence": [
         "Benchmarks/results/load.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale."
     },
     {
       "id": "G06",
@@ -102,8 +102,8 @@
       "required_evidence": [
         "Benchmarks/results/security.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production."
     },
     {
       "id": "G07",
@@ -116,8 +116,8 @@
         "Docs/security.md",
         "Benchmarks/results/security.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope."
     },
     {
       "id": "G08",
@@ -130,8 +130,8 @@
         "Benchmarks/results/security.json",
         "Benchmarks/results/dependency-audit.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification."
     },
     {
       "id": "G09",
@@ -145,7 +145,7 @@
         "Docs/accessibility-review.md"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "Wave7 accessibility.json: axe Website + extension popup (file+HTTP) + prototype 0 violations; keyboard Tab sampling, 1.4.12 text-spacing, EN/HI lang switch evidence, partial criterion checklist. Full WCAG criterion-level + AT review incomplete \u2014 status stays unknown."
     },
     {
       "id": "G10",
@@ -158,7 +158,7 @@
         "Benchmarks/results/browser-review.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. A 390 px document-width check with no document-level horizontal overflow is recorded per experiment in Benchmarks/results/browser-experiments-2026-09-11/, but no motion-safety or reduced-motion review is complete."
+      "reason": "browser-review.json Wave7: CSS zoom 200% + 320/390/1440 reflow + text-spacing notes for Website + popup. Native 200% zoom / complete motion-safety incomplete \u2014 status stays unknown."
     },
     {
       "id": "G11",
@@ -171,7 +171,7 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms. Full workflow exceeds 200ms; a 108ms local capture does not satisfy this rule."
+      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened."
     },
     {
       "id": "G12",
@@ -196,8 +196,8 @@
       "required_evidence": [
         "Benchmarks/results/recovery.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json."
     },
     {
       "id": "G14",
@@ -212,7 +212,7 @@
         "Benchmarks/results/demo-rehearsal.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "Docs/demo-rehearsal-checklist.md + demo-fallback.webm + demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
     },
     {
       "id": "G15",
@@ -224,8 +224,8 @@
       "required_evidence": [
         "Docs/claim-ledger.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Docs/claim-ledger.json lists empirical claims with source, type and limits; fabricated metrics forbidden. Official score null; G11 fail retained; WebPII failure published."
     },
     {
       "id": "G16",
@@ -237,8 +237,8 @@
       "required_evidence": [
         "Docs/impact-model.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Docs/impact-model.md defines outcome specification, pilot design, cost ledger and environmental account with null parameters until sourced. No projected results reported as observed outcomes."
     },
     {
       "id": "G17",
@@ -252,8 +252,8 @@
         "Docs/submission-deck.pptx",
         "Docs/presentation-render/"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Docs/template-audit.md verifies six-slide supplied structure; Docs/submission-deck.pptx and Docs/presentation-render/ exist; longer pitch deck is separate. SIH26171 identity and honesty caveats visible. Evidence: Docs/template-audit.md, Docs/submission-deck.pptx, Docs/presentation-render/."
     },
     {
       "id": "G18",
@@ -266,8 +266,8 @@
         "Prototype/README.md",
         "Docs/deployment-verification.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API."
     },
     {
       "id": "G19",
@@ -280,8 +280,8 @@
         "Raw/sources.json",
         "Wiki/source-index.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Raw/sources.json and Wiki/source-index.md retain attribution; failed private channels recorded as inaccessible in reference intake. Competitor and problem citations mapped in Wiki."
     },
     {
       "id": "G20",
@@ -294,7 +294,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "Docs/human-evaluation-protocol.md + Docs/human-evaluation-forms.md + human-evaluation.json publish templates with zero non-author participants \u2014 status stays unknown."
     }
   ],
   "iteration_policy": {
