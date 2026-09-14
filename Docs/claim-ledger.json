@@ -1,13 +1,72 @@
 {
-  "scope": "Preparation artifact claims only; no domain results",
+  "scope": "SIH26171 engineering candidate claims; Wave 1\u20134. No fabricated metrics.",
   "claims": [
-    {"claim": "Six named RV University second-year B.Tech CSE team members", "type": "user_supplied", "source": "Francis original task brief", "limit": "Not independent enrollment verification; proposed roles do not establish expertise"},
-    {"claim": "SIH2171 remains unresolved in examined sources", "type": "research_finding", "source": "Wiki/problem-statement.md", "limit": "Bounded negative evidence; does not prove nonexistent"},
-    {"claim": "Six documented winner examples span 2022-2025", "type": "source_synthesis", "source": "Wiki/competition-intelligence.md", "limit": "Purposive sample; no causal or winning-probability inference"},
-    {"claim": "20 guardrails and 11 KPI definitions", "type": "local_artifact_count", "source": "Guardrails/guardrails.json and Benchmarks/definitions.json"},
-    {"claim": "Lighthouse median 100 all four categories on mobile and desktop", "type": "measured_local_preparation_site", "source": "Benchmarks/results/lighthouse-summary.json", "limit": "Six local runs; not full WCAG conformance or production/domain performance"},
-    {"claim": "Core flows under 200ms", "type": "target_only", "value": null, "source": "User requirement; Guardrails G11", "limit": "No domain application implemented or measured"},
-    {"claim": "Judge persuasion probability", "type": "not_estimable", "value": null, "source": "Benchmarks B07", "limit": "No comparable calibrated judging dataset"},
-    {"claim": "Internal deadline 11 September 2026", "type": "user_supplied", "source": "Francis original task brief", "limit": "Not verified national or institutional submission cutoff"}
+    {
+      "claim": "Six named RV University second-year B.Tech CSE team members",
+      "type": "user_supplied",
+      "source": "Francis original task brief",
+      "limit": "Not independent enrollment verification; proposed roles do not establish expertise"
+    },
+    {
+      "claim": "20 guardrails and 11 KPI definitions",
+      "type": "local_artifact_count",
+      "source": "Guardrails/guardrails.json and Benchmarks/definitions.json"
+    },
+    {
+      "claim": "Lighthouse median 100 all four categories on mobile and desktop",
+      "type": "measured_local_preparation_site",
+      "source": "Benchmarks/results/lighthouse-summary.json",
+      "limit": "Six local runs; not full WCAG conformance or production/domain performance"
+    },
+    {
+      "claim": "Internal deadline 11 September 2026",
+      "type": "user_supplied",
+      "source": "Francis original task brief",
+      "limit": "Not verified national or institutional submission cutoff"
+    },
+    {
+      "claim": "SIH26171 ISRO on-device visual perception for light-weight browser agents",
+      "type": "verified_problem",
+      "source": "Raw/domain/sih26171-official-extract.txt",
+      "limit": "Organizer catalogue 9 Sep 2026"
+    },
+    {
+      "claim": "Extension protect loop 8/8 under harness overlay",
+      "type": "measured_harness",
+      "source": "Benchmarks/results/extension-loop-v01.json",
+      "limit": "Toolbar glyph not automated; shipped activeTab retained"
+    },
+    {
+      "claim": "Selective redaction preserves non-PII layout locally",
+      "type": "unit_and_fixture",
+      "source": "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+      "limit": "Synthetic held-out fixtures; not WebPII saturation"
+    },
+    {
+      "claim": "WebPII text retained exact annotated PII on 58/100 screens",
+      "type": "measured_failure",
+      "source": "Benchmarks/results/webpii-text-v01-summary.json",
+      "limit": "OCR local-only; no export"
+    },
+    {
+      "claim": "Full-flow <200ms",
+      "type": "target_failing",
+      "value": null,
+      "source": "Benchmarks/results/core-latency.json",
+      "limit": "G11 fail; historical planner seconds; privacy-only is not a pass"
+    },
+    {
+      "claim": "G06/G07 security gates pass on local prototype scope",
+      "type": "reviewed_gate",
+      "source": "Benchmarks/results/security.json",
+      "limit": "Not multi-tenant production"
+    },
+    {
+      "claim": "Judge persuasion probability",
+      "type": "not_estimable",
+      "value": null,
+      "source": "Benchmarks/official-rubric.json",
+      "limit": "Official score null"
+    }
   ]
 }

@@ -1,0 +1,54 @@
+{
+  "name": "wave4-error-recovery",
+  "timestamp": "2026-09-14T11:30:00.000Z",
+  "scope": "Frozen critical fault scenarios exercised by unit tests and prior browser records. Not a multi-tenant production chaos suite.",
+  "status": "pass",
+  "scenarios": [
+    {
+      "id": "activeTab_denied",
+      "result": "pass",
+      "recovery": "classifyCaptureError → needs_activeTab; UI instructs toolbar glyph reopen",
+      "evidence": ["Prototype/tests/capture-loop.test.mjs", "Prototype/extension/popup.mjs", "Docs/demo-judge-checklist.md"]
+    },
+    {
+      "id": "content_script_disconnect",
+      "result": "pass",
+      "recovery": "reinject via chrome.scripting.executeScript then retry message",
+      "evidence": ["Prototype/tests/capture-loop.test.mjs", "Benchmarks/results/extension-loop-v01.json"]
+    },
+    {
+      "id": "restricted_page",
+      "result": "pass",
+      "recovery": "non-retryable restricted_page code; navigate to allowed http(s)",
+      "evidence": ["Prototype/tests/capture-loop.test.mjs"]
+    },
+    {
+      "id": "sanitize_reject_pixels",
+      "result": "pass",
+      "recovery": "assertSanitizedPayload / buildSanitizedPlanRequest throw before fetch",
+      "evidence": ["Prototype/tests/capture-loop.test.mjs", "Benchmarks/results/security.json"]
+    },
+    {
+      "id": "expired_local_reference",
+      "result": "pass",
+      "recovery": "confirmation blocked; draft left empty; no write",
+      "evidence": ["Benchmarks/results/operations-v01/", "Docs/decisions/operations-simulation.md"]
+    },
+    {
+      "id": "user_cancel_during_planning",
+      "result": "pass",
+      "recovery": "loop stops with zero further actions",
+      "evidence": ["Benchmarks/results/operations-v01/", "Benchmarks/results/browser-experiments-2026-09-11/summary.json"]
+    },
+    {
+      "id": "provider_unavailable",
+      "result": "pass",
+      "recovery": "task stops with no actions; privacy-only mode avoids the call",
+      "evidence": ["CONTEXT.md", "Prototype/shared/latency-strategy.mjs", "Benchmarks/results/wave4-ollama-planner-status-v01.json"]
+    }
+  ],
+  "limitations": [
+    "No injected server-restart mid-write chaos test in Wave4.",
+    "Duplicate-submit browser harness is partial (confirm path is single-shot by UI)."
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "name": "wave4-core-latency",
+  "generatedAt": "2026-09-14T11:05:14.396Z",
+  "mode": "planner_assisted",
+  "budgetMs": 200,
+  "warmups": 10,
+  "sampleCount": 120,
+  "localProtectLoop": {
+    "unit": "ms",
+    "n": 120,
+    "min": 0.0553859999999986,
+    "max": 0.7454460000000012,
+    "p50": 0.07495299999999361,
+    "p95": 0.18137500000000273,
+    "mean": 0.11724532499999972,
+    "gate_if_misused_as_full_flow": {
+      "metric": "task-latency",
+      "elapsedMs": 0.18137500000000273,
+      "budgetMs": 200,
+      "status": "pass",
+      "observed": 0.18137500000000273,
+      "note": "Within 200 ms budget."
+    },
+    "note": "Local protect-only timings. MUST NOT be reported as G11 full-flow pass."
+  },
+  "fullFlowHistorical": {
+    "unit": "ms",
+    "n": 2,
+    "samples": [
+      3029,
+      2276
+    ],
+    "p50": 2276,
+    "p95": 3029,
+    "gate": {
+      "metric": "task-latency",
+      "elapsedMs": 3029,
+      "budgetMs": 200,
+      "status": "fail",
+      "observed": null,
+      "note": "Full-flow latency 3029 ms exceeds 200 ms gate. Gate must not be weakened."
+    },
+    "note": "Planner-inclusive observations (small n). Gate not weakened."
+  },
+  "status": "fail",
+  "notes": [
+    "Local samples are synthetic selective-redaction + allow-list heuristic microbenchmarks in Node — not Chromium captureVisibleTab + UltraFace + DOM collect.",
+    "Wave3 harness single-run protect captureMs≈188ms is cited separately as browser evidence, not merged into this Node distribution.",
+    "G11 acceptance requires p95 full-flow <200ms over ≥100 attempts after 10 warmups including model/network/action. That remains fail.",
+    "Privacy-only skip-LLM path implemented in extension popup; does not constitute a G11 pass.",
+    "Detector session cache + optional wireframe preview reduce repeat local cost; planner path still seconds."
+  ],
+  "strategies": {
+    "privacy_only_skip_llm": true,
+    "detector_session_cache": true,
+    "optional_wireframe_preview": true,
+    "streaming_llm": false,
+    "streaming_note": "No token streaming implemented; would not bring full-flow under 200ms alone given multi-second generation."
+  },
+  "breakdowns": {
+    "privacy_only": {
+      "mode": "privacy_only",
+      "skipPlanner": true,
+      "stages": [
+        {
+          "name": "selective_redact_heuristic",
+          "elapsedMs": 0.18137500000000273
+        }
+      ],
+      "localProtectMs": 0.18137500000000273,
+      "plannerMs": 0,
+      "fullFlowMs": 0.18137500000000273,
+      "budgetMs": 200,
+      "gate": {
+        "metric": "task-latency",
+        "status": "fail",
+        "budgetMs": 200,
+        "elapsedMs": 0.18137500000000273,
+        "observed": null,
+        "note": "Privacy-only local protect 0.18137500000000273 ms is not full-flow (no planner/confirm). G11 remains fail; budget 200 ms unchanged."
+      },
+      "strategiesApplied": [
+        "skip_llm_privacy_only",
+        "detector_session_cache",
+        "optional_wireframe_preview"
+      ],
+      "honesty": "Do not weaken FULL_FLOW_LATENCY_MS. Privacy-only local ms is not a G11 pass."
+    },
+    "planner_assisted": {
+      "mode": "planner_assisted",
+      "skipPlanner": false,
+      "stages": [
+        {
+          "name": "local_protect_proxy",
+          "elapsedMs": 0.07495299999999361
+        }
+      ],
+      "localProtectMs": 0.07495299999999361,
+      "plannerMs": 3029,
+      "fullFlowMs": 3029.074953,
+      "budgetMs": 200,
+      "gate": {
+        "metric": "task-latency",
+        "elapsedMs": 3029.074953,
+        "budgetMs": 200,
+        "status": "fail",
+        "observed": null,
+        "note": "Full-flow latency 3029.074953 ms exceeds 200 ms gate. Gate must not be weakened."
+      },
+      "strategiesApplied": [
+        "planner_required",
+        "detector_session_cache",
+        "optional_wireframe_preview"
+      ],
+      "honesty": "Do not weaken FULL_FLOW_LATENCY_MS. Privacy-only local ms is not a G11 pass."
+    }
+  },
+  "wave3_browser_protect_single_run_ms": 188,
+  "acceptance": {
+    "rule": "G11",
+    "required": "p95 end-to-end <200ms, n≥100 after 10 warmups per frozen core flow",
+    "status": "fail",
+    "budget_weakened": false
+  }
+}

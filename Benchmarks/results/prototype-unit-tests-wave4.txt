@@ -1,0 +1,656 @@
+
+> sightline-sih26171@0.1.0 test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: CAPTURE_STAGES lists the production pipeline order
+ok 1 - CAPTURE_STAGES lists the production pipeline order
+  ---
+  duration_ms: 0.846417
+  type: 'test'
+  ...
+# Subtest: classifyCaptureError detects activeTab / toolbar requirement
+ok 2 - classifyCaptureError detects activeTab / toolbar requirement
+  ---
+  duration_ms: 0.31262
+  type: 'test'
+  ...
+# Subtest: classifyCaptureError detects content-script disconnect for reinject
+ok 3 - classifyCaptureError detects content-script disconnect for reinject
+  ---
+  duration_ms: 0.213678
+  type: 'test'
+  ...
+# Subtest: classifyCaptureError detects restricted browser pages
+ok 4 - classifyCaptureError detects restricted browser pages
+  ---
+  duration_ms: 0.202329
+  type: 'test'
+  ...
+# Subtest: buildSanitizedPlanRequest rejects pixel fields
+ok 5 - buildSanitizedPlanRequest rejects pixel fields
+  ---
+  duration_ms: 0.604387
+  type: 'test'
+  ...
+# Subtest: buildSanitizedPlanRequest accepts semantics-only scene
+ok 6 - buildSanitizedPlanRequest accepts semantics-only scene
+  ---
+  duration_ms: 0.343426
+  type: 'test'
+  ...
+# Subtest: advanceStage records toolbar requirement at capture
+ok 7 - advanceStage records toolbar requirement at capture
+  ---
+  duration_ms: 0.44717
+  type: 'test'
+  ...
+# Subtest: summarizeProtectLoop never embeds pixels and documents toolbar honesty
+ok 8 - summarizeProtectLoop never embeds pixels and documents toolbar honesty
+  ---
+  duration_ms: 6.544268
+  type: 'test'
+  ...
+# Subtest: privacyOnlyCompletion marks planner skipped without pixels
+ok 9 - privacyOnlyCompletion marks planner skipped without pixels
+  ---
+  duration_ms: 0.396097
+  type: 'test'
+  ...
+# Subtest: readJsHeap fails closed when performance.memory is absent
+ok 10 - readJsHeap fails closed when performance.memory is absent
+  ---
+  duration_ms: 0.972585
+  type: 'test'
+  ...
+# Subtest: readJsHeap reports Chromium-shaped memory when present
+ok 11 - readJsHeap reports Chromium-shaped memory when present
+  ---
+  duration_ms: 1.372656
+  type: 'test'
+  ...
+# Subtest: measureStage records elapsed time and rethrows with resource record
+ok 12 - measureStage records elapsed time and rethrows with resource record
+  ---
+  duration_ms: 6.219231
+  type: 'test'
+  ...
+# Subtest: summarizeClientResources and scoreClientResources keep observed null
+ok 13 - summarizeClientResources and scoreClientResources keep observed null
+  ---
+  duration_ms: 0.500932
+  type: 'test'
+  ...
+# Subtest: resource hooks must not weaken the 200ms latency gate
+ok 14 - resource hooks must not weaken the 200ms latency gate
+  ---
+  duration_ms: 0.160735
+  type: 'test'
+  ...
+# Subtest: privacy_only mode skips planner and does not claim G11 pass
+ok 15 - privacy_only mode skips planner and does not claim G11 pass
+  ---
+  duration_ms: 0.976161
+  type: 'test'
+  ...
+# Subtest: planner_assisted without measured planner stays fail
+ok 16 - planner_assisted without measured planner stays fail
+  ---
+  duration_ms: 0.215062
+  type: 'test'
+  ...
+# Subtest: planner_assisted with historical LLM seconds fails gate
+ok 17 - planner_assisted with historical LLM seconds fails gate
+  ---
+  duration_ms: 0.196571
+  type: 'test'
+  ...
+# Subtest: detector cache reuses factory result
+ok 18 - detector cache reuses factory result
+  ---
+  duration_ms: 0.192352
+  type: 'test'
+  ...
+# Subtest: wireframe preview strategy skips mosaic
+ok 19 - wireframe preview strategy skips mosaic
+  ---
+  duration_ms: 0.248171
+  type: 'test'
+  ...
+# Subtest: percentile and distribution record keep G11 fail with historical full-flow
+ok 20 - percentile and distribution record keep G11 fail with historical full-flow
+  ---
+  duration_ms: 0.555337
+  type: 'test'
+  ...
+# Subtest: v2 local-reference API uses common auth, validates before model call and stores counts only
+ok 21 - v2 local-reference API uses common auth, validates before model call and stores counts only
+  ---
+  duration_ms: 53.573113
+  type: 'test'
+  ...
+# Subtest: provider sends reference schema and rejects invented private values in output
+ok 22 - provider sends reference schema and rejects invented private values in output
+  ---
+  duration_ms: 2.900149
+  type: 'test'
+  ...
+# Subtest: reference exports omit the value; exact confirmed local write succeeds once
+ok 23 - reference exports omit the value; exact confirmed local write succeeds once
+  ---
+  duration_ms: 3.953871
+  type: 'test'
+  ...
+# Subtest: same binding is stable in a session; different sessions cannot replay it
+ok 24 - same binding is stable in a session; different sessions cannot replay it
+  ---
+  duration_ms: 0.637204
+  type: 'test'
+  ...
+# Subtest: wrong target, kind, revision, unknown ref or missing confirmation cannot write
+ok 25 - wrong target, kind, revision, unknown ref or missing confirmation cannot write
+  ---
+  duration_ms: 0.532001
+  type: 'test'
+  ...
+# Subtest: expiry, backwards clocks and explicit revocation fail closed
+ok 26 - expiry, backwards clocks and explicit revocation fail closed
+  ---
+  duration_ms: 0.747242
+  type: 'test'
+  ...
+# Subtest: failed writes consume the reference and conceal exception contents
+ok 27 - failed writes consume the reference and conceal exception contents
+  ---
+  duration_ms: 0.614578
+  type: 'test'
+  ...
+# Subtest: credential categories and identifier collisions are rejected
+ok 28 - credential categories and identifier collisions are rejected
+  ---
+  duration_ms: 0.51808
+  type: 'test'
+  ...
+# Subtest: reference protocol rejects values, free goals, arbitrary labels and fields outside viewport
+ok 29 - reference protocol rejects values, free goals, arbitrary labels and fields outside viewport
+  ---
+  duration_ms: 5.670479
+  type: 'test'
+  ...
+# Subtest: planner can only use the exact permitted field-reference binding
+ok 30 - planner can only use the exact permitted field-reference binding
+  ---
+  duration_ms: 5.032888
+  type: 'test'
+  ...
+# Subtest: operations fixture stays synthetic and isolates the report state machine
+ok 31 - operations fixture stays synthetic and isolates the report state machine
+  ---
+  duration_ms: 8.782069
+  type: 'test'
+  ...
+# Subtest: operations runner uses protected schemas, never raw text or email export
+ok 32 - operations runner uses protected schemas, never raw text or email export
+  ---
+  duration_ms: 1.484024
+  type: 'test'
+  ...
+# Subtest: operations build output exists and keeps the protected-contract stages
+ok 33 - operations build output exists and keeps the protected-contract stages
+  ---
+  duration_ms: 9.316085
+  type: 'test'
+  ...
+# Subtest: fresh confirmed target executes once, with a unique revision per capture
+ok 34 - fresh confirmed target executes once, with a unique revision per capture
+  ---
+  duration_ms: 9.257495
+  type: 'test'
+  ...
+# Subtest: unconfirmed and unknown actions never click
+ok 35 - unconfirmed and unknown actions never click
+  ---
+  duration_ms: 0.86653
+  type: 'test'
+  ...
+# Subtest: open shadow roots are observed and queued mutations revoke prior snapshots
+ok 36 - open shadow roots are observed and queued mutations revoke prior snapshots
+  ---
+  duration_ms: 0.898282
+  type: 'test'
+  ...
+# Subtest: attaching a shadow root without a mutation record revokes a snapshot
+ok 37 - attaching a shadow root without a mutation record revokes a snapshot
+  ---
+  duration_ms: 0.699487
+  type: 'test'
+  ...
+# Subtest: shadow-root targets resolve the actual inner hit, and reject inner overlays
+ok 38 - shadow-root targets resolve the actual inner hit, and reject inner overlays
+  ---
+  duration_ms: 0.975436
+  type: 'test'
+  ...
+# Subtest: nested shadow content within an approved control is a valid composed hit
+ok 39 - nested shadow content within an approved control is a valid composed hit
+  ---
+  duration_ms: 0.494326
+  type: 'test'
+  ...
+# Subtest: label, role and size changes reject even without an observer record
+ok 40 - label, role and size changes reject even without an observer record
+  ---
+  duration_ms: 1.443799
+  type: 'test'
+  ...
+# Subtest: clipped controls compare original bounds rather than clipped coordinates
+ok 41 - clipped controls compare original bounds rather than clipped coordinates
+  ---
+  duration_ms: 0.420769
+  type: 'test'
+  ...
+# Subtest: disabled fieldsets, inert parents and hidden targets cannot authorize clicks
+ok 42 - disabled fieldsets, inert parents and hidden targets cannot authorize clicks
+  ---
+  duration_ms: 1.172216
+  type: 'test'
+  ...
+# Subtest: outer overlays, links and form submission require manual handling
+ok 43 - outer overlays, links and form submission require manual handling
+  ---
+  duration_ms: 3.798372
+  type: 'test'
+  ...
+# Subtest: a failed capture revokes earlier exported scene and disposal revokes all use
+ok 44 - a failed capture revokes earlier exported scene and disposal revokes all use
+  ---
+  duration_ms: 3.478957
+  type: 'test'
+  ...
+# Subtest: arbitrary text and closed-shadow secrets never enter the scene
+ok 45 - arbitrary text and closed-shadow secrets never enter the scene
+  ---
+  duration_ms: 0.568067
+  type: 'test'
+  ...
+# Subtest: invalid rectangle padding or dimensions cannot become exportable geometry
+ok 46 - invalid rectangle padding or dimensions cannot become exportable geometry
+  ---
+  duration_ms: 0.202223
+  type: 'test'
+  ...
+# Subtest: a document that is not yet an observable target is rejected before observe
+ok 47 - a document that is not yet an observable target is rejected before observe
+  ---
+  duration_ms: 0.325503
+  type: 'test'
+  ...
+# Subtest: revision ids survive a page with no secure-context randomUUID
+ok 48 - revision ids survive a page with no secure-context randomUUID
+  ---
+  duration_ms: 0.743903
+  type: 'test'
+  ...
+# Subtest: the revision helper reports a crypto source it cannot use
+ok 49 - the revision helper reports a crypto source it cannot use
+  ---
+  duration_ms: 0.425648
+  type: 'test'
+  ...
+# Subtest: outbound schema refuses raw screenshots, DOM, URLs and arbitrary tasks
+ok 50 - outbound schema refuses raw screenshots, DOM, URLs and arbitrary tasks
+  ---
+  duration_ms: 5.174809
+  type: 'test'
+  ...
+# Subtest: scene reconstruction drops untrusted object fields and rejects arbitrary labels
+ok 51 - scene reconstruction drops untrusted object fields and rejects arbitrary labels
+  ---
+  duration_ms: 0.372498
+  type: 'test'
+  ...
+# Subtest: out of bounds, duplicate IDs and nonfinite coordinates are rejected
+ok 52 - out of bounds, duplicate IDs and nonfinite coordinates are rejected
+  ---
+  duration_ms: 0.786702
+  type: 'test'
+  ...
+# Subtest: clipping handles negative edges, padding and offscreen pixels
+ok 53 - clipping handles negative edges, padding and offscreen pixels
+  ---
+  duration_ms: 0.691869
+  type: 'test'
+  ...
+# Subtest: arbitrary JS, unknown targets, payload fields and typing are rejected
+ok 54 - arbitrary JS, unknown targets, payload fields and typing are rejected
+  ---
+  duration_ms: 0.959774
+  type: 'test'
+  ...
+# Subtest: rendered wireframe contains allowed semantics but no arbitrary source content
+ok 55 - rendered wireframe contains allowed semantics but no arbitrary source content
+  ---
+  duration_ms: 0.452963
+  type: 'test'
+  ...
+# Subtest: PII detector identifies email and numeric IDs while export remains independent
+ok 56 - PII detector identifies email and numeric IDs while export remains independent
+  ---
+  duration_ms: 0.877543
+  type: 'test'
+  ...
+# Subtest: provider proposal retains only the permitted action fields
+ok 57 - provider proposal retains only the permitted action fields
+  ---
+  duration_ms: 3.025187
+  type: 'test'
+  ...
+# Subtest: contradictory, unknown, missing and extra provider fields cannot authorize an action
+ok 58 - contradictory, unknown, missing and extra provider fields cannot authorize an action
+  ---
+  duration_ms: 0.459912
+  type: 'test'
+  ...
+# Subtest: clipRegion floors and clamps useful rectangles
+ok 59 - clipRegion floors and clamps useful rectangles
+  ---
+  duration_ms: 1.532683
+  type: 'test'
+  ...
+# Subtest: pixelateRegion mosaics only the target block and reports coverage
+ok 60 - pixelateRegion mosaics only the target block and reports coverage
+  ---
+  duration_ms: 0.542937
+  type: 'test'
+  ...
+# Subtest: redactSelective preserves non-sensitive pixels byte-for-byte
+ok 61 - redactSelective preserves non-sensitive pixels byte-for-byte
+  ---
+  duration_ms: 0.432014
+  type: 'test'
+  ...
+# Subtest: redactSelective ignores non-sensitive kinds and invalid inputs fail closed
+ok 62 - redactSelective ignores non-sensitive kinds and invalid inputs fail closed
+  ---
+  duration_ms: 0.398748
+  type: 'test'
+  ...
+# Subtest: scoreRedactionPrecision separates PII coverage from non-PII preservation
+ok 63 - scoreRedactionPrecision separates PII coverage from non-PII preservation
+  ---
+  duration_ms: 0.509552
+  type: 'test'
+  ...
+# Subtest: rubric visual and PII hooks report fixture-only status, not saturation
+ok 64 - rubric visual and PII hooks report fixture-only status, not saturation
+  ---
+  duration_ms: 0.664943
+  type: 'test'
+  ...
+# Subtest: latency gate fails honestly above 200ms and must not be weakened
+ok 65 - latency gate fails honestly above 200ms and must not be weakened
+  ---
+  duration_ms: 0.701829
+  type: 'test'
+  ...
+# Subtest: assertSanitizedPayload blocks screenshots, data URLs and scene pixel fields
+ok 66 - assertSanitizedPayload blocks screenshots, data URLs and scene pixel fields
+  ---
+  duration_ms: 3.374093
+  type: 'test'
+  ...
+# Subtest: classifySensitive expands Indic Aadhaar and PAN telemetry without authorizing export
+ok 67 - classifySensitive expands Indic Aadhaar and PAN telemetry without authorizing export
+  ---
+  duration_ms: 1.035106
+  type: 'test'
+  ...
+# Subtest: held-out wave2 fixture file is loadable and separates coverage from preservation
+ok 68 - held-out wave2 fixture file is loadable and separates coverage from preservation
+  ---
+  duration_ms: 23.721166
+  type: 'test'
+  ...
+# Subtest: requires authorization and exact allowed origin
+ok 69 - requires authorization and exact allowed origin
+  ---
+  duration_ms: 46.647412
+  type: 'test'
+  ...
+# Subtest: rejects malformed, oversized and extra-field requests before provider
+ok 70 - rejects malformed, oversized and extra-field requests before provider
+  ---
+  duration_ms: 25.29612
+  type: 'test'
+  ...
+# Subtest: valid plan contains matching revision and audit stores no scene or PII
+ok 71 - valid plan contains matching revision and audit stores no scene or PII
+  ---
+  duration_ms: 11.362813
+  type: 'test'
+  ...
+# Subtest: unsafe provider target is rejected without persistence
+ok 72 - unsafe provider target is rejected without persistence
+  ---
+  duration_ms: 4.848182
+  type: 'test'
+  ...
+# Subtest: provider outage gives actionable error without stack or endpoint leakage
+ok 73 - provider outage gives actionable error without stack or endpoint leakage
+  ---
+  duration_ms: 5.01446
+  type: 'test'
+  ...
+# Subtest: request rate cap returns 429 and retry-after
+ok 74 - request rate cap returns 429 and retry-after
+  ---
+  duration_ms: 53.464415
+  type: 'test'
+  ...
+# Subtest: static server never exposes server source, pairing tokens or tests
+ok 75 - static server never exposes server source, pairing tokens or tests
+  ---
+  duration_ms: 11.781653
+  type: 'test'
+  ...
+# Subtest: real provider adapter submits only validated semantics and checks JSON
+ok 76 - real provider adapter submits only validated semantics and checks JSON
+  ---
+  duration_ms: 1.243212
+  type: 'test'
+  ...
+# Subtest: serves the real app entry and fixture
+ok 77 - serves the real app entry and fixture
+  ---
+  duration_ms: 28.837004
+  type: 'test'
+  ...
+# Subtest: no-control scenes omit an impossible empty click enum
+ok 78 - no-control scenes omit an impossible empty click enum
+  ---
+  duration_ms: 0.434516
+  type: 'test'
+  ...
+# Subtest: two-step run reports completion only after observing the postcondition
+ok 79 - two-step run reports completion only after observing the postcondition
+  ---
+  duration_ms: 12.396702
+  type: 'test'
+  ...
+# Subtest: premature done is not task success
+ok 80 - premature done is not task success
+  ---
+  duration_ms: 1.070684
+  type: 'test'
+  ...
+# Subtest: unchanged page stops without an unbounded retry loop
+ok 81 - unchanged page stops without an unbounded retry loop
+  ---
+  duration_ms: 0.630672
+  type: 'test'
+  ...
+# Subtest: step budget still permits final postcondition verification
+ok 82 - step budget still permits final postcondition verification
+  ---
+  duration_ms: 1.073628
+  type: 'test'
+  ...
+# Subtest: cancelled planner cannot execute a late result
+ok 83 - cancelled planner cannot execute a late result
+  ---
+  duration_ms: 17.986704
+  type: 'test'
+  ...
+# Subtest: deadline releases a stalled observation and never executes
+ok 84 - deadline releases a stalled observation and never executes
+  ---
+  duration_ms: 10.992408
+  type: 'test'
+  ...
+# Subtest: execution error requires review and is never retried
+ok 85 - execution error requires review and is never retried
+  ---
+  duration_ms: 0.702552
+  type: 'test'
+  ...
+# Subtest: malformed planner result and observation fail without execution
+ok 86 - malformed planner result and observation fail without execution
+  ---
+  duration_ms: 0.802185
+  type: 'test'
+  ...
+# Subtest: abort before start performs no capture
+ok 87 - abort before start performs no capture
+  ---
+  duration_ms: 0.339362
+  type: 'test'
+  ...
+# Subtest: invalid budgets are rejected before adapters run
+ok 88 - invalid budgets are rejected before adapters run
+  ---
+  duration_ms: 1.183855
+  type: 'test'
+  ...
+# Subtest: reject invalid token windows instead of hanging or silently dropping input
+ok 89 - reject invalid token windows instead of hanging or silently dropping input
+  ---
+  duration_ms: 1.770901
+  type: 'test'
+  ...
+# Subtest: overlap preserves word alignment across subword and window boundaries
+ok 90 - overlap preserves word alignment across subword and window boundaries
+  ---
+  duration_ms: 2.68937
+  type: 'test'
+  ...
+# Subtest: invalid OCR geometry fails closed before any preview is built
+ok 91 - invalid OCR geometry fails closed before any preview is built
+  ---
+  duration_ms: 0.526784
+  type: 'test'
+  ...
+# Subtest: subword PII evidence marks its word and malformed inference is rejected
+ok 92 - subword PII evidence marks its word and malformed inference is rejected
+  ---
+  duration_ms: 0.39053
+  type: 'test'
+  ...
+# Subtest: local policy combines model labels with deterministic numeric and email rules
+ok 93 - local policy combines model labels with deterministic numeric and email rules
+  ---
+  duration_ms: 0.568388
+  type: 'test'
+  ...
+# Subtest: explicit address label withholds the whole value without masking another line or following public field
+ok 94 - explicit address label withholds the whole value without masking another line or following public field
+  ---
+  duration_ms: 0.292423
+  type: 'test'
+  ...
+# Subtest: line policy uses geometry, requires an exact colon label and never assumes missing line identity
+ok 95 - line policy uses geometry, requires an exact colon label and never assumes missing line identity
+  ---
+  duration_ms: 0.154917
+  type: 'test'
+  ...
+# Subtest: flattening keeps distinct OCR line identities for policy boundaries
+ok 96 - flattening keeps distinct OCR line identities for policy boundaries
+  ---
+  duration_ms: 0.226212
+  type: 'test'
+  ...
+# Subtest: diagnostic counts omitted OCR as a miss, and retained PII as a leak
+ok 97 - diagnostic counts omitted OCR as a miss, and retained PII as a leak
+  ---
+  duration_ms: 0.485932
+  type: 'test'
+  ...
+# Subtest: worker wrapper serializes detection and returns the actual worker response
+ok 98 - worker wrapper serializes detection and returns the actual worker response
+  ---
+  duration_ms: 1.930287
+  type: 'test'
+  ...
+# Subtest: disposing active worker rejects pending work and prevents reuse
+ok 99 - disposing active worker rejects pending work and prevents reuse
+  ---
+  duration_ms: 0.287928
+  type: 'test'
+  ...
+# Subtest: worker failure releases pending request and bitmap
+ok 100 - worker failure releases pending request and bitmap
+  ---
+  duration_ms: 4.769871
+  type: 'test'
+  ...
+# Subtest: RGB preprocessing follows upstream channel order and normalization
+ok 101 - RGB preprocessing follows upstream channel order and normalization
+  ---
+  duration_ms: 2.39034
+  type: 'test'
+  ...
+# Subtest: face decoding thresholds, clips and suppresses duplicate boxes
+ok 102 - face decoding thresholds, clips and suppresses duplicate boxes
+  ---
+  duration_ms: 1.601271
+  type: 'test'
+  ...
+# Subtest: invalid shapes, scores and box coordinates fail instead of reporting safe output
+ok 103 - invalid shapes, scores and box coordinates fail instead of reporting safe output
+  ---
+  duration_ms: 0.624986
+  type: 'test'
+  ...
+# Subtest: input/output tensors and owned bitmaps are released after every inference outcome
+ok 104 - input/output tensors and owned bitmaps are released after every inference outcome
+  ---
+  duration_ms: 40.160585
+  type: 'test'
+  ...
+# Subtest: caller-owned bitmaps stay open and disposal is idempotent
+ok 105 - caller-owned bitmaps stay open and disposal is idempotent
+  ---
+  duration_ms: 3.761665
+  type: 'test'
+  ...
+# Subtest: overlapping inference rejects and session disposal waits for active inference
+ok 106 - overlapping inference rejects and session disposal waits for active inference
+  ---
+  duration_ms: 2.979876
+  type: 'test'
+  ...
+# Subtest: canvas initialization failure releases the already-created session
+ok 107 - canvas initialization failure releases the already-created session
+  ---
+  duration_ms: 10.832707
+  type: 'test'
+  ...
+1..107
+# tests 107
+# suites 0
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 454.347466

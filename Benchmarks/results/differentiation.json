@@ -1,0 +1,34 @@
+{
+  "name": "wave4-differentiation",
+  "timestamp": "2026-09-14T11:30:00.000Z",
+  "status": "pass",
+  "comparators_reviewed": 5,
+  "source": "Wiki/competitors.md",
+  "comparators": [
+    "WebPII / WebRedact",
+    "PrivWeb",
+    "Available but Invisible",
+    "Microsoft OmniParser",
+    "CAPED (reference update)"
+  ],
+  "implemented_differentiator": {
+    "name": "Inspectable pixel-free egress + selective local preview + expiring local value references",
+    "baseline": "Full-image mask (historical WebPII raster diagnostic) and unconstrained screenshot-to-model flows",
+    "demonstration": [
+      "Held-out fixtures separate PII coverage vs non-PII preservation (wave2/wave4 results)",
+      "Extension loop proves semantics-only outbound JSON (extension-loop-v01.json)",
+      "Operations simulation: expired reference writes nothing"
+    ],
+    "not_claimed": [
+      "First private browser agent",
+      "Zero leakage",
+      "WebPII saturation or head-to-head accuracy win"
+    ]
+  },
+  "evidence": [
+    "Wiki/competitors.md",
+    "Benchmarks/results/wave4-pii-redaction-utility-v01.json",
+    "Benchmarks/results/extension-loop-v01.json",
+    "Docs/decisions/operations-simulation.md"
+  ]
+}

@@ -47,8 +47,8 @@
         "Docs/architecture.md",
         "Docs/scope.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Architecture and scope docs record one primary journey, \u22642 services (browser client + Node server), \u22641 SQLite audit store, \u22641 optional local Ollama provider. No custom training or specialized hardware required for the candidate. Evidence: Docs/architecture.md, Docs/scope.md."
     },
     {
       "id": "G03",
@@ -63,7 +63,7 @@
         "Benchmarks/results/extension-native-v01.json"
       ],
       "status": "unknown",
-      "reason": "Chromium MV3 load/inject/reach evidenced (extension-native-v03). Wave2/3 prove production scripting inject + collect, activeTab capture gate, and popup #capture\u2192filter\u2192sanitize\u2192review UI loop under a harness-only overlay (extension-loop-v01.json). Toolbar glyph click, Firefox live run, and full clean-setup-to-reload journey remain unproven."
+      "reason": "Chromium MV3 load/inject/reach evidenced (extension-native-v03). Wave2\u20134 prove production scripting inject + collect, activeTab capture gate, popup protect loop, privacy-only skip-LLM path, and judge/demo checklist for human toolbar. Toolbar glyph automation, Firefox live run, and full clean-setup-to-reload e2e.json remain open \u2014 status stays unknown."
     },
     {
       "id": "G04",
@@ -76,8 +76,8 @@
         "Wiki/competitors.md",
         "Benchmarks/results/differentiation.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Wiki/competitors.md compares \u22655 adjacent solutions. Implemented differentiator (pixel-free egress + selective local preview + expiring references) demonstrated against full-image mask baseline via held-out fixtures and extension sanitize evidence. No first/unique global claims. Evidence: Benchmarks/results/differentiation.json."
     },
     {
       "id": "G05",
@@ -171,7 +171,7 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms historically. Wave3 popup protect loop captureMs\u2248188ms is capture+filter only, not full-flow <200ms. Gate not weakened."
+      "reason": "core-latency.json records historical planner-inclusive samples in seconds (p95 fail vs 200ms). Privacy-only skip-LLM and detector cache reduce local cost but are explicitly not a G11 pass. Gate not weakened. Evidence: Benchmarks/results/core-latency.json."
     },
     {
       "id": "G12",
@@ -196,8 +196,8 @@
       "required_evidence": [
         "Benchmarks/results/recovery.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json."
     },
     {
       "id": "G14",
@@ -224,8 +224,8 @@
       "required_evidence": [
         "Docs/claim-ledger.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Docs/claim-ledger.json lists empirical claims with source, type and limits; fabricated metrics forbidden. Official score null; G11 fail retained; WebPII failure published."
     },
     {
       "id": "G16",
@@ -237,8 +237,8 @@
       "required_evidence": [
         "Docs/impact-model.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Docs/impact-model.md defines outcome specification, pilot design, cost ledger and environmental account with null parameters until sourced. No projected results reported as observed outcomes."
     },
     {
       "id": "G17",
@@ -280,8 +280,8 @@
         "Raw/sources.json",
         "Wiki/source-index.md"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Raw/sources.json and Wiki/source-index.md retain attribution; failed private channels recorded as inaccessible in reference intake. Competitor and problem citations mapped in Wiki."
     },
     {
       "id": "G20",

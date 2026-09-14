@@ -1,0 +1,421 @@
+{
+  "name": "wave4-pii-redaction-utility",
+  "version": "v01",
+  "timestamp": "2026-09-14T11:05:14.280Z",
+  "fixture_set": "wave4-heldout-pii-fixtures",
+  "fixture_version": "v01",
+  "case_count": 12,
+  "scope": "Synthetic authored fixtures held out from unit-test inline cases. Expands Wave2 set with additional layout/adversarial cases. Not WebPII re-score, not real user screens, not official rubric saturation.",
+  "aggregates": {
+    "meanPiiPixelCoverage": 0.8627272727272728,
+    "meanNonPiiPreservation": 0.8997996352229781,
+    "meanPiiInstanceRecall": 0.7272727272727273,
+    "meanPiiInstancePrecision": 0.75,
+    "meanVisualRecall": 0.888888888888889,
+    "meanVisualPrecision": 1
+  },
+  "latency_gate": {
+    "metric": "task-latency",
+    "elapsedMs": 3029,
+    "budgetMs": 200,
+    "status": "fail",
+    "observed": null,
+    "note": "Full-flow latency 3029 ms exceeds 200 ms gate. Gate must not be weakened."
+  },
+  "official_score": null,
+  "scoreReason": "Wave4 expanded held-out synthetic fixtures (12 cases). Not WebPII re-score; not organizer saturation. Official score null. Latency gate remains fail.",
+  "cases": [
+    {
+      "id": "eo-desk-selective",
+      "description": "Earth-observation style desk: face + private field + three allow-listed controls",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9831338411316648,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 3,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 2,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "password-adjacent-layout",
+      "description": "Password field redacted; surrounding Cancel/Help controls must stay useful",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9809523809523809,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 1,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "indic-telemetry-boxes",
+      "description": "Synthetic Aadhaar/PAN field boxes; detector supplies field kinds only",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9803763440860215,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 2,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "missed-face-under-redaction",
+      "description": "Detector miss: ground-truth face present, zero redaction predictions",
+      "redaction": {
+        "piiPixelCoverage": 0,
+        "nonPiiPreservation": 1,
+        "instancePrecision": null,
+        "instanceRecall": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": null,
+        "recall": 0,
+        "truePositives": 0,
+        "falsePositives": 0,
+        "falseNegatives": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 0,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "full-image-over-redaction",
+      "description": "Full-frame mask covers PII but destroys utility",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0,
+        "instancePrecision": 0,
+        "instanceRecall": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 0,
+        "recall": 0,
+        "truePositives": 0,
+        "falsePositives": 1,
+        "falseNegatives": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": null,
+        "recall": 0,
+        "truePositives": 0,
+        "falsePositives": 0,
+        "falseNegatives": 2,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 1,
+        "cornerMarkerPreserved": false,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "partial-control-recall",
+      "description": "Selective redaction ok; one control missed",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9901587301587301,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 0.6666666666666666,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 1,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "dense-multi-field-form",
+      "description": "Three sensitive fields + four controls; selective boxes must preserve layout utility",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9731654363873209,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 3,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 4,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 3,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "face-plus-email-adjacent",
+      "description": "Face beside email-like field; controls on right must remain",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9812992125984252,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 2,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "false-positive-decorative",
+      "description": "Detector FP on decorative box; coverage high but precision hurt",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9582608695652174,
+        "instancePrecision": 0.5,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 0.5,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 1,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 2,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "shifted-iou-borderline",
+      "description": "Slightly shifted box near IoU 0.5 threshold — matching stress",
+      "redaction": {
+        "piiPixelCoverage": 0.49,
+        "nonPiiPreservation": 0.965633423180593,
+        "instancePrecision": 0,
+        "instanceRecall": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 0,
+        "recall": 0,
+        "truePositives": 0,
+        "falsePositives": 1,
+        "falseNegatives": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 1,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "media-banner-over-redaction",
+      "description": "Wide media banner redacted; navigation strip must still export",
+      "redaction": {
+        "piiPixelCoverage": 1,
+        "nonPiiPreservation": 0.9846153846153847,
+        "instancePrecision": 1,
+        "instanceRecall": 1,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 1,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 3,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 1,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    },
+    {
+      "id": "empty-scene-no-pii",
+      "description": "No PII ground truth; detector empty; controls only — utility baseline",
+      "redaction": {
+        "piiPixelCoverage": null,
+        "nonPiiPreservation": 1,
+        "instancePrecision": null,
+        "instanceRecall": null,
+        "status": "held_out_synthetic_fixture"
+      },
+      "piiDetection": {
+        "precision": null,
+        "recall": null,
+        "truePositives": 0,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "visualContext": {
+        "precision": 1,
+        "recall": 1,
+        "truePositives": 2,
+        "falsePositives": 0,
+        "falseNegatives": 0,
+        "status": "held_out_synthetic_fixture"
+      },
+      "selectiveBuffer": {
+        "regionsApplied": 0,
+        "cornerMarkerPreserved": true,
+        "localOnly": true
+      }
+    }
+  ],
+  "notes": [
+    "missed-face-under-redaction intentionally shows coverage failure when the detector misses.",
+    "full-image-over-redaction intentionally shows utility destruction despite PII coverage.",
+    "false-positive-decorative and shifted-iou-borderline stress precision/IoU.",
+    "empty-scene-no-pii is a utility baseline with zero PII.",
+    "Egress policy unchanged: these scores apply to local selective preview regions, not raster upload.",
+    "External WebPII text retention failure (58/100) is unchanged and remains local-only."
+  ]
+}

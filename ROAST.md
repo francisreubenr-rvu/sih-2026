@@ -1,3 +1,16 @@
+## Round 14 — wave 4 latency + rubric diagnostics (14 September 2026)
+
+- [x] Privacy-only skip-LLM path + detector cache + wireframe preview implemented; G11 remains fail with core-latency evidence.
+- [x] Expanded held-out synthetic fixture scoring (12 cases); official score null.
+- [x] Judge/demo checklist for human toolbar activeTab (no faked glyph automation).
+- [x] Recovery + differentiation + architecture/scope evidence closed additional gates honestly.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) and several presentation/ops unknowns remain.
+
 ## Round 13 — wave 3 loop + packaging (14 September 2026)
 
 - [x] Production popup capture→filter→sanitize→review reliability: stages, reinject, tab fallback, toolbar guidance.

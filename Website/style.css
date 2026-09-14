@@ -22,3 +22,8 @@ dialog{background:var(--paper);color:var(--ink);border:1px solid var(--line);pad
 .trust-bar .hi{font-weight:500;color:var(--muted);font-size:12px}
 .tricolor-rule{height:3px;width:100%;max-width:180px;margin:12px 0 0;border-radius:2px;background:linear-gradient(90deg,var(--saffron) 0 33.33%,#fff 33.33% 66.66%,var(--india-green) 66.66% 100%);border:1px solid var(--line)}
 .evidence-section .verified-panel{border-left:3px solid var(--saffron);padding-left:18px}
+
+/* Wave 4 — pixel-abstract DigiLocker-credible surface accents */
+.optical-art{background-image:linear-gradient(90deg,rgba(255,153,51,.06) 0 1px,transparent 1px),linear-gradient(rgba(19,136,8,.05) 0 1px,transparent 1px);background-size:14px 14px,14px 14px}
+.limits-panel .latency-note>strong{color:var(--navy-cred)}
+@media(prefers-color-scheme:dark){.limits-panel .latency-note>strong{color:var(--signal)}.optical-art{background-image:linear-gradient(90deg,rgba(255,153,51,.08) 0 1px,transparent 1px),linear-gradient(rgba(19,136,8,.07) 0 1px,transparent 1px)}}

@@ -1,3 +1,14 @@
+## Wave 4 — rubric diagnostics + latency strategy + deck/site honesty — 14 September 2026
+
+- Expanded held-out synthetic fixtures (12 cases) → `Benchmarks/results/wave4-pii-redaction-utility-v01.json`. Official score **null**.
+- G11 strategy: privacy-only skip-LLM (extension default), detector session cache, optional wireframe preview. `core-latency.json` distribution evidence; full-flow **fail** retained (not weakened).
+- Judge/demo checklist: `Docs/demo-judge-checklist.md` (human toolbar activeTab).
+- Closed with evidence: G02 (architecture/scope), G04 (differentiation), G13 (recovery), G15 (claim ledger), G16 (impact framework), G19 (sources). Counts → pass 10 / fail 1 / unknown 9.
+- Website Wave 4 panels + DigiLocker pixel-abstract accents; submission deck refresh attempted.
+- Security rescan 0 high; Ollama unreachable; Firefox live unverified.
+- Automated tests: **107 pass / 0 fail**.
+- Still open for submission_ready: G11 fail, e2e.json / toolbar glyph automation, Firefox live, WebPII saturation, human eval (G20), G08/G09/G10/G14/G17/G18 unknowns as applicable.
+
 ## Wave 3 — toolbar path reliability + packaging + evidence — 14 September 2026
 
 - Production popup path: stage strip, toolbar/activeTab guidance (EN/HI), content-script reinject on disconnect, http(s) tab fallback when popup is opened as a document.
