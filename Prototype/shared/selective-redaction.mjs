@@ -39,7 +39,7 @@ export function pixelateRegion(data, width, height, rect, blockSize = 12) {
       const bw = Math.min(blockSize, region.x + region.width - bx);
       const bh = Math.min(blockSize, region.y + region.height - by);
       // Subsample average for large blocks (stride 2) — faster local preview, same mosaic intent.
-      const stride = (bw >= 8 && bh >= 8) ? 2 : 1;
+      const stride = (bw >= 16 && bh >= 16) ? 4 : ((bw >= 8 && bh >= 8) ? 2 : 1);
       let r = 0, g = 0, b = 0, a = 0, n = 0;
       for (let y = by; y < by + bh; y += stride) {
         for (let x = bx; x < bx + bw; x += stride) {
@@ -62,6 +62,51 @@ export function pixelateRegion(data, width, height, rect, blockSize = 12) {
   return covered;
 }
 
+
+/**
+ * Merge overlapping/adjacent same-kind axis-aligned regions before mosaicking.
+ * Reduces double-work on dense detector outputs. Local preview only.
+ */
+export function mergeOverlappingRegions(regions, { pad = 0 } = {}) {
+  if (!Array.isArray(regions) || regions.length === 0) return [];
+  const byKind = new Map();
+  for (const r of regions) {
+    if (!r?.rect || !r.kind) continue;
+    const list = byKind.get(r.kind) || [];
+    list.push({ ...r.rect });
+    byKind.set(r.kind, list);
+  }
+  const out = [];
+  for (const [kind, rects] of byKind) {
+    const boxes = rects.map(r => ({
+      x: r.x - pad, y: r.y - pad,
+      width: r.width + 2 * pad, height: r.height + 2 * pad,
+    }));
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let i = 0; i < boxes.length; i++) {
+        for (let j = i + 1; j < boxes.length; j++) {
+          const a = boxes[i], b = boxes[j];
+          const ax2 = a.x + a.width, ay2 = a.y + a.height;
+          const bx2 = b.x + b.width, by2 = b.y + b.height;
+          const overlap = a.x <= bx2 && ax2 >= b.x && a.y <= by2 && ay2 >= b.y;
+          if (!overlap) continue;
+          const x = Math.min(a.x, b.x), y = Math.min(a.y, b.y);
+          const right = Math.max(ax2, bx2), bottom = Math.max(ay2, by2);
+          boxes[i] = { x, y, width: right - x, height: bottom - y };
+          boxes.splice(j, 1);
+          changed = true;
+          break;
+        }
+        if (changed) break;
+      }
+    }
+    for (const rect of boxes) out.push({ kind, rect });
+  }
+  return out;
+}
+
 /**
  * Copy source RGBA, pixelate each sensitive region, return a new buffer.
  * Non-sensitive pixels are byte-identical to the source.
@@ -72,8 +117,9 @@ export function redactSelective(source, width, height, regions, { blockSize = 12
   if (!Array.isArray(regions) || regions.length > 2000) throw new Error('Invalid regions');
   const out = new Uint8ClampedArray(source);
   const applied = [];
-  for (const region of regions) {
-    if (!kinds.has(region.kind)) continue;
+  const filtered = regions.filter(r => kinds.has(r?.kind));
+  const merged = mergeOverlappingRegions(filtered);
+  for (const region of merged) {
     const clipped = clipRegion(region.rect, width, height, padding);
     if (!clipped) continue;
     const pixels = pixelateRegion(out, width, height, clipped, blockSize);

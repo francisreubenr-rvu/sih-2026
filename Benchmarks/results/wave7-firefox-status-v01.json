@@ -1,0 +1,7 @@
+{
+  "name": "wave7-firefox-status",
+  "generatedAt": "2026-09-14T11:28:46.141457+00:00",
+  "firefox_binary": "absent",
+  "status": "unverified",
+  "reason": "Firefox binary not present on agent box; Firefox unpacked package exists but live run unverified."
+}

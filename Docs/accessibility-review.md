@@ -23,3 +23,14 @@ Automated axe-core CDN inject recorded in `Benchmarks/results/accessibility.json
 - Clear serious/critical axe failures should be fixed in the same wave when found.
 
 **G09/G10 remain unknown** until criterion-level WCAG documentation, real AT review, and native 200% zoom / motion-safety are complete.
+
+## Wave 7 axe + keyboard + text-spacing + EN/HI (14 September 2026)
+
+- axe-core on Website, extension popup (file + HTTP-served build), and local prototype pages (`Benchmarks/results/accessibility.json`).
+- Keyboard Tab sampling: Website skip-link first; popup EN/HI controls reachable with visible focus.
+- WCAG 1.4.12 text-spacing CSS override: no horizontal overflow on Website or popup probes.
+- EN/HI: Website site-lang toggle sets `html lang`; popup lang buttons have aria-labels and set `documentElement.lang` (HTTP harness after runtime guard).
+- DigiLocker-credible navy/paper trust chip contrast retained; Hindi trust string darkened to `#0a5230`.
+- Partial criterion checklist recorded in accessibility.json — **not** full WCAG AA conformance.
+
+**G09/G10 remain unknown** until criterion-level WCAG documentation, real AT review, and native 200% browser zoom / complete motion-safety are complete.

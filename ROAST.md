@@ -1,3 +1,17 @@
+## Round 17 — wave 7 a11y + load soak (14 September 2026)
+
+- [x] G09/G10 enriched evidence (axe 0 violations, keyboard, text-spacing, EN/HI); remain unknown (no fake WCAG pass).
+- [x] G05 5-minute local soak with heap snapshots → pass on declared local scope.
+- [x] G11 honest mosaic/merge opts; full-flow fail retained.
+- [x] Popup runtime.getURL guard so lang controls work in HTTP preview.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation (G03).
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+- [ ] Human/domain validation (G20) participants not yet collected.
+- [ ] G14 3 consecutive live rehearsals not logged.
+
 ## Round 16 — wave 6 hardening + a11y + latency (14 September 2026)
 
 - [x] Node/API hardening evidence harness (headers, origin, size, rate limit, error hygiene); G08 pass on declared scope.

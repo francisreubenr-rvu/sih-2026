@@ -1,0 +1,10 @@
+{
+  "name": "wave7-ollama-planner-status",
+  "generatedAt": "2026-09-14T11:28:46.141457+00:00",
+  "ports": {
+    "11434": "unreachable",
+    "11436": "unreachable"
+  },
+  "status": "skipped",
+  "reason": "Ollama not reachable on 11434/11436; planner E2E not faked."
+}

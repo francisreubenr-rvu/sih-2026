@@ -103,7 +103,7 @@ const plannerBreakdown = summarizeLatencyBreakdown({
 });
 
 const record = buildLatencyDistributionRecord({
-  name: 'wave6-core-latency',
+  name: 'wave7-core-latency',
   samples,
   warmups: WARM,
   mode: OPERATING_MODES.planner_assisted,
@@ -116,6 +116,7 @@ const record = buildLatencyDistributionRecord({
     'Privacy-only skip-LLM path implemented in extension popup; does not constitute a G11 pass.',
     'Detector session cache + optional wireframe preview reduce repeat local cost; planner path still seconds.',
     'Wave6: mosaic subsample stride-2 for large blocks; staged Node microbench (dom heuristic / mosaic / sanitize proxy).',
+    'Wave7: mergeOverlappingRegions before mosaic; stride-4 subsample for very large blocks. Full-flow G11 remains fail.',
   ],
 });
 

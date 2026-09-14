@@ -1,3 +1,14 @@
+## Wave 7 — a11y depth + load soak + latency opts — 14 September 2026
+
+- G09/G10: axe + keyboard Tab + 1.4.12 text-spacing + EN/HI (Website + popup HTTP harness); statuses **unknown**.
+- G05: `scripts/wave7-load-notes.mjs` → `load.json` 5-minute soak, 20 workers, 1000 durable rows, heap snapshots → **pass** (local scope).
+- G11: mergeOverlappingRegions + stride-4; full-flow **fail** retained.
+- Popup: guard `runtime.getURL` so EN/HI listeners register outside extension context.
+- Security rescan 0 high; Ollama skipped; Firefox live unverified.
+- Automated tests: **113 pass / 0 fail**.
+- Counts → pass **14** / fail **1** / unknown **5**. submission_ready **false**.
+- Do not mark G14/G20/G03 human toolbar as pass.
+
 ## Wave 6 — Node hardening + a11y + latency + fixtures — 14 September 2026
 
 - G08: `scripts/wave6-hardening-evidence.mjs` → `hardening.json` (8/8); security headers + production guards; G08 → **pass** (declared local scope).

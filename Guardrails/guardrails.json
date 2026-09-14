@@ -89,8 +89,8 @@
       "required_evidence": [
         "Benchmarks/results/load.json"
       ],
-      "status": "unknown",
-      "reason": "Wave6 load.json: 20 concurrent health workers (1000 ok), 1000 durable audit rows, 1000 API writes under simulated rate windows. Wall-clock seconds, not 5-minute soak \u2014 status stays unknown."
+      "status": "pass",
+      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale."
     },
     {
       "id": "G06",
@@ -145,7 +145,7 @@
         "Docs/accessibility-review.md"
       ],
       "status": "unknown",
-      "reason": "Wave6 accessibility.json axe: Website + extension popup + prototype pages 0 violations (after contrast fix + reveal-ready visibility). Docs/accessibility-review.md updated. Full WCAG criterion-level + AT review incomplete \u2014 status stays unknown."
+      "reason": "Wave7 accessibility.json: axe Website + extension popup (file+HTTP) + prototype 0 violations; keyboard Tab sampling, 1.4.12 text-spacing, EN/HI lang switch evidence, partial criterion checklist. Full WCAG criterion-level + AT review incomplete \u2014 status stays unknown."
     },
     {
       "id": "G10",
@@ -158,7 +158,7 @@
         "Benchmarks/results/browser-review.json"
       ],
       "status": "unknown",
-      "reason": "browser-review.json Wave6 adds CSS zoom 200% approximation for Website + popup. Native 200% zoom / complete motion-safety incomplete \u2014 status stays unknown."
+      "reason": "browser-review.json Wave7: CSS zoom 200% + 320/390/1440 reflow + text-spacing notes for Website + popup. Native 200% zoom / complete motion-safety incomplete \u2014 status stays unknown."
     },
     {
       "id": "G11",
@@ -171,7 +171,7 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "core-latency.json (Wave6) keeps planner-inclusive full-flow fail vs 200ms. Judge_latency_breakdown adds stage p95 + mosaic subsample optimization. Budget not weakened."
+      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened."
     },
     {
       "id": "G12",

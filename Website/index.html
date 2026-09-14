@@ -15,12 +15,16 @@
 <header class="site-header wrap">
   <a class="wordmark" href="#main" aria-label="Sightline home"><span class="brand-mark" aria-hidden="true"></span>Sightline</a>
   <nav aria-label="Main navigation"><a href="#demo">The demo</a><a href="#architecture">How it works</a><a href="#team">The team</a></nav>
-  <button class="nav-cta" data-open-demo>Run local demo <span aria-hidden="true">↗</span></button>
+  <p class="site-lang" role="group" aria-label="Language">
+    <button type="button" class="site-lang-btn" id="site-lang-en" aria-pressed="true" aria-label="English">EN</button>
+    <button type="button" class="site-lang-btn" id="site-lang-hi" aria-pressed="false" aria-label="हिन्दी">हिं</button>
+  </p>
+  <button class="nav-cta" data-open-demo data-i18n-demo>Run local demo <span aria-hidden="true">↗</span></button>
 </header>
 <main id="main">
   <section class="hero wrap" aria-labelledby="hero-title">
     <div class="hero-copy"><p class="eyebrow">ON-DEVICE VISUAL PERCEPTION</p><h1 id="hero-title">Your screen.<br><span>Your boundary.</span></h1><p class="hero-summary">Browser agents that reason from protected context, while raw screenshots and personal details stay on your device.</p>
-    <p class="trust-bar" title="Capture and privacy filter run on-device. Raw pixels are not sent."><span class="dot" aria-hidden="true"></span><span>on this device</span><span class="hi" lang="hi">इस उपकरण पर</span></p>
+    <p class="trust-bar" id="trust-bar" title="Capture and privacy filter run on-device. Raw pixels are not sent."><span class="dot" aria-hidden="true"></span><span id="trust-en">on this device</span><span class="hi" lang="hi" id="trust-hi">इस उपकरण पर</span></p>
     <div class="tricolor-rule" aria-hidden="true"></div><button class="button primary" data-open-demo>Run local demo <span class="button-icon" aria-hidden="true">↗</span></button></div>
     <figure class="optical-art" aria-labelledby="optical-caption">
       <div class="aperture" aria-hidden="true"><div class="lens lens-outer"></div><div class="lens lens-mid"></div><div class="lens lens-inner"></div><div class="blade blade-a"></div><div class="blade blade-b"></div><div class="blade blade-c"></div><div class="aperture-center"><span class="focus-corner c1"></span><span class="focus-corner c2"></span><span class="focus-corner c3"></span><span class="focus-corner c4"></span><i></i><i></i><i></i></div></div>
@@ -68,6 +72,18 @@
     <li><code>Benchmarks/results/wave6-pii-redaction-utility-v01.json</code> — 24 synthetic fixtures</li>
     <li><code>Benchmarks/results/core-latency.json</code> — stage breakdown; G11 fail retained</li>
     <li><code>Docs/demo-rehearsal-checklist.md</code> / <code>Docs/human-evaluation-forms.md</code> — G14/G20 templates</li>
+  </ul>
+</section>
+
+<section class="wave-evidence" id="wave7-evidence" aria-labelledby="wave7-h">
+  <h2 id="wave7-h">Wave 7 evidence (14 Sep 2026)</h2>
+  <p>Accessibility depth (axe + keyboard + text-spacing + EN/HI), 5-minute local load soak with heap snapshots, honest G11 optimizations. G14/G20/G03 toolbar remain human-only unknowns.</p>
+  <ul>
+    <li><code>Benchmarks/results/accessibility.json</code> — Wave7 axe + keyboard + 1.4.12 + lang (G09 unknown)</li>
+    <li><code>Benchmarks/results/browser-review.json</code> — reflow + zoom notes (G10 unknown)</li>
+    <li><code>Benchmarks/results/load.json</code> — 5-minute soak + heap floor (G05)</li>
+    <li><code>Benchmarks/results/core-latency.json</code> — G11 fail retained</li>
+    <li><code>Benchmarks/results/security.json</code> — rescan</li>
   </ul>
 </section>
 

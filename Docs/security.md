@@ -46,3 +46,7 @@ Evidence harness: `scripts/wave6-hardening-evidence.mjs` → `Benchmarks/results
 | Scans | `security.json` + `dependency-audit.json` re-run each wave |
 
 G08 may pass for this **declared scope** when hardening.json, security.json, and dependency-audit.json are clean. This is not a multi-tenant production threat-model completion.
+
+## Wave 7 rescan (14 September 2026)
+
+`scripts/wave3-security-scan.mjs` rescan: 0 high secret-pattern findings; npm audit omit=dev 0 critical/0 high. Ollama unreachable — planner E2E skipped.

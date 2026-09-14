@@ -1,34 +1,70 @@
 {
-  "name": "wave6-local-load-notes",
-  "generatedAt": "2026-09-14T11:20:54.592Z",
-  "scope": "Local single-host createApp with test-double provider + injectable clock for rate-window simulation. Not national-scale. Wall-clock duration is seconds, not a 5-minute soak.",
+  "name": "wave7-local-load-soak",
+  "generatedAt": "2026-09-14T11:31:50.978Z",
+  "scope": "Local single-host createApp with test-double provider + injectable clock for rate-window simulation. Not national-scale.",
   "hardware": {
-    "note": "Recorded on agent box; not a declared competition reference machine profile."
+    "note": "Recorded on agent box; not a declared competition reference machine profile.",
+    "node": "v22.23.2",
+    "platform": "linux",
+    "arch": "x64"
   },
   "scenario": {
     "concurrent_health_workers": 20,
-    "health_rounds": 50,
-    "health_requests": 1000,
-    "durable_direct_rows": 1000,
-    "api_writes_with_clock_advance": 1000,
-    "wall_duration_ms": 3392,
-    "simulated_rate_windows": 50
+    "soak_ms_target": 300000,
+    "soak_ms_observed": 300076,
+    "durable_write_target": 1000,
+    "rate_limit_policy": "20 POST /api/v1/plans per 60s simulated window; 429 expected and clock-advanced"
   },
   "results": {
-    "health_ok": 1000,
+    "health_ok": 129918,
     "health_fail": 0,
-    "durable_direct_rows": 1000,
-    "durable_direct_ms": 1,
     "api_writes_ok": 1000,
     "api_writes_fail": 0,
-    "api_rate_limited": 0,
-    "api_write_wall_ms": 1953,
-    "audit_rows_total_after_api": 2000,
-    "unexpected_failure_rate": 0
+    "api_rate_limited_expected": 0,
+    "durable_audit_rows": 1000,
+    "unexpected_failure_count": 0,
+    "unexpected_failure_rate": 0,
+    "lost_writes": 0
+  },
+  "heap_snapshots": [
+    {
+      "label": "start",
+      "at": "2026-09-14T11:26:50.897Z",
+      "rss": 35119104,
+      "heapTotal": 19243008,
+      "heapUsed": 11091200,
+      "external": 3571850,
+      "arrayBuffers": 76182
+    },
+    {
+      "label": "mid",
+      "at": "2026-09-14T11:29:20.932Z",
+      "rss": 145891328,
+      "heapTotal": 109035520,
+      "heapUsed": 28477744,
+      "external": 4033354,
+      "arrayBuffers": 397351
+    },
+    {
+      "label": "end",
+      "at": "2026-09-14T11:31:50.978Z",
+      "rss": 154259456,
+      "heapTotal": 68403200,
+      "heapUsed": 40197504,
+      "external": 4622890,
+      "arrayBuffers": 986887
+    }
+  ],
+  "heap_floor": {
+    "rss_max": 154259456,
+    "heapUsed_max": 40197504,
+    "rss_delta_end_minus_start": 119140352,
+    "heapUsed_delta_end_minus_start": 29106304,
+    "note": "process.memoryUsage() only — not Chrome heap or energy. Documented floor for local soak."
   },
   "g05_acceptance": {
     "required": "≥20 concurrent sessions and 1000 synthetic records for 5 minutes; <1% unexpected failures; no lost writes",
-    "status": "unknown",
-    "reason": "Wave6: 20 concurrent health workers (1000 ok), 1000 direct durable rows, 1000 API writes under simulated rate windows. Wall-clock 3392ms << 5 minutes. Do not mark G05 pass."
+    "status": "pass",
+    "reason": "Wave7 soak: 20 concurrent health workers for 300076ms (≥300000ms), 1000 durable audit rows, unexpected_failure_rate=0, lost_writes=0. Heap snapshots recorded."
   }
 }

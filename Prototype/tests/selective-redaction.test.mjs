@@ -6,6 +6,7 @@ import {
   redactSelective,
   scoreRedactionPrecision,
   isSensitiveKind,
+  mergeOverlappingRegions,
 } from '../shared/selective-redaction.mjs';
 import {
   scoreVisualContext,
@@ -232,4 +233,19 @@ test('classifySensitive detects GSTIN and UPI VPA telemetry patterns', async () 
   // Email still classified as email, not upi-vpa
   assert.ok(classifySensitive('a@b.co').includes('email'));
   assert.ok(!classifySensitive('a@b.co').includes('upi-vpa'));
+});
+
+test('mergeOverlappingRegions collapses overlapping same-kind boxes', () => {
+  const merged = mergeOverlappingRegions([
+    { kind: 'face', rect: { x: 10, y: 10, width: 20, height: 20 } },
+    { kind: 'face', rect: { x: 20, y: 15, width: 20, height: 20 } },
+    { kind: 'field', rect: { x: 100, y: 100, width: 10, height: 10 } },
+  ]);
+  const faces = merged.filter(r => r.kind === 'face');
+  assert.equal(faces.length, 1);
+  assert.equal(faces[0].rect.x, 10);
+  assert.equal(faces[0].rect.y, 10);
+  assert.equal(faces[0].rect.width, 30);
+  assert.equal(faces[0].rect.height, 25);
+  assert.equal(merged.filter(r => r.kind === 'field').length, 1);
 });

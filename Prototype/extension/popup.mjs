@@ -164,10 +164,17 @@ const setBusy = v => {
   $('#token').disabled = v;
 };
 
-$('#origin').textContent = new URL(api.runtime.getURL('/')).origin;
-api.storage.session?.get('pairingToken').then(v => {
-  if (v.pairingToken) $('#token').value = v.pairingToken;
-});
+try {
+  if (api?.runtime?.getURL) $('#origin').textContent = new URL(api.runtime.getURL('/')).origin;
+  else $('#origin').textContent = '(open from extension toolbar for origin)';
+} catch {
+  $('#origin').textContent = '(extension origin unavailable)';
+}
+try {
+  api.storage?.session?.get('pairingToken').then(v => {
+    if (v?.pairingToken) $('#token').value = v.pairingToken;
+  });
+} catch { /* non-extension preview */ }
 
 $('#lang-en').addEventListener('click', () => { lang = 'en'; applyLang(); });
 $('#lang-hi').addEventListener('click', () => { lang = 'hi'; applyLang(); });

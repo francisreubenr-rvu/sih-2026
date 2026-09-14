@@ -27,3 +27,15 @@ dialog{background:var(--paper);color:var(--ink);border:1px solid var(--line);pad
 .optical-art{background-image:linear-gradient(90deg,rgba(255,153,51,.06) 0 1px,transparent 1px),linear-gradient(rgba(19,136,8,.05) 0 1px,transparent 1px);background-size:14px 14px,14px 14px}
 .limits-panel .latency-note>strong{color:var(--navy-cred)}
 @media(prefers-color-scheme:dark){.limits-panel .latency-note>strong{color:var(--signal)}.optical-art{background-image:linear-gradient(90deg,rgba(255,153,51,.08) 0 1px,transparent 1px),linear-gradient(rgba(19,136,8,.07) 0 1px,transparent 1px)}}
+
+/* Wave 7 — EN/HI DigiLocker-credible lang toggle + a11y spacing helpers */
+.site-lang{display:inline-flex;gap:6px;align-items:center;margin:0}
+.site-lang-btn{min-height:36px;min-width:40px;padding:4px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--muted);font:600 12px Geist,system-ui;cursor:pointer}
+.site-lang-btn[aria-pressed="true"]{border-color:var(--navy-cred,#0b1f3a);color:var(--navy-cred,#0b1f3a);background:var(--surface)}
+.site-lang-btn:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.trust-bar .hi{font-weight:600;color:#0a5230}
+.wave-evidence{width:min(1360px,calc(100% - 112px));margin:24px auto;padding:20px 24px;border:1px solid var(--line);border-radius:16px;background:var(--surface-alt)}
+.wave-evidence h2{font-size:22px;margin:0 0 10px;letter-spacing:-.03em}
+.wave-evidence p,.wave-evidence li{font-size:14px;color:var(--muted)}
+.wave-evidence ul{margin:10px 0 0;padding-left:18px}
+@media(max-width:767px){.site-lang{order:3}.wave-evidence{width:calc(100% - 40px);padding:16px}}
