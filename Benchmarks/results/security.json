@@ -1,0 +1,66 @@
+{
+  "wave": 3,
+  "generated_at": "2026-09-14T10:57:28.759Z",
+  "scope": "Local prototype + website candidate; not a production multi-tenant threat model completion",
+  "secret_scan": {
+    "files_scanned": 424,
+    "high_severity_findings": 0,
+    "findings": [
+      {
+        "path": "Raw/reference-chats/primary/available-invisible.html",
+        "pattern": "embedded_data_url_image",
+        "severity": "medium"
+      },
+      {
+        "path": "Raw/reference-chats/primary/caped.html",
+        "pattern": "embedded_data_url_image",
+        "severity": "medium"
+      }
+    ],
+    "note": "Matched values are never printed."
+  },
+  "sanitize_boundary": {
+    "client_assert": "Prototype/shared/rubric-hooks.mjs#assertSanitizedPayload",
+    "capture_loop": "Prototype/shared/capture-loop.mjs#buildSanitizedPlanRequest",
+    "harness_evidence": [
+      "Benchmarks/results/extension-capture-v01.json",
+      "Benchmarks/results/extension-loop-v01.json"
+    ],
+    "rule": "Raw pixels/URLs/secrets must not appear in API payloads; detector miss cannot authorize raw upload."
+  },
+  "server_validation_evidence": {
+    "unit_suite": "Prototype/tests/*.test.mjs (schema, auth, origin, size, rate limits)",
+    "notes": [
+      "Zod requestSchema on /api/v1/plans",
+      "Parameterized SQLite audit writes (counts/timings only)",
+      "Bearer pairing token; exact origin allowlist",
+      "Max body 256KiB; rate limits documented in Prototype/README.md"
+    ]
+  },
+  "access_boundaries": {
+    "fixtures": "synthetic labeled",
+    "audit_store": "no screen/prompt/token contents",
+    "gitignore": [
+      ".env",
+      "Prototype/data/",
+      "pairing-token"
+    ]
+  },
+  "dependency_audit": {
+    "path": "Benchmarks/results/dependency-audit.json",
+    "critical": 0,
+    "high": 0,
+    "total": 0
+  },
+  "deployment_controls": {
+    "status": "partial",
+    "note": "GitHub Pages hosts static Website only. Node prototype requires local/TLS reverse-proxy setup; not asserted as production-hardened public API."
+  },
+  "verdict": {
+    "secret_scan_clean": true,
+    "sanitize_hooks_present": true,
+    "g06_server_validation": "supported_by_unit_tests_and_sanitize_hooks",
+    "g07_access_boundaries": "supported_for_synthetic_demo_scope",
+    "g08_deployment_controls": "unknown_incomplete"
+  }
+}

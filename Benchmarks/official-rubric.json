@@ -19,9 +19,12 @@
         "Benchmarks/results/webpii-text-v01-analysis.json",
         "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
         "Benchmarks/results/extension-capture-v01.json",
-        "Benchmarks/results/wave2-client-resources-v01.json"
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json"
       ],
-      "latest_diagnostic_note": "Wave2 held-out synthetic fixtures report mean visual precision 1.0 / recall ~0.78 (fixture-only). Extension collect on real fixture exports 3 allow-listed controls. Not interactive held-out page saturation."
+      "latest_diagnostic_note": "Wave3 popup #capture UI loop on real fixture exports 3 allow-listed controls after selective preview; held-out synthetic means unchanged from Wave2. Not interactive held-out page saturation."
     },
     {
       "id": "pii-detection",
@@ -37,9 +40,12 @@
         "Benchmarks/results/webpii-text-v01-analysis.json",
         "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
         "Benchmarks/results/extension-capture-v01.json",
-        "Benchmarks/results/wave2-client-resources-v01.json"
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json"
       ],
-      "latest_diagnostic_note": "Wave2 held-out fixtures mean instance recall ~0.67 / precision 0.8 including intentional detector-miss case. UltraFace still face-only; external WebPII raster recall unchanged. Not a saturated PII classifier."
+      "latest_diagnostic_note": "Wave3 does not add new PII saturation. Wave2 held-out means remain the latest fixture diagnostic; UltraFace face-only; WebPII raster unchanged."
     },
     {
       "id": "redaction",
@@ -55,9 +61,12 @@
         "Benchmarks/results/webpii-text-v01-analysis.json",
         "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
         "Benchmarks/results/extension-capture-v01.json",
-        "Benchmarks/results/wave2-client-resources-v01.json"
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json"
       ],
-      "latest_diagnostic_note": "Wave2 selective scores separate mean piiPixelCoverage ~0.83 vs nonPiiPreservation ~0.82 on held-out synthetics; full-image over-redaction and miss cases retained. Local preview only; egress semantics-only."
+      "latest_diagnostic_note": "Wave3 loop harness exercised selective-pixelate preview mode end-to-end in the production popup UI (local only); egress remains semantics-only. Official score null."
     },
     {
       "id": "client-resources",
@@ -75,9 +84,12 @@
         "Benchmarks/results/webpii-text-v01-analysis.json",
         "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
         "Benchmarks/results/extension-capture-v01.json",
-        "Benchmarks/results/wave2-client-resources-v01.json"
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json"
       ],
-      "latest_diagnostic_note": "Wave2 adds shared client-resources hooks and extension capture-stage JS heap/timing when performance.memory exists. observed still null; no process RSS/CPU/energy claim. See wave2-client-resources-v01.json."
+      "latest_diagnostic_note": "Wave3 loop recorded captureMs\u2248188ms and inferenceMs\u224864ms on harness Chromium (single run, not a budget distribution). observed still null for process RSS/CPU/energy."
     },
     {
       "id": "task-latency",
@@ -86,17 +98,21 @@
       "observed": null,
       "status": "fail",
       "diagnostic_note": "Provider pilot and continuous task recording exist, but no 100-attempt full-flow latency distribution. Under-200ms gate remains failed.",
-      "latest_diagnostic_note": "Under-200ms full-flow gate remains fail. Overlay captureVisibleTab ~38ms is capture-only, not full-flow. Do not weaken.",
+      "latest_diagnostic_note": "Under-200ms full-flow gate remains fail. Wave3 protect-loop ~188ms is not full planner+confirm flow. Do not weaken.",
       "diagnostic_evidence": [
         "Benchmarks/results/browser-experiments-2026-09-11/summary.json",
         "Benchmarks/results/wave2-pii-redaction-utility-v01.json",
         "Benchmarks/results/extension-capture-v01.json",
-        "Benchmarks/results/wave2-client-resources-v01.json"
+        "Benchmarks/results/wave2-client-resources-v01.json",
+        "Benchmarks/results/extension-loop-v01.json",
+        "Benchmarks/results/wave3-packaging-v01.json",
+        "Benchmarks/results/security.json"
       ]
     }
   ],
   "score": null,
-  "scoreReason": "No authoritative normalization. Wave2 adds held-out synthetic fixtures + Chromium capture harness diagnostics only. Do not estimate judge probability.",
+  "scoreReason": "No authoritative normalization. Wave3 adds popup UI loop + packaging + security scan diagnostics. Do not estimate judge probability.",
   "wave1_updated": "2026-09-14",
-  "wave2_updated": "2026-09-14"
+  "wave2_updated": "2026-09-14",
+  "wave3_updated": "2026-09-14"
 }

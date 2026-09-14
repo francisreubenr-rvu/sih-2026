@@ -1,0 +1,13 @@
+{
+  "wave": 3,
+  "generated_at": "2026-09-14T10:58:58.531092+00:00",
+  "firefox_binary": null,
+  "package": {
+    "manifest": "Prototype/extension-build/manifest.firefox.json",
+    "unpacked_tree": "Prototype/extension-build-firefox/",
+    "zip": "Docs/sightline-extension-firefox-wave3.zip",
+    "polyfill": "browser ?? chrome in popup/content"
+  },
+  "live_run": "unverified",
+  "note": "Firefox package built; no Firefox binary on this host. Do not claim cross-browser readiness."
+}

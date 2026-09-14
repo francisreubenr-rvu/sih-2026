@@ -14,3 +14,11 @@ dialog{background:var(--paper);color:var(--ink);border:1px solid var(--line);pad
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.button:hover,.button:hover .button-icon,.architecture-node:hover,.screenshot-link:hover img{transform:none}.reveal-ready{opacity:1;transform:none}}
 
 .demo-video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:contain;background:var(--surface);border-radius:17px}.demo-transcript{margin-top:22px;max-width:780px;font-size:14px;color:var(--muted)}.demo-transcript summary{cursor:pointer;color:var(--ink)}.demo-transcript p{margin:16px 0}
+
+/* Wave 3 — DigiLocker-credible spare accents (saffron / India green) on touched surfaces */
+:root{--saffron:#ff9933;--india-green:#138808;--navy-cred:#0b1f3a}
+.trust-bar{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;border-radius:999px;border:1px solid #b8d4c4;background:#f0f7f2;color:#0e6b3a;font-size:13px;font-weight:600;margin:0 0 18px}
+.trust-bar .dot{width:8px;height:8px;border-radius:50%;background:var(--india-green);box-shadow:0 0 0 3px rgba(19,136,8,.18)}
+.trust-bar .hi{font-weight:500;color:var(--muted);font-size:12px}
+.tricolor-rule{height:3px;width:100%;max-width:180px;margin:12px 0 0;border-radius:2px;background:linear-gradient(90deg,var(--saffron) 0 33.33%,#fff 33.33% 66.66%,var(--india-green) 66.66% 100%);border:1px solid var(--line)}
+.evidence-section .verified-panel{border-left:3px solid var(--saffron);padding-left:18px}

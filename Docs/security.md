@@ -5,3 +5,8 @@ The delivered component is a static preparation website. It collects no submitte
 The eventual domain service must receive a separate threat model after the real problem is verified. Minimum tests: input type/length/range validation; request body bounds; parameterised SQL; encoded output; unauthenticated and cross-user record access; appropriate origin and CSRF controls; duplicate-write behavior; rate limiting; safe error bodies and logs; durable-data restore; dependency and secret scan. Data classification and retention must match the actual domain.
 
 These are requirements, not passing test results. The static site cannot validate backend security. Public HTTPS deployment and response headers are not verified. See Docs/deployment-verification.md.
+
+## Wave 3 prototype boundary (14 September 2026)
+
+The domain prototype (not only the static website) keeps raw screenshots and pairing tokens out of Git and out of API payloads. `assertSanitizedPayload` / capture-loop helpers fail closed on screenshot/pixel/URL fields. Wave 3 evidence: `Benchmarks/results/security.json` (secret scan + audit citation) and `Benchmarks/results/extension-loop-v01.json` (sanitized egress). Public Pages remains static-only.
+

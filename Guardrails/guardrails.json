@@ -63,7 +63,7 @@
         "Benchmarks/results/extension-native-v01.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted. The native MV3 extension now loads, injects and reaches its declared server in a real Chromium (8 passed / 0 failed / 1 informational, Benchmarks/results/extension-native-v01.json), but the toolbar capture path, Firefox and the full clean-setup-to-reload journey remain unproven."
+      "reason": "Chromium MV3 load/inject/reach evidenced (extension-native-v03). Wave2/3 prove production scripting inject + collect, activeTab capture gate, and popup #capture\u2192filter\u2192sanitize\u2192review UI loop under a harness-only overlay (extension-loop-v01.json). Toolbar glyph click, Firefox live run, and full clean-setup-to-reload journey remain unproven."
     },
     {
       "id": "G04",
@@ -102,8 +102,8 @@
       "required_evidence": [
         "Benchmarks/results/security.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production."
     },
     {
       "id": "G07",
@@ -116,8 +116,8 @@
         "Docs/security.md",
         "Benchmarks/results/security.json"
       ],
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "status": "pass",
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope."
     },
     {
       "id": "G08",
@@ -131,7 +131,7 @@
         "Benchmarks/results/dependency-audit.json"
       ],
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted."
+      "reason": "dependency-audit.json present (0 critical/high on omit=dev audit this wave). Secret scan clean. Public GitHub Pages is static-only; Node prototype deployment controls (HTTPS reverse proxy, CSRF for cookie auth, production hardening) remain incomplete \u2014 status stays unknown."
     },
     {
       "id": "G09",
@@ -171,7 +171,7 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms. Full workflow exceeds 200ms; a 108ms local capture does not satisfy this rule."
+      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms historically. Wave3 popup protect loop captureMs\u2248188ms is capture+filter only, not full-flow <200ms. Gate not weakened."
     },
     {
       "id": "G12",

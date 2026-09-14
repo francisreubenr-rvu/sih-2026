@@ -1,3 +1,15 @@
+## Round 13 — wave 3 loop + packaging (14 September 2026)
+
+- [x] Production popup capture→filter→sanitize→review reliability: stages, reinject, tab fallback, toolbar guidance.
+- [x] Loop harness proves UI path under overlay; shipped activeTab gate retained.
+- [x] Packaging refresh 0.1.1 + Firefox unpacked tree/zip; lean models (no OCR/PII in extension zip).
+- [x] Security scan + dependency audit evidence; G06/G07 pass on honest scope.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation.
+- [ ] Firefox unpacked live run still unverified.
+- [ ] Full-flow <200ms gate remains failed. Do not weaken.
+- [ ] Ollama planner E2E not run (unreachable); do not fake.
+- [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
+
 ## Round 12 — wave 2 capture path + held-out fixtures (14 September 2026)
 
 - [x] Chromium production injection path (`chrome.scripting.executeScript`) + `tabs.sendMessage` collect proven on host-permission fixture.

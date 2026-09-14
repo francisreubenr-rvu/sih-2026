@@ -1,0 +1,39 @@
+{
+  "wave": 3,
+  "generated_at": "2026-09-14T10:58:58.531092+00:00",
+  "extension_version": "0.1.1",
+  "build_commands": [
+    "npm run build",
+    "npm run build:extension"
+  ],
+  "chrome_unpacked": "Prototype/extension-build/",
+  "firefox_unpacked": "Prototype/extension-build-firefox/",
+  "zips": {
+    "chrome_v01_alias": "Docs/sightline-extension-v01.zip",
+    "chrome_wave3": "Docs/sightline-extension-wave3.zip",
+    "website_download": "Website/downloads/sightline-extension-v01.zip",
+    "firefox_wave3": "Docs/sightline-extension-firefox-wave3.zip"
+  },
+  "zip_bytes": {
+    "chrome_v01_alias": 4323524,
+    "chrome_wave3": 4323524,
+    "website_download": 4323524,
+    "firefox_wave3": 4323915
+  },
+  "includes": [
+    "manifest.json",
+    "icons/",
+    "popup.*",
+    "content.js",
+    "models/ultraface + ort only"
+  ],
+  "excludes": [
+    "models/ocr",
+    "models/pii",
+    ".env",
+    "pairing tokens",
+    "raw screenshots"
+  ],
+  "loadable": "Chrome unpacked load path verified by extension-native-v03 + extension-loop-v01 harnesses",
+  "firefox_live": "unverified"
+}

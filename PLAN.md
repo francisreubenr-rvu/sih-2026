@@ -1,3 +1,14 @@
+## Wave 3 — toolbar path reliability + packaging + evidence — 14 September 2026
+
+- Production popup path: stage strip, toolbar/activeTab guidance (EN/HI), content-script reinject on disconnect, http(s) tab fallback when popup is opened as a document.
+- Loop harness `scripts/validate-extension-loop.mjs`: shipped activeTab gate + overlay-driven `#capture` UI completing capture→filter→sanitize→review (8/8). Record: `Benchmarks/results/extension-loop-v01.json`. Native refresh: `extension-native-v03.json`.
+- Packaging: extension **0.1.1** icons; `npm run build:extension` writes Chrome + Firefox unpacked trees and zips (`Docs/sightline-extension-wave3.zip`, firefox zip, Website download alias). OCR/PII lab weights excluded from MV3 package.
+- Security: `scripts/wave3-security-scan.mjs` → `Benchmarks/results/security.json` + `dependency-audit.json` (0 high secrets; 0 critical/high npm audit omit=dev). G06/G07 → **pass**. G11 remains **fail**.
+- Website: DigiLocker-credible trust bar (EN/HI) + wave3 evidence panels.
+- Ollama unreachable; Firefox binary absent — status JSON skipped honestly.
+- Automated tests: **100 pass / 0 fail**.
+- Still open for wave 4 / submission: true toolbar glyph automation, Firefox live run, WebPII/official saturation, human/domain review, deck refresh, live planner when Ollama available.
+
 ## Wave 2 — capture harness + held-out fixtures + resources — 14 September 2026
 
 - Chromium capture harness (`scripts/validate-extension-capture.mjs`): production inject/collect on `http://127.0.0.1:9041/app/fixture.html`; production `captureVisibleTab` correctly requires `activeTab`; harness-only temp `<all_urls>` overlay proves PNG capture + sanitized semantics egress (shipped manifest unchanged). Record: `Benchmarks/results/extension-capture-v01.json` (9 pass / 0 fail). Native refresh: `extension-native-v02.json`.

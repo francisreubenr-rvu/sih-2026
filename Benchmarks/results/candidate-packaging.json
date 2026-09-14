@@ -1,18 +1,15 @@
 {
-  "date": "2026-09-09T16:56:30.343778+00:00",
-  "scope": "candidate packaging, not competition readiness",
+  "date": "2026-09-14T10:58:58.531092+00:00",
+  "scope": "wave3 packaging refresh, not competition readiness",
   "checks": {
-    "node_tests": 37,
+    "node_tests": 100,
     "app_build": "pass",
-    "extension_build": "pass, native browsers unverified",
+    "extension_build": "pass, Chromium harnesses pass; Firefox package only",
+    "extension_version": "0.1.1",
     "website_local_files": "pass",
-    "credential_patterns": "pass for candidate files; values never printed",
-    "lighthouse": "six local runs, all categories 100",
-    "slide_counts": {
-      "submission": 6,
-      "pitch": 15,
-      "template": 6
-    }
+    "credential_patterns": "pass \u2014 wave3 security scan 0 high findings",
+    "extension_loop_harness": "Benchmarks/results/extension-loop-v01.json",
+    "security_evidence": "Benchmarks/results/security.json"
   },
   "remaining": "See PLAN.md and Benchmarks/release-status.json"
 }

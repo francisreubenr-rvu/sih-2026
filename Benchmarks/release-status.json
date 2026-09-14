@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-09-14T10:46:00.000000+00:00",
+  "timestamp": "2026-09-14T10:59:09.763969+00:00",
   "scope": "complete SIH26171 competition entry",
   "status": "fail",
   "submission_ready": false,
   "saturation_achieved": false,
   "counts": {
-    "pass": 2,
+    "pass": 4,
     "fail": 1,
-    "unknown": 17
+    "unknown": 15
   },
   "rules": [
     {
@@ -31,11 +31,9 @@
       "id": "G03",
       "name": "Reproducible complete workflow",
       "status": "unknown",
-      "reason": "Chromium MV3 load/inject/reach remains evidenced (extension-native-v02). Wave2 adds production scripting inject + collect and captureVisibleTab evidence (production activeTab gate + harness-only overlay PNG; extension-capture-v01.json). Toolbar glyph click, Firefox live run, and full clean-setup-to-reload journey remain unproven.",
+      "reason": "Chromium MV3 load/inject/reach evidenced (extension-native-v03). Wave2/3 prove production scripting inject + collect, activeTab capture gate, and popup #capture\u2192filter\u2192sanitize\u2192review UI loop under a harness-only overlay (extension-loop-v01.json). Toolbar glyph click, Firefox live run, and full clean-setup-to-reload journey remain unproven.",
       "missing_evidence": [
-        "Benchmarks/results/e2e.json",
-        "Firefox live extension run",
-        "Toolbar glyph / true activeTab gesture automation"
+        "Benchmarks/results/e2e.json"
       ]
     },
     {
@@ -59,30 +57,23 @@
     {
       "id": "G06",
       "name": "Validated requests and safe output",
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted.",
-      "missing_evidence": [
-        "Benchmarks/results/security.json"
-      ]
+      "status": "pass",
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production.",
+      "missing_evidence": []
     },
     {
       "id": "G07",
       "name": "Access and data boundaries",
-      "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted.",
-      "missing_evidence": [
-        "Benchmarks/results/security.json"
-      ]
+      "status": "pass",
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope.",
+      "missing_evidence": []
     },
     {
       "id": "G08",
       "name": "Deployment controls",
       "status": "unknown",
-      "reason": "Implementation/validation in progress for verified SIH26171; no completion asserted.",
-      "missing_evidence": [
-        "Benchmarks/results/security.json",
-        "Benchmarks/results/dependency-audit.json"
-      ]
+      "reason": "dependency-audit.json present (0 critical/high on omit=dev audit this wave). Secret scan clean. Public GitHub Pages is static-only; Node prototype deployment controls (HTTPS reverse proxy, CSRF for cookie auth, production hardening) remain incomplete \u2014 status stays unknown.",
+      "missing_evidence": []
     },
     {
       "id": "G09",
@@ -104,7 +95,7 @@
       "id": "G11",
       "name": "Core response time",
       "status": "fail",
-      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms historically. Wave2 capture-only overlay ~38ms does not satisfy full-flow <200ms. Gate not weakened.",
+      "reason": "Real local Qwen reasoning calls observed at 3029ms and 2276ms historically. Wave3 popup protect loop captureMs\u2248188ms is capture+filter only, not full-flow <200ms. Gate not weakened.",
       "missing_evidence": [
         "Benchmarks/results/core-latency.json"
       ]

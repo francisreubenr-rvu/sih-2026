@@ -1,0 +1,15 @@
+{
+  "wave": 3,
+  "generated_at": "2026-09-14T10:58:58.531092+00:00",
+  "endpoints_checked": [
+    "http://127.0.0.1:11434/api/tags",
+    "http://127.0.0.1:11436/api/tags"
+  ],
+  "reachable": false,
+  "http_codes": {
+    "11434": 0,
+    "11436": 0
+  },
+  "planner_e2e": "skipped",
+  "note": "Ollama unreachable on this box. Live planner E2E not faked."
+}

@@ -1,0 +1,161 @@
+{
+  "harness": "scripts/validate-extension-loop.mjs",
+  "wave": 3,
+  "scope": "Chromium MV3: production popup #capture UI loop with selective preview + sanitize; toolbar glyph still human-required for shipped activeTab",
+  "started_at": "2026-09-14T10:58:36.215Z",
+  "extension_path": "Prototype/extension-build",
+  "human_toolbar_gesture": {
+    "required_for_shipped_manifest": true,
+    "automated": false,
+    "note": "Chrome toolbar action UI cannot be clicked by Playwright. Production captureVisibleTab needs activeTab from that gesture (or temporary host permission). This harness uses a deleted-temp <all_urls> overlay only; shipped manifest unchanged."
+  },
+  "checks": {
+    "fixture_ready": {
+      "status": "pass",
+      "detail": "loaded /app/fixture.html"
+    },
+    "popup_stage_ui_present": {
+      "status": "pass",
+      "detail": "stages=6; toolbar note present"
+    },
+    "trust_chip_en_hi": {
+      "status": "pass",
+      "detail": "on this device इस उपकरण पर"
+    },
+    "production_inject_collect": {
+      "status": "pass",
+      "detail": "controls=3"
+    },
+    "shipped_manifest_requires_activeTab": {
+      "status": "pass",
+      "detail": "Either the '<all_urls>' or 'activeTab' permission is required."
+    },
+    "toolbar_glyph": {
+      "status": "info",
+      "detail": "Chrome toolbar action UI cannot be clicked by Playwright. Production captureVisibleTab needs activeTab from that gesture (or temporary host permission). This harness uses a deleted-temp <all_urls> overlay only; shipped manifest unchanged."
+    },
+    "popup_capture_filter_sanitize_review": {
+      "status": "pass",
+      "detail": "plan enabled; preview visible; payload 3234B semantics-only; metrics=\"0 face(s) · 63.6 ms WASM · 3 controls · 15 regions · preview selective-pixelate · 91% layout pixels kept locally · capture 188 ms · heap 16.0 MiB JS\""
+    },
+    "stage_strip_advanced": {
+      "status": "pass",
+      "detail": "[{\"stage\":\"inject\",\"active\":false,\"done\":true},{\"stage\":\"collect\",\"active\":false,\"done\":true},{\"stage\":\"capture\",\"active\":false,\"done\":true},{\"stage\":\"filter\",\"active\":false,\"done\":true},{\"stage\":\"sanitize\",\"active\":false,\"done\":true},{\"stage\":\"review\",\"active\":true,\"done\":false}]"
+    },
+    "loop_summary_sanitized": {
+      "status": "pass",
+      "detail": {
+        "stagesCompleted": [
+          "inject",
+          "collect",
+          "capture",
+          "filter",
+          "sanitize",
+          "review"
+        ],
+        "captureMs": 188.29999999981374,
+        "inferenceMs": 63.59999999962747,
+        "controlCount": 3,
+        "regionCount": 15,
+        "previewMode": "selective-pixelate",
+        "sanitized": true,
+        "toolbarGesture": "assumed_from_action_popup",
+        "privacy": "egress_semantics_only"
+      }
+    },
+    "firefox_package": {
+      "status": "info",
+      "detail": "manifest.firefox.json + extension-build-firefox tree present; live Firefox run unverified"
+    }
+  },
+  "console_errors": [
+    "popup: \u001b[0;93m2026-09-14 10:58:40.752599 [W:onnxruntime:Default, cpuid_info.cc:91 LogEarlyWarning] Unknown CPU vendor. cpuinfo_vendor value: 0\u001b[m"
+  ],
+  "page_errors": [],
+  "limitations": [
+    "Toolbar glyph / true activeTab user gesture not simulated.",
+    "Overlay grants capture without toolbar; shipped Prototype/extension/manifest.json unchanged.",
+    "No live Ollama planner round-trip in this harness.",
+    "Chromium only; Firefox package built separately but not live-run here."
+  ],
+  "server": {
+    "started_by_harness": true,
+    "origin": "http://127.0.0.1:9041"
+  },
+  "browser": {
+    "executablePath": "/home/box/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome",
+    "version": "151.0.7922.34"
+  },
+  "harness_overlay": {
+    "purpose": "Drive production popup #capture UI when toolbar gesture cannot be simulated",
+    "shipped_manifest_unchanged": true,
+    "temporary_permission_added": "<all_urls>",
+    "extension_id": "icjhfnlblolmlhalfiinjhmmjnlmbinl"
+  },
+  "ui_loop": {
+    "planEnabled": true,
+    "previewVisible": true,
+    "status": "Review the selective preview. Outbound JSON is semantics-only — original pixels excluded.",
+    "metrics": "0 face(s) · 63.6 ms WASM · 3 controls · 15 regions · preview selective-pixelate · 91% layout pixels kept locally · capture 188 ms · heap 16.0 MiB JS",
+    "stages": [
+      {
+        "stage": "inject",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "collect",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "capture",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "filter",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "sanitize",
+        "active": false,
+        "done": true
+      },
+      {
+        "stage": "review",
+        "active": true,
+        "done": false
+      }
+    ],
+    "payloadBytes": 3234,
+    "payloadHasPixels": false,
+    "loop": {
+      "stagesCompleted": [
+        "inject",
+        "collect",
+        "capture",
+        "filter",
+        "sanitize",
+        "review"
+      ],
+      "captureMs": 188.29999999981374,
+      "inferenceMs": 63.59999999962747,
+      "controlCount": 3,
+      "regionCount": 15,
+      "previewMode": "selective-pixelate",
+      "sanitized": true,
+      "toolbarGesture": "assumed_from_action_popup",
+      "privacy": "egress_semantics_only"
+    }
+  },
+  "finished_at": "2026-09-14T10:58:42.473Z",
+  "summary": {
+    "passed": 8,
+    "failed": 0,
+    "informational": 2,
+    "total": 8
+  },
+  "verdict": "pass"
+}
