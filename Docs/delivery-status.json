@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-10",
+  "date": "2026-09-15",
   "requested_problem_original": "SIH2171",
   "resolved_problem": "SIH26171",
   "identity_basis": "User-supplied statement and retrieved official SIH2026 catalogue",
@@ -16,7 +16,8 @@
     "Continuous synthetic-fixture browser recording, compatible MP4, verified playback and text description",
     "Responsive Dhristi site published on GitHub Pages",
     "Current methodology Markdown/PDF and deployment evidence",
-    "100-screen external synthetic raster diagnostic, corrected scoring, 7 scorer tests and experimental worker comparison"
+    "100-screen external synthetic raster diagnostic, corrected scoring, 7 scorer tests and experimental worker comparison",
+    "G14 pass (3 consecutive + VP9 offline fallback) on 996e40b 2026-09-15; G20 paused; G11 fail; submission_ready false"
   ],
   "remaining": [
     "Useful raster context and broader PII/native-DOM task evaluation; current external slice exposes complete visual utility loss",
@@ -25,11 +26,13 @@
     "Broader task reliability and error recovery",
     "Authentic consented team photographs and contribution evidence",
     "Independent usability/accessibility/narrative review and measured impact",
-    "Registered team details, timed rehearsal and submission-ready approval",
-    "Benchmark saturation"
+    "Benchmark saturation",
+    "G20 real human validation paused per Francis (2026-09-15)",
+    "G11 Reason <200ms still fail",
+    "G03 toolbar multi-scenario still unclaimed"
   ],
   "website_url": "https://francisreubenr-rvu.github.io/sih-2026/",
   "repository": "https://github.com/francisreubenr-rvu/sih-2026",
-  "candidate_commit": "7e9b692a04c4e69003397dc6acb6c630e25e8b7e",
+  "candidate_commit": "996e40bf5f9fa08fb37dfc6eefbbe8c67acb78a3",
   "history": "Docs/history/preparation-delivery-status.json"
 }

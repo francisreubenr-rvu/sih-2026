@@ -1,8 +1,8 @@
 {
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
-  "generatedAt": "2026-09-15T14:26:26.240Z",
-  "status": "unknown",
+  "generatedAt": "2026-09-15T14:29:42.642Z",
+  "status": "pass",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
@@ -168,7 +168,31 @@
         "Benchmarks/results/g14-box-06/g14-box-06-fixture.png",
         "Benchmarks/results/g14-box-06/g14-box-06-capture.webp"
       ]
+    },
+    {
+      "index": 3,
+      "date_utc": "2026-09-15T14:29:42.642Z",
+      "operator": "brain-box",
+      "environment": "box",
+      "build_sha": "996e40bf5f9fa08fb37dfc6eefbbe8c67acb78a3",
+      "result": "success",
+      "fallback_opened": true,
+      "journey_steps_passed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Operator brain-box. Sandbox build 996e40b (PR#17). Reload before Capture; Fast privacy-only; Capture reached review/preview (no crash). Then opened Docs/demo-fallback.webm (VP9) via file:// \u2014 played (currentTime~12.9s / ~37.9s, readyState=4). Success #3/3 on same build_sha after #1/#2. Screenshots: Benchmarks/results/g14-box-07/.",
+      "screenshots": [
+        "Benchmarks/results/g14-box-07/capture-complete.webp",
+        "Benchmarks/results/g14-box-07/offline-fallback-vp9-playing.png"
+      ]
     }
   ],
-  "g14_reason": "Sandbox streak #2/3 success on 996e40b. Need one more consecutive + offline VP9 fallback verify before G14 may pass."
+  "g14_reason": "PASS criteria met 2026-09-15: three consecutive success rows on build_sha 996e40bf5f9fa08fb37dfc6eefbbe8c67acb78a3 (g14-box-05/06/07, operator brain-box, Reload-before-Capture protocol) plus offline Docs/demo-fallback.webm (VP9) verified playable in Chrome. submission_ready remains false (G20 paused; G11 fail; G03 unclaimed)."
 }
