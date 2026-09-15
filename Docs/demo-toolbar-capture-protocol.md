@@ -26,7 +26,9 @@ Exact steps for a human operator to exercise the **shipped** MV3 extension via t
    - **After any branding/rebuild:** chrome://extensions → **Remove** Dhristi → rebuild → **Load unpacked** again → pin → then Capture. Do not Capture against a half-replaced tree (DBG-001 H2). Build now stages then renames; still prefer a clean Remove/Load.
 3. `npm start` → open `http://127.0.0.1:9041/app/fixture.html` in a normal tab (not `chrome://`).
 4. Chrome → **Load unpacked** → select `Prototype/extension-build/`. Pin **Dhristi** to the toolbar.
-5. **Click the Dhristi toolbar icon** (required for `activeTab`). Do **not** open `popup.html` as a bookmarked tab or via “Inspect views” as the capture gesture.
+4a. **Reload immediately before each streak Capture** (chrome://extensions → Dhristi → Reload). Do not skip Reload between G14 consecutive runs (DBG-002 H4). After any rebuild: Remove → rebuild → Load unpacked (DBG-001).
+4b. **Fixture-only tabs:** keep only the local fixture / operations desk open. Close production, personal, and GitHub tabs before Capture (DBG-002 H2/H4).
+5. **Click the Dhristi toolbar icon** (required for `activeTab`). Do **not** open `popup.html` as a bookmarked tab or via “Inspect views” as the capture gesture. On open, status may briefly show “Loading local vision…” (sandbox ORT warm); wait until ready before Capture if still loading.
 6. Confirm UI: trust chip “on this device” / “इस उपकरण पर”; path chip **Fast**; **Privacy-only** checked; Score disabled if shown.
 7. Click **Capture & protect**. Watch stage strip: inject → … → review.
 8. Confirm selective or wireframe **local** preview appears (faces/sensitive regions mosaicked).

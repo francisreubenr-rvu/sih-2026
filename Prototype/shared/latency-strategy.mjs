@@ -80,6 +80,8 @@ export function resolveOperatingMode(mode) {
 
 /**
  * Session-scoped detector holder so warm captures reuse the WASM session.
+ * In the MV3 action popup this session is the popup document lifetime only —
+ * closing the toolbar popup drops the sandbox iframe / Worker (DBG-002).
  */
 export function createDetectorCache() {
   let detector = null;

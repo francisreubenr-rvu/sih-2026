@@ -15,6 +15,6 @@ test('worker wrapper serializes detection and returns the actual worker response
 test('disposing active worker rejects pending work and prevents reuse',async()=>{
  const f=fixture(),d=await createWorkerVisionDetector(f.options),p=d.detect({});await Promise.resolve();const rejected=assert.rejects(p,/disposed/);await d.dispose();await rejected;await assert.rejects(d.detect({}),/disposed/);assert.equal(f.closed(),1);assert.ok(FakeWorker.latest.terminated);
 });
-test('worker failure releases pending request and bitmap',async()=>{
- const f=fixture(),d=await createWorkerVisionDetector(f.options),p=d.detect({});await Promise.resolve();const rejected=assert.rejects(p,/worker failed/);FakeWorker.latest.onerror();await rejected;assert.equal(f.closed(),1);assert.ok(FakeWorker.latest.terminated);await d.dispose();
+test('worker failure releases pending request and bitmap without terminate during onerror',async()=>{
+ const f=fixture(),d=await createWorkerVisionDetector(f.options),p=d.detect({});await Promise.resolve();const rejected=assert.rejects(p,/worker failed/);FakeWorker.latest.onerror();await rejected;assert.equal(f.closed(),1);assert.equal(FakeWorker.latest.terminated,false);await d.dispose();assert.ok(FakeWorker.latest.terminated);
 });

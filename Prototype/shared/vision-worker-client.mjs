@@ -2,7 +2,8 @@
 export async function createWorkerVisionDetector({workerUrl='/dist/vision-worker.js',WorkerImpl=Worker,bitmapFactory=createImageBitmap,timeoutMs=30000,runtimeUrl,modelUrl}={}){
  const worker=new WorkerImpl(workerUrl,{type:'module'});let nextId=0,disposed=false,active=false,releasePromise;const pending=new Map();
  const failAll=error=>{for(const entry of pending.values()){clearTimeout(entry.timer);entry.reject(error);}pending.clear();};
- worker.onerror=()=>{disposed=true;failAll(new Error('Local vision worker failed'));worker.terminate();};
+ // DBG-002 H3: do not terminate() inside onerror during init — surface failure and leave teardown to dispose().
+ worker.onerror=()=>{disposed=true;failAll(new Error('Local vision worker failed'));};
  worker.onmessage=({data})=>{const entry=pending.get(data?.id);if(!entry)return;pending.delete(data.id);clearTimeout(entry.timer);data.ok?entry.resolve(data.result):entry.reject(new Error(data.error||'Local vision failed'));};
  const request=(type,extra={},transfer=[])=>new Promise((resolve,reject)=>{const id=++nextId;const timer=setTimeout(()=>{pending.delete(id);disposed=true;worker.terminate();const error=new Error('Local vision worker timed out');reject(error);failAll(error);},timeoutMs);pending.set(id,{resolve,reject,timer});try{worker.postMessage({id,type,...extra},transfer);}catch(error){clearTimeout(timer);pending.delete(id);reject(error);}});
  const initExtra={};if(runtimeUrl)initExtra.runtimeUrl=runtimeUrl;if(modelUrl)initExtra.modelUrl=modelUrl;
