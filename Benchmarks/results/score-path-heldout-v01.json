@@ -1,0 +1,703 @@
+{
+  "name": "score-path-heldout",
+  "schema_version": 1,
+  "sourceFixture": "wave6-heldout-pii-fixtures",
+  "sourceVersion": "v01",
+  "sourcePath": "Benchmarks/datasets/wave6-heldout-pii-fixtures.json",
+  "caseCount": 24,
+  "bandCounts": {
+    "low": 13,
+    "elevated": 10,
+    "high": 1
+  },
+  "officialScore": null,
+  "webPiiScore": null,
+  "webPiiClaim": null,
+  "status": "held_out_local_risk_bridge",
+  "honesty": [
+    "Local heuristic risk bands only — bridged from held-out synthetic fixture JSON.",
+    "officialScore remains null. webPiiScore remains null (no invented WebPII).",
+    "Not a G11 pass. Not official SIH weighted saturation.",
+    "Bands describe residual opaque-region structure after Fast protect semantics, not privacy certification."
+  ],
+  "rows": [
+    {
+      "id": "eo-desk-selective",
+      "description": "Earth-observation style desk: face + private field + three allow-listed controls",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 4,
+      "counts": {
+        "controls": 3,
+        "regions": 2,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "face": 1,
+          "field": 1
+        },
+        "labelSamples": 3
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)",
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "password-adjacent-layout",
+      "description": "Password field redacted; surrounding Cancel/Help controls must stay useful",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 3,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {
+          "password": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "indic-telemetry-boxes",
+      "description": "Synthetic Aadhaar/PAN field boxes; detector supplies field kinds only",
+      "localRiskBand": "low",
+      "localRiskPoints": 2,
+      "counts": {
+        "controls": 2,
+        "regions": 2,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 2,
+        "kindCounts": {
+          "field": 2
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "2 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "missed-face-under-redaction",
+      "description": "Detector miss: ground-truth face present, zero redaction predictions",
+      "localRiskBand": "low",
+      "localRiskPoints": 0,
+      "counts": {
+        "controls": 1,
+        "regions": 0,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {},
+        "labelSamples": 1
+      },
+      "reasons": [
+        "few opaque regions; layout may still reveal context"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "full-image-over-redaction",
+      "description": "Full-frame mask covers PII but destroys utility",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 3,
+      "counts": {
+        "controls": 0,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "private": 1
+        },
+        "labelSamples": 0
+      },
+      "reasons": [
+        "1 other opaque region(s)",
+        "no allowlisted controls in scene"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "partial-control-recall",
+      "description": "Selective redaction ok; one control missed",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "media": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "dense-multi-field-form",
+      "description": "Three sensitive fields + four controls; selective boxes must preserve layout utility",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 5,
+      "counts": {
+        "controls": 4,
+        "regions": 3,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 2,
+        "kindCounts": {
+          "field": 2,
+          "password": 1
+        },
+        "labelSamples": 4
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)",
+        "2 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 3,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "face-plus-email-adjacent",
+      "description": "Face beside email-like field; controls on right must remain",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 4,
+      "counts": {
+        "controls": 2,
+        "regions": 2,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "face": 1,
+          "field": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)",
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "false-positive-decorative",
+      "description": "Detector FP on decorative box; coverage high but precision hurt",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 4,
+      "counts": {
+        "controls": 1,
+        "regions": 2,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "face": 1,
+          "private": 1
+        },
+        "labelSamples": 1
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)",
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "shifted-iou-borderline",
+      "description": "Slightly shifted box near IoU 0.5 threshold — matching stress",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 3,
+      "counts": {
+        "controls": 1,
+        "regions": 1,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {
+          "face": 1
+        },
+        "labelSamples": 1
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "media-banner-over-redaction",
+      "description": "Wide media banner redacted; navigation strip must still export",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 3,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "media": 1
+        },
+        "labelSamples": 3
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "empty-scene-no-pii",
+      "description": "No PII ground truth; detector empty; controls only — utility baseline",
+      "localRiskBand": "low",
+      "localRiskPoints": 0,
+      "counts": {
+        "controls": 2,
+        "regions": 0,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {},
+        "labelSamples": 2
+      },
+      "reasons": [
+        "few opaque regions; layout may still reveal context"
+      ],
+      "groundTruthPiiCount": 0,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "ifsc-account-form",
+      "description": "Synthetic IFSC + account field boxes; controls must stay useful",
+      "localRiskBand": "low",
+      "localRiskPoints": 2,
+      "counts": {
+        "controls": 2,
+        "regions": 2,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 2,
+        "kindCounts": {
+          "field": 2
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "2 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "voter-id-adjacent",
+      "description": "Voter-id style field; Help/Back preserved",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "field": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "merged-abutting-fields",
+      "description": "Two abutting sensitive fields — mergeRegions should still cover both",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 1,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "field": 1
+        },
+        "labelSamples": 1
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "password-kind-explicit",
+      "description": "Password kind (not generic field) with Cancel/Submit utility",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 3,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {
+          "password": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "tiny-face-partial-hit",
+      "description": "Small face with loose detector box — coverage stress",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 3,
+      "counts": {
+        "controls": 1,
+        "regions": 1,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {
+          "face": 1
+        },
+        "labelSamples": 1
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "non-sensitive-text-utility",
+      "description": "No PII; detector empty — layout utility baseline after Wave5 text policy",
+      "localRiskBand": "low",
+      "localRiskPoints": 0,
+      "counts": {
+        "controls": 3,
+        "regions": 0,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {},
+        "labelSamples": 3
+      },
+      "reasons": [
+        "few opaque regions; layout may still reveal context"
+      ],
+      "groundTruthPiiCount": 0,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "gstin-invoice-desk",
+      "description": "GSTIN-adjacent field redacted; allow-listed Submit/Cancel preserved",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "field": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "upi-vpa-payment-row",
+      "description": "UPI VPA field mosaic; Pending/Help remain useful",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "field": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 1,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "face-password-combo",
+      "description": "Face + password kinds both covered; Review/Next preserved",
+      "localRiskBand": "high",
+      "localRiskPoints": 8,
+      "counts": {
+        "controls": 2,
+        "regions": 2,
+        "highSensitivityRegions": 2,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {
+          "face": 1,
+          "password": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "2 high-sensitivity opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "triple-field-merge-candidate",
+      "description": "Three abutting fields that merge improves utility vs three mosaics",
+      "localRiskBand": "low",
+      "localRiskPoints": 1,
+      "counts": {
+        "controls": 2,
+        "regions": 1,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "field": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 3,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "media-plus-face-banner",
+      "description": "Media banner + face; Archive/OK remain",
+      "localRiskBand": "elevated",
+      "localRiskPoints": 4,
+      "counts": {
+        "controls": 2,
+        "regions": 2,
+        "highSensitivityRegions": 1,
+        "otherOpaqueRegions": 1,
+        "kindCounts": {
+          "media": 1,
+          "face": 1
+        },
+        "labelSamples": 2
+      },
+      "reasons": [
+        "1 high-sensitivity opaque region(s)",
+        "1 other opaque region(s)"
+      ],
+      "groundTruthPiiCount": 2,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    },
+    {
+      "id": "sparse-controls-high-utility",
+      "description": "No PII; all four allow-listed controls retained (utility baseline)",
+      "localRiskBand": "low",
+      "localRiskPoints": 0,
+      "counts": {
+        "controls": 4,
+        "regions": 0,
+        "highSensitivityRegions": 0,
+        "otherOpaqueRegions": 0,
+        "kindCounts": {},
+        "labelSamples": 4
+      },
+      "reasons": [
+        "few opaque regions; layout may still reveal context"
+      ],
+      "groundTruthPiiCount": 0,
+      "officialScore": null,
+      "webPiiScore": null,
+      "status": "held_out_local_risk_only",
+      "honesty": [
+        "Local heuristic risk only — not the official SIH weighted score.",
+        "officialScore remains null until labeled dataset saturation exists.",
+        "Not a WebPII win or G11 pass. Layout can still reveal context."
+      ]
+    }
+  ],
+  "generatedAt": "2026-09-15T17:00:43.393Z",
+  "purpose": "Wire Score-path local risk to held-out synthetic fixtures without inventing WebPII/officialScore"
+}

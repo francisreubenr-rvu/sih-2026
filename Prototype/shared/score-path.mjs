@@ -91,3 +91,75 @@ export function formatLocalRiskSummary(risk, { lang = 'en' } = {}) {
   }
   return `Score path (local heuristic) · risk ${risk.band} · official score null · not G11/WebPII`;
 }
+
+/**
+ * Map one held-out synthetic fixture case → local Score-path risk.
+ * Uses detectorRegions + observedControls already authored in the fixture JSON.
+ * Does NOT invent WebPII metrics or officialScore.
+ *
+ * @param {{ id?: string, description?: string, detectorRegions?: unknown[], observedControls?: unknown[], expectedControls?: unknown[], groundTruthPii?: unknown[] }} fixtureCase
+ */
+export function scoreHeldOutFixtureCase(fixtureCase = {}) {
+  const controls = Array.isArray(fixtureCase.observedControls)
+    ? fixtureCase.observedControls
+    : (Array.isArray(fixtureCase.expectedControls) ? fixtureCase.expectedControls : []);
+  const regions = Array.isArray(fixtureCase.detectorRegions)
+    ? fixtureCase.detectorRegions
+    : [];
+  const labels = controls
+    .map((c) => (typeof c?.label === 'string' ? c.label : (typeof c?.id === 'string' ? c.id : '')))
+    .filter(Boolean);
+  const risk = computeLocalRiskScore({
+    scene: { controls, regions },
+    labels,
+  });
+  return {
+    id: fixtureCase.id || 'anonymous',
+    description: fixtureCase.description || '',
+    localRiskBand: risk.band,
+    localRiskPoints: risk.points,
+    counts: risk.counts,
+    reasons: risk.reasons,
+    groundTruthPiiCount: Array.isArray(fixtureCase.groundTruthPii)
+      ? fixtureCase.groundTruthPii.length
+      : 0,
+    officialScore: null,
+    webPiiScore: null,
+    status: 'held_out_local_risk_only',
+    honesty: risk.honesty,
+  };
+}
+
+/**
+ * Bridge an entire held-out fixture document to Score-path diagnostics.
+ * @param {{ name?: string, version?: string, cases?: unknown[] }} doc
+ * @param {{ sourcePath?: string }} [meta]
+ */
+export function scoreHeldOutFixtureDocument(doc = {}, meta = {}) {
+  const cases = Array.isArray(doc.cases) ? doc.cases : [];
+  const rows = cases.map((c) => scoreHeldOutFixtureCase(c));
+  const bandCounts = { low: 0, elevated: 0, high: 0 };
+  for (const row of rows) {
+    if (bandCounts[row.localRiskBand] !== undefined) bandCounts[row.localRiskBand] += 1;
+  }
+  return {
+    name: 'score-path-heldout',
+    schema_version: 1,
+    sourceFixture: doc.name || null,
+    sourceVersion: doc.version || null,
+    sourcePath: meta.sourcePath || null,
+    caseCount: rows.length,
+    bandCounts,
+    officialScore: null,
+    webPiiScore: null,
+    webPiiClaim: null,
+    status: 'held_out_local_risk_bridge',
+    honesty: [
+      'Local heuristic risk bands only — bridged from held-out synthetic fixture JSON.',
+      'officialScore remains null. webPiiScore remains null (no invented WebPII).',
+      'Not a G11 pass. Not official SIH weighted saturation.',
+      'Bands describe residual opaque-region structure after Fast protect semantics, not privacy certification.',
+    ],
+    rows,
+  };
+}

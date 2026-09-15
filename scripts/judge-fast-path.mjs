@@ -6,7 +6,8 @@
  *  1) Prototype unit tests with OLLAMA_URL forced unreachable (same as test:ci)
  *  2) Local Score-path heuristic self-check (officialScore must stay null)
  *  3) Privacy-only latency microbench (G11 stays fail; Fast ≠ G11)
- *  4) Sanitize assertion on a synthetic semantics-only payload
+ *  4) Score path ↔ Wave6 held-out fixture bridge (official/WebPII null)
+ *  5) Sanitize assertion on a synthetic semantics-only payload
  *
  * Usage (repo root):
  *   node scripts/judge-fast-path.mjs
@@ -15,12 +16,12 @@
  * Writes Benchmarks/results/judge-fast-path.json
  */
 import { spawn } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { performance } from 'node:perf_hooks';
 import { assertSanitizedPayload } from '../Prototype/shared/rubric-hooks.mjs';
-import { computeLocalRiskScore } from '../Prototype/shared/score-path.mjs';
+import { computeLocalRiskScore, scoreHeldOutFixtureDocument } from '../Prototype/shared/score-path.mjs';
 import { OPERATING_MODES, summarizeLatencyBreakdown, THREE_PATHS } from '../Prototype/shared/latency-strategy.mjs';
 import { redactSelective } from '../Prototype/shared/selective-redaction.mjs';
 
@@ -140,7 +141,26 @@ function run(cmd, args, opts = {}) {
   }
 }
 
-// --- 4) Sanitize semantics-only payload ---
+// --- 4) Score path ↔ held-out fixture bridge ---
+{
+  try {
+    const fixturePath = join(root, 'Benchmarks/datasets/wave6-heldout-pii-fixtures.json');
+    const doc = JSON.parse(await readFile(fixturePath, 'utf8'));
+    const bridged = scoreHeldOutFixtureDocument(doc, { sourcePath: 'Benchmarks/datasets/wave6-heldout-pii-fixtures.json' });
+    if (bridged.officialScore !== null) throw new Error('officialScore must stay null');
+    if (bridged.webPiiScore !== null) throw new Error('webPiiScore must stay null');
+    if (bridged.caseCount !== 24) throw new Error(`expected 24 cases, got ${bridged.caseCount}`);
+    record('score_heldout_bridge', 'pass', {
+      caseCount: bridged.caseCount,
+      bandCounts: bridged.bandCounts,
+      message: 'Wave6 held-out fixtures bridged to local risk bands; official/WebPII scores null',
+    });
+  } catch (err) {
+    record('score_heldout_bridge', 'fail', { message: String(err.message || err) });
+  }
+}
+
+// --- 5) Sanitize semantics-only payload ---
 {
   try {
     const body = {
