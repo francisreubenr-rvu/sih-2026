@@ -1,7 +1,7 @@
 {
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
-  "generatedAt": "2026-09-15T14:23:55.364Z",
+  "generatedAt": "2026-09-15T14:26:26.240Z",
   "status": "unknown",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
@@ -144,7 +144,31 @@
         "Benchmarks/results/g14-box-05/capture-complete.webp",
         "Benchmarks/results/g14-box-05/capture-metrics.webp"
       ]
+    },
+    {
+      "index": 2,
+      "date_utc": "2026-09-15T14:26:26.240Z",
+      "operator": "brain-box",
+      "environment": "box",
+      "build_sha": "996e40bf5f9fa08fb37dfc6eefbbe8c67acb78a3",
+      "result": "success",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Operator brain-box. Sandbox build 996e40b. Reload immediately before Capture; fixture-only; Fast privacy-only; stages inject\u2192collect\u2192capture\u2192filter\u2192sanitize\u2192review. Metrics: 0 faces, 36.2 ms WASM, 3 controls, 7 regions, 94% layout local, capture 141 ms, heap 9.5 MiB. No crash. Success #2/3. Do not mark G14 pass.",
+      "screenshots": [
+        "Benchmarks/results/g14-box-06/g14-box-06-fixture.png",
+        "Benchmarks/results/g14-box-06/g14-box-06-capture.webp"
+      ]
     }
   ],
-  "g14_reason": "Fresh streak #1/3 success on sandbox build 996e40b (PR#17). Need two more consecutive + offline VP9 fallback verify before G14 may pass."
+  "g14_reason": "Sandbox streak #2/3 success on 996e40b. Need one more consecutive + offline VP9 fallback verify before G14 may pass."
 }
