@@ -20,14 +20,13 @@ Open `http://127.0.0.1:9041/`. When used, the model is a separate server process
 
 1. Select **Review a pending request**.
 2. **Capture & protect** runs local WASM face inference and builds the preview.
-3. Inspect the protected layout / outbound JSON; **Ask the local model** (requires Ollama).
+3. Inspect the protected layout / outbound JSON; **Ask the local model**.
 4. Review and **Confirm this action** to open Pending.
 5. Repeat capture → model → confirm to open Review. The fixture heading becomes **Request ready for review**.
 
 The fixture has explicitly synthetic account data and a public-domain NASA astronaut image for face testing. There is no real account or external form submission. Capture expiry is 30 seconds: after any change or delay, recapture. Token copying is for locally installed extension pairing only.
 
 ## Browser extension
-
 
 ```sh
 node ../scripts/build-extension.mjs
@@ -40,13 +39,19 @@ Open the popup's **Server setup**, copy its exact extension origin into `ALLOWED
 ## Tests and builds
 
 ```sh
-npm test
+npm test          # local unit/integration — test-double providers only
+npm run test:ci   # CI entry: same suite with OLLAMA_URL forced unreachable
+npm run judge:fast # one-command Fast/Score judge path — no Ollama
 node ../scripts/build-prototype.mjs
 node ../scripts/build-extension.mjs
 npm audit --omit=dev
 ```
 
-Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/origins, request-size/rate limits, provider error handling and detector math. Browser evidence is recorded separately in `Benchmarks/results/prototype-v01-browser.json`; unit tests use explicit model test doubles, while recorded manual workflow uses real Qwen2.5.
+Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/origins, request-size/rate limits, provider error handling and detector math. **CI never starts Ollama** — see `../Docs/decisions/brain-72h-ci-demo.md` and `.github/workflows/prototype-test.yml`. Browser evidence is recorded separately in `Benchmarks/results/prototype-v01-browser.json`; unit tests and load-soak scripts use explicit model test doubles (`infer` / `fetchImpl`); recorded manual Reason-path workflow uses real Qwen2.5 when available.
+
+### Human toolbar Capture & protect (not automated)
+
+Production Chrome toolbar glyph + privacy-only Fast path: follow `../Docs/demo-toolbar-capture-protocol.md`. Log stub (empty until first real run): `../Benchmarks/results/toolbar-capture-log-v01.json`. **Do not claim G03 pass** from harness overlay scripts.
 
 ## Data and security
 
@@ -55,6 +60,25 @@ Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/o
 For a consistent backup, stop Node and copy the entire local `data/` directory to a private location; restore while stopped. Do not commit backups. The app does not need seeded database rows. **Reset demo** resets synthetic browser state independently of audit history.
 
 The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min, max2 in-flight, fixed provider URL, timeouts, exact origin allowlist. Public deployment requires `HOST`, `PUBLIC_ORIGIN` (HTTPS), and `DHRISTI_TOKEN` (24+ characters) behind a TLS reverse proxy. GitHub Pages hosts only the static project website and cannot run this server.
+
+
+
+## Wave 3 — popup loop + packaging (14 September 2026)
+
+Production popup UI shows a stage strip and toolbar/activeTab guidance (EN/HI). Capture re-injects the content script on disconnect and prefers an http(s) page when the popup is opened as a document tab. Harness `../scripts/validate-extension-loop.mjs` drives `#capture` through selective preview + sanitize (overlay for capture only; shipped `activeTab` manifest unchanged). Extension version **0.1.1** packages Chrome + Firefox zips via `npm run build:extension` (UltraFace+ORT only). Toolbar glyph click and Firefox live validation remain human/host-dependent. Ollama planner E2E skipped when unreachable.
+
+## Wave 2 — capture harness + held-out fixtures (14 September 2026)
+
+Chromium harness `../scripts/validate-extension-capture.mjs` proves production `scripting.executeScript` injection, scene collect, sanitized semantics egress, the shipped `activeTab` gate for `captureVisibleTab`, and a temporary harness-only overlay that captures a real PNG without changing the shipped manifest. Held-out synthetic PII/redaction/utility scores land in `../Benchmarks/results/wave2-pii-redaction-utility-v01.json` (official score still null; <200 ms gate still fail). Client resource hooks: `shared/client-resources.mjs`. Firefox live run and Ollama planner E2E remain optional/unverified when binaries/services are absent.
+
+## Wave 1 P0 — selective local preview (14 September 2026)
+
+The extension and web workspace now paint a **local selective pixelation preview** (sensitive face/private/field/media regions mosaicked; surrounding layout pixels kept) before any planner call. The outbound `/api/v1/plans` body remains the existing semantic scene JSON — `assertSanitizedPayload` rejects screenshot/dataUrl/pixel fields. Trust chip copy: "on this device" / "इस उपकरण पर". EN/HI string map is wired in the extension popup. Rubric hooks live in `shared/rubric-hooks.mjs`; official score stays null and the <200 ms full-flow gate stays failed.
+
+
+## Wave 5 — e2e harness + redaction saturation (14 September 2026)
+
+`../scripts/validate-extension-e2e.mjs` maximizes automated proof (inject/collect, activeTab gate, overlay UI loop, screenshots) without faking the toolbar glyph. Held-out fixtures expand to 18 cases (`wave5-pii-redaction-utility-v01.json`). `classifySensitive` adds IFSC/voter/card-like telemetry; page-agent mosaics only classifier-flagged text and merges abutting regions. Official score null; G11 fail retained. Human-eval protocol: `../Docs/human-evaluation-protocol.md`.
 
 ## Known limitations
 
@@ -65,3 +89,51 @@ The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min
 - Three task intents and an approved control vocabulary bound the current workflow. Arbitrary navigation, typing and irreversible submissions are not implemented.
 - Initial live server steps took seconds, so the original <200ms full-flow guardrail is not passed. A fast local capture observation does not replace that requirement.
 - No representative-user study, broad WCAG conformance, benchmark saturation, final pitch deck, final Stitch comparison, public backend deployment or screen-recording fallback is claimed yet.
+
+## Additional validation evidence — 10 September
+
+Run `npm test` for the current 119 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
+
+`Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/dhristi-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.
+
+## External raster diagnostic and worker experiment
+
+The repository includes 100 released synthetic WebPII test screens under `app/bench-assets/webpii-test100/`, with source attribution in `Raw/datasets/webpii-test100/`. These are dataset reproductions, not real user screenshots or partner endorsements. Run `python3 ../scripts/fetch-webpii-test100.py` from this directory to verify the frozen image hashes.
+
+Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. The original raster checkpoint passed 42 prototype tests; the current total is 119. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
+
+Read `Docs/decisions/raster-evaluation.md` before quoting results. Full-image masking covered all selected PII regions while preserving zero original visual pixels; no claim of broad PII accuracy or task utility follows.
+
+## Experimental local text privacy lab
+
+After `npm ci --ignore-scripts` and `npm run build`, open `/app/text-preview.html` on the local prototype server. This separate development page runs Tesseract.js English OCR and a quantized BERT-small PII model over three authored synthetic screens. It displays sensitive-token detection, retained interface text and timings. It never calls the reasoning endpoint. Reconstructed text may include missed entities; the page is a local diagnostic, not an approved anonymized export.
+
+Model and language files are pinned in `Raw/domain/ocr-pii/asset-manifest.json`. `python3 scripts/fetch-ocr-pii-assets.py` from the repository root restores their declared upstream revisions if needed. The build copies the OCR worker and WASM runtime from the pinned npm dependencies. These generated runtime copies are ignored by Git. Model provenance and limitations: `Docs/decisions/reference-informed-plan.md`.
+
+Browser validation on 11 September: the original policy left two of 14 sensitive tokens readable. An explicit-field-label correction withholds all 14 on the same three development screens and retains all 25 scored useful tokens. This is a regression result, not general or held-out privacy accuracy. Earlier blocked navigation and failed results remain preserved. The lab is not integrated into the v0.1 outbound scene or native extension. See `Docs/decisions/browser-experiments-2026-09-11.md`.
+
+## Experimental bounded synthetic runner
+
+`/app/task-loop.html` is linked from the main workspace. Start authorizes safe actions in the built-in synthetic fixture only. The runner uses the existing local vision and model adapters, reobserves after each action and checks declared fixture postconditions. It stops after 8 actions, 90 seconds, two unchanged observations, cancellation or an execution error. A model's `done` reply alone cannot produce a completed status.
+
+The current suite has 119 passing tests, including 10 coordinator cases. Build passes. Actual in-app browser runs completed all three authored task goals; cancellation during planning stopped with zero actions. The first provider-unavailable attempt is preserved. These runs do not establish arbitrary-site reliability; the native extension still uses the existing manual review flow. See `Docs/decisions/browser-experiments-2026-09-11.md`.
+
+## Experimental local-reference draft flow
+
+Open `/app/local-reference.html` from the workspace. Capture the synthetic report contact, inspect the protected layout/request, ask the local model, then confirm the exact local draft fill. The email stays in the fixture and a client-memory vault; the model receives an expiring random reference, field type and geometry. `POST /api/v2/local-plans` returns only an allowed reference/field pair or `done`. No report is submitted. This separate protocol does not enable typing in the native extension or v1 action API.
+
+References are bound to the original target object and page revision, require confirmation, expire after 30 seconds, and are consumed before writes. Reset/navigation revokes the vault. The current adapter only supports the authored synthetic email field; arbitrary-site input handlers can transmit typed values and require a different authorization/integration review.
+
+Validation: current suite 119 passing tests; three correct authored real-Qwen provider cases and a running-server/SQLite readback pass. The 11 September browser run observed expiry rejection and a confirmed local draft fill, supported by the visible field and fixture equality oracle. A conflicting read-only property probe is preserved as inconclusive; native-extension support remains unverified. Evidence and limitations: `Docs/decisions/local-reference-pilot.md` and `Docs/decisions/browser-experiments-2026-09-11.md`.
+
+If the configured Ollama endpoint no longer lists the required model, check that service's model directory before downloading weights again. This development machine currently uses a separate instance on `127.0.0.1:11436` with the existing Qwen cache; the private `.env` points to it. Fresh installations may use the standard port 11434. Both the model service and prototype server must be running; a static Pages site cannot host them.
+
+## External OCR/PII evaluation
+
+After building, open `/app/text-benchmark.html` from the local text lab. It verifies the existing 100 WebPII image hashes, then runs the unchanged local OCR/PII policy without annotation input or reasoning-server requests. Three authored warmups are separate. Save each result to a fresh file and score it with `scripts/score-text-benchmark.py --input <result.json> --output <new-summary.json>`. The scorer rejects mismatched observations and retains failed/missing rows in the denominator. Read `Benchmarks/datasets/webpii-text-contract.md` before interpreting privacy or utility measurements. These externally authored synthetic screens were already used in the raster diagnostic, so this is not independently held-out evidence.
+
+First external result: 100/100 screens executed; 58 retained exact annotated PII in intended redraw. Selected product-token retention is 55.1%; OCR/NER processing p95 is 2,888.4 ms. The current filter is not approved for arbitrary-text export. Full interpretation: `Docs/decisions/external-text-evaluation.md`.
+
+## Integrated synthetic Earth-observation workflow
+
+Open `/app/operations.html` after building. One run opens the pending observation report with the real local model, then prepares a contact draft using an expiring, one-use local value reference; the email never enters serialized requests. Expiry and stop cases are implemented and browser-verified. The fixture is synthetic: no ISRO portal, account, or report submission is connected. See `Docs/decisions/operations-simulation.md` and `Benchmarks/results/operations-v01/summary.json` for evidence and the two preserved discrepancies (property readback, face-scale detection).

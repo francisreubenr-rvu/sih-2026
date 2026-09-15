@@ -31,11 +31,11 @@ export const THREE_PATHS = Object.freeze({
   score: {
     id: 'score',
     label: 'Score',
-    stages: 'heuristic / risk score (planned)',
+    stages: 'local heuristic risk after Fast protect (partial)',
     llm: false,
-    status: 'planned_partial',
-    g11: 'Not implemented as a runnable product path. Do not fabricate UI.',
-    slo: 'No Score-path SLO until wired and measured.',
+    status: 'partial_runnable',
+    g11: 'Not a G11 measurement. Local risk band only; officialScore null.',
+    slo: 'Diagnostic risk band only — not official SIH weighted score / not WebPII.',
   },
   reason: {
     id: 'reason',
@@ -58,14 +58,20 @@ export const PREVIEW_STRATEGIES = Object.freeze({
  * @param {'privacy_only'|'planner_assisted'|string} mode
  */
 export function resolveOperatingMode(mode) {
-  if (mode === OPERATING_MODES.privacy_only) {
+  if (mode === OPERATING_MODES.privacy_only || mode === 'score' || mode === THREE_PATHS.score.id) {
+    const isScore = mode === 'score' || mode === THREE_PATHS.score.id;
     return {
-      mode: OPERATING_MODES.privacy_only,
+      mode: isScore ? 'score' : OPERATING_MODES.privacy_only,
       skipPlanner: true,
       skipExecute: true,
       networkRequired: false,
-      label: 'Fast · local protect (no LLM)',
-      note: 'capture→detect→mask→privacy review. Not a G11 full-flow pass.',
+      scoreRisk: isScore,
+      label: isScore
+        ? 'Score · local heuristic risk (no LLM)'
+        : 'Fast · local protect (no LLM)',
+      note: isScore
+        ? 'After Fast protect: local risk band. officialScore null. Not G11/WebPII.'
+        : 'capture→detect→mask→privacy review. Not a G11 full-flow pass.',
     };
   }
   return {
@@ -73,6 +79,7 @@ export function resolveOperatingMode(mode) {
     skipPlanner: false,
     skipExecute: false,
     networkRequired: true,
+    scoreRisk: false,
     label: 'Reason · Ollama/Qwen plan+confirm',
     note: 'Outside <200ms budget historically; G11 remains fail until p95<200 at n≥100.',
   };

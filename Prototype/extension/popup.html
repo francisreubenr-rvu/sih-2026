@@ -35,15 +35,15 @@
         <h1 id="scan-heading" data-i18n="headline">Review what leaves this device.</h1>
         <span class="status-pip" aria-hidden="true"></span>
       </div>
-      <p class="lede" data-i18n="lede">Three paths: Fast (local protect), Score (planned), Reason (local LLM). Confirm every action.</p>
+      <p class="lede" data-i18n="lede">Three paths: Fast (local protect), Score (local risk), Reason (local LLM). Confirm every action.</p>
       <ul class="path-strip" id="path-strip" aria-label="Operating paths Fast, Score, and Reason">
         <li class="path-chip" data-path="fast" data-state="available" aria-current="true">
           <strong data-i18n="path_fast_name">Fast</strong>
           <span data-i18n="path_fast_blurb">capture→detect→mask→review · no LLM</span>
         </li>
-        <li class="path-chip" data-path="score" data-state="planned" aria-disabled="true">
+        <li class="path-chip" data-path="score" data-state="available">
           <strong data-i18n="path_score_name">Score</strong>
-          <span data-i18n="path_score_blurb">heuristic risk · planned / partial</span>
+          <span data-i18n="path_score_blurb">local heuristic risk · official null</span>
         </li>
         <li class="path-chip" data-path="reason" data-state="available">
           <strong data-i18n="path_reason_name">Reason</strong>
@@ -78,9 +78,9 @@
       <fieldset class="mode-row">
         <legend data-i18n="mode_legend">Path selection</legend>
         <label class="check"><input id="mode-privacy" type="checkbox" checked aria-describedby="path-policy"> <span data-i18n="mode_privacy">Fast path — privacy-only (no LLM)</span></label>
-        <label class="check check-planned" aria-disabled="true"><input id="mode-score" type="checkbox" disabled> <span data-i18n="mode_score">Score path — planned / not wired</span></label>
+        <label class="check"><input id="mode-score" type="checkbox" aria-describedby="score-panel"> <span data-i18n="mode_score">Score path — local risk after protect</span></label>
         <label class="check"><input id="preview-wireframe" type="checkbox"> <span data-i18n="mode_wireframe">Faster wireframe preview (Fast only)</span></label>
-        <p class="mode-hint" data-i18n="mode_hint">Uncheck Fast to enable Reason (plan+confirm). Score has no runnable UI yet.</p>
+        <p class="mode-hint" data-i18n="mode_hint">Score runs after Fast protect (no LLM). Uncheck Fast to enable Reason. Official SIH score stays null.</p>
       </fieldset>
       <p id="status" role="status" data-i18n="status_ready">Capture the active tab. Filtering runs here before any network call.</p>
       <button id="capture" type="button" class="cta-primary" data-i18n="capture">Capture &amp; protect</button>
@@ -96,6 +96,13 @@
         <p class="preview-empty" id="preview-empty">No capture yet. Protected layout appears here.</p>
       </div>
       <p id="metrics" class="telemetry"></p>
+    </section>
+
+    <section class="panel panel-score" id="score-panel" aria-label="Score path — local risk" hidden>
+      <p class="path-tag" data-i18n="score_tag">Score path · local heuristic risk · not official SIH score</p>
+      <p id="score-summary" class="score-summary" data-i18n="score_empty">Capture &amp; protect first. Score ranks local scene risk only.</p>
+      <ul id="score-reasons" class="score-reasons" hidden></ul>
+      <p class="score-disclaimer" data-i18n="score_disclaimer">Organizer weights accuracy+PII+redaction ≈65% — evaluation weights, not our measured score. officialScore remains null. Not WebPII.</p>
     </section>
 
     <section class="panel panel-actions" aria-label="Reason path — plan and confirm">

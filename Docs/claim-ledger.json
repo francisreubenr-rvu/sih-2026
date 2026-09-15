@@ -1,5 +1,5 @@
 {
-  "scope": "SIH26171 engineering candidate claims; Wave 1–4. No fabricated metrics.",
+  "scope": "SIH26171 engineering candidate claims; Wave 1\u20134. No fabricated metrics.",
   "claims": [
     {
       "claim": "Six named RV University second-year B.Tech CSE team members",
@@ -74,6 +74,20 @@
       "type": "empirical",
       "source": "Benchmarks/results/e2e.json",
       "limits": "Not a G03 pass for full clean-setup multi-scenario persistence; overlay is harness-only."
+    },
+    {
+      "id": "score-path-partial-runnable",
+      "claim": "Score path computes a local heuristic risk band after Fast protect in the extension popup; officialScore remains null.",
+      "type": "implemented_partial",
+      "source": "Prototype/shared/score-path.mjs; Prototype/extension/popup.mjs; Docs/decisions/brain-blind-cycle-02.md",
+      "limit": "Diagnostic banding only. Organizer accuracy+PII+redaction weights \u224865% are evaluation weights, not Dhristi scores. Not WebPII; not a G11 pass."
+    },
+    {
+      "id": "judge-fast-path-no-ollama",
+      "claim": "One-command Fast-path judge script runs without Ollama (npm run judge:fast / node scripts/judge-fast-path.mjs).",
+      "type": "tooling",
+      "source": "scripts/judge-fast-path.mjs; Benchmarks/results/judge-fast-path.json",
+      "limit": "Does not claim G11 pass or toolbar glyph automation; forces OLLAMA_URL unreachable for unit tests."
     }
   ]
 }

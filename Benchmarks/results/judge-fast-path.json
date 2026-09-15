@@ -1,0 +1,56 @@
+{
+  "name": "judge-fast-path",
+  "generatedAt": "2026-09-15T16:57:29.174Z",
+  "startedAt": "2026-09-15T16:57:28.528Z",
+  "ollamaRequired": false,
+  "ollamaUrlForced": "http://127.0.0.1:9",
+  "purpose": "One-command Fast (+ Score diagnostic) judge path without Ollama",
+  "honesty": [
+    "Does not claim G11 pass.",
+    "Does not invent WebPII or official SIH weighted scores.",
+    "Score path officialScore remains null.",
+    "submission_ready must stay false."
+  ],
+  "checks": {
+    "unit_tests_ollama_unreachable": {
+      "status": "pass",
+      "elapsedMs": 638,
+      "exitCode": 0,
+      "summary": [
+        "# tests 119",
+        "# pass 119",
+        "# fail 0"
+      ],
+      "message": "npm run test:ci passed with OLLAMA_URL=http://127.0.0.1:9",
+      "at": "2026-09-15T16:57:29.166Z"
+    },
+    "score_path_local_heuristic": {
+      "status": "pass",
+      "band": "elevated",
+      "points": 4,
+      "officialScore": null,
+      "threePathStatus": "partial_runnable",
+      "message": "Local Score risk runs; officialScore null; G11 not claimed",
+      "at": "2026-09-15T16:57:29.167Z"
+    },
+    "fast_path_microbench": {
+      "status": "pass",
+      "samples": 30,
+      "meanMs": 0.184,
+      "g11": "fail",
+      "message": "Fast protect microbench recorded; G11 remains fail (Fast ≠ G11)",
+      "at": "2026-09-15T16:57:29.173Z"
+    },
+    "sanitize_semantics_only": {
+      "status": "pass",
+      "message": "Semantics-only payload accepted; screenshot field rejected",
+      "at": "2026-09-15T16:57:29.174Z"
+    }
+  },
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "status": "pass"
+  }
+}
