@@ -1,14 +1,16 @@
 {
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
-  "generatedAt": "2026-09-15T13:26:03.638Z",
+  "generatedAt": "2026-09-15T14:12:15.826Z",
   "status": "unknown",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
     "source": "Docs/demo-recording/dhristi-browser-v02.webm",
-    "scope": "Recorded browser Pending→Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
-    "offline_playable": true
+    "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
+    "offline_playable": null,
+    "codec": "vp9",
+    "source_note": "Re-encoded from AV1 original (Docs/demo-recording/demo-fallback-av1-original.webm) to VP9 for Chrome compatibility 2026-09-15"
   },
   "runbook": "Docs/demo-runbook.md",
   "judge_checklist": "Docs/demo-judge-checklist.md",
@@ -60,7 +62,7 @@
         7
       ],
       "fallback_used_in_live_path": false,
-      "notes": "Operator brain-box on environment box (DISPLAY :5 Chrome). Synced to origin/master 482b636 (post PR#12 DBG-001 ORT-in-worker + PR#13 postfix evidence). Remove/reload unpacked Prototype/extension-build (vision-worker.js present); opened popup via real toolbar glyph; Privacy-only Fast checked; Capture & protect reached review with selective-pixelate preview. Status: Fast path complete (no LLM). Metrics: 0 faces, 18.9 ms WASM, 3 controls, 7 regions, 94% layout pixels local, capture 95 ms. Outbound semantics JSON had no screenshot/dataUrl; trust chip on-this-device visible; no Ollama/token. Screenshots: Benchmarks/results/g14-box-02/. Prior fail at 302e02b reset streak — this is success #1/3 on build 482b636. Do not mark G14 pass.",
+      "notes": "Operator brain-box on environment box (DISPLAY :5 Chrome). Synced to origin/master 482b636 (post PR#12 DBG-001 ORT-in-worker + PR#13 postfix evidence). Remove/reload unpacked Prototype/extension-build (vision-worker.js present); opened popup via real toolbar glyph; Privacy-only Fast checked; Capture & protect reached review with selective-pixelate preview. Status: Fast path complete (no LLM). Metrics: 0 faces, 18.9 ms WASM, 3 controls, 7 regions, 94% layout pixels local, capture 95 ms. Outbound semantics JSON had no screenshot/dataUrl; trust chip on-this-device visible; no Ollama/token. Screenshots: Benchmarks/results/g14-box-02/. Prior fail at 302e02b reset streak \u2014 this is success #1/3 on build 482b636. Do not mark G14 pass.",
       "screenshots": [
         "Benchmarks/results/g14-box-02/01-extensions-reloaded.png",
         "Benchmarks/results/g14-box-02/02-popup-opened.png",
@@ -96,7 +98,29 @@
         "Benchmarks/results/g14-box-03/04-popup-result.png",
         "Benchmarks/results/g14-box-03/05-semantics-json.png"
       ]
+    },
+    {
+      "index": 3,
+      "date_utc": "2026-09-15T14:11:00.000Z",
+      "operator": "brain-box",
+      "environment": "box",
+      "build_sha": "482b6364e73eb3da52f69de7c3f91c03bd48fa45",
+      "result": "fail",
+      "fallback_opened": true,
+      "journey_steps_passed": [
+        1,
+        2
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Operator brain-box. Product build 482b636. Extension loaded from Prototype/extension-build; fixture ready; toolbar popup; Privacy-only Fast checked; Capture & protect crashed extension before review/semantics (no metrics). Streak of two successes on 482b636 RESET by this fail. Offline: opened Docs/demo-fallback.webm via file://; Chrome MEDIA_ERR_SRC_NOT_SUPPORTED (AV1) \u2014 fallback_opened attempted but not playable in Chrome. Screenshots: Benchmarks/results/g14-box-04/. Do not mark G14 pass.",
+      "screenshots": [
+        "Benchmarks/results/g14-box-04/00-extensions-loaded.png",
+        "Benchmarks/results/g14-box-04/01-fixture-ready.png",
+        "Benchmarks/results/g14-box-04/02-popup-before.png",
+        "Benchmarks/results/g14-box-04/03-after-capture-crashed.png",
+        "Benchmarks/results/g14-box-04/offline-fallback-attempt.png"
+      ]
     }
   ],
-  "g14_reason": "Live box rehearsal #2/3 success on build 482b636 (operator brain-box). Need one more consecutive success on the same build_sha plus offline fallback verification before G14 may pass. Do not mark G14 pass; submission_ready unchanged."
+  "g14_reason": "Live box rehearsal #3/3 FAIL on build 482b636 (operator brain-box) \u2014 extension crash before review. Prior 2/3 streak RESET. Offline fallback WebM exists but Chrome cannot play AV1 (MEDIA_ERR_SRC_NOT_SUPPORTED). G14 remains unknown; submission_ready unchanged."
 }
