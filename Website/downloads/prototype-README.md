@@ -4,30 +4,30 @@ An implemented local demonstration of browser vision → protected semantic layo
 
 ## Start
 
-Requires Node.js 22+ with `node:sqlite`, npm, and Ollama. Verified locally on Node26 / Apple M1 Pro (16 GB memory). Model assets are packaged locally; no browser CDN is used.
+Requires Node.js 22+ with `node:sqlite` and npm. **Ollama is optional** (Reason / planner path only). Privacy-only **Fast** Capture & protect and `npm test` / `npm run test:ci` do **not** need Ollama. Verified locally on Node26 / Apple M1 Pro (16 GB memory). Model assets are packaged locally; no browser CDN is used.
 
 ```sh
 cd Prototype
 npm ci
 node ../scripts/build-prototype.mjs
-ollama serve
-# In another terminal, only if the model is not installed:
-ollama pull qwen2.5:7b-instruct
-# In another terminal from Prototype:
+# Optional planner (Reason path) — skip for privacy-only Fast / CI:
+# ollama serve
+# ollama pull qwen2.5:7b-instruct
 npm start
 ```
 
-Open `http://127.0.0.1:9041/`. The model is a separate server process. Never expose the Ollama port publicly. Settings are in `.env.example`; export environment variables yourself or use Node's `--env-file` option. `.env.example` is documentation, not loaded implicitly.
+Open `http://127.0.0.1:9041/`. When used, the model is a separate server process. Never expose the Ollama port publicly. Settings are in `.env.example`; export environment variables yourself or use Node's `--env-file` option. `.env.example` is documentation, not loaded implicitly.
 
 1. Select **Review a pending request**.
 2. **Capture & protect** runs local WASM face inference and builds the preview.
-3. Inspect the protected layout / outbound JSON; **Ask the local model**.
+3. Inspect the protected layout / outbound JSON; **Ask the local model** (requires Ollama).
 4. Review and **Confirm this action** to open Pending.
 5. Repeat capture → model → confirm to open Review. The fixture heading becomes **Request ready for review**.
 
 The fixture has explicitly synthetic account data and a public-domain NASA astronaut image for face testing. There is no real account or external form submission. Capture expiry is 30 seconds: after any change or delay, recapture. Token copying is for locally installed extension pairing only.
 
 ## Browser extension
+
 
 ```sh
 node ../scripts/build-extension.mjs

@@ -8,7 +8,7 @@ Browser-local visual perception and protected-context reasoning for the ISRO Sma
 
 ## What works
 
-Actual local UltraFace/ONNX WASM inference, strict protected-scene construction, authenticated Node API, Qwen2.5 reasoning through Ollama, reviewed revision-bound actions, and metadata-only SQLite persistence. The real browser fixture reached **Request ready for review** after Pending and Review confirmations. One hundred thirteen automated tests pass (`cd Prototype && npm test`, measured 2026-09-14). Local Lighthouse dhristi-v02 (six runs): mobile performance **99**, desktop performance **100**, accessibility/best-practices/SEO **100** on both profiles — not all-four 100 on mobile.
+Actual local UltraFace/ONNX WASM inference, strict protected-scene construction, authenticated Node API, Qwen2.5 reasoning through Ollama, reviewed revision-bound actions, and metadata-only SQLite persistence. The real browser fixture reached **Request ready for review** after Pending and Review confirmations. One hundred fifteen automated tests pass (`cd Prototype && npm test`, measured 2026-09-15). Local Lighthouse dhristi-v02 (six runs): mobile performance **99**, desktop performance **100**, accessibility/best-practices/SEO **100** on both profiles — not all-four 100 on mobile.
 
 The website is hosted on GitHub Pages; the Node/Ollama prototype runs locally. Pages cannot run its backend. Use the explicit setup instructions before opening localhost.
 
