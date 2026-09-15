@@ -1,13 +1,13 @@
 {
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
-  "generatedAt": "2026-09-15T08:10:30.747Z",
+  "generatedAt": "2026-09-15T13:26:03.638Z",
   "status": "unknown",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
     "source": "Docs/demo-recording/dhristi-browser-v02.webm",
-    "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
+    "scope": "Recorded browser Pending→Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
     "offline_playable": true
   },
   "runbook": "Docs/demo-runbook.md",
@@ -60,7 +60,7 @@
         7
       ],
       "fallback_used_in_live_path": false,
-      "notes": "Operator brain-box on environment box (DISPLAY :5 Chrome). Synced to origin/master 482b636 (post PR#12 DBG-001 ORT-in-worker + PR#13 postfix evidence). Remove/reload unpacked Prototype/extension-build (vision-worker.js present); opened popup via real toolbar glyph; Privacy-only Fast checked; Capture & protect reached review with selective-pixelate preview. Status: Fast path complete (no LLM). Metrics: 0 faces, 18.9 ms WASM, 3 controls, 7 regions, 94% layout pixels local, capture 95 ms. Outbound semantics JSON had no screenshot/dataUrl; trust chip on-this-device visible; no Ollama/token. Screenshots: Benchmarks/results/g14-box-02/. Prior fail at 302e02b reset streak \u2014 this is success #1/3 on build 482b636. Do not mark G14 pass.",
+      "notes": "Operator brain-box on environment box (DISPLAY :5 Chrome). Synced to origin/master 482b636 (post PR#12 DBG-001 ORT-in-worker + PR#13 postfix evidence). Remove/reload unpacked Prototype/extension-build (vision-worker.js present); opened popup via real toolbar glyph; Privacy-only Fast checked; Capture & protect reached review with selective-pixelate preview. Status: Fast path complete (no LLM). Metrics: 0 faces, 18.9 ms WASM, 3 controls, 7 regions, 94% layout pixels local, capture 95 ms. Outbound semantics JSON had no screenshot/dataUrl; trust chip on-this-device visible; no Ollama/token. Screenshots: Benchmarks/results/g14-box-02/. Prior fail at 302e02b reset streak — this is success #1/3 on build 482b636. Do not mark G14 pass.",
       "screenshots": [
         "Benchmarks/results/g14-box-02/01-extensions-reloaded.png",
         "Benchmarks/results/g14-box-02/02-popup-opened.png",
@@ -68,7 +68,35 @@
         "Benchmarks/results/g14-box-02/04-popup-result.png",
         "Benchmarks/results/g14-box-02/05-semantics-json.png"
       ]
+    },
+    {
+      "index": 2,
+      "date_utc": "2026-09-15T13:26:03.638Z",
+      "operator": "brain-box",
+      "environment": "box",
+      "build_sha": "482b6364e73eb3da52f69de7c3f91c03bd48fa45",
+      "result": "success",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Operator brain-box on environment box (DISPLAY :5 Chrome). Product build 482b636 (extension-build identical to that commit; master tip only advanced by bench evidence). Reloaded terminated SW + unpacked Prototype/extension-build (vision-worker.js present); opened popup via real toolbar glyph; Privacy-only Fast checked; Capture & protect reached review with selective-pixelate preview. Status: Fast path complete (no LLM). Metrics: 0 faces, 16.1 ms WASM, 3 controls, 7 regions, 94% layout pixels local, capture 137 ms. Outbound semantics JSON had no screenshot/dataUrl/pixels; trust chip on-this-device visible; no Ollama/token. Confirm unused (privacy-only, execute disabled); closed cleanly. Screenshots: Benchmarks/results/g14-box-03/. Success #2/3 on same build_sha 482b636 after #1/3. Do not mark G14 pass.",
+      "screenshots": [
+        "Benchmarks/results/g14-box-03/01-extensions-reloaded.png",
+        "Benchmarks/results/g14-box-03/01-fixture-ready.png",
+        "Benchmarks/results/g14-box-03/02-popup-opened.png",
+        "Benchmarks/results/g14-box-03/03-after-capture.png",
+        "Benchmarks/results/g14-box-03/04-popup-result.png",
+        "Benchmarks/results/g14-box-03/05-semantics-json.png"
+      ]
     }
   ],
-  "g14_reason": "Live box rehearsal #1/3 success on build 482b636 (operator brain-box) after prior fail at 302e02b reset the streak. Need two more consecutive successes on the same build_sha plus offline fallback verification before G14 may pass. Do not mark G14 pass; submission_ready unchanged."
+  "g14_reason": "Live box rehearsal #2/3 success on build 482b636 (operator brain-box). Need one more consecutive success on the same build_sha plus offline fallback verification before G14 may pass. Do not mark G14 pass; submission_ready unchanged."
 }
