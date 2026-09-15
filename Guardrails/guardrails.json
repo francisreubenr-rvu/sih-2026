@@ -211,8 +211,16 @@
         "Docs/demo-fallback.webm",
         "Benchmarks/results/demo-rehearsal.json"
       ],
-      "status": "unknown",
-      "reason": "Docs/demo-rehearsal-checklist.md + demo-fallback.webm + demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
+      "status": "pass",
+      "reason": "Three consecutive live box rehearsals success on product build 996e40b (PR#17 ORT sandbox) logged in Benchmarks/results/demo-rehearsal.json (indices after prior reset); Docs/demo-fallback.webm VP9 opens offline in Chrome. Evidence dirs g14-box-05..07. Operator brain-box. Fast privacy-only path.",
+      "evidence_refs": [
+        "Benchmarks/results/demo-rehearsal.json",
+        "Benchmarks/results/g14-box-05/",
+        "Benchmarks/results/g14-box-06/",
+        "Benchmarks/results/g14-box-07/",
+        "Docs/demo-fallback.webm",
+        "Docs/decisions/brain-fix-ort-sandbox.md"
+      ]
     },
     {
       "id": "G15",
