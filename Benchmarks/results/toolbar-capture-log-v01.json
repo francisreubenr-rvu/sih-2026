@@ -1,13 +1,48 @@
 {
   "name": "toolbar-capture-log-v01",
-  "generatedAt": "2026-09-14T17:40:00.000Z",
-  "status": "not_run",
+  "generatedAt": "2026-09-15T06:19:13.430Z",
+  "status": "partial_evidence",
   "g03_claim": false,
   "g03_status_in_guardrails": "unknown",
   "protocol": "Docs/demo-toolbar-capture-protocol.md",
   "path": "fast-privacy-only",
-  "acceptance_note": "Empty stub for the first logged human production Chrome toolbar Capture & protect run. Fields below stay blank until a real operator completes the protocol. Do not mark G03 pass from this file alone. Harness overlay e2e is not toolbar-glyph evidence.",
-  "runs": [],
+  "acceptance_note": "One box Chrome toolbar Fast-path run logged. Do NOT mark G03 pass from a single scenario. Harness overlay e2e is still not toolbar-glyph evidence.",
+  "runs": [
+    {
+      "run_id": "toolbar-20260915-box-01",
+      "operator": "brain-box",
+      "recorded_at": "2026-09-15T06:18:00Z",
+      "git_sha": "97a935bbf3905f5bc6567cf25c6942b0e76eaa5f",
+      "browser": "Chrome 151.0.7922.169",
+      "os": "Linux x86_64 (Grok Bot computer)",
+      "extension_version": "0.1.1",
+      "path": "fast-privacy-only",
+      "ollama_used": false,
+      "stages_observed": "inject\u2192detect\u2192mask\u2192review (privacy-only complete)",
+      "preview_ok": true,
+      "semantics_only_ok": true,
+      "activeTab_ok": true,
+      "metrics": {
+        "faces": 0,
+        "regions": 7,
+        "layout_pixels_kept_local_pct": 94,
+        "capture_ms_approx": 110,
+        "note": "Fast path display only \u2014 never cite as G11"
+      },
+      "screenshots": [
+        "Benchmarks/results/toolbar-attempt-box/00-fixture-toolbar-popup.webp",
+        "Benchmarks/results/toolbar-attempt-box/01-toolbar-popup-privacy-only.png",
+        "Benchmarks/results/toolbar-attempt-box/02-capture-complete-preview.png",
+        "Benchmarks/results/toolbar-attempt-box/03-stages-privacy-only.png",
+        "Benchmarks/results/toolbar-attempt-box/04-preview-metrics.png",
+        "Benchmarks/results/toolbar-attempt-box/05-sanitized-payload.png",
+        "Benchmarks/results/toolbar-attempt-box/06-chrome-version.png",
+        "Benchmarks/results/toolbar-attempt-box/07-fixture-toolbar-icon-pinned.webp"
+      ],
+      "notes": "Automated box desktop operator clicked real toolbar glyph; Privacy-only Fast; no token/LLM/Ollama/login. Selective preview rendered. g03_claim remains false pending multi-scenario Guardrails acceptance.",
+      "g03_claim": false
+    }
+  ],
   "run_template": {
     "run_id": "",
     "operator": "",
@@ -24,7 +59,7 @@
     "activeTab_ok": null,
     "metrics": {
       "fast_path_display_ms": null,
-      "note": "Fast path display only — never cite as G11"
+      "note": "Fast path display only \u2014 never cite as G11"
     },
     "screenshots": [],
     "notes": "",
