@@ -130,6 +130,50 @@ export function resolvePreviewStrategy(preference = PREVIEW_STRATEGIES.selective
   };
 }
 
+/** Viewport area (CSS px) that marks a heavy public page (DBG-003 H1). */
+export const HEAVY_VIEWPORT_AREA = 1_200_000;
+/** Region count that also marks a heavy page for wireframe default. */
+export const HEAVY_REGION_COUNT = 10;
+
+export function isHeavyCapturePage({ viewport = null, regionCount = 0 } = {}) {
+  const w = Number(viewport?.width) || 0;
+  const h = Number(viewport?.height) || 0;
+  return (w * h) >= HEAVY_VIEWPORT_AREA || (Number(regionCount) || 0) >= HEAVY_REGION_COUNT;
+}
+
+/**
+ * Capture preview choice (DBG-003): default wireframe for demos/multisite;
+ * operator may opt into selective.
+ */
+export function resolveCapturePreviewStrategy({
+  preference = PREVIEW_STRATEGIES.wireframe,
+  viewport = null,
+  regionCount = 0,
+} = {}) {
+  if (preference === PREVIEW_STRATEGIES.selective) {
+    return { ...resolvePreviewStrategy(PREVIEW_STRATEGIES.selective), autoHeavyWireframe: false };
+  }
+  if (preference === PREVIEW_STRATEGIES.wireframe) {
+    return { ...resolvePreviewStrategy(PREVIEW_STRATEGIES.wireframe), autoHeavyWireframe: false };
+  }
+  const heavy = isHeavyCapturePage({ viewport, regionCount });
+  if (heavy) {
+    return {
+      ...resolvePreviewStrategy(PREVIEW_STRATEGIES.wireframe),
+      autoHeavyWireframe: true,
+      note: 'Heavy page / multisite auto wireframe (DBG-003) — skips mosaic cost.',
+    };
+  }
+  return { ...resolvePreviewStrategy(PREVIEW_STRATEGIES.selective), autoHeavyWireframe: false };
+}
+
+/** Options for tabs.captureVisibleTab — jpeg shrinks decode cost on public pages (DBG-003). */
+export function captureVisibleTabOptions({ format = 'jpeg', quality = 70 } = {}) {
+  if (format === 'png') return { format: 'png' };
+  const q = Number.isFinite(quality) ? Math.max(0, Math.min(100, Math.round(quality))) : 70;
+  return { format: 'jpeg', quality: q };
+}
+
 /**
  * Build an honest stage breakdown for evidence (no invented numbers).
  * @param {{ stages: Array<{ name: string, elapsedMs: number }>, mode?: string, budgetMs?: number }} input

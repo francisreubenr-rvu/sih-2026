@@ -8,6 +8,9 @@ import {
   summarizeProtectLoop,
   privacyOnlyCompletion,
   TOOLBAR_ACTIVETAB_NOTE,
+  snapshotGestureTab,
+  assertGestureTabFresh,
+  isSandboxDeathError,
 } from '../shared/capture-loop.mjs';
 
 test('CAPTURE_STAGES lists the production pipeline order', () => {
@@ -93,4 +96,22 @@ test('privacyOnlyCompletion marks planner skipped without pixels', () => {
   assert.equal(done.plannerSkipped, true);
   assert.equal(done.completeWithoutNetwork, true);
   assert.ok(!JSON.stringify(done).includes('data:image'));
+});
+
+test('snapshot + assertGestureTabFresh refuse navigation since toolbar open', () => {
+  const gesture = snapshotGestureTab({ id: 7, url: 'https://example.com/a', windowId: 1 });
+  assert.equal(gesture.id, 7);
+  assert.equal(assertGestureTabFresh(gesture, { id: 7, url: 'https://example.com/a' }).ok, true);
+  const nav = assertGestureTabFresh(gesture, { id: 7, url: 'https://example.com/b' });
+  assert.equal(nav.ok, false);
+  assert.equal(nav.code, 'navigated_since_gesture');
+  const switched = assertGestureTabFresh(gesture, { id: 8, url: 'https://example.com/a' });
+  assert.equal(switched.code, 'navigated_since_gesture');
+  assert.equal(classifyCaptureError(Object.assign(new Error(nav.message), { code: 'navigated_since_gesture' })).code, 'navigated_since_gesture');
+});
+
+test('isSandboxDeathError matches soft-recreate candidates', () => {
+  assert.equal(isSandboxDeathError(new Error('Vision sandbox frame unavailable')), true);
+  assert.equal(isSandboxDeathError(new Error('Local vision sandbox timed out')), true);
+  assert.equal(isSandboxDeathError(new Error('needs_activeTab')), false);
 });

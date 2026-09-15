@@ -5,6 +5,9 @@ import {
   resolveOperatingMode,
   createDetectorCache,
   resolvePreviewStrategy,
+  resolveCapturePreviewStrategy,
+  captureVisibleTabOptions,
+  isHeavyCapturePage,
   summarizeLatencyBreakdown,
   percentile,
   buildLatencyDistributionRecord,
@@ -77,4 +80,18 @@ test('percentile and distribution record keep G11 fail with historical full-flow
   assert.equal(rec.status, 'fail');
   assert.equal(rec.fullFlowHistorical.gate.status, 'fail');
   assert.ok(rec.localProtectLoop.p95 <= 120);
+});
+
+test('capture preview defaults wireframe; selective is opt-in', () => {
+  assert.equal(resolveCapturePreviewStrategy({ preference: 'wireframe' }).useSelectiveMosaic, false);
+  assert.equal(resolveCapturePreviewStrategy({ preference: 'selective' }).useSelectiveMosaic, true);
+  assert.equal(isHeavyCapturePage({ viewport: { width: 1920, height: 1080 } }), true);
+  assert.equal(isHeavyCapturePage({ viewport: { width: 800, height: 600 }, regionCount: 2 }), false);
+  assert.equal(isHeavyCapturePage({ viewport: { width: 800, height: 600 }, regionCount: 12 }), true);
+});
+
+test('captureVisibleTabOptions prefer jpeg quality', () => {
+  assert.deepEqual(captureVisibleTabOptions(), { format: 'jpeg', quality: 70 });
+  assert.deepEqual(captureVisibleTabOptions({ format: 'png' }), { format: 'png' });
+  assert.equal(captureVisibleTabOptions({ quality: 150 }).quality, 100);
 });

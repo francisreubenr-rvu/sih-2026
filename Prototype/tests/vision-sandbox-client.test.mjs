@@ -2,26 +2,16 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSandboxVisionDetector } from '../shared/vision-sandbox-client.mjs';
 
-/**
- * Node cannot host a real MV3 sandboxed iframe. Exercise the client with an
- * injectable message bus that mimics parent↔sandbox postMessage.
- */
-test('sandbox client init + detect via injectable message bus', async () => {
+function makeHarness(handler) {
   const bus = new EventTarget();
   let frameWin;
-
   const documentImpl = {
     body: {
       appendChild(el) {
         frameWin = {
           postMessage(data) {
             queueMicrotask(() => {
-              let reply;
-              if (data.type === 'ping') reply = { id: data.id, ok: true, result: { pong: true } };
-              else if (data.type === 'init') reply = { id: data.id, ok: true, result: { ready: true } };
-              else if (data.type === 'detect') reply = { id: data.id, ok: true, result: { detections: [], inferenceMs: 1 } };
-              else reply = { id: data.id, ok: false, error: 'unknown' };
-              // Client matches event.source === contentWindow
+              const reply = handler(data);
               const event = new MessageEvent('message', { data: reply });
               Object.defineProperty(event, 'source', { value: frameWin });
               bus.dispatchEvent(event);
@@ -59,12 +49,19 @@ test('sandbox client init + detect via injectable message bus', async () => {
       };
     },
   };
+  return { bus, documentImpl };
+}
 
+test('sandbox client init + detect via injectable message bus', async () => {
+  const { bus, documentImpl } = makeHarness((data) => {
+    if (data.type === 'ping') return { id: data.id, ok: true, result: { pong: true } };
+    if (data.type === 'init') return { id: data.id, ok: true, result: { ready: true } };
+    if (data.type === 'detect') return { id: data.id, ok: true, result: { detections: [], inferenceMs: 1 } };
+    return { id: data.id, ok: false, error: 'unknown' };
+  });
   const detector = await createSandboxVisionDetector({
     sandboxUrl: 'https://example.test/ort-sandbox.html',
-    documentImpl,
-    messageTarget: bus,
-    timeoutMs: 2000,
+    documentImpl, messageTarget: bus, timeoutMs: 2000,
     bitmapFactory: async () => ({ width: 8, height: 8, close() {} }),
   });
   const result = await detector.detect({});
@@ -72,4 +69,38 @@ test('sandbox client init + detect via injectable message bus', async () => {
   assert.equal(result.inferenceMs, 1);
   await detector.dispose();
   await assert.rejects(detector.detect({}), /disposed/);
+});
+
+test('sandbox client protectCapture forwards dataUrl and mosaic flag', async () => {
+  let seen;
+  const { bus, documentImpl } = makeHarness((data) => {
+    if (data.type === 'ping') return { id: data.id, ok: true, result: { pong: true } };
+    if (data.type === 'init') return { id: data.id, ok: true, result: { ready: true } };
+    if (data.type === 'protect') {
+      seen = data;
+      return { id: data.id, ok: true, result: {
+        detections: [{ x: 1, y: 2, width: 3, height: 4 }],
+        inferenceMs: 2, bitmapWidth: 100, bitmapHeight: 80,
+        previewMeta: { mode: 'wireframe', localOnly: true, host: 'ort-sandbox' },
+      }};
+    }
+    return { id: data.id, ok: false, error: 'unknown' };
+  });
+  const detector = await createSandboxVisionDetector({
+    sandboxUrl: 'https://example.test/ort-sandbox.html',
+    documentImpl, messageTarget: bus, timeoutMs: 2000,
+  });
+  const out = await detector.protectCapture({
+    dataUrl: 'data:image/jpeg;base64,xx',
+    viewport: { width: 50, height: 40 },
+    regions: [{ kind: 'field', rect: { x: 0, y: 0, width: 1, height: 1 } }],
+    useSelectiveMosaic: false,
+  });
+  assert.equal(seen.type, 'protect');
+  assert.equal(seen.useSelectiveMosaic, false);
+  assert.equal(out.detections.length, 1);
+  assert.equal(out.previewMeta.host, 'ort-sandbox');
+  assert.equal(detector.alive, true);
+  await detector.dispose();
+  assert.equal(detector.alive, false);
 });

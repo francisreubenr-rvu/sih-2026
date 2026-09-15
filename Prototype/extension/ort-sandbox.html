@@ -7,8 +7,8 @@
 <body>
   <!--
     MV3 sandboxed document (separate process, no chrome.*).
-    Hosts ONNX Runtime WASM so a native abort cannot balloon-crash the action popup.
-    See Docs/decisions/brain-fix-ort-sandbox.md (DBG-002).
+    Hosts ONNX Runtime WASM + decode/detect/selective mosaic (DBG-003) so the action popup stays thin.
+    See Docs/decisions/brain-fix-ort-sandbox.md and brain-fix-multisite-crash.md.
   -->
   <script type="module" src="ort-sandbox.js"></script>
 </body>

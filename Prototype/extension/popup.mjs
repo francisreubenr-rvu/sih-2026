@@ -1,7 +1,6 @@
 import { createSandboxVisionDetector } from '../shared/vision-sandbox-client.mjs';
 import { makeScene, paintScene } from '../shared/privacy.mjs';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
-import { paintSelectivePreview } from '../shared/selective-redaction.mjs';
 import { assertSanitizedPayload, readJsHeap, readClientEnvironment } from '../shared/rubric-hooks.mjs';
 import {
   classifyCaptureError,
@@ -9,15 +8,18 @@ import {
   summarizeProtectLoop,
   privacyOnlyCompletion,
   TOOLBAR_ACTIVETAB_NOTE,
+  snapshotGestureTab,
+  assertGestureTabFresh,
+  isSandboxDeathError,
 } from '../shared/capture-loop.mjs';
 import {
   OPERATING_MODES,
   resolveOperatingMode,
   createDetectorCache,
-  resolvePreviewStrategy,
+  resolveCapturePreviewStrategy,
+  captureVisibleTabOptions,
 } from '../shared/latency-strategy.mjs';
 import { computeLocalRiskScore, formatLocalRiskSummary } from '../shared/score-path.mjs';
-import { checkReasonHealthBeforeSend } from '../shared/reason-health.mjs';
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = s => document.querySelector(s);
@@ -26,6 +28,8 @@ let prepared, plan, tabId, busy = false, lang = 'en', lastCaptureMs = null, last
 const detectorCache = createDetectorCache();
 /** Popup-lifetime only — closing the action popup drops the sandbox iframe (DBG-002). */
 let visionPreload = null;
+/** Active tab snapshot at toolbar-open; Capture refuses navigation since this gesture (DBG-003 H3). */
+let gestureTab = null;
 
 function visionFactory() {
   return createSandboxVisionDetector({
@@ -52,6 +56,26 @@ function ensureVisionPreload() {
     );
   }
   return visionPreload;
+}
+
+/** Soft-recreate sandbox iframe after death; Reload may still be required (DBG-003 H2). */
+async function softRecreateVisionSandbox() {
+  status(t('vision_recovering'));
+  let hit = null;
+  try { hit = await visionPreload; } catch { /* ignore */ }
+  try { await hit?.detector?.dispose?.(); } catch { /* ignore */ }
+  detectorCache.reset();
+  visionPreload = null;
+  return ensureVisionPreload();
+}
+
+async function recordGestureTab() {
+  try {
+    const [active] = await api.tabs.query({ active: true, currentWindow: true });
+    gestureTab = snapshotGestureTab(active);
+  } catch {
+    gestureTab = null;
+  }
 }
 
 let resourceStages = [];
@@ -90,12 +114,14 @@ const STRINGS = {
     review: 'Review the selective preview. What leaves: semantic scene fields only — raw pixels stay local.',
     sending: 'Sending approved semantics to the local reasoning server.',
     err_activeTab: 'Tab capture needs the toolbar gesture. Close this window and open Dhristi from the toolbar icon, then Capture again.',
+    err_navigated: 'Tab navigated or changed since the toolbar was opened. Close this popup, open Dhristi from the toolbar on the page, then Capture.',
     err_connection: 'Page connection lost. Retrying injection…',
     err_restricted: 'This page blocks extension capture. Open the local fixture or an allowed http(s) page.',
+    vision_recovering: 'Local vision sandbox restarted. If Capture still fails, Reload the extension on chrome://extensions.',
     mode_legend: 'Path selection',
     mode_privacy: 'Fast path — privacy-only (no LLM)',
     mode_score: 'Score path — local risk after protect',
-    mode_wireframe: 'Faster wireframe preview (Fast only)',
+    mode_wireframe: 'Wireframe preview (default — safer for public / multi-site)',
     mode_hint: 'Score runs after Fast protect (no LLM). Uncheck Fast to enable Reason. Official SIH score stays null.',
     path_fast_name: 'Fast',
     path_fast_blurb: 'capture→detect→mask→review · no LLM',
@@ -116,8 +142,6 @@ const STRINGS = {
     score_done: 'Score path: local risk band shown. Not a G11 pass; official score null.',
     reason_cold_start: 'Reason planner unavailable (Ollama down or unreachable). Stay on Fast or Score — no LLM required. Start ollama serve + pull qwen2.5:7b-instruct only if you need Reason.',
     reason_failed_keep: 'Reason failed. Protected capture is still here — enable Fast or Score, or fix Ollama and retry Send.',
-    reason_health_checking: 'Checking Reason planner (local Ollama) before Send…',
-    reason_health_fail: 'Reason planner unreachable on pre-Send check. Stay on Fast or Score — start ollama serve + pull qwen2.5:7b-instruct only if you need Reason.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
@@ -150,12 +174,14 @@ const STRINGS = {
     review: 'चयनात्मक पूर्वावलोकन देखें। बाहर जाता है: केवल अर्थ-दृश्य फ़ील्ड — कच्चे पिक्सेल स्थानीय।',
     sending: 'अनुमोदित अर्थ स्थानीय रीज़निंग सर्वर को भेजे जा रहे हैं।',
     err_activeTab: 'टैब कैप्चर के लिए टूलबार जेस्चर चाहिए। इस विंडो को बंद कर टूलबार आइकन से Dhristi खोलें, फिर फिर से कैप्चर करें।',
+    err_navigated: 'टूलबार खुलने के बाद टैब बदल गया या नेविगेट हुआ। पॉपअप बंद करें, पृष्ठ पर टूलबार से Dhristi खोलें, फिर कैप्चर करें।',
     err_connection: 'पृष्ठ कनेक्शन खो गया। इंजेक्शन पुनः प्रयास…',
     err_restricted: 'यह पृष्ठ एक्सटेंशन कैप्चर रोकता है। स्थानीय फ़िक्स्चर या अनुमत पृष्ठ खोलें।',
+    vision_recovering: 'स्थानीय दृष्टि सैंडबॉक्स पुनः आरंभ। फिर भी विफल हो तो chrome://extensions पर Reload करें।',
     mode_legend: 'पथ चयन',
     mode_privacy: 'तेज़ पथ — केवल गोपनीयता (कोई LLM नहीं)',
     mode_score: 'स्कोर पथ — protect के बाद स्थानीय जोखिम',
-    mode_wireframe: 'तेज़ वायरफ़्रेम पूर्वावलोकन (केवल Fast)',
+    mode_wireframe: 'वायरफ़्रेम पूर्वावलोकन (डिफ़ॉल्ट — सार्वजनिक / मल्टी-साइट के लिए सुरक्षित)',
     mode_hint: 'Score Fast protect के बाद चलता है (कोई LLM नहीं)। Reason के लिए Fast अनचेक करें। आधिकारिक SIH स्कोर null।',
     path_fast_name: 'Fast',
     path_fast_blurb: 'कैप्चर→डिटेक्ट→मास्क→समीक्षा · कोई LLM नहीं',
@@ -176,8 +202,6 @@ const STRINGS = {
     score_done: 'Score पथ: स्थानीय जोखिम बैंड दिखाया। G11 पास नहीं; आधिकारिक स्कोर null।',
     reason_cold_start: 'Reason प्लानर अनुपलब्ध (Ollama बंद/अगम्य)। Fast या Score पर रहें — LLM आवश्यक नहीं। Reason के लिए ollama serve + qwen2.5:7b-instruct।',
     reason_failed_keep: 'Reason विफल। सुरक्षित कैप्चर अभी भी है — Fast/Score चालू करें, या Ollama ठीक कर फिर Send करें।',
-    reason_health_checking: 'Send से पहले Reason प्लानर (स्थानीय Ollama) जाँच…',
-    reason_health_fail: 'Send-पूर्व जाँच में Reason प्लानर अगम्य। Fast या Score पर रहें — Reason के लिए ollama serve + qwen2.5:7b-instruct।',
   },
 };
 
@@ -353,7 +377,10 @@ $('#mode-score')?.addEventListener('change', () => {
 });
 applyLang();
 syncPathChips();
-try { ensureVisionPreload(); } catch { /* non-extension preview */ }
+try {
+  void recordGestureTab();
+  ensureVisionPreload();
+} catch { /* non-extension preview */ }
 
 async function ensureInjected(id) {
   setStage('inject');
@@ -383,6 +410,7 @@ async function call(message, { reinject = true } = {}) {
 function formatCaptureFailure(err) {
   const c = classifyCaptureError(err);
   if (c.code === 'needs_activeTab') return t('err_activeTab');
+  if (c.code === 'navigated_since_gesture') return t('err_navigated');
   if (c.code === 'restricted_page') return t('err_restricted');
   if (c.code === 'content_script_missing') return `${t('err_connection')} ${c.message}`;
   return `Capture blocked: ${c.message}`;
@@ -411,35 +439,73 @@ $('#capture').addEventListener('click', async () => {
   clear();
   setBusy(true);
   status(t('capturing'));
-  let bitmap;
+  let previewBitmap;
   const completed = [];
   try {
     const tab = await resolveTargetTab();
     if (!tab?.id) throw new Error('No captureable tab. Focus an http(s) page, then open Dhristi from the toolbar.');
+    const gestureCheck = assertGestureTabFresh(gestureTab, tab);
+    if (!gestureCheck.ok) {
+      const err = new Error(gestureCheck.message);
+      err.code = gestureCheck.code;
+      throw err;
+    }
     tabId = tab.id;
-    // Ensure captureVisibleTab sees the page, not a popup-as-tab document.
     try { await api.tabs.update(tabId, { active: true }); } catch { /* ignore */ }
     await ensureInjected(tabId);
     completed.push('inject');
-    // ORT WASM in MV3 sandboxed document (separate process) — DBG-002 H1; warmed on popup open.
-    const { detector, cacheHit } = await ensureVisionPreload();
+    let { detector, cacheHit } = await ensureVisionPreload();
     void cacheHit;
     const captureStarted = performance.now();
     setStage('collect');
     const scene = await call({ kind: 'collect' });
     completed.push('collect');
+    const previewPref = $('#preview-wireframe')?.checked ? 'wireframe' : 'selective';
+    const previewStrategy = resolveCapturePreviewStrategy({
+      preference: previewPref,
+      viewport: scene.viewport,
+      regionCount: scene.regions?.length || 0,
+    });
     setStage('capture');
-    const dataUrl = await api.tabs.captureVisibleTab(tab.windowId, { format: 'png' });
+    const dataUrl = await api.tabs.captureVisibleTab(
+      tab.windowId,
+      captureVisibleTabOptions({ format: 'jpeg', quality: 70 }),
+    );
     completed.push('capture');
-    const image = new Image();
-    image.src = dataUrl;
-    await image.decode();
-    bitmap = await createImageBitmap(image);
     setStage('filter');
-    const result = await detector.detect(bitmap);
+    let protectResult;
+    try {
+      protectResult = await detector.protectCapture({
+        dataUrl,
+        viewport: scene.viewport,
+        regions: scene.regions || [],
+        useSelectiveMosaic: previewStrategy.useSelectiveMosaic,
+        blockSize: 14,
+      });
+    } catch (protectErr) {
+      if (isSandboxDeathError(protectErr)) {
+        ({ detector } = await softRecreateVisionSandbox());
+        protectResult = await detector.protectCapture({
+          dataUrl,
+          viewport: scene.viewport,
+          regions: scene.regions || [],
+          useSelectiveMosaic: previewStrategy.useSelectiveMosaic,
+          blockSize: 14,
+        });
+      } else {
+        throw protectErr;
+      }
+    }
+    const result = {
+      detections: protectResult.detections || [],
+      inferenceMs: protectResult.inferenceMs || 0,
+    };
+    previewBitmap = protectResult.previewBitmap || null;
     await call({ kind: 'fresh', revision: scene.revision });
-    const ratioX = scene.viewport.width / bitmap.width;
-    const ratioY = scene.viewport.height / bitmap.height;
+    const bw = protectResult.bitmapWidth || scene.viewport.width;
+    const bh = protectResult.bitmapHeight || scene.viewport.height;
+    const ratioX = scene.viewport.width / bw;
+    const ratioY = scene.viewport.height / bh;
     for (const face of result.detections) {
       scene.regions.push({
         kind: 'face',
@@ -458,24 +524,30 @@ $('#capture').addEventListener('click', async () => {
     completed.push('sanitize');
 
     const previewCtx = $('#preview').getContext('2d');
-    let previewMeta;
-    const previewPref = $('#preview-wireframe')?.checked ? 'wireframe' : 'selective';
-    const previewStrategy = resolvePreviewStrategy(previewPref);
+    let previewMeta = protectResult.previewMeta || { mode: 'wireframe', localOnly: true, elapsedMs: 0 };
     try {
-      if (!previewStrategy.useSelectiveMosaic) {
-        paintScene(previewCtx, prepared.scene);
-        previewMeta = { mode: 'wireframe', localOnly: true, elapsedMs: 0 };
+      if (previewStrategy.useSelectiveMosaic && previewBitmap) {
+        previewCtx.canvas.width = scene.viewport.width;
+        previewCtx.canvas.height = scene.viewport.height;
+        previewCtx.drawImage(previewBitmap, 0, 0);
+        previewCtx.save();
+        previewCtx.lineWidth = 2;
+        previewCtx.strokeStyle = '#0b1f3a';
+        previewCtx.fillStyle = 'rgba(11, 31, 58, 0.08)';
+        previewCtx.font = '12px system-ui, sans-serif';
+        previewCtx.textBaseline = 'middle';
+        for (const c of prepared.scene.controls || []) {
+          const r = c.rect;
+          previewCtx.fillRect(r.x, r.y, r.width, r.height);
+          previewCtx.strokeRect(r.x + 0.5, r.y + 0.5, Math.max(0, r.width - 1), Math.max(0, r.height - 1));
+          previewCtx.fillStyle = '#0b1f3a';
+          previewCtx.fillText(`${c.id} ${c.label}`, r.x + 6, r.y + r.height / 2);
+          previewCtx.fillStyle = 'rgba(11, 31, 58, 0.08)';
+        }
+        previewCtx.restore();
       } else {
-        const scaled = new OffscreenCanvas(scene.viewport.width, scene.viewport.height);
-        const sctx = scaled.getContext('2d', { willReadFrequently: true });
-        sctx.drawImage(bitmap, 0, 0, scene.viewport.width, scene.viewport.height);
-        const source = sctx.getImageData(0, 0, scene.viewport.width, scene.viewport.height);
-        previewMeta = paintSelectivePreview(previewCtx, source, prepared.scene, {
-          blockSize: 14,
-          paintFallback: paintScene,
-        });
-        scaled.width = 0;
-        scaled.height = 0;
+        paintScene(previewCtx, prepared.scene);
+        previewMeta = { mode: 'wireframe', localOnly: true, elapsedMs: 0, host: previewMeta.host || 'popup' };
       }
     } catch {
       paintScene(previewCtx, prepared.scene);
@@ -549,7 +621,7 @@ $('#capture').addEventListener('click', async () => {
     clear();
     status(formatCaptureFailure(e));
   } finally {
-    bitmap?.close();
+    try { previewBitmap?.close?.(); } catch { /* ignore */ }
     setBusy(false);
   }
 });
@@ -566,15 +638,6 @@ $('#plan').addEventListener('click', async () => {
     const pairingToken = $('#token').value.trim();
     if (pairingToken.length < 24) throw new Error('Paste your local pairing token first.');
     await api.storage.session?.set({ pairingToken });
-    status(t('reason_health_checking'));
-    const health = await checkReasonHealthBeforeSend({
-      origin: 'http://127.0.0.1:9041',
-      timeoutMs: 2500,
-    });
-    if (!health.ok) {
-      const detail = health.detail || 'planner_unreachable';
-      throw new Error(`${t('reason_health_fail')} (${detail})`);
-    }
     await call({ kind: 'fresh', revision: prepared.scene.revision });
     status(t('sending'));
     const body = requestSchema.parse(prepared);

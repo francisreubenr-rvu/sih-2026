@@ -26,6 +26,59 @@ export const TOOLBAR_ACTIVETAB_NOTE = Object.freeze({
 });
 
 /**
+ * Snapshot the active http(s) tab at toolbar-open (gesture) time.
+ * Capture must refuse if the tab navigates or switches before Capture (DBG-003 H3).
+ */
+export function snapshotGestureTab(tab) {
+  if (!tab?.id || !tab.url || !/^https?:/i.test(tab.url)) return null;
+  return { id: tab.id, url: tab.url, windowId: tab.windowId ?? null };
+}
+
+/**
+ * Compare current active tab to the toolbar-open gesture snapshot.
+ */
+export function assertGestureTabFresh(gesture, active) {
+  if (!gesture?.id || !gesture?.url) {
+    return {
+      ok: false,
+      code: 'needs_activeTab',
+      message: 'Tab capture needs the toolbar gesture. Close this window and open Dhristi from the toolbar icon, then Capture again.',
+    };
+  }
+  if (!active?.id || !active?.url || !/^https?:/i.test(active.url)) {
+    return {
+      ok: false,
+      code: 'needs_activeTab',
+      message: 'No captureable http(s) tab. Focus a page, then open Dhristi from the toolbar.',
+    };
+  }
+  if (active.id !== gesture.id) {
+    return {
+      ok: false,
+      code: 'navigated_since_gesture',
+      message: 'Active tab changed since the toolbar was opened. Close this popup, focus the page, open Dhristi from the toolbar again, then Capture.',
+    };
+  }
+  const norm = (u) => String(u).split('#')[0];
+  if (norm(active.url) !== norm(gesture.url)) {
+    return {
+      ok: false,
+      code: 'navigated_since_gesture',
+      message: 'This tab navigated since the toolbar was opened. Close this popup, open Dhristi from the toolbar on the new page, then Capture.',
+    };
+  }
+  return { ok: true };
+}
+
+/** True when the sandbox iframe / process likely died (soft-recreate candidate). */
+export function isSandboxDeathError(err) {
+  const message = err && typeof err === 'object' && 'message' in err
+    ? String(err.message)
+    : String(err ?? '');
+  return /sandbox (frame unavailable|timed out|load timed out)|Detector disposed|Local vision sandbox/i.test(message);
+}
+
+/**
  * Classify capture / messaging failures for actionable UI copy.
  * @param {unknown} err
  */
@@ -33,6 +86,22 @@ export function classifyCaptureError(err) {
   const message = err && typeof err === 'object' && 'message' in err
     ? String(err.message)
     : String(err ?? 'unknown');
+  if (err && typeof err === 'object' && err.code === 'navigated_since_gesture') {
+    return {
+      code: 'navigated_since_gesture',
+      message,
+      humanAction: 'reopen_toolbar_after_navigation',
+      retryable: true,
+    };
+  }
+  if (/navigated since the toolbar|Active tab changed since the toolbar/i.test(message)) {
+    return {
+      code: 'navigated_since_gesture',
+      message,
+      humanAction: 'reopen_toolbar_after_navigation',
+      retryable: true,
+    };
+  }
   if (/activeTab|<all_urls>|Either the/i.test(message)) {
     return {
       code: 'needs_activeTab',
