@@ -1,0 +1,51 @@
+# Prototype unit/integration tests — Ollama-free.
+# Uses createApp test-double infer / ollamaProvider fetchImpl stubs only.
+# Do not add an Ollama service container to this job.
+name: Prototype tests
+
+on:
+  pull_request:
+    paths:
+      - 'Prototype/**'
+      - 'scripts/**'
+      - '.github/workflows/prototype-test.yml'
+  push:
+    branches: [master, 'brain/**', 'feat/**']
+    paths:
+      - 'Prototype/**'
+      - 'scripts/**'
+      - '.github/workflows/prototype-test.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prototype-test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Prototype npm test:ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: Prototype/package-lock.json
+
+      - name: Install and test (no Ollama)
+        working-directory: Prototype
+        env:
+          # Unreachable on purpose — CI must never call a live planner.
+          OLLAMA_URL: http://127.0.0.1:9
+          DHRISTI_CI: '1'
+        run: |
+          npm ci
+          npm run test:ci
