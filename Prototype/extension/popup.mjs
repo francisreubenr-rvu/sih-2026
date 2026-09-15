@@ -1,4 +1,4 @@
-import { createVisionDetector } from '../shared/vision.mjs';
+import { createWorkerVisionDetector } from '../shared/vision-worker-client.mjs';
 import { makeScene, paintScene } from '../shared/privacy.mjs';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
 import { paintSelectivePreview } from '../shared/selective-redaction.mjs';
@@ -298,7 +298,9 @@ $('#capture').addEventListener('click', async () => {
     try { await api.tabs.update(tabId, { active: true }); } catch { /* ignore */ }
     await ensureInjected(tabId);
     completed.push('inject');
-    const { detector, cacheHit } = await detectorCache.get(() => createVisionDetector({
+    // ORT WASM runs in a module Worker (not the MV3 popup process) — DBG-001 H1.
+    const { detector, cacheHit } = await detectorCache.get(() => createWorkerVisionDetector({
+      workerUrl: api.runtime.getURL('vision-worker.js'),
       runtimeUrl: api.runtime.getURL('models/ort/ort.wasm.min.mjs'),
       modelUrl: api.runtime.getURL('models/ultraface-rfb320.onnx'),
     }));

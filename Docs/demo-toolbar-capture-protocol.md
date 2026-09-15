@@ -23,6 +23,7 @@ Exact steps for a human operator to exercise the **shipped** MV3 extension via t
 
 1. Freeze evidence identity: record `git rev-parse HEAD`, date/time (UTC), machine OS/arch, Chrome version, extension version from `chrome://extensions`.
 2. `cd Prototype && npm ci && node ../scripts/build-extension.mjs` (or `npm run build:extension`). Confirm `extension-build/` is current.
+   - **After any branding/rebuild:** chrome://extensions → **Remove** Dhristi → rebuild → **Load unpacked** again → pin → then Capture. Do not Capture against a half-replaced tree (DBG-001 H2). Build now stages then renames; still prefer a clean Remove/Load.
 3. `npm start` → open `http://127.0.0.1:9041/app/fixture.html` in a normal tab (not `chrome://`).
 4. Chrome → **Load unpacked** → select `Prototype/extension-build/`. Pin **Dhristi** to the toolbar.
 5. **Click the Dhristi toolbar icon** (required for `activeTab`). Do **not** open `popup.html` as a bookmarked tab or via “Inspect views” as the capture gesture.
