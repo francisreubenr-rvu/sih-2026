@@ -8,6 +8,8 @@ import {
   formatLocalRiskSummary,
   scoreHeldOutFixtureCase,
   scoreHeldOutFixtureDocument,
+  correlateScoreBandsWithGroundTruthKinds,
+  groundTruthKinds,
 } from '../shared/score-path.mjs';
 import { THREE_PATHS, resolveOperatingMode } from '../shared/latency-strategy.mjs';
 
@@ -83,4 +85,28 @@ test('wave6 held-out fixture document bridges with null official/WebPII scores',
     24,
   );
   assert.match(bridged.honesty[0], /Local heuristic/);
+});
+
+test('groundTruthKinds extracts kinds without inventing scores', () => {
+  assert.deepEqual(groundTruthKinds({ groundTruthPii: [{ kind: 'face' }, { kind: 'field' }] }), ['face', 'field']);
+  assert.deepEqual(groundTruthKinds({}), []);
+});
+
+test('band↔GT-kind correlation stays descriptive with null official/WebPII', async () => {
+  const path = join(root, 'Benchmarks/datasets/wave6-heldout-pii-fixtures.json');
+  const doc = JSON.parse(await readFile(path, 'utf8'));
+  const bridged = scoreHeldOutFixtureDocument(doc, { sourcePath: 'Benchmarks/datasets/wave6-heldout-pii-fixtures.json' });
+  assert.equal(bridged.schema_version, 2);
+  assert.equal(bridged.officialScore, null);
+  assert.equal(bridged.webPiiScore, null);
+  const corr = bridged.gtKindBandCorrelation;
+  assert.equal(corr.officialScore, null);
+  assert.equal(corr.webPiiScore, null);
+  assert.equal(corr.caseCount, 24);
+  assert.ok(corr.byGroundTruthKind.face);
+  assert.ok(corr.byGroundTruthKind.password);
+  assert.match(corr.honesty[0], /Descriptive correlation/);
+  const recomputed = correlateScoreBandsWithGroundTruthKinds(bridged.rows);
+  assert.equal(recomputed.caseCount, 24);
+  assert.equal(recomputed.webPiiScore, null);
 });

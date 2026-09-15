@@ -31,7 +31,7 @@ async function readBody(req, limit=262144) {
   }
   try {return JSON.parse(Buffer.concat(chunks).toString('utf8'));} catch {throw new Error('invalid_json');}
 }
-export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:9041', infer, localInfer, saveAudit=()=>{}, readAudits=()=>[], now=Date.now}={}) {
+export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:9041', infer, localInfer, saveAudit=()=>{}, readAudits=()=>[], now=Date.now, plannerProbe=null}={}) {
   if(typeof token!=='string'||token.length<24) throw new Error('Set a pairing token with at least 24 characters');
   if(typeof infer!=='function') throw new Error('Reasoning provider required');
   let requests=[];let inFlight=0;
@@ -58,7 +58,18 @@ export function createApp({token, origins=[], publicOrigin='http://127.0.0.1:904
     }
     const path=new URL(req.url,'http://localhost').pathname;
     try {
-      if(path==='/api/v1/health' && req.method==='GET') return send(200,{data:{status:'ready',scheme:'dhristi-semantic-v1',modelConnection:'checked-on-request'}});
+      if(path==='/api/v1/health' && req.method==='GET') {
+        const probePlanner = new URL(req.url,'http://localhost').searchParams.get('planner') === '1';
+        const data = {status:'ready',scheme:'dhristi-semantic-v1',modelConnection: probePlanner ? 'probed' : 'checked-on-request'};
+        if (probePlanner) {
+          if (typeof plannerProbe !== 'function') {
+            data.planner = {reachable:false,latencyMs:0,modelsListed:0,sampleModels:[],expectedModelPresent:false,error:'probe_not_configured'};
+          } else {
+            data.planner = await plannerProbe();
+          }
+        }
+        return send(200,{data});
+      }
       if(path==='/api/v1/session' && req.method==='GET') {
         // Only our same-origin document may bootstrap the demo session. Extension
         // pairing uses the user's explicit copy/paste, not wildcard extension CORS.
