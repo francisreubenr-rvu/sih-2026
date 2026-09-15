@@ -1,13 +1,39 @@
 {
   "name": "wave6-human-evaluation",
-  "generatedAt": "2026-09-14T11:20:28.981289Z",
+  "schema_version": 2,
+  "generatedAt": "2026-09-15T01:21:40.805Z",
   "status": "unknown",
   "protocol": "Docs/human-evaluation-protocol.md",
   "forms": "Docs/human-evaluation-forms.md",
+  "decision_note": "Docs/decisions/brain-72h-g14-g20.md",
   "acceptance": {
     "required_participants": 5,
     "required_narrative_reviewers": 3,
     "non_author": true
+  },
+  "participant_entry_template": {
+    "id": "P1",
+    "date_utc": "",
+    "role_context": "",
+    "tasks_completed": [],
+    "task_success": "unaided|with_help|fail",
+    "time_to_first_protect_mmss": "",
+    "likert": {
+      "pixels_on_device": null,
+      "trust_chip_clarity": null,
+      "preview_useful": null,
+      "limits_honest": null
+    },
+    "confusion_notes": ""
+  },
+  "narrative_reviewer_entry_template": {
+    "id": "R1",
+    "date_utc": "",
+    "deck_or_site_version": "",
+    "rubric_score": null,
+    "strengths": "",
+    "risks_or_overclaims": "",
+    "recommend_demo_as_is": null
   },
   "participants": [],
   "narrative_reviewers": [],
@@ -15,5 +41,5 @@
     "note": "Team-only rehearsals must not be counted toward G20.",
     "sessions": []
   },
-  "g20_reason": "Wave6 publishes forms + protocol; zero non-author participants recorded. Do not mark G20 pass."
+  "g20_reason": "Recruit template + runnable protocol published (brain/72h-human-eval). Zero non-author participants recorded. Do not mark G20 pass."
 }
