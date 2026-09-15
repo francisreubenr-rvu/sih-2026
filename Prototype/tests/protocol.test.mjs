@@ -38,3 +38,9 @@ test('PII detector identifies email and numeric IDs while export remains indepen
  assert.deepEqual(classifySensitive('Reach synthetic.person@example.test'),['email']);
  assert.ok(classifySensitive('Account 1234 5678 9012').includes('number'));
 });
+
+test('password is an accepted opaque region kind',()=>{
+ const e=example();e.scene.regions.push({kind:'password',rect:{x:10,y:100,width:120,height:24}});
+ assert.equal(requestSchema.safeParse(e).success,true);
+ assert.equal(requestSchema.safeParse({...e,scene:{...e.scene,regions:[{kind:'credential',rect:{x:1,y:1,width:2,height:2}}]}}).success,false);
+});

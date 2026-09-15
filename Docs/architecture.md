@@ -9,6 +9,19 @@ Status: engineering candidate v0.1. Bound to a single primary user journey.
 3. `assertSanitizedPayload` builds a semantics-only scene (controls, geometry, region kinds).
 4. **Privacy-only mode** stops at human review (no network). **Planner-assisted mode** sends the scene to a local Ollama/Qwen process, then requires explicit confirm before a bounded click/scroll/done.
 
+
+## Three operating paths (Architect)
+
+| Path | Pipeline | LLM | Status | SLO / G11 |
+|------|----------|-----|--------|-----------|
+| **Fast** | capture→detect→mask→privacy review | No | Implemented (privacy-only default) | Local protect diagnostic only. **Not** G11. |
+| **Score** | heuristic / risk score | No | **Planned / partial** | No SLO until wired; no fake UI. |
+| **Reason** | Ollama/Qwen plan + confirm | Yes (local) | Implemented | Outside &lt;200 ms today; G11 full-flow stays **fail** until p95&lt;200 at n≥100. |
+
+DigiLocker-looking trust chrome is **inspired UX / trust pattern only** — not DigiLocker partnership, APIs, credentials, or custody. See `Docs/decisions/brain-72h-contracts-copy.md`.
+
+Policy: `Docs/decisions/brain-72h-three-path.md`. Contracts/copy: `Docs/decisions/brain-72h-contracts-copy.md`. Latency strategy: `Docs/decisions/wave4-latency-strategy.md`.
+
 ## Services (≤2)
 
 | Service | Role |
@@ -30,5 +43,5 @@ Status: engineering candidate v0.1. Bound to a single primary user journey.
 
 ## Evidence pointers
 
-- `CONTEXT.md`, `Prototype/README.md`, `Docs/decisions/wave4-latency-strategy.md`
+- `CONTEXT.md`, `Prototype/README.md`, `Docs/decisions/wave4-latency-strategy.md`, `Docs/decisions/brain-72h-three-path.md`
 - Extension loop: `Benchmarks/results/extension-loop-v01.json`

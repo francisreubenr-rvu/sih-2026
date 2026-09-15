@@ -15,6 +15,17 @@
 9. Show one controlled failure (capture without toolbar → reopen from glyph) and recovery.
 10. Reset demo; repeat. Log each rehearsal in `Benchmarks/results/demo-rehearsal.json`.
 
+
+## Toolbar Capture & protect evidence (Fast / privacy-only)
+
+For a logged **production Chrome toolbar** run (human `activeTab` gesture, privacy-only Fast path, no Ollama):
+
+1. Follow **`Docs/demo-toolbar-capture-protocol.md`** exactly.
+2. Fill **`Benchmarks/results/toolbar-capture-log-v01.json`** (stub starts empty — no fabricated passes).
+3. Do **not** claim G03 pass from this alone; Guardrails G03 stays unknown until acceptance is met.
+
+Automation harnesses under `scripts/validate-extension-*.mjs` use a temporary overlay and are **not** toolbar-glyph evidence.
+
 ## Recorded fallback
 
 - File: `Docs/demo-fallback.webm` (copy of `Docs/demo-recording/dhristi-browser-v02.webm`).

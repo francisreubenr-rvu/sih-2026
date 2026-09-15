@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node server/index.mjs",
     "test": "node --test tests/*.test.mjs",
+    "test:ci": "OLLAMA_URL=http://127.0.0.1:9 DHRISTI_CI=1 node --test tests/*.test.mjs",
     "build:extension": "node ../scripts/build-extension.mjs",
     "build": "node ../scripts/build-prototype.mjs"
   },

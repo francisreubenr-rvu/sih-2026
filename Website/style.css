@@ -289,6 +289,14 @@ h3{letter-spacing:-.03em;font-size:24px;line-height:1.25;margin-bottom:16px}
 .architecture-section{padding-top:72px}
 .architecture-section .section-heading{max-width:780px}
 .architecture-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.architecture-buttons.path-buttons{grid-template-columns:repeat(3,1fr)}
+.path-ascii{
+  margin:0 0 16px;padding:14px 16px;overflow:auto;
+  border:2px solid var(--ink);border-left:4px solid var(--saffron);
+  border-radius:var(--radius);background:var(--navy);color:var(--paper);
+  font:12px/1.55 var(--font-mono);box-shadow:var(--shadow);white-space:pre;
+}
+.digilocker-note{margin-top:16px}
 .architecture-node{
   background:var(--paper);border:2px solid var(--ink);border-radius:var(--radius);
   padding:20px;min-height:152px;display:flex;flex-direction:column;text-align:left;

@@ -31,9 +31,9 @@ const STRINGS = {
     subtitle: 'SIH26171 · on-device review',
     trust: 'on this device',
     trust_hi: 'इस उपकरण पर',
-    trust_title: 'Capture and privacy filter run in this browser. Raw pixels are not sent.',
-    headline: 'Review what leaves\nyour browser.',
-    lede: 'Local capture → privacy filter → protected layout → optional local planner. Confirm every action.',
+    trust_title: 'Capture and privacy filter run in this browser. What can leave: semantic scene fields only. Raw pixels stay local.',
+    headline: 'Review what leaves\nthis device.',
+    lede: 'Three paths: Fast (local protect), Score (planned), Reason (local LLM). Confirm every action.',
     toolbar_note: TOOLBAR_ACTIVETAB_NOTE.en,
     token_label: 'Local pairing token',
     token_ph: 'Paste from the local workspace',
@@ -44,32 +44,46 @@ const STRINGS = {
     status_ready: 'Capture the active tab. Filtering runs here before any network call.',
     capture: 'Capture & protect',
     badge_local: 'Local selective preview',
-    badge_egress: 'Egress: semantics only',
-    plan: 'Send protected layout',
+    badge_egress: 'What leaves: semantic scene fields only',
+    plan: 'Send protected layout (Reason)',
     proposal_empty: 'No action proposed.',
     execute: 'Confirm this action',
     inspect: 'Inspect outbound data',
     setup: 'Server setup',
     setup_body: 'Start the local server at http://127.0.0.1:9041. Add this exact origin to ALLOWED_ORIGINS, then restart it:',
-    setup_note: 'Raw screenshots are used locally for vision and selective preview and are not included in requests. Prefer a local Ollama/Qwen planner; cloud LLM keys are not required.',
+    setup_note: 'Raw screenshots stay on this device for vision/preview and are never in requests. DigiLocker-inspired trust pattern only — not DigiLocker partner, API, or custody. Prefer local Ollama/Qwen; cloud LLM keys not required.',
     capturing: 'Running local vision and selective redaction. No screen data is sent.',
-    review: 'Review the selective preview. Outbound JSON is semantics-only — original pixels excluded.',
+    review: 'Review the selective preview. What leaves: semantic scene fields only — raw pixels stay local.',
     sending: 'Sending approved semantics to the local reasoning server.',
     err_activeTab: 'Tab capture needs the toolbar gesture. Close this window and open Dhristi from the toolbar icon, then Capture again.',
     err_connection: 'Page connection lost. Retrying injection…',
     err_restricted: 'This page blocks extension capture. Open the local fixture or an allowed http(s) page.',
-    mode_legend: 'Operating mode',
-    mode_privacy: 'Privacy-only (skip planner)',
-    mode_wireframe: 'Faster wireframe preview',
-    privacy_done: 'Privacy-only review complete. No network call. Enable planner mode to send protected layout.',
+    mode_legend: 'Path selection',
+    mode_privacy: 'Fast path — privacy-only (no LLM)',
+    mode_score: 'Score path — planned / not wired',
+    mode_wireframe: 'Faster wireframe preview (Fast only)',
+    mode_hint: 'Uncheck Fast to enable Reason (plan+confirm). Score has no runnable UI yet.',
+    path_fast_name: 'Fast',
+    path_fast_blurb: 'capture→detect→mask→review · no LLM',
+    path_score_name: 'Score',
+    path_score_blurb: 'heuristic risk · planned / partial',
+    path_reason_name: 'Reason',
+    path_reason_blurb: 'Ollama/Qwen · outside <200 ms',
+    path_policy: 'Fast timing is not a G11 pass. G11 measures planner-inclusive full-flow p95 <200 ms at n≥100.',
+    reason_tag: 'Reason path · local Ollama/Qwen · outside <200 ms G11 budget',
+    egress_copy: 'What leaves this device: semantic scene fields only. Raw pixels stay local.',
+    digilocker_note: 'DigiLocker-inspired trust pattern only — not DigiLocker partner, API, or custody.',
+    privacy_done: 'Fast path complete (no LLM). Timing above is local protect only — not a G11 pass. Uncheck Fast to use Reason.',
+    metrics_fast_prefix: 'Fast path (not G11 full-flow)',
+    metrics_reason_note: 'Reason path uses local LLM; historically seconds — outside <200 ms budget.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
     trust: 'on this device',
     trust_hi: 'इस उपकरण पर',
-    trust_title: 'कैप्चर और गोपनीयता फ़िल्टर इस ब्राउज़र में चलते हैं। कच्चे पिक्सेल नहीं भेजे जाते।',
-    headline: 'देखें कि आपके ब्राउज़र से\nक्या बाहर जाता है।',
-    lede: 'स्थानीय कैप्चर → गोपनीयता फ़िल्टर → सुरक्षित लेआउट → वैकल्पिक स्थानीय प्लानर। प्रत्येक क्रिया की पुष्टि करें।',
+    trust_title: 'कैप्चर और गोपनीयता फ़िल्टर इस ब्राउज़र में चलते हैं। बाहर जा सकता है: केवल अर्थ-दृश्य फ़ील्ड। कच्चे पिक्सेल स्थानीय रहते हैं।',
+    headline: 'देखें कि इस उपकरण से\nक्या बाहर जाता है।',
+    lede: 'तीन पथ: Fast (स्थानीय protect), Score (नियोजित), Reason (स्थानीय LLM)। प्रत्येक क्रिया की पुष्टि करें।',
     toolbar_note: TOOLBAR_ACTIVETAB_NOTE.hi,
     token_label: 'स्थानीय पेयरिंग टोकन',
     token_ph: 'स्थानीय वर्कस्पेस से चिपकाएँ',
@@ -80,29 +94,55 @@ const STRINGS = {
     status_ready: 'सक्रिय टैब कैप्चर करें। नेटवर्क से पहले फ़िल्टरिंग यहाँ होती है।',
     capture: 'कैप्चर और सुरक्षित करें',
     badge_local: 'स्थानीय चयनात्मक पूर्वावलोकन',
-    badge_egress: 'आउटबाउंड: केवल अर्थ',
-    plan: 'सुरक्षित लेआउट भेजें',
+    badge_egress: 'बाहर जाता है: केवल अर्थ-दृश्य फ़ील्ड',
+    plan: 'सुरक्षित लेआउट भेजें (Reason)',
     proposal_empty: 'कोई क्रिया प्रस्तावित नहीं।',
     execute: 'इस क्रिया की पुष्टि करें',
     inspect: 'आउटबाउंड डेटा देखें',
     setup: 'सर्वर सेटअप',
     setup_body: 'स्थानीय सर्वर http://127.0.0.1:9041 पर चलाएँ। ALLOWED_ORIGINS में यह मूल जोड़कर पुनः आरंभ करें:',
-    setup_note: 'स्क्रीनशॉट केवल स्थानीय दृष्टि/पूर्वावलोकन के लिए हैं; अनुरोधों में शामिल नहीं। स्थानीय Ollama/Qwen प्राथमिकता; क्लाउड LLM कुंजी आवश्यक नहीं।',
+    setup_note: 'स्क्रीनशॉट इस उपकरण पर रहते हैं; अनुरोधों में नहीं। DigiLocker-प्रेरित विश्वास पैटर्न मात्र — भागीदार/API/कस्टडी नहीं। स्थानीय Ollama/Qwen प्राथमिकता।',
     capturing: 'स्थानीय दृष्टि और चयनात्मक रेडक्शन चल रहा है। स्क्रीन डेटा नहीं भेजा जाता।',
-    review: 'चयनात्मक पूर्वावलोकन देखें। आउटबाउंड JSON केवल अर्थ है — मूल पिक्सेल नहीं।',
+    review: 'चयनात्मक पूर्वावलोकन देखें। बाहर जाता है: केवल अर्थ-दृश्य फ़ील्ड — कच्चे पिक्सेल स्थानीय।',
     sending: 'अनुमोदित अर्थ स्थानीय रीज़निंग सर्वर को भेजे जा रहे हैं।',
     err_activeTab: 'टैब कैप्चर के लिए टूलबार जेस्चर चाहिए। इस विंडो को बंद कर टूलबार आइकन से Dhristi खोलें, फिर फिर से कैप्चर करें।',
     err_connection: 'पृष्ठ कनेक्शन खो गया। इंजेक्शन पुनः प्रयास…',
     err_restricted: 'यह पृष्ठ एक्सटेंशन कैप्चर रोकता है। स्थानीय फ़िक्स्चर या अनुमत पृष्ठ खोलें।',
-    mode_legend: 'ऑपरेटिंग मोड',
-    mode_privacy: 'केवल गोपनीयता (प्लानर छोड़ें)',
-    mode_wireframe: 'तेज़ वायरफ़्रेम पूर्वावलोकन',
-    privacy_done: 'गोपनीयता-केवल समीक्षा पूर्ण। कोई नेटवर्क कॉल नहीं। सुरक्षित लेआउट भेजने के लिए प्लानर मोड चालू करें।',
+    mode_legend: 'पथ चयन',
+    mode_privacy: 'तेज़ पथ — केवल गोपनीयता (कोई LLM नहीं)',
+    mode_score: 'स्कोर पथ — नियोजित / वायर्ड नहीं',
+    mode_wireframe: 'तेज़ वायरफ़्रेम पूर्वावलोकन (केवल Fast)',
+    mode_hint: 'Reason (योजना+पुष्टि) के लिए Fast अनचेक करें। Score अभी runnable नहीं।',
+    path_fast_name: 'Fast',
+    path_fast_blurb: 'कैप्चर→डिटेक्ट→मास्क→समीक्षा · कोई LLM नहीं',
+    path_score_name: 'Score',
+    path_score_blurb: 'ह्यूरिस्टिक जोखिम · नियोजित / आंशिक',
+    path_reason_name: 'Reason',
+    path_reason_blurb: 'Ollama/Qwen · <200 ms के बाहर',
+    path_policy: 'Fast समय G11 पास नहीं है। G11 = प्लानर सहित full-flow p95 <200 ms, n≥100।',
+    reason_tag: 'Reason पथ · स्थानीय Ollama/Qwen · <200 ms G11 बजट के बाहर',
+    egress_copy: 'इस उपकरण से बाहर: केवल अर्थ-दृश्य फ़ील्ड। कच्चे पिक्सेल स्थानीय रहते हैं।',
+    digilocker_note: 'DigiLocker-प्रेरित विश्वास पैटर्न मात्र — DigiLocker भागीदार, API, या कस्टडी नहीं।',
+    privacy_done: 'Fast पथ पूर्ण (कोई LLM नहीं)। ऊपर का समय केवल स्थानीय protect है — G11 पास नहीं। Reason के लिए Fast अनचेक करें।',
+    metrics_fast_prefix: 'Fast पथ (G11 full-flow नहीं)',
+    metrics_reason_note: 'Reason पथ स्थानीय LLM उपयोग करता है; ऐतिहासिक रूप से सेकंड — <200 ms बजट के बाहर।',
   },
 };
 
 function t(key) {
   return (STRINGS[lang] && STRINGS[lang][key]) || STRINGS.en[key] || key;
+}
+
+
+function syncPathChips() {
+  const privacyOnly = Boolean($('#mode-privacy')?.checked);
+  const active = privacyOnly ? 'fast' : 'reason';
+  for (const li of document.querySelectorAll('#path-strip [data-path]')) {
+    const name = li.getAttribute('data-path');
+    const isActive = name === active;
+    li.setAttribute('aria-current', String(isActive));
+    li.setAttribute('data-state', name === 'score' ? 'planned' : (isActive ? 'active' : 'available'));
+  }
 }
 
 function applyLang() {
@@ -121,6 +161,7 @@ function applyLang() {
   }
   $('#lang-en').setAttribute('aria-pressed', String(lang === 'en'));
   $('#lang-hi').setAttribute('aria-pressed', String(lang === 'hi'));
+  syncPathChips();
 }
 
 function setStage(next) {
@@ -178,7 +219,18 @@ try {
 
 $('#lang-en').addEventListener('click', () => { lang = 'en'; applyLang(); });
 $('#lang-hi').addEventListener('click', () => { lang = 'hi'; applyLang(); });
+$('#mode-privacy')?.addEventListener('change', () => {
+  syncPathChips();
+  if ($('#mode-privacy').checked) {
+    $('#plan').disabled = true;
+    status(t('status_ready'));
+  } else if (prepared) {
+    $('#plan').disabled = false;
+    status(t('review'));
+  }
+});
 applyLang();
+syncPathChips();
 
 async function ensureInjected(id) {
   setStage('inject');
@@ -341,7 +393,7 @@ $('#capture').addEventListener('click', async () => {
       ? ` · heap ${(heap.usedJSHeapSize / (1024 * 1024)).toFixed(1)} MiB JS`
       : '';
     $('#metrics').textContent =
-      `${result.detections.length} face(s) · ${result.inferenceMs.toFixed(1)} ms WASM · ` +
+      `${t('metrics_fast_prefix')} · ${result.detections.length} face(s) · ${result.inferenceMs.toFixed(1)} ms WASM · ` +
       `${prepared.scene.controls.length} controls · ${prepared.scene.regions.length} regions · ` +
       `preview ${previewMeta.mode}${preserved} · capture ${lastCaptureMs.toFixed(0)} ms${heapTxt}`;
     const privacyOnly = Boolean($('#mode-privacy')?.checked);
@@ -364,6 +416,7 @@ $('#capture').addEventListener('click', async () => {
       $('#plan').disabled = false;
       status(t('review'));
     }
+    syncPathChips();
   } catch (e) {
     clear();
     status(formatCaptureFailure(e));
@@ -411,7 +464,8 @@ $('#plan').addEventListener('click', async () => {
           ? `Proposed: scroll ${action.direction}.`
           : 'Task complete.';
     $('#execute').disabled = action.type === 'done';
-    status(`Received a validated action from ${result.data.provider.model}.`);
+    status(`Received a validated action from ${result.data.provider.model}. ${t('metrics_reason_note')}`);
+    syncPathChips();
   } catch (e) {
     clear();
     status(`${e.message} Capture again to retry.`);
