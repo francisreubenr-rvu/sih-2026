@@ -1,5 +1,5 @@
 {
-  "scope": "SIH26171 engineering candidate claims; Wave 1\u20134. No fabricated metrics.",
+  "scope": "SIH26171 engineering candidate claims; Wave 1–4. No fabricated metrics.",
   "claims": [
     {
       "claim": "Six named RV University second-year B.Tech CSE team members",
@@ -13,10 +13,10 @@
       "source": "Guardrails/guardrails.json and Benchmarks/definitions.json"
     },
     {
-      "claim": "Lighthouse median 100 all four categories on mobile and desktop",
-      "type": "measured_local_preparation_site",
-      "source": "Benchmarks/results/lighthouse-summary.json",
-      "limit": "Six local runs; not full WCAG conformance or production/domain performance"
+      "claim": "Lighthouse dhristi-v02: mobile performance median 99; desktop performance 100; accessibility/best-practices/SEO 100 on both profiles",
+      "type": "measured_local_dhristi_site",
+      "source": "Benchmarks/results/lighthouse-dhristi-v02-summary.json",
+      "limit": "Six local runs on loopback static site; not full WCAG conformance or production/domain performance. Older lighthouse-summary.json (prep site all-100) is historical, not the current Dhristi Pages build."
     },
     {
       "claim": "Internal deadline 11 September 2026",

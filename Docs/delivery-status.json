@@ -10,7 +10,7 @@
     "Cited official domain, technical and competitor research with Raw archives",
     "20 guardrails and 11 KPI definitions with explicit unknown/fail states",
     "Browser JS prototype with real UltraFace WASM, protected scene, Node API, Ollama Qwen and confirmed actions",
-    "42 passing automated tests and 18 passing actual Chrome boundary checks",
+    "115 passing automated tests (`cd Prototype && npm test`, 2026-09-15) and 18 passing actual Chrome boundary checks",
     "Preserved real-provider development pilot: latest Qwen7B 22/24, two remaining semantic errors",
     "Six-slide supplied-format candidate, 15-slide talk, POTX, PDFs and speaker notes",
     "Continuous synthetic-fixture browser recording, compatible MP4, verified playback and text description",
