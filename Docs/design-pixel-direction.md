@@ -23,3 +23,7 @@ Distilled from the 25-pin **Dhristi Pixel Refs** board.
 - Scan card: navy field with paper body, 3–5 metric cells, explicit timestamp.
 - Primary CTA: saffron fill, navy text, 2px dark keyline, pressed state offset by 2px.
 - Empty/loading state: low-contrast blue pixel texture with one calm explanatory sentence.
+
+## Brand chrome
+
+Hybrid C (Council): pixel viewfinder **bug** for favicon/extension; aperture **lockup** for website masthead only. See `Docs/decisions/brain-logo-hybrid-c.md`.

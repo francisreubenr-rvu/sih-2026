@@ -13,3 +13,10 @@ Tests and limitations are recorded in Docs/verification.md. Lighthouse targets a
 ## GitHub Pages
 
 The repository workflow publishes this directory directly, preserving relative asset/download paths under the project URL. Deployments run on changes to Website on master, or manual workflow dispatch. No repository-wide documentation or Raw files are included in the Pages artifact.
+
+## Brand assets (Hybrid C)
+
+- Favicon / chrome bug: `assets/dhristi-mark.svg` (pixel viewfinder).
+- Masthead lockup: `assets/dhristi-lockup.svg` (aperture + wordmark + on-device vision).
+- Mono / inverted bugs: `dhristi-mark-mono.svg`, `dhristi-mark-inverted.svg`.
+- Hard don’ts: no DigiLocker / MeitY / partner marks in logo chrome. See `Docs/decisions/brain-logo-hybrid-c.md`.

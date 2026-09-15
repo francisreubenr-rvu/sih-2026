@@ -56,13 +56,10 @@ body {
   width: 20px;
   height: 20px;
   flex: 0 0 auto;
-  background: var(--navy);
-  border: 2px solid var(--ink);
+  display: block;
   border-radius: var(--radius-sm);
-  box-shadow:
-    inset 0 0 0 2px var(--paper),
-    inset 5px 5px 0 0 var(--mist),
-    inset 7px 7px 0 0 var(--saffron);
+  border: 1px solid var(--ink);
+  /* Hybrid C · A bug only in extension header (not lockup) */
 }
 
 .brand strong {
