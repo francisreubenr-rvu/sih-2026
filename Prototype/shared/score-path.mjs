@@ -99,6 +99,116 @@ export function formatLocalRiskSummary(risk, { lang = 'en' } = {}) {
  *
  * @param {{ id?: string, description?: string, detectorRegions?: unknown[], observedControls?: unknown[], expectedControls?: unknown[], groundTruthPii?: unknown[] }} fixtureCase
  */
+
+/**
+ * Collect ground-truth PII kinds from a held-out fixture case.
+ * @param {{ groundTruthPii?: Array<{ kind?: string }> }} fixtureCase
+ * @returns {string[]}
+ */
+export function groundTruthKinds(fixtureCase = {}) {
+  const gt = Array.isArray(fixtureCase.groundTruthPii) ? fixtureCase.groundTruthPii : [];
+  return gt
+    .map((x) => (typeof x?.kind === 'string' && x.kind.trim() ? x.kind.trim() : 'unknown'))
+    .filter(Boolean);
+}
+
+/**
+ * Correlation report: local Score bands vs held-out ground-truth PII kinds.
+ * Descriptive only — never invents WebPII saturation or officialScore.
+ *
+ * @param {Array<{ localRiskBand?: string, localRiskPoints?: number, groundTruthPiiCount?: number, groundTruthKinds?: string[], counts?: { kindCounts?: Record<string, number> } }>} rows
+ */
+export function correlateScoreBandsWithGroundTruthKinds(rows = []) {
+  const bandTotals = { low: 0, elevated: 0, high: 0 };
+  const byGtKind = {};
+  const pointsByGtCount = {};
+  let kindMatchCases = 0;
+  let kindMismatchCases = 0;
+  let casesWithGt = 0;
+
+  for (const row of rows) {
+    const band = row?.localRiskBand;
+    if (bandTotals[band] !== undefined) bandTotals[band] += 1;
+    const kinds = Array.isArray(row?.groundTruthKinds) ? [...new Set(row.groundTruthKinds)] : [];
+    const gtCount = typeof row?.groundTruthPiiCount === 'number'
+      ? row.groundTruthPiiCount
+      : kinds.length;
+    const bucket = String(gtCount);
+    if (!pointsByGtCount[bucket]) pointsByGtCount[bucket] = { cases: 0, pointsSum: 0, bands: { low: 0, elevated: 0, high: 0 } };
+    pointsByGtCount[bucket].cases += 1;
+    pointsByGtCount[bucket].pointsSum += Number(row?.localRiskPoints) || 0;
+    if (pointsByGtCount[bucket].bands[band] !== undefined) pointsByGtCount[bucket].bands[band] += 1;
+
+    if (kinds.length) casesWithGt += 1;
+    for (const kind of (kinds.length ? kinds : ['(none)'])) {
+      if (!byGtKind[kind]) byGtKind[kind] = { cases: 0, bands: { low: 0, elevated: 0, high: 0 } };
+      byGtKind[kind].cases += 1;
+      if (byGtKind[kind].bands[band] !== undefined) byGtKind[kind].bands[band] += 1;
+    }
+
+    const detectorKinds = new Set(Object.keys(row?.counts?.kindCounts || {}));
+    const gtSet = new Set(kinds);
+    if (gtSet.size === 0 && detectorKinds.size === 0) {
+      kindMatchCases += 1;
+    } else if (gtSet.size && [...gtSet].every((k) => detectorKinds.has(k))) {
+      kindMatchCases += 1;
+    } else {
+      kindMismatchCases += 1;
+    }
+  }
+
+  const meanPointsByGtCount = {};
+  for (const [k, v] of Object.entries(pointsByGtCount)) {
+    meanPointsByGtCount[k] = {
+      cases: v.cases,
+      meanLocalRiskPoints: v.cases ? Math.round((v.pointsSum / v.cases) * 100) / 100 : 0,
+      bands: v.bands,
+    };
+  }
+
+  // Simple ordinal association: higher GT count buckets should tend toward higher mean points.
+  const ordered = Object.keys(meanPointsByGtCount)
+    .map(Number)
+    .filter((n) => !Number.isNaN(n))
+    .sort((a, b) => a - b);
+  let monotonicPairs = 0;
+  let comparablePairs = 0;
+  for (let i = 0; i < ordered.length; i += 1) {
+    for (let j = i + 1; j < ordered.length; j += 1) {
+      comparablePairs += 1;
+      const a = meanPointsByGtCount[String(ordered[i])].meanLocalRiskPoints;
+      const b = meanPointsByGtCount[String(ordered[j])].meanLocalRiskPoints;
+      if (b >= a) monotonicPairs += 1;
+    }
+  }
+
+  return {
+    name: 'score-band-vs-gt-kind-correlation',
+    schema_version: 1,
+    caseCount: rows.length,
+    casesWithGroundTruth: casesWithGt,
+    bandTotals,
+    byGroundTruthKind: byGtKind,
+    meanPointsByGroundTruthCount: meanPointsByGtCount,
+    detectorKindCoversAllGtKinds: {
+      matchCases: kindMatchCases,
+      mismatchCases: kindMismatchCases,
+      note: 'Fixture detectorRegions vs groundTruthPii kinds — structural overlap only, not precision/recall.',
+    },
+    gtCountVsPointsMonotonicShare: comparablePairs
+      ? Math.round((monotonicPairs / comparablePairs) * 1000) / 1000
+      : null,
+    officialScore: null,
+    webPiiScore: null,
+    honesty: [
+      'Descriptive correlation of local heuristic bands vs held-out GT kinds only.',
+      'officialScore remains null. webPiiScore remains null — no invented WebPII.',
+      'Not a calibrated privacy metric, not organizer weighted score, not a G11 pass.',
+      'Kinds such as media that are absent from HIGH/MED tables still count as residual opaque structure.',
+    ],
+  };
+}
+
 export function scoreHeldOutFixtureCase(fixtureCase = {}) {
   const controls = Array.isArray(fixtureCase.observedControls)
     ? fixtureCase.observedControls
@@ -113,6 +223,7 @@ export function scoreHeldOutFixtureCase(fixtureCase = {}) {
     scene: { controls, regions },
     labels,
   });
+  const gtKinds = groundTruthKinds(fixtureCase);
   return {
     id: fixtureCase.id || 'anonymous',
     description: fixtureCase.description || '',
@@ -120,9 +231,8 @@ export function scoreHeldOutFixtureCase(fixtureCase = {}) {
     localRiskPoints: risk.points,
     counts: risk.counts,
     reasons: risk.reasons,
-    groundTruthPiiCount: Array.isArray(fixtureCase.groundTruthPii)
-      ? fixtureCase.groundTruthPii.length
-      : 0,
+    groundTruthPiiCount: gtKinds.length,
+    groundTruthKinds: gtKinds,
     officialScore: null,
     webPiiScore: null,
     status: 'held_out_local_risk_only',
@@ -142,14 +252,16 @@ export function scoreHeldOutFixtureDocument(doc = {}, meta = {}) {
   for (const row of rows) {
     if (bandCounts[row.localRiskBand] !== undefined) bandCounts[row.localRiskBand] += 1;
   }
+  const gtKindBandCorrelation = correlateScoreBandsWithGroundTruthKinds(rows);
   return {
     name: 'score-path-heldout',
-    schema_version: 1,
+    schema_version: 2,
     sourceFixture: doc.name || null,
     sourceVersion: doc.version || null,
     sourcePath: meta.sourcePath || null,
     caseCount: rows.length,
     bandCounts,
+    gtKindBandCorrelation,
     officialScore: null,
     webPiiScore: null,
     webPiiClaim: null,
@@ -157,6 +269,7 @@ export function scoreHeldOutFixtureDocument(doc = {}, meta = {}) {
     honesty: [
       'Local heuristic risk bands only — bridged from held-out synthetic fixture JSON.',
       'officialScore remains null. webPiiScore remains null (no invented WebPII).',
+      'gtKindBandCorrelation is descriptive association only — not WebPII, not official SIH score.',
       'Not a G11 pass. Not official SIH weighted saturation.',
       'Bands describe residual opaque-region structure after Fast protect semantics, not privacy certification.',
     ],

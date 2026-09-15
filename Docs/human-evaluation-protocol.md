@@ -1,6 +1,6 @@
-# Human evaluation protocol (G20) — runnable this week
+# Human evaluation protocol (G20) — templates retained; recruitment paused
 
-**Status:** Protocol ready for recruitment and sessions. **Zero** non-author results are recorded. Do **not** mark G20 pass. No fabricated participants.
+**Status:** **PAUSED** (2026-09-15). Francis paused non-author recruitment. Protocol + forms remain on disk for when recruiting resumes. **Zero** non-author results are recorded. Do **not** mark G20 pass. No fabricated participants. Do **not** treat open checklists below as active recruiting.
 
 **Guardrail:** G20 acceptance — ≥5 representative **non-author** participants perform frozen navigation tasks; ≥3 **non-author** reviewers score narrative with an anchored rubric. If unavailable, report `unknown` and do not claim benchmark saturation.
 
@@ -15,13 +15,13 @@ Collect task-level usability and privacy-trust evidence from people who did **no
 
 ---
 
-## This week — run plan
+## Run plan — **paused** (do not send invites)
 
 | Day focus | Action | Owner | Done? |
 |-----------|--------|-------|:-----:|
-| Recruit | Send recruit template (below) to ≥8 candidates aiming for ≥5 completes + ≥3 reviewers | Francis | ☐ |
-| Schedule | Book 20–25 min fixture sessions (synthetic only); parallel or async narrative review 15 min | Francis | ☐ |
-| Facilitate | Run frozen tasks; fill forms; anonymize as P1… / R1… | Facilitator | ☐ |
+| Recruit | **Paused** — Francis halted invites (2026-09-15). Do not send the recruit template until explicitly resumed. | Francis | ⏸ |
+| Schedule | Book 20–25 min fixture sessions only after recruitment resumes | Francis | ⏸ |
+| Facilitate | Run frozen tasks; fill forms; anonymize as P1… / R1… | Facilitator | ⏸ |
 | Log | Append anonymized objects to `human-evaluation.json` only after real sessions | Francis | ☐ |
 | Gate | Keep `status: unknown` until thresholds met; never invent rows | — | ☐ |
 
@@ -29,7 +29,7 @@ Collect task-level usability and privacy-trust evidence from people who did **no
 
 ---
 
-## Recruit template (copy/paste)
+## Recruit template (copy/paste) — **do not send while paused**
 
 **Subject / opener:** Quick 20-min privacy UX check for a student SIH prototype (synthetic data only)
 

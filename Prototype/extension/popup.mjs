@@ -17,6 +17,7 @@ import {
   resolvePreviewStrategy,
 } from '../shared/latency-strategy.mjs';
 import { computeLocalRiskScore, formatLocalRiskSummary } from '../shared/score-path.mjs';
+import { checkReasonHealthBeforeSend } from '../shared/reason-health.mjs';
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = s => document.querySelector(s);
@@ -115,6 +116,8 @@ const STRINGS = {
     score_done: 'Score path: local risk band shown. Not a G11 pass; official score null.',
     reason_cold_start: 'Reason planner unavailable (Ollama down or unreachable). Stay on Fast or Score — no LLM required. Start ollama serve + pull qwen2.5:7b-instruct only if you need Reason.',
     reason_failed_keep: 'Reason failed. Protected capture is still here — enable Fast or Score, or fix Ollama and retry Send.',
+    reason_health_checking: 'Checking Reason planner (local Ollama) before Send…',
+    reason_health_fail: 'Reason planner unreachable on pre-Send check. Stay on Fast or Score — start ollama serve + pull qwen2.5:7b-instruct only if you need Reason.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
@@ -173,6 +176,8 @@ const STRINGS = {
     score_done: 'Score पथ: स्थानीय जोखिम बैंड दिखाया। G11 पास नहीं; आधिकारिक स्कोर null।',
     reason_cold_start: 'Reason प्लानर अनुपलब्ध (Ollama बंद/अगम्य)। Fast या Score पर रहें — LLM आवश्यक नहीं। Reason के लिए ollama serve + qwen2.5:7b-instruct।',
     reason_failed_keep: 'Reason विफल। सुरक्षित कैप्चर अभी भी है — Fast/Score चालू करें, या Ollama ठीक कर फिर Send करें।',
+    reason_health_checking: 'Send से पहले Reason प्लानर (स्थानीय Ollama) जाँच…',
+    reason_health_fail: 'Send-पूर्व जाँच में Reason प्लानर अगम्य। Fast या Score पर रहें — Reason के लिए ollama serve + qwen2.5:7b-instruct।',
   },
 };
 
@@ -561,6 +566,15 @@ $('#plan').addEventListener('click', async () => {
     const pairingToken = $('#token').value.trim();
     if (pairingToken.length < 24) throw new Error('Paste your local pairing token first.');
     await api.storage.session?.set({ pairingToken });
+    status(t('reason_health_checking'));
+    const health = await checkReasonHealthBeforeSend({
+      origin: 'http://127.0.0.1:9041',
+      timeoutMs: 2500,
+    });
+    if (!health.ok) {
+      const detail = health.detail || 'planner_unreachable';
+      throw new Error(`${t('reason_health_fail')} (${detail})`);
+    }
     await call({ kind: 'fresh', revision: prepared.scene.revision });
     status(t('sending'));
     const body = requestSchema.parse(prepared);

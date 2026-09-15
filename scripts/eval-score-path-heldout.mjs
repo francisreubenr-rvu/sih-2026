@@ -31,3 +31,7 @@ await mkdir(dirname(jsonOut), { recursive: true });
 await writeFile(jsonOut, JSON.stringify(record, null, 2));
 console.log(`Wrote ${jsonOut}`);
 console.log(`cases=${record.caseCount} bands=${JSON.stringify(record.bandCounts)} officialScore=${record.officialScore} webPiiScore=${record.webPiiScore}`);
+const corr = record.gtKindBandCorrelation;
+if (corr) {
+  console.log(`gtKindCorrelation kinds=${Object.keys(corr.byGroundTruthKind || {}).join(',')} monotonicShare=${corr.gtCountVsPointsMonotonicShare}`);
+}

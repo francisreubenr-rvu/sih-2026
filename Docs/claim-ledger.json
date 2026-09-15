@@ -1,5 +1,5 @@
 {
-  "scope": "SIH26171 engineering candidate claims; Wave 1–7 + G14 pass evidence. No fabricated metrics.",
+  "scope": "SIH26171 engineering candidate claims; Wave 1\u20137 + G14 pass evidence. No fabricated metrics.",
   "claims": [
     {
       "claim": "Six named RV University second-year B.Tech CSE team members",
@@ -80,7 +80,7 @@
       "claim": "Score path computes a local heuristic risk band after Fast protect in the extension popup; officialScore remains null.",
       "type": "implemented_partial",
       "source": "Prototype/shared/score-path.mjs; Prototype/extension/popup.mjs; Docs/decisions/brain-blind-cycle-02.md",
-      "limit": "Diagnostic banding only. Organizer accuracy+PII+redaction weights ≈65% are evaluation weights, not Dhristi scores. Not WebPII; not a G11 pass."
+      "limit": "Diagnostic banding only. Organizer accuracy+PII+redaction weights \u224865% are evaluation weights, not Dhristi scores. Not WebPII; not a G11 pass."
     },
     {
       "id": "judge-fast-path-no-ollama",
@@ -98,24 +98,45 @@
     },
     {
       "id": "score-path-heldout-bridge",
-      "claim": "Score path bridges local risk bands to Wave 6 held-out synthetic fixture JSON (24 cases) without inventing WebPII or officialScore.",
+      "claim": "Score path bridges local risk bands to Wave 6 held-out synthetic fixture JSON (24 cases) and reports descriptive band\u2194GT-kind correlation without inventing WebPII or officialScore.",
       "type": "implemented_partial",
       "source": "Prototype/shared/score-path.mjs; Benchmarks/results/score-path-heldout-v01.json; scripts/eval-score-path-heldout.mjs",
       "limit": "Local heuristic bands only. officialScore and webPiiScore remain null. Not privacy certification."
     },
     {
       "id": "reason-cold-start-ux",
-      "claim": "When Reason planner fails (Ollama down/unreachable), extension keeps the protected capture and steers the operator to Fast/Score.",
+      "claim": "When Reason planner fails (Ollama down/unreachable), or pre-Send health check fails, extension keeps the protected capture and steers the operator to Fast/Score.",
       "type": "implemented_ux",
-      "source": "Prototype/extension/popup.mjs",
+      "source": "Prototype/extension/popup.mjs; Prototype/shared/reason-health.mjs; Prototype/server/app.mjs",
       "limit": "Does not start Ollama; does not claim Reason availability without a local model."
     },
     {
       "id": "site-wave5-7-g14-promotion",
-      "claim": "GitHub Pages latest-evidence section promotes Wave 5–7 + G14 pass ahead of Wave 4 archive cards; Wave footer copy no longer claims G14 unknown against the live ledger.",
+      "claim": "GitHub Pages latest-evidence section promotes Wave 5\u20137 + G14 pass ahead of Wave 4 archive cards; Wave footer copy no longer claims G14 unknown against the live ledger.",
       "type": "site_copy",
       "source": "Website/index.html; Guardrails/guardrails.json",
       "limit": "Pages deploy follows merge; treat guardrails.json as live gate board."
+    },
+    {
+      "id": "g20-recruitment-paused",
+      "claim": "G20 non-author recruitment is paused by Francis (2026-09-15); templates remain; status unknown; not a pass.",
+      "type": "process_status",
+      "source": "Docs/human-evaluation-protocol.md; Docs/delivery-status.json; Guardrails/guardrails.json G20; Benchmarks/results/human-evaluation.json",
+      "limit": "Pause is owner process state, not a fabricated evaluation result. Do not flip G20 to pass/fail from pause alone."
+    },
+    {
+      "id": "reason-presend-ollama-health",
+      "claim": "Reason path probes local Ollama via GET /api/v1/health?planner=1 before Send.",
+      "type": "implemented_ux",
+      "source": "Prototype/shared/reason-health.mjs; Prototype/server/app.mjs; Prototype/extension/popup.mjs",
+      "limit": "Local loopback probe only; does not invent model quality or G11 timing."
+    },
+    {
+      "id": "pages-deploy-lag-cycle03",
+      "claim": "As of blind cycle-04 live fetch (2026-09-15), GitHub Pages #latest-evidence still headed Wave 4 while master already promotes Wave 5\u20137 + G14 \u2014 treat as deploy lag, not copy regression on master.",
+      "type": "site_ops_observation",
+      "source": "Live https://francisreubenr-rvu.github.io/sih-2026/ vs Website/index.html on master after PR#24",
+      "limit": "Observation timestamped to cycle-04 review; re-fetch after next Pages deploy."
     }
   ]
 }

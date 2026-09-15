@@ -53,3 +53,10 @@
 
 - G14: three consecutive logged successes + fallback verified → then update demo-rehearsal status + G14 reason.
 - G20: ≥5 / ≥3 anonymized rows → then update human-evaluation status + G20 reason.
+
+
+---
+
+## Addendum — recruitment paused (2026-09-15)
+
+Francis paused G20 non-author recruitment. Keep protocol/forms as templates. Leave `Guardrails` G20 `status: unknown`. Do not send the recruit template until explicitly resumed. Blind cycle-04 aligned site/ledger/protocol language to this pause.

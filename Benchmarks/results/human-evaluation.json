@@ -41,5 +41,11 @@
     "note": "Team-only rehearsals must not be counted toward G20.",
     "sessions": []
   },
-  "g20_reason": "Recruit template + runnable protocol published (brain/72h-human-eval). Zero non-author participants recorded. Do not mark G20 pass."
+  "g20_reason": "G20 recruitment paused by Francis (2026-09-15). Templates remain; zero non-author participants. Do not mark G20 pass; do not present protocol as active recruiting.",
+  "recruitment": {
+    "status": "paused",
+    "pausedAt": "2026-09-15",
+    "pausedBy": "Francis",
+    "note": "Invites halted; resume only on explicit owner decision."
+  }
 }
