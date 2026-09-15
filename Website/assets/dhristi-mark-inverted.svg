@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Dhristi">
-  <!-- Hybrid C · A bug: pixel viewfinder (v4 family). Tokens navy/paper/mist/saffron. -->
-  <rect width="64" height="64" fill="#162b46"/>
-  <path fill="#f3ead8" fill-rule="evenodd" d="M10 14h4V10h36v4h4v36h-4v4H14v-4h-4V14zm6 2h32v32H16V16z"/>
+  <!-- Hybrid C · A bug inverted (paper field) -->
+  <rect width="64" height="64" fill="#f3ead8"/>
+  <path fill="#162b46" fill-rule="evenodd" d="M10 14h4V10h36v4h4v36h-4v4H14v-4h-4V14zm6 2h32v32H16V16z"/>
   <path fill="#c7d5d2" fill-rule="evenodd" d="M18 22h4v-4h20v4h4v20h-4v4H22v-4h-4V22zm6 2h16v16H24V24z"/>
+  <rect x="24" y="24" width="16" height="16" fill="#162b46"/>
   <rect x="28" y="28" width="8" height="8" fill="#d88732"/>
   <path fill="#101827" d="M12 12h8v3h-5v5h-3V12zm32 0h8v8h-3v-5h-5V12zM12 44h3v5h5v3h-8V44zm40 0v8h-8v-3h5v-5h3z"/>
 </svg>

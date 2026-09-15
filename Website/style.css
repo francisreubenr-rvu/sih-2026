@@ -91,6 +91,12 @@ h3{letter-spacing:-.03em;font-size:24px;line-height:1.25;margin-bottom:16px}
   border:2px solid var(--ink);border-radius:var(--radius-sm);
 }
 .brand-mark:after{content:none}
+
+/* Hybrid C · B lockup (masthead/hero); A bug elsewhere */
+.brand-lockup-link{display:inline-flex;align-items:center;text-decoration:none;line-height:0}
+.brand-lockup{height:48px;width:auto;display:block}
+.brand-mark-img{display:inline-block;width:24px;height:24px;flex:0 0 auto;vertical-align:middle}
+
 .site-header nav{display:flex;gap:24px;align-items:center}
 .site-header nav a{font-size:14px;text-decoration:none;min-height:44px;display:flex;align-items:center;font-weight:550}
 .site-header nav a:hover{text-decoration:underline}
@@ -493,6 +499,8 @@ dialog .small-note{margin-top:16px;margin-bottom:0}
   .site-header{min-height:72px;gap:12px;flex-wrap:wrap}
   .wordmark{font-size:20px}
   .brand-mark{width:22px;height:22px}
+  .brand-lockup{height:36px}
+  .brand-mark-img{width:22px;height:22px}
   .site-header nav{display:none}
   .nav-cta{padding:8px 12px;font-size:11px}
   .nav-cta span{margin-left:8px}

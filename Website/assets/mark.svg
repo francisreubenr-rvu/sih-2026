@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#101827"/>
-  <rect x="8" y="8" width="48" height="48" fill="#162b46"/>
-  <rect x="16" y="16" width="32" height="32" fill="#f3ead8"/>
-  <rect x="24" y="24" width="16" height="16" fill="#c7d5d2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Dhristi">
+  <rect width="64" height="64" fill="#162b46"/>
+  <path fill="#f3ead8" d="M12 8h40v4h4v40h-4v4H12v-4H8V12h4V8zm4 4v4h-4v32h4v4h32v-4h4V16h-4v-4H16z"/>
+  <path fill="#c7d5d2" d="M20 16h24v4h4v24h-4v4H20v-4h-4V20h4v-4zm4 4v4h-4v16h4v4h16v-4h4V24h-4v-4H24z"/>
+  <rect x="24" y="24" width="16" height="16" fill="#162b46"/>
   <rect x="28" y="28" width="8" height="8" fill="#d88732"/>
 </svg>

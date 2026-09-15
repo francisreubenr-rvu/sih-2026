@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-labelledby="lockupTitle lockupDesc">
+  <title id="lockupTitle">Dhristi</title>
+  <desc id="lockupDesc">Dhristi — on-device vision</desc>
+  <!-- Hybrid C · B lockup (hero/masthead only). Navy / paper / saffron. No DigiLocker / MeitY / partner marks. -->
+  <defs>
+    <clipPath id="apertureClip">
+      <circle cx="48" cy="48" r="40"/>
+    </clipPath>
+  </defs>
+  <!-- aperture: geometric iris (inspired by lockup-v2; original SVG) -->
+  <g transform="translate(0 0)">
+    <circle cx="48" cy="48" r="42" fill="#f3ead8" stroke="#162b46" stroke-width="2"/>
+    <g clip-path="url(#apertureClip)">
+      <!-- six iris blades -->
+      <path fill="#162b46" d="M48 8 L78 26 L62 48 L48 28 Z"/>
+      <path fill="#1a3352" d="M78 26 L88 48 L62 48 L70 34 Z"/>
+      <path fill="#162b46" d="M88 48 L78 70 L62 48 L74 56 Z"/>
+      <path fill="#1a3352" d="M78 70 L48 88 L48 62 L66 70 Z"/>
+      <path fill="#162b46" d="M48 88 L18 70 L34 48 L48 68 Z"/>
+      <path fill="#1a3352" d="M18 70 L8 48 L34 48 L26 62 Z"/>
+      <path fill="#162b46" d="M8 48 L18 26 L34 48 L22 40 Z"/>
+      <path fill="#1a3352" d="M18 26 L48 8 L48 34 L30 26 Z"/>
+      <!-- inner ring -->
+      <circle cx="48" cy="48" r="18" fill="#f3ead8"/>
+      <circle cx="48" cy="48" r="14" fill="#162b46"/>
+      <!-- saffron focus triangle -->
+      <path fill="#d88732" d="M48 38 L56 54 L40 54 Z"/>
+    </g>
+  </g>
+  <!-- wordmark -->
+  <g transform="translate(108 28)" fill="#162b46">
+    <text font-family="Geist, system-ui, -apple-system, Segoe UI, sans-serif" font-size="36" font-weight="700" letter-spacing="-0.04em" x="0" y="28">Dhristi</text>
+    <text font-family="Geist, system-ui, -apple-system, Segoe UI, sans-serif" font-size="12" font-weight="500" letter-spacing="0.22em" fill="#5a6570" x="0" y="52">on-device vision</text>
+  </g>
+</svg>

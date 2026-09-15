@@ -26,8 +26,17 @@ Pixel-informed instrument UI distilled from Docs/design-pixel-direction.md (boar
 - **Motion.** Discrete 1–2 frame state changes and instant focus outlines; respect `prefers-reduced-motion`.
 - **A11y.** Contrast, visible focus, keyboard, semantic headings, 44px-class controls where practical.
 
+
+## Brand chrome (Hybrid C)
+
+Council-binding split (see `Docs/decisions/brain-logo-hybrid-c.md`):
+
+- **A bug** — `Website/assets/dhristi-mark.svg`: pixel viewfinder (concentric stepped squares, saffron focus). Favicon, extension icons, popup header, footer monogram. Optional: `dhristi-mark-mono.svg`, `dhristi-mark-inverted.svg`.
+- **B lockup** — `Website/assets/dhristi-lockup.svg`: aperture + **Dhristi** + **on-device vision**. Website masthead/hero only — never in the extension popup.
+- **Hard don’ts:** no DigiLocker locker/document imitation; no MeitY seal; no partner co-brand; saffron = focus/CTA only; never imply DigiLocker affiliation.
+
 ## Surfaces
 
-- Website: `Website/index.html` + `Website/style.css` (+ original SVG under `Website/assets/`).
-- Extension: `Prototype/extension/popup.html` + `popup.css`.
+- Website: `Website/index.html` + `Website/style.css` (+ mark/lockup SVG under `Website/assets/`).
+- Extension: `Prototype/extension/popup.html` + `popup.css` (header uses bug SVG under `icons/`).
 - Local workspace: light chrome alignment in `Prototype/app/` — privacy boundary copy unchanged.
