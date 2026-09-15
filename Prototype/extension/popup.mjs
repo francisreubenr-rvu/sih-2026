@@ -113,6 +113,8 @@ const STRINGS = {
     score_empty: 'Capture & protect first. Score ranks local scene risk only.',
     score_disclaimer: 'Organizer weights accuracy+PII+redaction ≈65% — evaluation weights, not our measured score. officialScore remains null. Not WebPII.',
     score_done: 'Score path: local risk band shown. Not a G11 pass; official score null.',
+    reason_cold_start: 'Reason planner unavailable (Ollama down or unreachable). Stay on Fast or Score — no LLM required. Start ollama serve + pull qwen2.5:7b-instruct only if you need Reason.',
+    reason_failed_keep: 'Reason failed. Protected capture is still here — enable Fast or Score, or fix Ollama and retry Send.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
@@ -169,6 +171,8 @@ const STRINGS = {
     score_empty: 'पहले Capture & protect करें। Score केवल स्थानीय दृश्य जोखिम रैंक करता है।',
     score_disclaimer: 'आयोजक भार accuracy+PII+redaction ≈65% — मूल्यांकन भार, हमारे मापे गए स्कोर नहीं। officialScore null। WebPII नहीं।',
     score_done: 'Score पथ: स्थानीय जोखिम बैंड दिखाया। G11 पास नहीं; आधिकारिक स्कोर null।',
+    reason_cold_start: 'Reason प्लानर अनुपलब्ध (Ollama बंद/अगम्य)। Fast या Score पर रहें — LLM आवश्यक नहीं। Reason के लिए ollama serve + qwen2.5:7b-instruct।',
+    reason_failed_keep: 'Reason विफल। सुरक्षित कैप्चर अभी भी है — Fast/Score चालू करें, या Ollama ठीक कर फिर Send करें।',
   },
 };
 
@@ -260,6 +264,24 @@ function resetStages() {
     li.setAttribute('data-active', 'false');
     li.setAttribute('data-done', 'false');
   }
+}
+
+
+function isPlannerColdStartError(err) {
+  const msg = String(err?.message || err || '').toLowerCase();
+  return /failed to fetch|networkerror|load failed|econnrefused|connection refused|timeout|abort|unreachable|ollama|fetch failed|network request failed|reasoning failed|503|502|504|err_connection/i.test(msg)
+    || err?.name === 'TimeoutError'
+    || err?.name === 'AbortError'
+    || err?.name === 'TypeError';
+}
+
+function preferFastOrScoreAfterReasonFailure() {
+  const privacy = $('#mode-privacy');
+  if (privacy && !privacy.checked) {
+    privacy.checked = true;
+  }
+  $('#plan').disabled = true;
+  syncPathChips();
 }
 
 const status = message => { $('#status').textContent = message; };
@@ -568,8 +590,27 @@ $('#plan').addEventListener('click', async () => {
     status(`Received a validated action from ${result.data.provider.model}. ${t('metrics_reason_note')}`);
     syncPathChips();
   } catch (e) {
-    clear();
-    status(`${e.message} Capture again to retry.`);
+    // Cold-start / planner outage: keep protected capture; steer to Fast/Score (no LLM).
+    plan = null;
+    $('#execute').disabled = true;
+    $('#proposal').textContent = t('proposal_empty');
+    preferFastOrScoreAfterReasonFailure();
+    if (prepared) {
+      $('#plan').disabled = Boolean($('#mode-privacy')?.checked);
+      const detail = e?.message || String(e);
+      status(isPlannerColdStartError(e)
+        ? `${t('reason_cold_start')} (${detail})`
+        : `${t('reason_failed_keep')} (${detail})`);
+      if (lastRisk) renderScorePanel(lastRisk);
+      else if (prepared.scene) {
+        const risk = computeLocalRiskScore({ scene: prepared.scene });
+        lastRisk = risk;
+        renderScorePanel(risk);
+      }
+    } else {
+      clear();
+      status(`${e.message} Capture again to retry.`);
+    }
   } finally {
     setBusy(false);
   }

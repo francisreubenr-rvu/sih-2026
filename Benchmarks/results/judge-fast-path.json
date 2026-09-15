@@ -1,7 +1,7 @@
 {
   "name": "judge-fast-path",
-  "generatedAt": "2026-09-15T16:57:29.174Z",
-  "startedAt": "2026-09-15T16:57:28.528Z",
+  "generatedAt": "2026-09-15T17:01:40.645Z",
+  "startedAt": "2026-09-15T17:01:39.455Z",
   "ollamaRequired": false,
   "ollamaUrlForced": "http://127.0.0.1:9",
   "purpose": "One-command Fast (+ Score diagnostic) judge path without Ollama",
@@ -14,15 +14,15 @@
   "checks": {
     "unit_tests_ollama_unreachable": {
       "status": "pass",
-      "elapsedMs": 638,
+      "elapsedMs": 1178,
       "exitCode": 0,
       "summary": [
-        "# tests 119",
-        "# pass 119",
+        "# tests 121",
+        "# pass 121",
         "# fail 0"
       ],
       "message": "npm run test:ci passed with OLLAMA_URL=http://127.0.0.1:9",
-      "at": "2026-09-15T16:57:29.166Z"
+      "at": "2026-09-15T17:01:40.634Z"
     },
     "score_path_local_heuristic": {
       "status": "pass",
@@ -31,26 +31,37 @@
       "officialScore": null,
       "threePathStatus": "partial_runnable",
       "message": "Local Score risk runs; officialScore null; G11 not claimed",
-      "at": "2026-09-15T16:57:29.167Z"
+      "at": "2026-09-15T17:01:40.636Z"
     },
     "fast_path_microbench": {
       "status": "pass",
       "samples": 30,
-      "meanMs": 0.184,
+      "meanMs": 0.176,
       "g11": "fail",
       "message": "Fast protect microbench recorded; G11 remains fail (Fast ≠ G11)",
-      "at": "2026-09-15T16:57:29.173Z"
+      "at": "2026-09-15T17:01:40.641Z"
+    },
+    "score_heldout_bridge": {
+      "status": "pass",
+      "caseCount": 24,
+      "bandCounts": {
+        "low": 13,
+        "elevated": 10,
+        "high": 1
+      },
+      "message": "Wave6 held-out fixtures bridged to local risk bands; official/WebPII scores null",
+      "at": "2026-09-15T17:01:40.644Z"
     },
     "sanitize_semantics_only": {
       "status": "pass",
       "message": "Semantics-only payload accepted; screenshot field rejected",
-      "at": "2026-09-15T16:57:29.174Z"
+      "at": "2026-09-15T17:01:40.645Z"
     }
   },
   "summary": {
-    "passed": 4,
+    "passed": 5,
     "failed": 0,
-    "total": 4,
+    "total": 5,
     "status": "pass"
   }
 }
