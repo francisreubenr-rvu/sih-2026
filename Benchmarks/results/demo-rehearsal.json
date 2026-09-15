@@ -1,13 +1,13 @@
 {
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
-  "generatedAt": "2026-09-15T01:21:40.805Z",
+  "generatedAt": "2026-09-15T07:08:59.439Z",
   "status": "unknown",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
     "source": "Docs/demo-recording/dhristi-browser-v02.webm",
-    "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
+    "scope": "Recorded browser Pending→Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
     "offline_playable": true
   },
   "runbook": "Docs/demo-runbook.md",
@@ -27,6 +27,21 @@
     "notes": ""
   },
   "planned_slots": [],
-  "consecutive_rehearsals": [],
-  "g14_reason": "Calendar-ready checklist + schema v2 published (brain/72h-human-eval). consecutive_rehearsals still empty. Do not mark G14 pass."
+  "consecutive_rehearsals": [
+    {
+      "index": 1,
+      "date_utc": "2026-09-15T07:08:59.439Z",
+      "operator": "brain-box",
+      "environment": "box",
+      "build_sha": "302e02b85c2ad3f310dd21f38fcd646fd2dd8edd",
+      "result": "fail",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Operator brain-box on environment box. Toolbar glyph opened the MV3 popup, but Capture & protect on privacy-only Fast crashed the extension immediately; no trust-chip verification, selective preview, outbound inspection, or confirm step was completed. G14 remains unknown; this failed run resets any streak."
+    }
+  ],
+  "g14_reason": "One live box rehearsal logged as fail (operator brain-box); three consecutive successes on one build and offline fallback verification are still required. Do not mark G14 pass."
 }
