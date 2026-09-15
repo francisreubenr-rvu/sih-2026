@@ -6,6 +6,7 @@
 
 - [ ] Node 22+; `cd Prototype && npm ci && npm start` → `http://127.0.0.1:9041/`
 - [ ] Optional: Ollama + `qwen2.5:7b-instruct` (planner). If down, leave **Privacy-only** checked.
+- [ ] Optional pre-flight (no Ollama): from repo root `node scripts/judge-fast-path.mjs` or `cd Prototype && npm run judge:fast`.
 - [ ] Load unpacked `Prototype/extension-build/` in Chrome (v0.1.1).
 - [ ] Add extension origin to `ALLOWED_ORIGINS`; restart server; copy pairing token if planning.
 
@@ -14,7 +15,7 @@
 1. Open the synthetic fixture tab (`/app/fixture.html` or operations desk).
 2. **Click the Dhristi toolbar icon** (not a bookmarked `popup.html` tab) so Chrome grants `activeTab`.
 3. Confirm trust chip: “on this device” / “इस उपकरण पर”.
-4. Capture & protect → stage strip advances inject→…→review; selective or wireframe preview appears.
+4. Capture & protect → stage strip advances inject→…→review; selective or wireframe preview appears. Optional: enable **Score path** to show local risk band (`officialScore` null).
 5. Inspect outbound JSON: **no** screenshot / dataUrl / raw pixels.
 6. Privacy-only: stop here and narrate the boundary. Planner mode: Send protected layout → Confirm action.
 
@@ -36,7 +37,7 @@
 
 ## Evidence links
 
-`Benchmarks/results/e2e.json` · `extension-loop-v01.json` · `core-latency.json` · `wave5-pii-redaction-utility-v01.json` · `wave5-demo-screens/` · `Docs/decisions/wave4-latency-strategy.md`
+`Benchmarks/results/e2e.json` · `extension-loop-v01.json` · `core-latency.json` · `judge-fast-path.json` · `wave5-pii-redaction-utility-v01.json` · `wave5-demo-screens/` · `Docs/decisions/wave4-latency-strategy.md`
 
 ## Screenshotable synthetic flow (automation-maximized)
 

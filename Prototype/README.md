@@ -41,6 +41,7 @@ Open the popup's **Server setup**, copy its exact extension origin into `ALLOWED
 ```sh
 npm test          # local unit/integration — test-double providers only
 npm run test:ci   # CI entry: same suite with OLLAMA_URL forced unreachable
+npm run judge:fast # one-command Fast/Score judge path — no Ollama
 node ../scripts/build-prototype.mjs
 node ../scripts/build-extension.mjs
 npm audit --omit=dev
@@ -91,7 +92,7 @@ The extension and web workspace now paint a **local selective pixelation preview
 
 ## Additional validation evidence — 10 September
 
-Run `npm test` for the current 115 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
+Run `npm test` for the current 119 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
 
 `Docs/decisions/model-pilot.md` preserves all real-model development results, including the latest Qwen7B 22/24 result and remaining errors. The continuous recording is `Docs/demo-recording/dhristi-browser-v02.mp4`. Both remain scoped to the synthetic browser demo.
 
@@ -99,7 +100,7 @@ Run `npm test` for the current 115 automated tests. With the app running, open `
 
 The repository includes 100 released synthetic WebPII test screens under `app/bench-assets/webpii-test100/`, with source attribution in `Raw/datasets/webpii-test100/`. These are dataset reproductions, not real user screenshots or partner endorsements. Run `python3 ../scripts/fetch-webpii-test100.py` from this directory to verify the frozen image hashes.
 
-Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. The original raster checkpoint passed 42 prototype tests; the current total is 115. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
+Open `/app/benchmark.html` after building. The main-thread and worker buttons run separate 100-case local measurements with ten warmups. They do not call the server model. The worker remains experimental; the primary workspace still uses its tested existing detector. The original raster checkpoint passed 42 prototype tests; the current total is 119. Seven separate scorer tests run with `python3 -m unittest discover -s scripts/tests -v` from the repository root.
 
 Read `Docs/decisions/raster-evaluation.md` before quoting results. Full-image masking covered all selected PII regions while preserving zero original visual pixels; no claim of broad PII accuracy or task utility follows.
 
@@ -115,7 +116,7 @@ Browser validation on 11 September: the original policy left two of 14 sensitive
 
 `/app/task-loop.html` is linked from the main workspace. Start authorizes safe actions in the built-in synthetic fixture only. The runner uses the existing local vision and model adapters, reobserves after each action and checks declared fixture postconditions. It stops after 8 actions, 90 seconds, two unchanged observations, cancellation or an execution error. A model's `done` reply alone cannot produce a completed status.
 
-The current suite has 115 passing tests, including 10 coordinator cases. Build passes. Actual in-app browser runs completed all three authored task goals; cancellation during planning stopped with zero actions. The first provider-unavailable attempt is preserved. These runs do not establish arbitrary-site reliability; the native extension still uses the existing manual review flow. See `Docs/decisions/browser-experiments-2026-09-11.md`.
+The current suite has 119 passing tests, including 10 coordinator cases. Build passes. Actual in-app browser runs completed all three authored task goals; cancellation during planning stopped with zero actions. The first provider-unavailable attempt is preserved. These runs do not establish arbitrary-site reliability; the native extension still uses the existing manual review flow. See `Docs/decisions/browser-experiments-2026-09-11.md`.
 
 ## Experimental local-reference draft flow
 
@@ -123,7 +124,7 @@ Open `/app/local-reference.html` from the workspace. Capture the synthetic repor
 
 References are bound to the original target object and page revision, require confirmation, expire after 30 seconds, and are consumed before writes. Reset/navigation revokes the vault. The current adapter only supports the authored synthetic email field; arbitrary-site input handlers can transmit typed values and require a different authorization/integration review.
 
-Validation: current suite 115 passing tests; three correct authored real-Qwen provider cases and a running-server/SQLite readback pass. The 11 September browser run observed expiry rejection and a confirmed local draft fill, supported by the visible field and fixture equality oracle. A conflicting read-only property probe is preserved as inconclusive; native-extension support remains unverified. Evidence and limitations: `Docs/decisions/local-reference-pilot.md` and `Docs/decisions/browser-experiments-2026-09-11.md`.
+Validation: current suite 119 passing tests; three correct authored real-Qwen provider cases and a running-server/SQLite readback pass. The 11 September browser run observed expiry rejection and a confirmed local draft fill, supported by the visible field and fixture equality oracle. A conflicting read-only property probe is preserved as inconclusive; native-extension support remains unverified. Evidence and limitations: `Docs/decisions/local-reference-pilot.md` and `Docs/decisions/browser-experiments-2026-09-11.md`.
 
 If the configured Ollama endpoint no longer lists the required model, check that service's model directory before downloading weights again. This development machine currently uses a separate instance on `127.0.0.1:11436` with the existing Qwen cache; the private `.env` points to it. Fresh installations may use the standard port 11434. Both the model service and prototype server must be running; a static Pages site cannot host them.
 

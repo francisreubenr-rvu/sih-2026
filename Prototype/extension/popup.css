@@ -195,7 +195,7 @@ h1 {
   border-left: 4px solid var(--muted);
 }
 .path-chip[data-path="fast"] { border-left-color: var(--trust); }
-.path-chip[data-path="score"] { border-left-color: var(--saffron); opacity: 0.85; }
+.path-chip[data-path="score"] { border-left-color: var(--saffron); }
 .path-chip[data-path="reason"] { border-left-color: var(--navy); }
 .path-chip[data-state="active"],
 .path-chip[aria-current="true"] {
@@ -503,6 +503,31 @@ canvas {
 
 .panel-actions { display: grid; gap: 8px; }
 .panel-actions #proposal { margin: 0; }
+
+.panel-score {
+  display: grid;
+  gap: 8px;
+  border-left: 4px solid var(--saffron);
+}
+.panel-score .score-summary {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--navy);
+  font-weight: 600;
+}
+.panel-score .score-reasons {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 11px;
+  color: var(--muted, #52645c);
+}
+.panel-score .score-disclaimer {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--muted, #52645c);
+}
 
 .details-panel {
   border: 2px solid var(--ink);

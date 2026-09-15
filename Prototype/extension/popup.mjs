@@ -16,11 +16,12 @@ import {
   createDetectorCache,
   resolvePreviewStrategy,
 } from '../shared/latency-strategy.mjs';
+import { computeLocalRiskScore, formatLocalRiskSummary } from '../shared/score-path.mjs';
 
 const api = globalThis.browser ?? globalThis.chrome;
 const $ = s => document.querySelector(s);
 const endpoint = 'http://127.0.0.1:9041/api/v1/plans';
-let prepared, plan, tabId, busy = false, lang = 'en', lastCaptureMs = null;
+let prepared, plan, tabId, busy = false, lang = 'en', lastCaptureMs = null, lastRisk = null;
 const detectorCache = createDetectorCache();
 /** Popup-lifetime only — closing the action popup drops the sandbox iframe (DBG-002). */
 let visionPreload = null;
@@ -63,7 +64,7 @@ const STRINGS = {
     trust_hi: 'इस उपकरण पर',
     trust_title: 'Capture and privacy filter run in this browser. What can leave: semantic scene fields only. Raw pixels stay local.',
     headline: 'Review what leaves\nthis device.',
-    lede: 'Three paths: Fast (local protect), Score (planned), Reason (local LLM). Confirm every action.',
+    lede: 'Three paths: Fast (local protect), Score (local risk), Reason (local LLM). Confirm every action.',
     toolbar_note: TOOLBAR_ACTIVETAB_NOTE.en,
     token_label: 'Local pairing token',
     token_ph: 'Paste from the local workspace',
@@ -92,13 +93,13 @@ const STRINGS = {
     err_restricted: 'This page blocks extension capture. Open the local fixture or an allowed http(s) page.',
     mode_legend: 'Path selection',
     mode_privacy: 'Fast path — privacy-only (no LLM)',
-    mode_score: 'Score path — planned / not wired',
+    mode_score: 'Score path — local risk after protect',
     mode_wireframe: 'Faster wireframe preview (Fast only)',
-    mode_hint: 'Uncheck Fast to enable Reason (plan+confirm). Score has no runnable UI yet.',
+    mode_hint: 'Score runs after Fast protect (no LLM). Uncheck Fast to enable Reason. Official SIH score stays null.',
     path_fast_name: 'Fast',
     path_fast_blurb: 'capture→detect→mask→review · no LLM',
     path_score_name: 'Score',
-    path_score_blurb: 'heuristic risk · planned / partial',
+    path_score_blurb: 'local heuristic risk · official null',
     path_reason_name: 'Reason',
     path_reason_blurb: 'Ollama/Qwen · outside <200 ms',
     path_policy: 'Fast timing is not a G11 pass. G11 measures planner-inclusive full-flow p95 <200 ms at n≥100.',
@@ -108,6 +109,10 @@ const STRINGS = {
     privacy_done: 'Fast path complete (no LLM). Timing above is local protect only — not a G11 pass. Uncheck Fast to use Reason.',
     metrics_fast_prefix: 'Fast path (not G11 full-flow)',
     metrics_reason_note: 'Reason path uses local LLM; historically seconds — outside <200 ms budget.',
+    score_tag: 'Score path · local heuristic risk · not official SIH score',
+    score_empty: 'Capture & protect first. Score ranks local scene risk only.',
+    score_disclaimer: 'Organizer weights accuracy+PII+redaction ≈65% — evaluation weights, not our measured score. officialScore remains null. Not WebPII.',
+    score_done: 'Score path: local risk band shown. Not a G11 pass; official score null.',
   },
   hi: {
     subtitle: 'SIH26171 · ऑन-डिवाइस समीक्षा',
@@ -115,7 +120,7 @@ const STRINGS = {
     trust_hi: 'इस उपकरण पर',
     trust_title: 'कैप्चर और गोपनीयता फ़िल्टर इस ब्राउज़र में चलते हैं। बाहर जा सकता है: केवल अर्थ-दृश्य फ़ील्ड। कच्चे पिक्सेल स्थानीय रहते हैं।',
     headline: 'देखें कि इस उपकरण से\nक्या बाहर जाता है।',
-    lede: 'तीन पथ: Fast (स्थानीय protect), Score (नियोजित), Reason (स्थानीय LLM)। प्रत्येक क्रिया की पुष्टि करें।',
+    lede: 'तीन पथ: Fast (स्थानीय protect), Score (स्थानीय जोखिम), Reason (स्थानीय LLM)। प्रत्येक क्रिया की पुष्टि करें।',
     toolbar_note: TOOLBAR_ACTIVETAB_NOTE.hi,
     token_label: 'स्थानीय पेयरिंग टोकन',
     token_ph: 'स्थानीय वर्कस्पेस से चिपकाएँ',
@@ -144,13 +149,13 @@ const STRINGS = {
     err_restricted: 'यह पृष्ठ एक्सटेंशन कैप्चर रोकता है। स्थानीय फ़िक्स्चर या अनुमत पृष्ठ खोलें।',
     mode_legend: 'पथ चयन',
     mode_privacy: 'तेज़ पथ — केवल गोपनीयता (कोई LLM नहीं)',
-    mode_score: 'स्कोर पथ — नियोजित / वायर्ड नहीं',
+    mode_score: 'स्कोर पथ — protect के बाद स्थानीय जोखिम',
     mode_wireframe: 'तेज़ वायरफ़्रेम पूर्वावलोकन (केवल Fast)',
-    mode_hint: 'Reason (योजना+पुष्टि) के लिए Fast अनचेक करें। Score अभी runnable नहीं।',
+    mode_hint: 'Score Fast protect के बाद चलता है (कोई LLM नहीं)। Reason के लिए Fast अनचेक करें। आधिकारिक SIH स्कोर null।',
     path_fast_name: 'Fast',
     path_fast_blurb: 'कैप्चर→डिटेक्ट→मास्क→समीक्षा · कोई LLM नहीं',
     path_score_name: 'Score',
-    path_score_blurb: 'ह्यूरिस्टिक जोखिम · नियोजित / आंशिक',
+    path_score_blurb: 'स्थानीय ह्यूरिस्टिक जोखिम · आधिकारिक null',
     path_reason_name: 'Reason',
     path_reason_blurb: 'Ollama/Qwen · <200 ms के बाहर',
     path_policy: 'Fast समय G11 पास नहीं है। G11 = प्लानर सहित full-flow p95 <200 ms, n≥100।',
@@ -160,6 +165,10 @@ const STRINGS = {
     privacy_done: 'Fast पथ पूर्ण (कोई LLM नहीं)। ऊपर का समय केवल स्थानीय protect है — G11 पास नहीं। Reason के लिए Fast अनचेक करें।',
     metrics_fast_prefix: 'Fast पथ (G11 full-flow नहीं)',
     metrics_reason_note: 'Reason पथ स्थानीय LLM उपयोग करता है; ऐतिहासिक रूप से सेकंड — <200 ms बजट के बाहर।',
+    score_tag: 'Score पथ · स्थानीय ह्यूरिस्टिक जोखिम · आधिकारिक SIH स्कोर नहीं',
+    score_empty: 'पहले Capture & protect करें। Score केवल स्थानीय दृश्य जोखिम रैंक करता है।',
+    score_disclaimer: 'आयोजक भार accuracy+PII+redaction ≈65% — मूल्यांकन भार, हमारे मापे गए स्कोर नहीं। officialScore null। WebPII नहीं।',
+    score_done: 'Score पथ: स्थानीय जोखिम बैंड दिखाया। G11 पास नहीं; आधिकारिक स्कोर null।',
   },
 };
 
@@ -170,13 +179,46 @@ function t(key) {
 
 function syncPathChips() {
   const privacyOnly = Boolean($('#mode-privacy')?.checked);
-  const active = privacyOnly ? 'fast' : 'reason';
+  const scoreOn = Boolean($('#mode-score')?.checked);
+  let active = 'reason';
+  if (privacyOnly && scoreOn) active = 'score';
+  else if (privacyOnly) active = 'fast';
+  else if (scoreOn) active = 'score';
   for (const li of document.querySelectorAll('#path-strip [data-path]')) {
     const name = li.getAttribute('data-path');
     const isActive = name === active;
     li.setAttribute('aria-current', String(isActive));
-    li.setAttribute('data-state', name === 'score' ? 'planned' : (isActive ? 'active' : 'available'));
+    li.setAttribute('data-state', isActive ? 'active' : 'available');
   }
+  const panel = $('#score-panel');
+  if (panel) panel.hidden = !(scoreOn || lastRisk);
+}
+
+function renderScorePanel(risk) {
+  lastRisk = risk || null;
+  const panel = $('#score-panel');
+  const summary = $('#score-summary');
+  const list = $('#score-reasons');
+  if (!panel || !summary || !list) return;
+  if (!risk) {
+    summary.textContent = t('score_empty');
+    list.hidden = true;
+    list.innerHTML = '';
+    panel.hidden = !Boolean($('#mode-score')?.checked);
+    return;
+  }
+  panel.hidden = false;
+  summary.textContent = `${formatLocalRiskSummary(risk, { lang })} · ${risk.reasons?.[0] || ''}`;
+  list.innerHTML = '';
+  for (const reason of (risk.reasons || [])) {
+    const li = document.createElement('li');
+    li.textContent = reason;
+    list.appendChild(li);
+  }
+  const meta = document.createElement('li');
+  meta.textContent = `controls ${risk.counts?.controls ?? 0} · regions ${risk.counts?.regions ?? 0} · points ${risk.points} · officialScore null`;
+  list.appendChild(meta);
+  list.hidden = false;
 }
 
 function applyLang() {
@@ -226,8 +268,10 @@ const clear = () => {
   plan = null;
   lastCaptureMs = null;
   lastLoopSummary = null;
+  lastRisk = null;
   resourceStages = [];
   resetStages();
+  renderScorePanel(null);
   $('#plan').disabled = true;
   $('#execute').disabled = true;
   $('#proposal').textContent = t('proposal_empty');
@@ -254,13 +298,30 @@ try {
 $('#lang-en').addEventListener('click', () => { lang = 'en'; applyLang(); });
 $('#lang-hi').addEventListener('click', () => { lang = 'hi'; applyLang(); });
 $('#mode-privacy')?.addEventListener('change', () => {
+  if (!$('#mode-privacy').checked && $('#mode-score')?.checked) {
+    // Reason path: Score diagnostic still allowed as local-only overlay
+  }
   syncPathChips();
   if ($('#mode-privacy').checked) {
     $('#plan').disabled = true;
-    status(t('status_ready'));
+    status($('#mode-score')?.checked ? t('score_done') : t('status_ready'));
   } else if (prepared) {
     $('#plan').disabled = false;
     status(t('review'));
+  }
+});
+$('#mode-score')?.addEventListener('change', () => {
+  if ($('#mode-score').checked && !$('#mode-privacy').checked) {
+    // Score implies no LLM; force Fast/privacy-only protect
+    $('#mode-privacy').checked = true;
+    $('#plan').disabled = true;
+  }
+  syncPathChips();
+  if (prepared?.scene) {
+    renderScorePanel(computeLocalRiskScore({ scene: prepared.scene }));
+    if ($('#mode-score').checked) status(t('score_done'));
+  } else {
+    renderScorePanel(null);
   }
 });
 applyLang();
@@ -425,12 +486,18 @@ $('#capture').addEventListener('click', async () => {
     const heapTxt = heap.available
       ? ` · heap ${(heap.usedJSHeapSize / (1024 * 1024)).toFixed(1)} MiB JS`
       : '';
+    const risk = computeLocalRiskScore({ scene: prepared.scene });
+    renderScorePanel(risk);
+    const scoreOn = Boolean($('#mode-score')?.checked);
     $('#metrics').textContent =
       `${t('metrics_fast_prefix')} · ${result.detections.length} face(s) · ${result.inferenceMs.toFixed(1)} ms WASM · ` +
       `${prepared.scene.controls.length} controls · ${prepared.scene.regions.length} regions · ` +
-      `preview ${previewMeta.mode}${preserved} · capture ${lastCaptureMs.toFixed(0)} ms${heapTxt}`;
+      `preview ${previewMeta.mode}${preserved} · capture ${lastCaptureMs.toFixed(0)} ms${heapTxt}` +
+      (scoreOn ? ` · ${formatLocalRiskSummary(risk, { lang })}` : '');
     const privacyOnly = Boolean($('#mode-privacy')?.checked);
-    const opMode = resolveOperatingMode(privacyOnly ? OPERATING_MODES.privacy_only : OPERATING_MODES.planner_assisted);
+    const opMode = resolveOperatingMode(
+      scoreOn ? 'score' : (privacyOnly ? OPERATING_MODES.privacy_only : OPERATING_MODES.planner_assisted),
+    );
     if (opMode.skipPlanner) {
       lastLoopSummary = privacyOnlyCompletion({
         ...lastLoopSummary,
@@ -442,9 +509,10 @@ $('#capture').addEventListener('click', async () => {
         previewMode: previewMeta.mode,
         sanitized: true,
         toolbarGesture: 'assumed_from_action_popup',
+        scoreRisk: risk,
       });
       $('#plan').disabled = true;
-      status(t('privacy_done'));
+      status(scoreOn ? t('score_done') : t('privacy_done'));
     } else {
       $('#plan').disabled = false;
       status(t('review'));
@@ -524,5 +592,9 @@ $('#task').addEventListener('change', clear);
 // Expose loop summary for harnesses opened as extension documents.
 Object.defineProperty(globalThis, '__dhristiLoop', {
   get: () => lastLoopSummary,
+  configurable: true,
+});
+Object.defineProperty(globalThis, '__dhristiScore', {
+  get: () => lastRisk,
   configurable: true,
 });
