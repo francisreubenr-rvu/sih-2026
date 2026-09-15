@@ -1,0 +1,50 @@
+{
+  "name": "blind-multisite-01",
+  "generatedAt": "2026-09-15T16:59:42Z",
+  "operator": "brain-box",
+  "path": "fast-privacy-only",
+  "extension_build": "Prototype/extension-build post PR#22",
+  "crash_count": 3,
+  "sites": [
+    {
+      "url": "https://example.com",
+      "crash": false,
+      "preview_ok": true,
+      "notes": "Fast path completed; no LLM"
+    },
+    {
+      "url": "https://www.wikipedia.org",
+      "crash": true,
+      "recovered_after_reload": true,
+      "preview_ok": true,
+      "faces": 0,
+      "regions": 14,
+      "capture_ms": 184
+    },
+    {
+      "url": "https://developer.mozilla.org/en-US/",
+      "crash": false,
+      "preview_ok": true,
+      "faces": 0,
+      "regions": 2,
+      "capture_ms": 190
+    },
+    {
+      "url": "https://www.w3.org/",
+      "crash": true,
+      "recovered_after_reload": true,
+      "preview_ok": true,
+      "faces": 0,
+      "regions": 4,
+      "capture_ms": 196
+    },
+    {
+      "url": "https://francisreubenr-rvu.github.io/sih-2026/",
+      "crash": true,
+      "preview_ok": false,
+      "notes": "Crashed after navigation; no capture"
+    }
+  ],
+  "login_used": false,
+  "g03_claim": false
+}
