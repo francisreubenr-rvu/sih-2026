@@ -26,9 +26,9 @@ Exact steps for a human operator to exercise the **shipped** MV3 extension via t
    - **After any branding/rebuild:** chrome://extensions → **Remove** Dhristi → rebuild → **Load unpacked** again → pin → then Capture. Do not Capture against a half-replaced tree (DBG-001 H2). Build now stages then renames; still prefer a clean Remove/Load.
 3. `npm start` → open `http://127.0.0.1:9041/app/fixture.html` in a normal tab (not `chrome://`).
 4. Chrome → **Load unpacked** → select `Prototype/extension-build/`. Pin **Dhristi** to the toolbar.
-4a. **Reload immediately before each streak Capture** (chrome://extensions → Dhristi → Reload). Do not skip Reload between G14 consecutive runs (DBG-002 H4). After any rebuild: Remove → rebuild → Load unpacked (DBG-001).
+4a. **Reload immediately before each streak Capture** (chrome://extensions → Dhristi → Reload). Do not skip Reload between G14 consecutive runs (DBG-002 H4). For **multi-site / public** hops, Reload between sites as well (DBG-003 H4). After any rebuild: Remove → rebuild → Load unpacked (DBG-001).
 4b. **Fixture-only tabs:** keep only the local fixture / operations desk open. Close production, personal, and GitHub tabs before Capture (DBG-002 H2/H4).
-5. **Click the Dhristi toolbar icon** (required for `activeTab`). Do **not** open `popup.html` as a bookmarked tab or via “Inspect views” as the capture gesture. On open, status may briefly show “Loading local vision…” (sandbox ORT warm); wait until ready before Capture if still loading.
+5. **Click the Dhristi toolbar icon** (required for `activeTab`). Do **not** open `popup.html` as a bookmarked tab or via “Inspect views” as the capture gesture. On open, status may briefly show “Loading local vision…” (sandbox ORT warm); wait until ready before Capture if still loading. After navigating to another site, always close/reopen via a **fresh toolbar click** before Capture (DBG-003).
 6. Confirm UI: trust chip “on this device” / “इस उपकरण पर”; path chip **Fast**; **Privacy-only** checked; Score disabled if shown.
 7. Click **Capture & protect**. Watch stage strip: inject → … → review.
 8. Confirm selective or wireframe **local** preview appears (faces/sensitive regions mosaicked).
@@ -37,7 +37,22 @@ Exact steps for a human operator to exercise the **shipped** MV3 extension via t
 11. Optional controlled failure: attempt capture without a prior toolbar gesture (or from a restricted page), then recover by closing popup → toolbar click → retry.
 12. Save screenshots and fill the log stub (below). Do **not** flip G03 in `Guardrails/guardrails.json` from this file alone.
 
+## Multisite / public-page Capture (DBG-003)
+
+Blind public multi-site smoke after PR#17/#22 showed intermittent MV3 balloon crashes when hopping sites without Reload / fresh toolbar gesture, while heavy PNG decode + selective mosaic still ran in the popup.
+
+**Operator rules (required for multi-site):**
+
+1. **Reload** the extension between sites (or immediately after any chrome://extensions **Errors** badge). Fixture G14 streak rules still require Reload before each consecutive Capture.
+2. After every **navigation** or tab switch: close the popup → **fresh toolbar click** on the target page → wait past “Loading local vision…” → Capture. Do not Capture across a navigation with the same popup open (DBG-003 H3 — Capture refuses with a clear status if the tab URL changed since toolbar open).
+3. Prefer the default **wireframe** preview on public / heavy pages; uncheck only when you need selective mosaic review (mosaic now runs in the sandbox, but wireframe stays cheaper).
+4. If the sandbox soft-restarts (“Local vision sandbox restarted…”) and Capture still fails, **Reload** — Chrome may still attribute sandbox process death to the whole extension.
+5. Close unused heavy tabs when possible. Fixture-only is not required for blind smoke, but reduces GPU / SharedImage pressure.
+
+**Honesty:** Multi-site smoke with fewer crashes is hardening evidence — **not** a G03 pass.
+
 ## What to log (copy into the stub JSON / notes)
+
 
 | Field | What to record |
 |-------|----------------|
