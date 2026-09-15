@@ -1,12 +1,12 @@
 {
   "name": "toolbar-capture-log-v01",
-  "generatedAt": "2026-09-15T06:19:13.430Z",
+  "generatedAt": "2026-09-15T07:27:14Z",
   "status": "partial_evidence",
   "g03_claim": false,
   "g03_status_in_guardrails": "unknown",
   "protocol": "Docs/demo-toolbar-capture-protocol.md",
   "path": "fast-privacy-only",
-  "acceptance_note": "One box Chrome toolbar Fast-path run logged. Do NOT mark G03 pass from a single scenario. Harness overlay e2e is still not toolbar-glyph evidence.",
+  "acceptance_note": "Box Chrome toolbar Fast-path runs logged including post DBG-001 fix. Do NOT mark G03 pass from these scenarios.",
   "runs": [
     {
       "run_id": "toolbar-20260915-box-01",
@@ -40,6 +40,39 @@
         "Benchmarks/results/toolbar-attempt-box/07-fixture-toolbar-icon-pinned.webp"
       ],
       "notes": "Automated box desktop operator clicked real toolbar glyph; Privacy-only Fast; no token/LLM/Ollama/login. Selective preview rendered. g03_claim remains false pending multi-scenario Guardrails acceptance.",
+      "g03_claim": false
+    },
+    {
+      "run_id": "toolbar-20260915-box-postfix-01",
+      "operator": "brain-box",
+      "recorded_at": "2026-09-15T07:27:00Z",
+      "git_sha": "61d8ecb2efd0c5243b0caa39abb6f3fcef5451f5",
+      "browser": "Chrome (Grok Bot computer)",
+      "os": "Linux x86_64 (Grok Bot computer)",
+      "extension_version": "0.1.1",
+      "path": "fast-privacy-only",
+      "ollama_used": false,
+      "stages_observed": "inject\u2192collect\u2192capture\u2192filter\u2192sanitize\u2192review (Fast card: capture\u2192detect\u2192mask\u2192review)",
+      "preview_ok": true,
+      "semantics_only_ok": true,
+      "activeTab_ok": true,
+      "crash": false,
+      "dbg001_fix_verified": true,
+      "metrics": {
+        "faces": 0,
+        "controls": 3,
+        "regions": 7,
+        "wasm_ms": 32.0,
+        "capture_ms_approx": 118,
+        "note": "Fast path display only \u2014 never cite as G11; not G03 pass"
+      },
+      "screenshots": [
+        "Benchmarks/results/toolbar-attempt-box-postfix/01-extensions-loaded.png",
+        "Benchmarks/results/toolbar-attempt-box-postfix/02-popup-before-capture.webp",
+        "Benchmarks/results/toolbar-attempt-box-postfix/03-capture-result.webp",
+        "Benchmarks/results/toolbar-attempt-box-postfix/04-semantics-json.webp"
+      ],
+      "notes": "Post PR#12 (61d8ecb): Remove\u2192Load unpacked from extension-build; popup survived; no crash. g03_claim remains false.",
       "g03_claim": false
     }
   ],
