@@ -32,9 +32,10 @@ Offline fallback check (once per streak): open `Docs/demo-fallback.webm` with no
 
 1. Close extension popup; clear any stale pairing token from the popup field.
 2. Restart local prototype (`cd Prototype && npm start`) if planner path will be used; Privacy-only is fine if Ollama is down.
-3. Open synthetic fixture only (`/app/fixture.html` or operations desk). **No production / personal tabs.**
-4. Confirm toolbar glyph is the capture entry (`activeTab`). Do not demo from a bookmarked `popup.html` tab.
-5. Note build: `git rev-parse HEAD` and extension version from `Prototype/extension/manifest.json`.
+3. Open synthetic fixture only (`/app/fixture.html` or operations desk). **No production / personal / GitHub tabs** (DBG-002).
+4. **chrome://extensions → Dhristi → Reload** immediately before this rehearsal’s Capture (every streak run; do not omit). Screenshot as `01-extensions-reloaded.png` when collecting evidence.
+5. Confirm toolbar glyph is the capture entry (`activeTab`). Do not demo from a bookmarked `popup.html` tab. Allow “Loading local vision…” on popup open to finish before Capture.
+6. Note build: `git rev-parse HEAD` and extension version from `Prototype/extension/manifest.json`.
 
 ---
 

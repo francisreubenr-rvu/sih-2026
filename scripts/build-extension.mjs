@@ -33,7 +33,7 @@ async function atomicReplace(fromUrl, toUrl) {
 }
 
 async function populateExtensionTree(dest) {
-  for (const name of ['manifest.json', 'popup.html', 'popup.css']) {
+  for (const name of ['manifest.json', 'popup.html', 'popup.css', 'ort-sandbox.html']) {
     await copyFile(new URL(`extension/${name}`, root), new URL(name, dest));
   }
   await cp(new URL('extension/icons/', root), new URL('icons/', dest), { recursive: true });
@@ -51,13 +51,24 @@ async function populateExtensionTree(dest) {
       legalComments: 'eof',
     });
   }
-  // Module Worker hosts ORT/WASM away from the MV3 popup process (DBG-001 H1).
+  // Module Worker hosts ORT/WASM away from the MV3 popup main thread (DBG-001 H1).
+  // Kept for web/app paths; extension popup prefers the sandbox host (DBG-002).
   await build({
     entryPoints: [fileURLToPath(new URL('shared/vision-worker.mjs', root))],
     bundle: true,
     format: 'esm',
     platform: 'browser',
     outfile: fileURLToPath(new URL('vision-worker.js', dest)),
+    minify: true,
+    legalComments: 'eof',
+  });
+  // Sandboxed document hosts ORT/WASM in a separate process (DBG-002 H1).
+  await build({
+    entryPoints: [fileURLToPath(new URL('extension/ort-sandbox.mjs', root))],
+    bundle: true,
+    format: 'esm',
+    platform: 'browser',
+    outfile: fileURLToPath(new URL('ort-sandbox.js', dest)),
     minify: true,
     legalComments: 'eof',
   });
@@ -100,8 +111,11 @@ async function populateExtensionTree(dest) {
       '  4. Pin toolbar → then Capture & protect',
       '',
       'Do not Capture against a half-replaced or mid-session rebuilt tree.',
-      'This package includes vision-worker.js (ORT in a module Worker) and',
+      'This package includes ort-sandbox.html (ORT in MV3 sandbox process) and',
+      'vision-worker.js (Dedicated Worker fallback / web path).',
       "manifest CSP 'wasm-unsafe-eval' for WASM inference.",
+      'Protocol: Reload extension immediately before each streak Capture;',
+      'fixture-only tabs (DBG-002).',
       '',
     ].join('\n')
   );

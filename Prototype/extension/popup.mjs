@@ -1,4 +1,4 @@
-import { createWorkerVisionDetector } from '../shared/vision-worker-client.mjs';
+import { createSandboxVisionDetector } from '../shared/vision-sandbox-client.mjs';
 import { makeScene, paintScene } from '../shared/privacy.mjs';
 import { requestSchema, validateAction } from '../shared/protocol.mjs';
 import { paintSelectivePreview } from '../shared/selective-redaction.mjs';
@@ -22,6 +22,36 @@ const $ = s => document.querySelector(s);
 const endpoint = 'http://127.0.0.1:9041/api/v1/plans';
 let prepared, plan, tabId, busy = false, lang = 'en', lastCaptureMs = null;
 const detectorCache = createDetectorCache();
+/** Popup-lifetime only — closing the action popup drops the sandbox iframe (DBG-002). */
+let visionPreload = null;
+
+function visionFactory() {
+  return createSandboxVisionDetector({
+    sandboxUrl: api.runtime.getURL('ort-sandbox.html'),
+    runtimeUrl: api.runtime.getURL('models/ort/ort.wasm.min.mjs'),
+    modelUrl: api.runtime.getURL('models/ultraface-rfb320.onnx'),
+  });
+}
+
+/** Warm ORT in the sandboxed document on popup open, not only on Capture (DBG-002 H3). */
+function ensureVisionPreload() {
+  if (!visionPreload) {
+    status(t('vision_loading'));
+    visionPreload = detectorCache.get(visionFactory).then(
+      (hit) => {
+        if (!busy && currentStage === 'idle' && !prepared) status(t('status_ready'));
+        return hit;
+      },
+      (err) => {
+        visionPreload = null;
+        status(`${t('vision_failed')} (${err?.message || err})`);
+        throw err;
+      },
+    );
+  }
+  return visionPreload;
+}
+
 let resourceStages = [];
 let currentStage = 'idle';
 let lastLoopSummary = null;
@@ -42,6 +72,8 @@ const STRINGS = {
     task_completed: 'Show completed requests',
     task_next: 'Go to the next page',
     status_ready: 'Capture the active tab. Filtering runs here before any network call.',
+    vision_loading: 'Loading local vision…',
+    vision_failed: 'Local vision failed to start. Close and reopen the toolbar popup, or Reload the extension.',
     capture: 'Capture & protect',
     badge_local: 'Local selective preview',
     badge_egress: 'What leaves: semantic scene fields only',
@@ -92,6 +124,8 @@ const STRINGS = {
     task_completed: 'पूर्ण अनुरोध दिखाएँ',
     task_next: 'अगले पृष्ठ पर जाएँ',
     status_ready: 'सक्रिय टैब कैप्चर करें। नेटवर्क से पहले फ़िल्टरिंग यहाँ होती है।',
+    vision_loading: 'स्थानीय दृष्टि लोड हो रही है…',
+    vision_failed: 'स्थानीय दृष्टि शुरू नहीं हुई। पॉपअप बंद कर फिर खोलें, या एक्सटेंशन Reload करें।',
     capture: 'कैप्चर और सुरक्षित करें',
     badge_local: 'स्थानीय चयनात्मक पूर्वावलोकन',
     badge_egress: 'बाहर जाता है: केवल अर्थ-दृश्य फ़ील्ड',
@@ -231,6 +265,7 @@ $('#mode-privacy')?.addEventListener('change', () => {
 });
 applyLang();
 syncPathChips();
+try { ensureVisionPreload(); } catch { /* non-extension preview */ }
 
 async function ensureInjected(id) {
   setStage('inject');
@@ -298,12 +333,8 @@ $('#capture').addEventListener('click', async () => {
     try { await api.tabs.update(tabId, { active: true }); } catch { /* ignore */ }
     await ensureInjected(tabId);
     completed.push('inject');
-    // ORT WASM runs in a module Worker (not the MV3 popup process) — DBG-001 H1.
-    const { detector, cacheHit } = await detectorCache.get(() => createWorkerVisionDetector({
-      workerUrl: api.runtime.getURL('vision-worker.js'),
-      runtimeUrl: api.runtime.getURL('models/ort/ort.wasm.min.mjs'),
-      modelUrl: api.runtime.getURL('models/ultraface-rfb320.onnx'),
-    }));
+    // ORT WASM in MV3 sandboxed document (separate process) — DBG-002 H1; warmed on popup open.
+    const { detector, cacheHit } = await ensureVisionPreload();
     void cacheHit;
     const captureStarted = performance.now();
     setStage('collect');

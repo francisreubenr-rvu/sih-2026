@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dhristi ORT sandbox</title>
+</head>
+<body>
+  <!--
+    MV3 sandboxed document (separate process, no chrome.*).
+    Hosts ONNX Runtime WASM so a native abort cannot balloon-crash the action popup.
+    See Docs/decisions/brain-fix-ort-sandbox.md (DBG-002).
+  -->
+  <script type="module" src="ort-sandbox.js"></script>
+</body>
+</html>
