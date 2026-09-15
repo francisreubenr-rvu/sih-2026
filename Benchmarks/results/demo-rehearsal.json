@@ -1,6 +1,7 @@
 {
   "name": "wave6-demo-rehearsal",
-  "generatedAt": "2026-09-14T11:20:28.981289Z",
+  "schema_version": 2,
+  "generatedAt": "2026-09-15T01:21:40.805Z",
   "status": "unknown",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
@@ -12,6 +13,20 @@
   "runbook": "Docs/demo-runbook.md",
   "judge_checklist": "Docs/demo-judge-checklist.md",
   "rehearsal_checklist": "Docs/demo-rehearsal-checklist.md",
+  "decision_note": "Docs/decisions/brain-72h-g14-g20.md",
+  "streak_policy": "A fail resets consecutive success count to zero. Three success rows with the same build_sha required before status may become pass.",
+  "entry_template": {
+    "index": 1,
+    "date_utc": "",
+    "operator": "",
+    "build_sha": "",
+    "result": "success|fail",
+    "fallback_opened": false,
+    "journey_steps_passed": [],
+    "fallback_used_in_live_path": false,
+    "notes": ""
+  },
+  "planned_slots": [],
   "consecutive_rehearsals": [],
-  "g14_reason": "Wave6 adds rehearsal checklist template. Fallback WebM linked. 3 consecutive live rehearsals from reset not yet logged. Do not mark G14 pass."
+  "g14_reason": "Calendar-ready checklist + schema v2 published (brain/72h-human-eval). consecutive_rehearsals still empty. Do not mark G14 pass."
 }

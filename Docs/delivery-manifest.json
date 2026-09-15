@@ -1,9 +1,9 @@
 {
-  "created_at": "2026-09-15T01:19:35.113876+00:00",
+  "created_at": "2026-09-15T01:21:50.855926+00:00",
   "status": "ENGINEERING CANDIDATE - NOT SUBMISSION READY",
   "problem": "SIH26171",
   "scope": "Reviewed Git inventory; current file contents. Excludes this manifest, ignored runtime data, dependency installs and generated local builds. Hash presence does not establish validation.",
-  "source_commit_before_manifest": "e2c5648bf06c449b523e9aab219b45091f943dc4",
+  "source_commit_before_manifest": "b90c30d50c079ec7cc07b6e66cb5b9b38156d7fd",
   "historical_manifest": "Docs/history/preparation-delivery-manifest.json",
   "files": [
     {
@@ -303,8 +303,8 @@
     },
     {
       "path": "Benchmarks/results/demo-rehearsal.json",
-      "bytes": 870,
-      "sha256": "a67889268396678fc791c48ee2e7d015004a95e0b31d0ae7991f9395e098f3a6"
+      "bytes": 1365,
+      "sha256": "886c3d989c0449c04de30e28a4d801f60444b146d98efc01216d6dca47155e18"
     },
     {
       "path": "Benchmarks/results/dependency-audit.json",
@@ -353,8 +353,8 @@
     },
     {
       "path": "Benchmarks/results/human-evaluation.json",
-      "bytes": 602,
-      "sha256": "9a7b9afe5ba0020fd6ea26900ac09a90bfef27fdce13a67935a25fe6802bcd00"
+      "bytes": 1325,
+      "sha256": "0feeabf0e4d64e66736091dd1f6d93eb8b4a6caeccc7a9eb78232dfd38fc53d9"
     },
     {
       "path": "Benchmarks/results/iteration-1/mobile-1.report.html",
@@ -1147,6 +1147,11 @@
       "sha256": "6efbe66af3c84107094f8f9da2c1b1f1b8efd77452c32fb2618f353f7cc58f23"
     },
     {
+      "path": "Docs/decisions/brain-72h-g14-g20.md",
+      "bytes": 2851,
+      "sha256": "0ff587c02829a3b7f8feebeec147635d1bc12b4814c85357cbf833ebf6cdc55e"
+    },
+    {
       "path": "Docs/decisions/brain-72h-hour0.md",
       "bytes": 1312,
       "sha256": "da3cdebea27ac7ebba9b67bbdee3c097ed00746609c6a36cfa96e52dc9d90f14"
@@ -1298,8 +1303,8 @@
     },
     {
       "path": "Docs/demo-rehearsal-checklist.md",
-      "bytes": 1288,
-      "sha256": "a0f69e5c750ae40550433eeaa83427d6e3cdb2c4a09d46c3a059407ac6d98362"
+      "bytes": 4645,
+      "sha256": "28f569b30fb56001f815bd8d8dbc1f9f9fc00dc54f1170751d9c5d3f6cebf696"
     },
     {
       "path": "Docs/demo-runbook.md",
@@ -1388,13 +1393,13 @@
     },
     {
       "path": "Docs/human-evaluation-forms.md",
-      "bytes": 1312,
-      "sha256": "062cb664023bf1d20976c53732d4762a33b3f12a292638b7eb7449916afb503d"
+      "bytes": 2715,
+      "sha256": "e4e97d421c551d0fc38940a904c7db4a526b4c1494246033e1f9c7f4a3e89791"
     },
     {
       "path": "Docs/human-evaluation-protocol.md",
-      "bytes": 1593,
-      "sha256": "aa69e600a8cdc7e00d96a899b987f9fefb1153ae63f7a1d9eff1712e523af8b6"
+      "bytes": 5394,
+      "sha256": "930baf6361ad26498be57cb016c851be620a8ef86eb27b264ea2c2c74931ea66"
     },
     {
       "path": "Docs/impact-model.md",
