@@ -41,3 +41,9 @@
 ## Honesty footer (on cards)
 
 SIH26171 · DigiLocker-inspired only · Fast ≠ G11 · officialScore may be null.
+
+## Video production note (2026-09-22)
+
+**Status:** UPGRADED in place — same path `Website/assets/dhristi-prototype-explain-v01.mp4` (~108s, ~2.2MB).  
+**Contents:** Title/path/privacy/limits cards + local Playwright screen captures of Website, extension popup HTML, and Prototype workspace (Node 22). No purchases; no Google login.  
+**Caveat:** Capture→protect→review is shown as workspace chrome + caption cards; a full interactive hot-path recording with toolbar `activeTab` still needs Francis (human glyph click). Caption honesty rules above still apply.
