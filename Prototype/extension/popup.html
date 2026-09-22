@@ -9,13 +9,13 @@
 <body>
   <header class="popup-header">
     <div class="brand">
-      <img class="mark" src="icons/dhristi-mark.svg" width="20" height="20" alt="" aria-hidden="true">
+      <img class="mark ViewfinderBug PixelIcon" src="icons/dhristi-mark.svg" width="32" height="32" alt="" aria-hidden="true">
       <div>
         <strong>DHRISTI</strong>
         <span class="subtitle" data-i18n="subtitle">SIH26171 · on-device review</span>
       </div>
     </div>
-    <span class="trust-chip" title="Capture and privacy filter run in this browser. What can leave: semantic scene fields only. Raw pixels stay local." data-i18n-title="trust_title">
+    <span class="trust-chip trust-badge" title="Capture and privacy filter run in this browser. What can leave: semantic scene fields only. Raw pixels stay local." data-i18n-title="trust_title">
       <span class="trust-glyph" aria-hidden="true"></span>
       <span class="trust-labels">
         <span data-i18n="trust">on this device</span>
@@ -25,15 +25,22 @@
   </header>
 
   <main>
+    <div class="hud-sys" aria-hidden="true">
+      <span>SYS · LOCAL</span>
+      <span>CAP · READY</span>
+      <span class="warn">SCORE · NULL</span>
+      <span class="fail">G11 · FAIL</span>
+      <span>FAST ≠ G11</span>
+    </div>
     <p class="lang-row" role="group" aria-label="Language">
       <button type="button" class="lang" id="lang-en" aria-pressed="true" aria-label="English">EN</button>
       <button type="button" class="lang" id="lang-hi" aria-pressed="false" aria-label="हिन्दी">हिं</button>
     </p>
 
-    <section class="panel panel-scan" aria-labelledby="scan-heading">
-      <div class="panel-head">
-        <h1 id="scan-heading" data-i18n="headline">Review what leaves this device.</h1>
-        <span class="status-pip" aria-hidden="true"></span>
+    <section class="panel panel-scan hud-frame" aria-labelledby="scan-heading">
+      <div class="panel-head hud-title-bar HudTitleBar">
+        <h1 id="scan-heading" data-i18n="headline"><span class="mod-tag">MOD-SCAN</span>SCAN · Review what leaves this device.</h1>
+        <span class="meta">LOCAL</span>
       </div>
       <p class="lede" data-i18n="lede">Three paths: Fast (local protect), Score (local risk), Reason (local LLM). Confirm every action.</p>
       <ul class="path-strip" id="path-strip" aria-label="Operating paths Fast, Score, and Reason">
@@ -62,9 +69,16 @@
         <li data-stage="sanitize">Sanitize</li>
         <li data-stage="review">Review</li>
       </ol>
+      <div class="seg-meter segment-meter" aria-hidden="true"><i data-on="1"></i><i data-on="1"></i><i data-on="1"></i><i data-on="1"></i><i data-on="1"></i><i data-on="0"></i><i data-on="0"></i><i data-on="0"></i><i data-on="0"></i><i data-on="0"></i></div>
+      <div class="metric-cells" aria-hidden="true">
+        <b>PATH<em>FAST</em></b>
+        <b>LLM<em>OFF</em></b>
+        <b>EGRESS<em>SEM</em></b>
+        <b>G11<em>FAIL</em></b>
+      </div>
     </section>
 
-    <section class="panel" aria-label="Capture controls">
+    <section class="panel hud-frame CommandLane" aria-label="Capture controls">
       <label for="token"><span data-i18n="token_label">Local pairing token</span>
         <input id="token" type="password" autocomplete="off" data-i18n-placeholder="token_ph" placeholder="Paste from the local workspace">
       </label>
@@ -83,10 +97,10 @@
         <p class="mode-hint" data-i18n="mode_hint">Score runs after Fast protect (no LLM). Uncheck Fast to enable Reason. Official SIH score stays null.</p>
       </fieldset>
       <p id="status" role="status" data-i18n="status_ready">Capture the active tab. Filtering runs here before any network call.</p>
-      <button id="capture" type="button" class="cta-primary" data-i18n="capture">Capture &amp; protect</button>
+      <button id="capture" type="button" class="cta-primary command-lane" data-i18n="capture">Capture &amp; protect</button>
     </section>
 
-    <section class="panel panel-preview" aria-label="Protected preview">
+    <section class="panel panel-preview hud-frame" aria-label="Protected preview">
       <div class="preview-meta">
         <span class="badge" data-i18n="badge_local">Local selective preview</span>
         <span class="badge badge-muted" data-i18n="badge_egress">What leaves: semantic scene fields only</span>
@@ -98,18 +112,18 @@
       <p id="metrics" class="telemetry"></p>
     </section>
 
-    <section class="panel panel-score" id="score-panel" aria-label="Score path — local risk" hidden>
+    <section class="panel panel-score hud-frame" id="score-panel" aria-label="Score path — local risk" hidden>
       <p class="path-tag" data-i18n="score_tag">Score path · local heuristic risk · not official SIH score</p>
       <p id="score-summary" class="score-summary" data-i18n="score_empty">Capture &amp; protect first. Score ranks local scene risk only.</p>
       <ul id="score-reasons" class="score-reasons" hidden></ul>
       <p class="score-disclaimer" data-i18n="score_disclaimer">Organizer weights accuracy+PII+redaction ≈65% — evaluation weights, not our measured score. officialScore remains null. Not WebPII.</p>
     </section>
 
-    <section class="panel panel-actions" aria-label="Reason path — plan and confirm">
+    <section class="panel panel-actions hud-frame CommandLane" aria-label="Reason path — plan and confirm">
       <p class="path-tag" data-i18n="reason_tag">Reason path · local Ollama/Qwen · outside &lt;200&nbsp;ms G11 budget</p>
-      <button id="plan" type="button" class="cta-secondary" disabled data-i18n="plan">Send protected layout (Reason)</button>
+      <button id="plan" type="button" class="cta-secondary command-lane" disabled data-i18n="plan">Send protected layout (Reason)</button>
       <p id="proposal" data-i18n="proposal_empty">No action proposed.</p>
-      <button id="execute" type="button" class="cta-ghost" disabled data-i18n="execute">Confirm this action</button>
+      <button id="execute" type="button" class="cta-ghost command-lane" disabled data-i18n="execute">Confirm this action</button>
     </section>
 
     <details class="details-panel">
@@ -122,6 +136,7 @@
       <code id="origin"></code>
       <p data-i18n="setup_note">Raw screenshots are used locally for vision and selective preview and are not included in requests. Prefer a local Ollama/Qwen planner; cloud LLM keys are not required.</p>
     </details>
+    <p class="meta-lane MetaLane" aria-hidden="true">ORIGIN · EXTENSION · SCOPE · ACTIVEDTAB · REV · HUD-002 · DIGILOCKER INSPIRED-BY ONLY</p>
   </main>
   <script type="module" src="popup.js"></script>
 </body>
