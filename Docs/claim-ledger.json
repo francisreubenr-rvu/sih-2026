@@ -137,6 +137,20 @@
       "type": "site_ops_observation",
       "source": "Live https://francisreubenr-rvu.github.io/sih-2026/ vs Website/index.html on master after PR#24",
       "limit": "Observation timestamped to cycle-04 review; re-fetch after next Pages deploy."
+    },
+    {
+      "id": "cycle05-dom-text-pii-heldout",
+      "claim": "Cycle-05 held-out DOM/text PII span eval (24 synthetic cases) measures instance precision/recall and char coverage/preservation for detectSensitiveTextSpans; form-field microbench P/R recorded; officialScore and webPiiScore null.",
+      "type": "measured_heldout_synthetic",
+      "source": "Benchmarks/results/cycle05-dom-text-pii-heldout-v01.json; scripts/eval-dom-text-pii-heldout.mjs; Prototype/shared/dom-text-pii.mjs",
+      "limit": "Authored synthetic fixtures, not WebPII, not real user screens, not official rubric saturation. Perfect scores on this small set must not be restated as organizer PII metrics."
+    },
+    {
+      "id": "cycle05-face-only-gap",
+      "claim": "Face-only vision scores 0 instance recall and 0 PII char coverage on positive text-PII fixtures in the cycle-05 held-out set \u2014 passwords/OTP/cards/PII text require DOM (and OCR lab) paths.",
+      "type": "honesty_baseline",
+      "source": "Benchmarks/results/cycle05-dom-text-pii-heldout-v01.json face_only_gap",
+      "limit": "Documents a known product gap relative to organizer visual+PII+redaction weights (~65%). Does not flip any G* gate."
     }
   ]
 }

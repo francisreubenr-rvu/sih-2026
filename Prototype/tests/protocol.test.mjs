@@ -36,7 +36,8 @@ test('rendered wireframe contains allowed semantics but no arbitrary source cont
 });
 test('PII detector identifies email and numeric IDs while export remains independent',()=>{
  assert.deepEqual(classifySensitive('Reach synthetic.person@example.test'),['email']);
- assert.ok(classifySensitive('Account 1234 5678 9012').includes('number'));
+ assert.ok(classifySensitive('Account 1234 5678 9012').includes('aadhaar') || classifySensitive('Account 1234 5678 9012').includes('number'));
+ assert.ok(classifySensitive('Account 1234 5678 9012').includes('sensitive-label'));
 });
 
 test('password is an accepted opaque region kind',()=>{

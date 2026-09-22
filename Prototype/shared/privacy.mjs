@@ -1,4 +1,6 @@
 import { SCHEME, SAFE_LABELS, sceneSchema } from './protocol.mjs';
+import { classifySensitiveKinds } from './dom-text-pii.mjs';
+export { detectSensitiveTextSpans, classifySensitiveFormField, isSensitiveFormField, scoreTextSpanRedaction, faceOnlyTextPredictions } from './dom-text-pii.mjs';
 
 export function clipRect(rect, viewport, padding = 0) {
   if (![rect.x, rect.y, rect.width, rect.height, viewport.width, viewport.height, padding].every(Number.isFinite) || rect.width <= 0 || rect.height <= 0 || viewport.width <= 0 || viewport.height <= 0 || padding < 0) return null;
@@ -11,27 +13,9 @@ export function clipRect(rect, viewport, padding = 0) {
 
 export function classifySensitive(text) {
   // Detection is explanatory telemetry only. Unclassified text is ALSO excluded.
-  // Indic / banking patterns widen local telemetry; they never authorize export.
-  const found = [];
-  if (!text || typeof text !== 'string') return found;
-  if (/\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b/i.test(text)) found.push('email');
-  // Aadhaar: 12 digits, optional spaces/hyphens in 4-4-4 groups (synthetic fixtures only).
-  if (/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/.test(text)) found.push('aadhaar');
-  // PAN: five letters, four digits, one letter (e.g. ABCDE1234F).
-  if (/\b[A-Z]{5}\d{4}[A-Z]\b/i.test(text)) found.push('pan');
-  // IFSC: four letters + 0 + six alnum (e.g. SBIN0001234) — telemetry only.
-  if (/\b[A-Z]{4}0[A-Z0-9]{6}\b/i.test(text)) found.push('ifsc');
-  // EPIC / voter id style: three letters + seven digits (synthetic).
-  if (/\b[A-Z]{3}\d{7}\b/i.test(text)) found.push('voter-id');
-  // Card-like 13–19 digit runs (Luhn not required; telemetry / mosaic hint only).
-  if (/\b(?:\d[ -]*?){13,19}\b/.test(text.replace(/\s+/g, ' '))) found.push('card-like');
-  // GSTIN: 15-char Indian GST style — telemetry only.
-  if (/\b\d{2}[A-Z]{5}\d{4}[A-Z][A-Z0-9]Z[A-Z0-9]\b/i.test(text)) found.push('gstin');
-  // UPI VPA-like local@psp without a DNS TLD — telemetry only.
-  if (/\b[\w.+-]{2,}@(?:upi|ybl|ibl|axl|paytm|okaxis|oksbi|okhdfcbank)\b/i.test(text)) found.push('upi-vpa');
-  if (/(?:\+?\d[\d\s().-]{7,}\d)/.test(text)) found.push('number');
-  if (/\b(?:password|secret|token|account|address|passport|aadhaar|आधार|pan|पैन|ifsc|voter|otp|cvv|pin)\b/i.test(text)) found.push('sensitive-label');
-  return found;
+  // Span detector covers email/Aadhaar/PAN/IFSC/card/OTP/CVV/password labels;
+  // kinds never authorize export.
+  return classifySensitiveKinds(text);
 }
 
 /**

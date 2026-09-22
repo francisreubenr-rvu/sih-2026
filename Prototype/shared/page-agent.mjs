@@ -1,4 +1,4 @@
-import { makeScene, clipRect, classifySensitive, mergeRegions } from './privacy.mjs';
+import { makeScene, clipRect, classifySensitive, mergeRegions, isSensitiveFormField, classifySensitiveFormField } from './privacy.mjs';
 import { SAFE_LABELS, validateAction } from './protocol.mjs';
 import { newRevisionId } from './random-id.mjs';
 
@@ -107,15 +107,18 @@ export function createPageAgent(doc = document) {
             const type = (el.type || '').toLowerCase();
             const auto = (el.getAttribute?.('autocomplete') || el.attrs?.autocomplete || '').toLowerCase();
             const name = (el.getAttribute?.('name') || el.name || el.attrs?.name || '').toLowerCase();
-            const sensitiveField = type === 'password' || type === 'email' || type === 'tel'
-              || /password|email|tel|phone|otp|cvv|ssn|aadhaar|pan/.test(auto + ' ' + name);
-            if (type === 'password') {
+            const id = (el.getAttribute?.('id') || el.id || el.attrs?.id || '').toLowerCase();
+            const inputmode = (el.getAttribute?.('inputmode') || el.inputMode || el.attrs?.inputmode || '').toLowerCase();
+            const fieldKinds = classifySensitiveFormField({ type, name, autocomplete: auto, inputmode, id });
+            if (type === 'password' || fieldKinds.includes('password')) {
               region('password', rect);
               detections.push({kind:'password'});
-            } else if (sensitiveField) {
+              for (const kind of fieldKinds.filter(k => k !== 'password')) detections.push({kind});
+            } else if (isSensitiveFormField({ type, name, autocomplete: auto, inputmode, id }) || fieldKinds.length) {
               region('field', rect);
-              for (const kind of classifySensitive(`${auto} ${name} ${type}`)) detections.push({kind});
+              for (const kind of fieldKinds) detections.push({kind});
             } else {
+              // Conservative: unknown editable values still mosaic as field locally.
               region('field', rect);
             }
           }

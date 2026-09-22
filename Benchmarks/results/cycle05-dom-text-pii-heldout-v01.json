@@ -1,0 +1,900 @@
+{
+  "name": "cycle05-dom-text-pii-heldout",
+  "version": "v01",
+  "timestamp": "2026-09-22T17:00:43.502Z",
+  "fixture_set": "cycle05-dom-text-pii-heldout",
+  "fixture_version": "v01",
+  "case_count": 24,
+  "scope": "Synthetic held-out free-text + form-label fixtures for DOM text PII span detection. Not WebPII, not real user screens, not official rubric saturation. Face-only vision cannot cover these cases.",
+  "official_score": null,
+  "webPiiScore": null,
+  "scoreReason": "Held-out synthetic DOM/text span eval only. Not WebPII re-score; not organizer saturation. Face-only arm is an honesty baseline (text PII recall ≈ 0).",
+  "face_only_gap": {
+    "statement": "UltraFace / face-only vision cannot detect passwords, OTP codes, card numbers, or PII text listed in the problem statement. On positive text-PII fixtures, face_only char coverage and instance recall are 0 — organizer visual+PII+redaction weights (~65%) need DOM/text paths beyond faces.",
+    "meanInstanceRecallAllCases": 0.125,
+    "meanInstanceRecallOnPositive": 0,
+    "meanPiiCharCoverageOnPositive": 0,
+    "note": "All-case mean recall is >0 only because empty-GT utility cases score recall=1 with zero predictions."
+  },
+  "arms": {
+    "face_only": {
+      "aggregates": {
+        "meanPiiCharCoverage": 0,
+        "meanNonPiiPreservation": 1,
+        "meanInstancePrecision": 1,
+        "meanInstanceRecall": 0.125,
+        "meanPiiCharCoverageOnPositive": 0,
+        "meanInstanceRecallOnPositive": 0,
+        "meanInstancePrecisionOnPositive": null
+      },
+      "cases": [
+        {
+          "id": "otp-colon",
+          "description": "OTP labelled with colon",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": null,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-one-time-code",
+          "description": "One-time code sentence (legacy miss)",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-verification",
+          "description": "Verification code sentence (legacy miss)",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": null,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-n-digit",
+          "description": "6-digit code labelled (legacy miss)",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": null,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-enter",
+          "description": "Enter OTP with digits",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "cvv-labelled",
+          "description": "CVV with value",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "password-labelled",
+          "description": "Password value after label",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": null,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "email-simple",
+          "description": "Email address",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "card-spaced",
+          "description": "Spaced card number",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "card-compact",
+          "description": "Compact 16-digit card",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "aadhaar-grouped",
+          "description": "Grouped Aadhaar",
+          "gtSpanCount": 2,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 2,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "pan-id",
+          "description": "PAN identifier",
+          "gtSpanCount": 2,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 2,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "ifsc-code",
+          "description": "IFSC code",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "upi-vpa",
+          "description": "UPI VPA",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "phone-in",
+          "description": "Indian phone",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "gstin",
+          "description": "GSTIN style",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "clean-controls",
+          "description": "Allow-listed control labels only",
+          "gtSpanCount": 0,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": null,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "clean-status",
+          "description": "Benign status copy",
+          "gtSpanCount": 0,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": null,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "clean-geo",
+          "description": "Benign geography without PII patterns",
+          "gtSpanCount": 0,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": null,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "mixed-desk",
+          "description": "Desk mix email + OTP",
+          "gtSpanCount": 2,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 2,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "auth-code",
+          "description": "Authentication code phrase",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": null,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "security-code-cvv",
+          "description": "Security code CVV phrase",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "legacy-gap-bare-otp-vocab",
+          "description": "OTP vocab without digits (label only)",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "password-word-only",
+          "description": "Password label without value",
+          "gtSpanCount": 1,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": 0,
+            "nonPiiPreservation": 1,
+            "instancePrecision": null,
+            "instanceRecall": 0,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 1,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        }
+      ]
+    },
+    "dom_text_spans": {
+      "aggregates": {
+        "meanPiiCharCoverage": 1,
+        "meanNonPiiPreservation": 1,
+        "meanInstancePrecision": 1,
+        "meanInstanceRecall": 1,
+        "meanPiiCharCoverageOnPositive": 1,
+        "meanInstanceRecallOnPositive": 1,
+        "meanInstancePrecisionOnPositive": 1
+      },
+      "cases": [
+        {
+          "id": "otp-colon",
+          "description": "OTP labelled with colon",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": null,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-one-time-code",
+          "description": "One-time code sentence (legacy miss)",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-verification",
+          "description": "Verification code sentence (legacy miss)",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": null,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-n-digit",
+          "description": "6-digit code labelled (legacy miss)",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": null,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "otp-enter",
+          "description": "Enter OTP with digits",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "cvv-labelled",
+          "description": "CVV with value",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "password-labelled",
+          "description": "Password value after label",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": null,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "email-simple",
+          "description": "Email address",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "card-spaced",
+          "description": "Spaced card number",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "card-compact",
+          "description": "Compact 16-digit card",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "aadhaar-grouped",
+          "description": "Grouped Aadhaar",
+          "gtSpanCount": 2,
+          "predSpanCount": 2,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 2,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "pan-id",
+          "description": "PAN identifier",
+          "gtSpanCount": 2,
+          "predSpanCount": 2,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 2,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "ifsc-code",
+          "description": "IFSC code",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "upi-vpa",
+          "description": "UPI VPA",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "phone-in",
+          "description": "Indian phone",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "gstin",
+          "description": "GSTIN style",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "clean-controls",
+          "description": "Allow-listed control labels only",
+          "gtSpanCount": 0,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": null,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "clean-status",
+          "description": "Benign status copy",
+          "gtSpanCount": 0,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": null,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "clean-geo",
+          "description": "Benign geography without PII patterns",
+          "gtSpanCount": 0,
+          "predSpanCount": 0,
+          "redaction": {
+            "piiCharCoverage": null,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 0,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "mixed-desk",
+          "description": "Desk mix email + OTP",
+          "gtSpanCount": 2,
+          "predSpanCount": 2,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 2,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "auth-code",
+          "description": "Authentication code phrase",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": null,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "security-code-cvv",
+          "description": "Security code CVV phrase",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "legacy-gap-bare-otp-vocab",
+          "description": "OTP vocab without digits (label only)",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        },
+        {
+          "id": "password-word-only",
+          "description": "Password label without value",
+          "gtSpanCount": 1,
+          "predSpanCount": 1,
+          "redaction": {
+            "piiCharCoverage": 1,
+            "nonPiiPreservation": 1,
+            "instancePrecision": 1,
+            "instanceRecall": 1,
+            "truePositives": 1,
+            "falsePositives": 0,
+            "falseNegatives": 0,
+            "status": "held_out_synthetic_text_fixture"
+          }
+        }
+      ]
+    }
+  },
+  "form_field_microbench": {
+    "precision": 1,
+    "recall": 1,
+    "truePositives": 5,
+    "falsePositives": 0,
+    "falseNegatives": 0,
+    "cases": [
+      {
+        "id": "pwd-type",
+        "expect": [
+          "password"
+        ],
+        "got": [
+          "password"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      {
+        "id": "otp-autocomplete",
+        "expect": [
+          "otp"
+        ],
+        "got": [
+          "otp"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      {
+        "id": "cc-number",
+        "expect": [
+          "card-like"
+        ],
+        "got": [
+          "card-like"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      {
+        "id": "cc-csc",
+        "expect": [
+          "cvv"
+        ],
+        "got": [
+          "cvv"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      {
+        "id": "email-type",
+        "expect": [
+          "email"
+        ],
+        "got": [
+          "email"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      {
+        "id": "benign-search",
+        "expect": [],
+        "got": [],
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      }
+    ],
+    "status": "unit_fixture_only"
+  },
+  "notes": [
+    "dom_text_spans uses detectSensitiveTextSpans (wired into classifySensitive / page-agent text mosaic).",
+    "face_only emits zero text spans — honesty baseline for organizer visual+PII+redaction weights.",
+    "Char coverage and non-PII preservation reported separately; not blended into a vanity score.",
+    "External WebPII text retention failure (58/100) unchanged and remains local-only.",
+    "submission_ready remains false; G11 full-flow remains fail."
+  ]
+}

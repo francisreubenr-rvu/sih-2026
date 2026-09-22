@@ -584,3 +584,162 @@ dialog .small-note{margin-top:16px;margin-bottom:0}
   .initial{background:#101827;color:#f3ead8}
   .site-lang-btn[aria-pressed="true"]{background:#101827;color:#f3ead8}
 }
+
+/* —— wrap densify (brain/wrap-pixel-proto-video) ——
+   Japanese pixel instrument / RPG HUD: stepped corners, double keylines,
+   viewfinder ticks, denser telemetry. No glow loops. Fast≠G11 honesty intact. */
+:root{
+  --radius:2px;
+  --radius-sm:0;
+  --shadow:3px 3px 0 rgba(16,24,39,.22);
+  --hud-inset:inset 0 0 0 1px rgba(243,234,216,.35);
+}
+body{
+  background-image:
+    linear-gradient(rgba(22,43,70,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(22,43,70,.07) 1px,transparent 1px);
+  background-size:8px 8px;
+  image-rendering:auto;
+}
+.site-header{
+  border-bottom-width:2px;
+  box-shadow:0 2px 0 rgba(16,24,39,.08);
+}
+.trust-bar{
+  border-radius:var(--radius-sm);
+  padding:6px 10px;
+  gap:6px;
+  font-family:var(--font-mono);
+  font-size:11px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.nav-cta,.button,.architecture-node,.verified-panel,.limits-panel,
+.timeline article,.project-context,.demo-frame,.boundary-card,.stage-panel,
+.wave-evidence,dialog,.closing,.optical-art{
+  border-radius:var(--radius-sm);
+}
+.button,.nav-cta,.primary,.architecture-node{
+  box-shadow:var(--shadow);
+}
+.button:active,.nav-cta:active{transform:translate(3px,3px);box-shadow:none}
+
+/* Viewfinder corner ticks on instrument panels */
+.optical-art,.demo-frame,.verified-panel,.boundary-card,.stage-panel{
+  position:relative;
+}
+.optical-art::before,.demo-frame::before,.verified-panel::before,
+.boundary-card::before,.stage-panel::before{
+  content:"";position:absolute;inset:4px;pointer-events:none;z-index:2;
+  border:2px solid transparent;
+  border-image:none;
+  background:
+    linear-gradient(var(--saffron),var(--saffron)) top left/10px 2px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) top left/2px 10px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) top right/10px 2px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) top right/2px 10px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) bottom left/10px 2px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) bottom left/2px 10px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) bottom right/10px 2px no-repeat,
+    linear-gradient(var(--saffron),var(--saffron)) bottom right/2px 10px no-repeat;
+  opacity:.85;
+}
+.optical-art::before{opacity:.55}
+
+/* Dense HUD module headers */
+.verified-panel h3,.limits-panel h3,.panel-label,.eyebrow{
+  font-family:var(--font-mono);
+}
+.verified-panel{
+  border-left-width:6px;
+  padding:0 0 14px;
+  background:var(--paper);
+  color:var(--ink);
+  overflow:hidden;
+}
+.verified-panel h3{
+  color:var(--paper)!important;
+  background:var(--navy);
+  font-size:12px!important;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:0 0 14px!important;
+  padding:10px 14px;
+  font-weight:700;
+  line-height:1.35;
+}
+.verified-panel .evidence-list,.verified-panel>.inline-link{margin-inline:14px}.verified-panel .evidence-list{margin-top:8px}
+.verified-panel .evidence-list strong{color:var(--navy)}
+.limits-panel{
+  background:var(--surface);
+  padding:0 0 24px;
+  overflow:hidden;
+}
+.limits-panel h3{
+  color:var(--paper)!important;
+  background:var(--navy);
+  font-size:12px!important;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:0 0 16px!important;
+  padding:10px 14px;
+  font-family:var(--font-mono);
+  font-weight:700;
+  line-height:1.35;
+}
+.limits-panel>p,.limits-panel .latency-note,.limits-panel .evidence-footnote{padding-inline:14px}
+
+/* Path chips denser */
+.path-ascii{
+  border-radius:0;
+  border-left-width:6px;
+  font-size:11px;
+  letter-spacing:.02em;
+}
+.architecture-node{
+  border-radius:0;
+  padding:16px;
+  min-height:140px;
+  position:relative;
+}
+.architecture-node.selected{
+  box-shadow:inset 0 0 0 2px var(--saffron),var(--shadow);
+}
+.architecture-node .node-symbol{
+  font-size:18px;
+  margin-bottom:12px;
+}
+
+/* Metric / telemetry denser mono cells */
+.demo-frame-top,.demo-frame-bottom p,.telemetry,.latency-note>span,.timeline time{
+  font-family:var(--font-mono);
+  image-rendering:pixelated;
+}
+.demo-explain-secondary{
+  margin-top:16px;padding:12px 14px;
+  border:2px solid var(--ink);border-left:4px solid var(--mist);
+  background:var(--surface);font-size:13px;color:var(--muted);
+}
+.demo-explain-secondary a{font-weight:650;color:var(--navy)}
+
+/* Stepped trust chip (no SaaS pill) */
+.trust-bar,.timeline-state,.status-pill{border-radius:0!important}
+
+/* Discrete stepped motion only */
+@media(prefers-reduced-motion:no-preference){
+  .architecture-node,.path-chip,.stage-strip li,.cta-primary,.button{
+    transition:background-color .05s steps(2),color .05s steps(2),transform 0s,box-shadow 0s;
+  }
+  .hero-copy,.optical-art{animation:none}
+  .reveal-ready{transition:opacity .2s steps(3),transform .2s steps(3)}
+}
+
+/* Dense evidence grid for 4 cards */
+#latest-evidence .evidence-grid{
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+@media(max-width:767px){
+  #latest-evidence .evidence-grid{grid-template-columns:1fr}
+  .verified-panel h3,.limits-panel h3{font-size:12px!important}
+}
