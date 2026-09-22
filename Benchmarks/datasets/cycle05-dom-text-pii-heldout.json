@@ -1,0 +1,327 @@
+{
+  "name": "cycle05-dom-text-pii-heldout",
+  "version": "v01",
+  "created": "2026-09-15",
+  "scope": "Synthetic held-out free-text + form-label fixtures for DOM text PII span detection. Not WebPII, not real user screens, not official rubric saturation. Face-only vision cannot cover these cases.",
+  "protocol": {
+    "scoring": "scoreTextSpanRedaction from Prototype/shared/dom-text-pii.mjs",
+    "iouThreshold": 0.5,
+    "status_label": "held_out_synthetic_text_fixture",
+    "predictors": [
+      "face_only",
+      "dom_text_spans"
+    ]
+  },
+  "case_count": 24,
+  "cases": [
+    {
+      "id": "otp-colon",
+      "description": "OTP labelled with colon",
+      "text": "OTP: 482913",
+      "groundTruthSpans": [
+        {
+          "kind": "otp",
+          "start": 0,
+          "end": 11
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "otp-one-time-code",
+      "description": "One-time code sentence (legacy miss)",
+      "text": "Your one-time code is 391204",
+      "groundTruthSpans": [
+        {
+          "kind": "otp",
+          "start": 5,
+          "end": 28
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "otp-verification",
+      "description": "Verification code sentence (legacy miss)",
+      "text": "verification code 847291",
+      "groundTruthSpans": [
+        {
+          "kind": "otp",
+          "start": 0,
+          "end": 24
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "otp-n-digit",
+      "description": "6-digit code labelled (legacy miss)",
+      "text": "6-digit code: 102938",
+      "groundTruthSpans": [
+        {
+          "kind": "otp",
+          "start": 0,
+          "end": 20
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "otp-enter",
+      "description": "Enter OTP with digits",
+      "text": "Enter OTP 123456 to continue",
+      "groundTruthSpans": [
+        {
+          "kind": "otp",
+          "start": 6,
+          "end": 16
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "cvv-labelled",
+      "description": "CVV with value",
+      "text": "CVV 123 on card",
+      "groundTruthSpans": [
+        {
+          "kind": "cvv",
+          "start": 0,
+          "end": 7
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "password-labelled",
+      "description": "Password value after label",
+      "text": "password: hunter2secret",
+      "groundTruthSpans": [
+        {
+          "kind": "password",
+          "start": 0,
+          "end": 23
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "email-simple",
+      "description": "Email address",
+      "text": "Reach synthetic.person@example.test now",
+      "groundTruthSpans": [
+        {
+          "kind": "email",
+          "start": 6,
+          "end": 35
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "card-spaced",
+      "description": "Spaced card number",
+      "text": "Card 4111 1111 1111 1111 expires",
+      "groundTruthSpans": [
+        {
+          "kind": "card-like",
+          "start": 5,
+          "end": 24
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "card-compact",
+      "description": "Compact 16-digit card",
+      "text": "Pay with 4111111111111111 today",
+      "groundTruthSpans": [
+        {
+          "kind": "card-like",
+          "start": 9,
+          "end": 25
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "aadhaar-grouped",
+      "description": "Grouped Aadhaar",
+      "text": "Aadhaar 2345 6789 0123 verified",
+      "groundTruthSpans": [
+        {
+          "kind": "sensitive-label",
+          "start": 0,
+          "end": 7
+        },
+        {
+          "kind": "aadhaar",
+          "start": 8,
+          "end": 22
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "pan-id",
+      "description": "PAN identifier",
+      "text": "PAN ABCDE1234F on file",
+      "groundTruthSpans": [
+        {
+          "kind": "sensitive-label",
+          "start": 0,
+          "end": 3
+        },
+        {
+          "kind": "pan",
+          "start": 4,
+          "end": 14
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "ifsc-code",
+      "description": "IFSC code",
+      "text": "Transfer via SBIN0001234 branch",
+      "groundTruthSpans": [
+        {
+          "kind": "ifsc",
+          "start": 13,
+          "end": 24
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "upi-vpa",
+      "description": "UPI VPA",
+      "text": "Pay operator@upi please",
+      "groundTruthSpans": [
+        {
+          "kind": "upi-vpa",
+          "start": 4,
+          "end": 16
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "phone-in",
+      "description": "Indian phone",
+      "text": "Phone +91 98765 43210 desk",
+      "groundTruthSpans": [
+        {
+          "kind": "number",
+          "start": 6,
+          "end": 21
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "gstin",
+      "description": "GSTIN style",
+      "text": "GSTIN 27AAPFU0939F1ZV listed",
+      "groundTruthSpans": [
+        {
+          "kind": "gstin",
+          "start": 6,
+          "end": 21
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "clean-controls",
+      "description": "Allow-listed control labels only",
+      "text": "Pending Review Next Help Cancel",
+      "groundTruthSpans": [],
+      "notes": ""
+    },
+    {
+      "id": "clean-status",
+      "description": "Benign status copy",
+      "text": "Status: Completed for request #42",
+      "groundTruthSpans": [],
+      "notes": ""
+    },
+    {
+      "id": "clean-geo",
+      "description": "Benign geography without PII patterns",
+      "text": "Coastal survey tile ready for Review",
+      "groundTruthSpans": [],
+      "notes": ""
+    },
+    {
+      "id": "mixed-desk",
+      "description": "Desk mix email + OTP",
+      "text": "Agent synthetic.ops@example.test OTP 554433 pending",
+      "groundTruthSpans": [
+        {
+          "kind": "email",
+          "start": 6,
+          "end": 32
+        },
+        {
+          "kind": "otp",
+          "start": 33,
+          "end": 43
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "auth-code",
+      "description": "Authentication code phrase",
+      "text": "authentication code: 778899",
+      "groundTruthSpans": [
+        {
+          "kind": "otp",
+          "start": 0,
+          "end": 27
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "security-code-cvv",
+      "description": "Security code CVV phrase",
+      "text": "security code 456 required",
+      "groundTruthSpans": [
+        {
+          "kind": "cvv",
+          "start": 0,
+          "end": 17
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "legacy-gap-bare-otp-vocab",
+      "description": "OTP vocab without digits (label only)",
+      "text": "Please enter your OTP below",
+      "groundTruthSpans": [
+        {
+          "kind": "sensitive-label",
+          "start": 18,
+          "end": 21
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "password-word-only",
+      "description": "Password label without value",
+      "text": "Reset password from Help",
+      "groundTruthSpans": [
+        {
+          "kind": "sensitive-label",
+          "start": 6,
+          "end": 14
+        }
+      ],
+      "notes": ""
+    }
+  ]
+}

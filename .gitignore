@@ -26,3 +26,8 @@ Prototype/extension-build-firefox/
 .tools-venv/
 Prototype/bench-assets/axe.min.js
 Prototype/app/bench-assets/axe.min.js
+
+# Local wrap-up scratch (screenshots / video intermediates / venv)
+_wrap_screenshots/
+_wrap_video/
+.wrap-venv/

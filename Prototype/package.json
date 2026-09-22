@@ -12,7 +12,8 @@
     "test:ci": "OLLAMA_URL=http://127.0.0.1:9 DHRISTI_CI=1 node --test tests/*.test.mjs",
     "judge:fast": "node ../scripts/judge-fast-path.mjs",
     "build:extension": "node ../scripts/build-extension.mjs",
-    "build": "node ../scripts/build-prototype.mjs"
+    "build": "node ../scripts/build-prototype.mjs",
+    "eval:dom-text-pii": "node ../scripts/eval-dom-text-pii-heldout.mjs"
   },
   "dependencies": {
     "@huggingface/tokenizers": "0.2.0",

@@ -40,7 +40,7 @@ export function localWordPolicy(words,modelLabels){
  // conservatively withhold following values on that OCR line. This is an English
  // development heuristic; OCR grouping errors and unlabelled PII remain gaps.
  const fields=new Map();
- const kinds={name:'PERSON',recipient:'PERSON',customer:'PERSON',email:'EMAIL_ADDRESS',phone:'PHONE_NUMBER',password:'PASSWORD',account:'ACCOUNT',address:'LOCATION',city:'LOCATION',postcode:'LOCATION'};
+ const kinds={name:'PERSON',recipient:'PERSON',customer:'PERSON',email:'EMAIL_ADDRESS',phone:'PHONE_NUMBER',password:'PASSWORD',passwd:'PASSWORD',otp:'OTP',code:'OTP',pin:'OTP',cvv:'CVV',cvc:'CVV',account:'ACCOUNT',address:'LOCATION',city:'LOCATION',postcode:'LOCATION'};
  const fieldValues=new Map();
  for(const [index,word] of [...words.entries()].sort((a,b)=>a[1].rect.x-b[1].rect.x)){
   if(!Number.isInteger(word.lineIndex)||word.lineIndex<0)continue;
@@ -48,10 +48,17 @@ export function localWordPolicy(words,modelLabels){
   if(match){fields.set(word.lineIndex,kinds[match[1].toLowerCase()]||null);continue;}
   const kind=fields.get(word.lineIndex);if(kind)fieldValues.set(index,kind);
  }
+ const lineText=new Map();
+ for(const w of words){
+  if(!Number.isInteger(w.lineIndex)||w.lineIndex<0)continue;
+  lineText.set(w.lineIndex,(lineText.get(w.lineIndex)||'')+' '+w.text);
+ }
  return words.map((word,index)=>{
   const label=modelLabels.get(index);const t=word.text;
   const fieldRule=fieldValues.get(index);
-  const rule=fieldRule||(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(t)?'EMAIL_ADDRESS':/(?:\d[\d\s().-]{5,}\d)/.test(t)?'NUMBER':null);
+  const lineBlob=Number.isInteger(word.lineIndex)?(lineText.get(word.lineIndex)||''):'';
+  const otpNearby=/\b\d{4,8}\b/.test(t)&&/\b(?:otp|code|pin|cvv|cvc)\b/i.test(lineBlob);
+  const rule=fieldRule||(/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(t)?'EMAIL_ADDRESS':/\b(?:\d[ -]*?){13,19}\b/.test(t)?'CARD':otpNearby?'OTP':/(?:\d[\d\s().-]{5,}\d)/.test(t)?'NUMBER':null);
   return {...word,sensitive:Boolean(label||rule),kind:label?.kind||rule||null,piiConfidence:label?.confidence??null,rule:fieldRule?'explicit-sensitive-field':rule?'token-pattern':null};
  });
 }
