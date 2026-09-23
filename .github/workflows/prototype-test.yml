@@ -10,7 +10,7 @@ on:
       - 'scripts/**'
       - '.github/workflows/prototype-test.yml'
   push:
-    branches: [master, 'brain/**', 'feat/**']
+    branches: [master, 'brain/**', 'feat/**', 'cursor/**']
     paths:
       - 'Prototype/**'
       - 'scripts/**'
