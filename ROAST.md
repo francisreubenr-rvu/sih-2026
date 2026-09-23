@@ -1,3 +1,8 @@
+## Round 19 — G11 Option C harness (23 September 2026)
+
+- [x] Measurement harness for root `extension/` + Warden `:8756` only. Privacy-only and Prototype `:9041` cannot set `mayFlipG11`.
+- [ ] Live L2 n≥100 was not collected here (Warden 8756 and Ollama 11434 were down). G11 stays fail. Do not weaken the 200 ms budget.
+
 ## Round 18 — Warden planner default + host allowlist (23 September 2026)
 
 - [x] `POST /plan` default is local Ollama. Groq is explicit (`WARDEN_PLANNER=groq`) and is not used when Ollama is down.

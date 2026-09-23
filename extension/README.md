@@ -27,3 +27,9 @@ See `Docs/decisions/brain-warden-ollama-plan-harden.md`.
 
 `extension/background.js` includes the client operation-tier gate (F17). Keep that gate
 when wiring execute. This import does not connect the loop to the Prototype server.
+
+G11 timing for this surface is `scripts/g11-warden-option-c-harness.mjs`. Run notes:
+`Docs/decisions/g11-warden-option-c-harness.md`. A dry run writes a fail artifact and
+does not call the Warden. A live L2 run needs this extension loaded, Warden on
+`127.0.0.1:8756`, and a planner probe of `POST /plan` (Ollama on `127.0.0.1:11434`
+only counts when `/plan` itself is served by that Ollama).

@@ -49,3 +49,6 @@ jobs:
         run: |
           npm ci
           npm run test:ci
+
+      - name: G11 Option C harness checks
+        run: node --test scripts/g11-warden-option-c-harness.test.mjs
