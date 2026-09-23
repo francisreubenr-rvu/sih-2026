@@ -37,6 +37,7 @@ Council-binding split (see `Docs/decisions/brain-logo-hybrid-c.md`):
 
 ## Surfaces
 
-- Website: `Website/index.html` + `Website/style.css` (+ mark/lockup SVG under `Website/assets/`).
-- Extension: `Prototype/extension/popup.html` + `popup.css` (header uses bug SVG under `icons/`).
+- Website: `Website/index.html` + `Website/style.css` (+ mark/lockup SVG under `Website/assets/`). The marketing canvas keeps this file’s paper/ink ground (`--paper` `#f3ead8`, `--ink` `#101827`, `--navy` `#162b46`). Token names and shared primitives (`.cell-grid`, `.pixel-chip`, `.pixel-reveal`, stepped `steps()` motion) are ported from `extension/pixel.css`, the measured dark-panel source of truth. That file is not linked and was not edited in the Website PR. `--amber` aliases `--saffron` `#d88732` (CTA and uncertain states). `--trust` `#5c8b63` is the verified-chip keyline only; small verified labels use `--trust-text` so the chip clears body contrast on paper.
+- Extension side panel: root `extension/pixel.css` (measured `--ground` `#0b0b0f`). Unchanged by the Website port.
+- Extension popup: `Prototype/extension/popup.html` + `popup.css` (header uses bug SVG under `icons/`). Unchanged by the Website port.
 - Local workspace: light chrome alignment in `Prototype/app/` — privacy boundary copy unchanged.

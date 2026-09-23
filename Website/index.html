@@ -35,17 +35,17 @@
 </div>
 <main id="main">
   <section class="hero wrap" aria-labelledby="hero-title">
-    <div class="hero-copy"><p class="eyebrow">ON-DEVICE VISUAL PERCEPTION</p><h1 id="hero-title">Your screen.<br><span>Your boundary.</span></h1><p class="hero-summary">Browser agents that reason from protected context, while raw screenshots and personal details stay on your device.</p>
-    <p class="trust-bar trust-badge" id="trust-bar" title="Capture and privacy filter run on-device. What can leave: semantic scene fields only. Raw pixels stay local. DigiLocker-inspired trust pattern only — not a partner, API, or custody claim."><span class="dot" aria-hidden="true"></span><span id="trust-en">on this device</span><span class="hi" lang="hi" id="trust-hi">इस उपकरण पर</span></p>
+    <div class="hero-copy pixel-reveal"><p class="eyebrow">ON-DEVICE VISUAL PERCEPTION</p><h1 id="hero-title">Your screen.<br><span>Your boundary.</span></h1><p class="hero-summary">Browser agents that reason from protected context, while raw screenshots and personal details stay on your device.</p>
+    <p class="trust-bar trust-badge pixel-chip" id="trust-bar" data-state="verified" title="Capture and privacy filter run on-device. What can leave: semantic scene fields only. Raw pixels stay local. DigiLocker-inspired trust pattern only — not a partner, API, or custody claim."><span class="dot" aria-hidden="true"></span><span id="trust-en">on this device</span><span class="hi" lang="hi" id="trust-hi">इस उपकरण पर</span></p>
     <ul class="hero-hud" aria-label="Instrument status">
-      <li data-tone="trust">LOCAL</li>
-      <li data-tone="trust">NO RAW PIXELS OUT</li>
-      <li data-tone="warn">FAST ≠ G11</li>
-      <li data-tone="fail">G11 FAIL</li>
-      <li>OFFICIALSCORE NULL</li>
+      <li class="pixel-chip" data-state="verified" data-tone="trust">LOCAL</li>
+      <li class="pixel-chip" data-state="verified" data-tone="trust">NO RAW PIXELS OUT</li>
+      <li class="pixel-chip" data-state="uncertain" data-tone="warn">FAST ≠ G11</li>
+      <li class="pixel-chip" data-state="destructive" data-tone="fail">G11 FAIL</li>
+      <li class="pixel-chip" data-state="neutral">OFFICIALSCORE NULL</li>
     </ul>
     <div class="tricolor-rule" aria-hidden="true"></div><button class="button primary command-lane" data-open-demo>Run local demo <span class="button-icon" aria-hidden="true">↗</span></button></div>
-    <figure class="optical-art hud-frame HudFrame GridPanel" aria-labelledby="optical-caption">
+    <figure class="optical-art hud-frame HudFrame GridPanel pixel-reveal" aria-labelledby="optical-caption">
       <div class="hud-title-bar HudTitleBar" aria-hidden="true"><span>EVIDENCE · HERO</span><span class="meta">LOCAL</span></div>
       <div class="aperture" aria-hidden="true"><div class="lens lens-outer"></div><div class="lens lens-mid"></div><div class="lens lens-inner"></div><div class="blade blade-a"></div><div class="blade blade-b"></div><div class="blade blade-c"></div><div class="aperture-center"><span class="focus-corner c1"></span><span class="focus-corner c2"></span><span class="focus-corner c3"></span><span class="focus-corner c4"></span><i></i><i></i><i></i></div></div>
       <div class="hud-metrics" aria-hidden="true"><b>MOD-CAP<em>LOCAL</em></b><b>MOD-FLT<em>MASK</em></b><b>MOD-REV<em>HUMAN</em></b><b>MOD-EG<em>SEM ONLY</em></b></div>
@@ -145,7 +145,7 @@ Reason: Ollama/Qwen plan → human confirm           (outside &lt;200 ms today)<
 
 </main>
 <footer class="wrap"><div><a class="wordmark" href="#main" aria-label="Dhristi home"><img class="brand-mark-img ViewfinderBug" src="assets/dhristi-mark.svg" width="24" height="24" alt="" aria-hidden="true">Dhristi</a><p>An RV University student project for SIH26171.<br>Not an official SIH or ISRO website.</p></div><div class="footer-links"><a href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Docs/design-comparison.md">Design comparison</a><details><summary>Earlier preparation artifacts</summary><p>Historical material from before SIH26171 was resolved. These files are not current implementation evidence.</p><a href="downloads/preparation-brief.pdf">Original preparation brief</a><a href="downloads/guardrails.json">Original guardrails</a></details></div></footer>
-<dialog id="demo-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description"><div class="dialog-header"><span class="wordmark">Dhristi</span><button id="close-dialog" class="close-button" aria-label="Close local demo instructions">×</button></div><p class="eyebrow">LOCAL ENGINEERING PROTOTYPE</p><h2 id="dialog-title">Run it on your machine.</h2><p id="dialog-description">This website is static. The working demo needs the repository and Node.js 22+. Privacy-only Fast Capture &amp; protect runs without Ollama; the Reason path needs a local Ollama model when you want planner suggestions.</p><ol class="setup-list"><li>Clone the repository and install the prototype dependencies.</li><li>Start Dhristi, then open the local workspace and try <strong>Capture &amp; protect</strong> (Fast path — no LLM).</li><li>Optional Reason path: start Ollama and pull <code>qwen2.5:7b-instruct</code> before asking the local model.</li></ol><div class="command-block"><pre id="setup-command">git clone https://github.com/francisreubenr-rvu/sih-2026.git
+<dialog id="demo-dialog" class="pixel-pop" aria-labelledby="dialog-title" aria-describedby="dialog-description"><div class="dialog-header"><span class="wordmark"><img class="brand-mark-img ViewfinderBug" src="assets/dhristi-mark.svg" width="24" height="24" alt="" aria-hidden="true">Dhristi</span><button id="close-dialog" class="close-button" aria-label="Close local demo instructions">×</button></div><p class="eyebrow">LOCAL ENGINEERING PROTOTYPE</p><h2 id="dialog-title">Run it on your machine.</h2><p id="dialog-description">This website is static. The working demo needs the repository and Node.js 22+. Privacy-only Fast Capture &amp; protect runs without Ollama; the Reason path needs a local Ollama model when you want planner suggestions.</p><ol class="setup-list"><li>Clone the repository and install the prototype dependencies.</li><li>Start Dhristi, then open the local workspace and try <strong>Capture &amp; protect</strong> (Fast path — no LLM).</li><li>Optional Reason path: start Ollama and pull <code>qwen2.5:7b-instruct</code> before asking the local model.</li></ol><div class="command-block"><pre id="setup-command">git clone https://github.com/francisreubenr-rvu/sih-2026.git
 cd sih-2026/Prototype
 npm ci
 node ../scripts/build-prototype.mjs
