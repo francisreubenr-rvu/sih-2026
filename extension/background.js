@@ -1,6 +1,7 @@
 import { redactScreenshot, redactText } from './utils/redactor.js';
 import { detectElements } from './utils/omniparser.js';
 import * as wardenClient from './utils/warden.js';
+import { createG11Trace } from './utils/g11-stage-clock.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
 import { loopbackHttpUrl } from './utils/loopback.js';
 
@@ -127,6 +128,10 @@ let currentVault = null;
 // the Warden minted (e.g. "PERSONNAME#1"), and sent back as `resolved` on every later /strip
 // call so the same span is never asked about twice. In-memory only; never persisted.
 let resolvedAnswers = {};
+
+// Measurement-only clocks for the G11 harness (GET_G11_TRACE). Does not gate
+// execution. Durations are exclusive spans around work this worker performed.
+const g11Trace = createG11Trace();
 
 // ============================================================================
 // Session transcript
@@ -487,6 +492,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'GET_OUTBOUND':
       sendResponse(lastOutbound);
       return false;
+    case 'GET_G11_TRACE':
+      sendResponse(g11Trace.snapshot());
+      return false;
     case 'SET_WARDEN_ORIGIN':
       setWardenOrigin(message.origin).then(sendResponse);
       return true;
@@ -788,7 +796,47 @@ async function planWithWarden(tokenizedTask, sanitizedDom, elements, baseHistory
     : baseHistory;
   const body = { tokenizedTask, sanitizedDom, elements, history };
   recordOutbound('/plan', body);
-  return wardenClient.plan(body);
+  const t0 = performance.now();
+  try {
+    return await wardenClient.plan(body);
+  } finally {
+    g11Trace.add('plan', performance.now() - t0);
+  }
+}
+
+function timeOpTierLocal(plan, elements) {
+  const t0 = performance.now();
+  try {
+    return { tier: opTierLocal(plan, elements), error: null };
+  } catch (error) {
+    return { tier: null, error };
+  } finally {
+    g11Trace.add('f17_local_tier', performance.now() - t0);
+  }
+}
+
+function gatePathFor({ verdict, localTier, choice, tierError }) {
+  if (tierError || localTier == null) return 'reject';
+  if (verdict === 'reject' || choice === 'stop') return 'reject';
+  if (verdict === 'ask') return 'ask';
+  if (choice === 'skip') return 'ask';
+  if (!tierPermitsUnattended(localTier) || choice === 'proceed') return 'local_confirm_required';
+  return 'unattended_ok';
+}
+
+function recordF17({ localTier, wardenTier, verdict, choice, tierError }) {
+  const tiersAgree = wardenTier != null && localTier != null && wardenTier === localTier;
+  g11Trace.recordF17({
+    opTierLocalComputed: tierError ? true : localTier != null,
+    localTier: localTier ?? null,
+    wardenTier: wardenTier ?? null,
+    tiersAgree,
+    trustedServerRequiresConfirmationAlone: false,
+    unattendedExecuteAllowed: false,
+    gatePath: gatePathFor({ verdict, localTier, choice, tierError }),
+    bypassedLocalTier: false,
+    tierError: Boolean(tierError),
+  });
 }
 
 async function requestValidationQuestion(text, options, attempt, reasons, stepNumber) {
@@ -831,30 +879,47 @@ async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, bas
     const coherence = applyIntentCoherenceLocal(tokenizedTask, rawPlan, elements);
     if (coherence.overridden) {
       noteActivity('The task implies a destructive action but the page holds no destructive control, so the plan was rewritten locally to finish.', stepNumber);
-      const tier = opTierLocal(coherence.plan, elements);
+      const timed = timeOpTierLocal(coherence.plan, elements);
+      if (timed.error) {
+        noteStage('VALIDATE', 'rejected locally, the plan could not be tiered', stepNumber);
+        noteError(timed.error.message, stepNumber);
+        recordF17({ localTier: null, wardenTier: null, verdict: 'reject', choice: 'stop', tierError: timed.error });
+        return {
+          planResp, plan: coherence.plan, tier: null, verdict: 'reject',
+          checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: timed.error.message,
+        };
+      }
+      const tier = timed.tier;
       noteStage('VALIDATE', `accept, rewritten locally (tier: ${tier})`, stepNumber);
+      recordF17({ localTier: tier, wardenTier: null, verdict: 'accept', choice: null, tierError: null });
       return {
         planResp, plan: coherence.plan, tier,
         verdict: 'accept', checks: [{ name: 'local-intent-coherence-override', pass: true }], choice: null,
       };
     }
 
-    let localTier;
-    try {
-      localTier = opTierLocal(rawPlan, elements);
-    } catch (error) {
+    const timedTier = timeOpTierLocal(rawPlan, elements);
+    if (timedTier.error) {
       // A plan naming a selector this scene does not contain, or an unrecognized action,
       // cannot be tiered at all; refuse rather than guess or execute it anyway.
       noteStage('VALIDATE', 'rejected locally, the plan could not be tiered', stepNumber);
-      noteError(error.message, stepNumber);
+      noteError(timedTier.error.message, stepNumber);
+      recordF17({ localTier: null, wardenTier: null, verdict: 'reject', choice: 'stop', tierError: timedTier.error });
       return {
         planResp, plan: rawPlan, tier: null, verdict: 'reject',
-        checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: error.message,
+        checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: timedTier.error.message,
       };
     }
+    const localTier = timedTier.tier;
 
     if (aborted(runId)) throw new Error('Stopped');
-    const vResp = await wardenClient.validate({ plan: rawPlan, elements, tokenizedTask, attempt });
+    const validateT0 = performance.now();
+    let vResp;
+    try {
+      vResp = await wardenClient.validate({ plan: rawPlan, elements, tokenizedTask, attempt });
+    } finally {
+      g11Trace.add('validate', performance.now() - validateT0);
+    }
     const checks = [...(vResp.checks || []), { name: 'local-tier-agreement', pass: vResp.tier === localTier }];
     const passed = checks.filter((c) => c.pass === true).length;
     noteStage('VALIDATE', `${vResp.verdict}, ${passed} of ${checks.length} checks passed (tier: ${localTier})`, stepNumber);
@@ -867,14 +932,17 @@ async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, bas
           `The plan was rejected ${attempt} times in a row and the retry budget is exhausted.`,
           STANDARD_VALIDATION_OPTIONS, attempt, reasons, stepNumber,
         );
+        recordF17({ localTier, wardenTier: vResp.tier, verdict: 'reject', choice, tierError: null });
         return { planResp, plan: rawPlan, tier: localTier, verdict: 'reject', checks, choice };
       }
+      recordF17({ localTier, wardenTier: vResp.tier, verdict: 'reject', choice: null, tierError: null });
       continue; // informed re-plan: planWithWarden's next call carries `reasons`
     }
 
     if (vResp.verdict === 'ask') {
       const q = vResp.question || {};
       const choice = await requestValidationQuestion(q.text, q.options, attempt, [], stepNumber);
+      recordF17({ localTier, wardenTier: vResp.tier, verdict: 'ask', choice, tierError: null });
       return { planResp, plan: rawPlan, tier: localTier, verdict: 'ask', checks, choice };
     }
 
@@ -889,8 +957,10 @@ async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, bas
         `This action is tier '${localTier}' and requires local confirmation before it runs. The Warden accepted the plan; this confirmation is the extension's own gate, not the Warden's.`,
         STANDARD_VALIDATION_OPTIONS, attempt, disagreement, stepNumber,
       );
+      recordF17({ localTier, wardenTier: vResp.tier, verdict: 'accept', choice, tierError: null });
       return { planResp, plan: rawPlan, tier: localTier, verdict: 'accept', checks, choice };
     }
+    recordF17({ localTier, wardenTier: vResp.tier, verdict: 'accept', choice: null, tierError: null });
     return { planResp, plan: rawPlan, tier: localTier, verdict: 'accept', checks, choice: null };
   }
   // Unreachable: every branch inside the loop returns by attempt === WARDEN_VALIDATE_MAX_ATTEMPTS at the latest.
@@ -942,19 +1012,27 @@ async function pingContentScript(runId) {
 }
 
 async function runLoop(runId, secrets) {
+  g11Trace.beginRun();
   try {
     while (state.stepNumber < MAX_STEPS) {
-      if (aborted(runId)) return;
+      if (aborted(runId)) {
+        g11Trace.setTerminal('blocked');
+        return;
+      }
       state.stepNumber += 1;
       const stepNumber = state.stepNumber;
       state.status = 'running';
       await persistState();
 
       // 1. PERCEIVE: wait for the content script, then scan the page.
+      g11Trace.markWallStart();
+      const perceiveT0 = performance.now();
+      let scan;
+      try {
       await pingContentScript(runId);
       if (aborted(runId)) return;
 
-      const scan = await sendToTab('PAGE_SCAN');
+      scan = await sendToTab('PAGE_SCAN');
       if (aborted(runId)) return;
       if (!scan || !Array.isArray(scan.elements)) throw new Error('Invalid scan result');
       noteStage('PERCEIVE', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'} found on the page`, stepNumber);
@@ -987,11 +1065,21 @@ async function runLoop(runId, secrets) {
         }
       }
       state.omniStatus = omni.status;
+      } finally {
+        g11Trace.add('perceive', performance.now() - perceiveT0);
+      }
+      if (aborted(runId)) return;
 
       // 2. STRIP: the Warden is the sole stripping authority for the wire from here on. Raw
       //    `state.task` and raw `scan.dom`/`scan.elements` go to this ONE loopback call and
       //    no further; everything downstream in this iteration uses only what /strip returns.
-      const stripResp = await resolveUncertainLoop(runId, state.task, scan.dom, scan.elements, stepNumber);
+      const stripT0 = performance.now();
+      let stripResp;
+      try {
+        stripResp = await resolveUncertainLoop(runId, state.task, scan.dom, scan.elements, stepNumber);
+      } finally {
+        g11Trace.add('strip', performance.now() - stripT0);
+      }
       if (aborted(runId)) return;
 
       const tokenCount = Object.keys(stripResp.tokens || {}).length;
@@ -1073,6 +1161,7 @@ async function runLoop(runId, secrets) {
           tier: outcome.tier, verdict: outcome.verdict, checks: outcome.checks,
         });
         noteActivity('You stopped the run at a validation question.', stepNumber);
+        g11Trace.setTerminal(outcome.verdict === 'reject' ? 'reject' : outcome.verdict === 'ask' ? 'ask' : 'blocked');
         return;
       }
 
@@ -1100,8 +1189,12 @@ async function runLoop(runId, secrets) {
       //    a navigation tears the message port down mid-flight; that is an expected outcome,
       //    not a failure, so it is recorded as an ok step with navigated: true and the next
       //    iteration's pingContentScript() waits for the new document.
+      if (outcome.choice == null && outcome.verdict === 'accept' && tierPermitsUnattended(outcome.tier)) {
+        g11Trace.patchLatestF17({ unattendedExecuteAllowed: true, gatePath: 'unattended_ok' });
+      }
       let result;
       let navigated = false;
+      const executeT0 = performance.now();
       try {
         result = await sendToTab('EXECUTE_ACTION', { action });
       } catch (error) {
@@ -1111,6 +1204,8 @@ async function runLoop(runId, secrets) {
         } else {
           throw error;
         }
+      } finally {
+        g11Trace.add('execute', performance.now() - executeT0);
       }
       if (aborted(runId)) return;
 
@@ -1136,6 +1231,7 @@ async function runLoop(runId, secrets) {
       if (action.action === 'finish') {
         state.status = 'finished';
         state.finishedAt = Date.now();
+        g11Trace.setTerminal(failed ? 'error' : 'ok');
         return;
       }
 
@@ -1149,10 +1245,12 @@ async function runLoop(runId, secrets) {
     if (!aborted(runId)) {
       state.status = 'stopped';
       state.finishedAt = Date.now();
+      g11Trace.setTerminal('blocked');
       noteError(`The step limit (${MAX_STEPS}) was reached without the agent finishing.`, state.stepNumber);
     }
   } catch (error) {
     if (runId === state.runId) {
+      g11Trace.setTerminal(state.status === 'stopped' && error.message === 'Stopped' ? 'blocked' : 'error');
       // A Stop pressed while a prompt was pending unblocks this loop by rejecting that
       // prompt's promise with exactly this message (see abortPendingPrompt()); that is a
       // clean stop, already recorded by stopTask(), not a new failure to report over it.
@@ -1167,6 +1265,13 @@ async function runLoop(runId, secrets) {
     // The finally block, and every state write in it, applies only to the loop's own run: a
     // superseded run must never clobber a newer one's state.
     if (runId === state.runId) {
+      const traced = g11Trace.snapshot();
+      if (!traced.terminal) {
+        if (state.status === 'finished') g11Trace.setTerminal('ok');
+        else if (state.status === 'stopped' || state.stopRequested) g11Trace.setTerminal('blocked');
+        else g11Trace.setTerminal('error');
+      }
+      g11Trace.finish();
       await persistState();
       // Exactly one terminal marker per accepted task, which is what the panel reads to decide
       // whether a run is still in flight.

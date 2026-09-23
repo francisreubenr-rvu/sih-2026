@@ -1,0 +1,20 @@
+{
+  "name": "core-latency-warden-option-c-precondition-fail",
+  "schemaVersion": 1,
+  "fixture": "config-precondition-fail",
+  "observedLive": false,
+  "budgetMs": 200,
+  "budget_weakened": false,
+  "status": "fail",
+  "mayFlipG11": false,
+  "failures": [
+    "budgetMs raised: budgetMs is immutable at 200",
+    "warden port 9041: wardenBaseUrl must be http://127.0.0.1:8756",
+    "Prototype extension: extension path must be root extension/, not Prototype/extension",
+    "historical core-latency.json: outPath must be Benchmarks/results/core-latency-warden-option-c.json"
+  ],
+  "honesty": [
+    "This file records config rejections from the harness. It is not a latency sample.",
+    "Privacy-only and Prototype:9041 timings must not be copied into L2 gate."
+  ]
+}

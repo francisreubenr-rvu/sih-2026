@@ -8,6 +8,12 @@ Wrap densify (PR #29, ARCH-002 HUD) is no longer the primary queue. The Option C
 
 Still true, and not flipped by this section: G11 **fail**, G20 **paused** (recruitment paused; the 14 September ledger still says `unknown`; this section does not edit it), `submission_ready` **false**. `warden/` and root `extension/` are on master: PR #31 imported them from archive `2afd215`, and PR #32 set loopback Ollama as the `/plan` default. Do not invent a second copy. `Prototype/extension` is not the shipping Warden extension; choosing one shipping surface is still open. Next open work is in the decision (extension-surface choice, then PII re-measure only if strip is measured into a new results file, then evidence gates only from real results files). ARCH-002 remains Website and Prototype chrome until a later decision resolves the palette conflict with the Warden-line tokens in root `extension/`.
 
+## G11 Option C harness — 23 September 2026
+
+- Harness: `scripts/g11-warden-option-c-harness.mjs`. Frozen surface is root `extension/` plus Warden `127.0.0.1:8756` (PERCEIVE → STRIP → PLAN → VALIDATE → EXECUTE). Prototype port 9041 is not this surface.
+- New artifact only: `Benchmarks/results/core-latency-warden-option-c.json`. Historical `Benchmarks/results/core-latency.json` is not overwritten.
+- This environment had no Warden on 8756 and no Ollama on 11434, so no live L2 samples were collected. Gate status stays **fail**. `budgetMs` stays 200. `submission_ready` stays **false**. Release status was not edited.
+
 ## Option C — selective Warden port — 23 September 2026
 
 - Source: public archive `https://github.com/francisreubenr-rvu/sih26171-dhristi` branch `sightline-v2-foundation` at `2afd215d795d781f74c8a45468a86eedfa58253e`.
