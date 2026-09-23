@@ -630,7 +630,7 @@ body{
 }
 .site-header{
   border-bottom-width:2px;
-  box-shadow:0 2px 0 rgba(16,24,39,.08);
+  box-shadow:var(--shadow);
 }
 .trust-bar{
   border-radius:var(--radius-sm);
@@ -1070,24 +1070,14 @@ body{
 }
 
 
-/* ===== ARCH-PIXEL-HUD-002 shared tokens (§3) — do not drift ===== */
+/* HudFrame geometry only. Hybrid C hexes live in the first :root. */
 :root{
-  --ink:#101827;
-  --navy:#162b46;
-  --paper:#f3ead8;
-  --mist:#c7d5d2;
-  --saffron:#d88732;
-  --trust:#5c8b63;
-  --muted:#4a5568;
-  --line:#101827;
-  --surface:#ebe0cb;
   --radius:0;
   --radius-media:2px;
   --shadow:2px 2px 0 rgba(16,24,39,.28);
   --px:8px;
   --px-half:4px;
   --slice:8px;
-  --font-mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",monospace;
   --hud-fill-inset:4px;
   --texture-contrast:.08;
 }

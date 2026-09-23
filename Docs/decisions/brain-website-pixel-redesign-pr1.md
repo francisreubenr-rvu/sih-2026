@@ -21,7 +21,7 @@ Dark v4 names (`--ground`, `--cream`, `--amber`, `--red`, `--blue`) are not decl
 
 This is not a third palette. The site gets denser HudFrame chrome and the shared class vocabulary (`.hud-frame`, `.cell-grid`, `.pixel-chip`, `.pixel-check`, stepped reveal/pulse/pop). Those classes paint with the six Hybrid C tokens. Fail copy stays ink on paper. Attention chips use saffron. Verified chips use a trust keyline and ink text, because small `#5c8b63` on paper is about 3.3:1.
 
-Motion is `steps()`. `prefers-reduced-motion: reduce` drops it. Body stays on the local Geist file at 15px. Mono stays on IDs, scores, and telemetry. No new webfont and no CDN.
+The sticky header uses the same hard-offset `--shadow` (`2px 2px 0`, no blur) as the other instrument chrome. Motion is `steps()`. `prefers-reduced-motion: reduce` drops it. Body stays on the local Geist file at 15px. Mono stays on IDs, scores, and telemetry. No new webfont and no CDN.
 
 Hybrid C placement is unchanged: aperture lockup in the masthead, bug on the favicon, footer, and demo dialog. Copy and gate words are unchanged. G11 stays fail. G20 stays paused. `submission_ready` stays false.
 
