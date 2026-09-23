@@ -1,0 +1,452 @@
+/*
+ * sidepanel.css - DHRISTI side panel layout.
+ *
+ * Consumes extension/pixel.css for tokens, the cell module, the semantic chips and the stepped
+ * motion. This file holds layout and component structure for the chat surface only; it does not
+ * redefine a palette value or a motion token. See DESIGN.md for the measured palette and the
+ * semantic mapping (cream structure, red personal data, amber a decision waiting on the user,
+ * blue validated).
+ *
+ * The pixel direction is a single fixed dark composition, not a light/dark toggle, so this file
+ * does not branch on prefers-color-scheme.
+ *
+ * Layout: the panel is a column that fills the viewport, so the transcript scrolls inside it and
+ * the task input stays reachable. Everything is fluid: Chrome sizes a side panel at roughly 320
+ * to 500px and the user can drag it wider, so nothing here has a fixed width.
+ */
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  display: grid;
+  /* header | transcript | task input | diagnostics. The transcript is the row that absorbs
+     slack, and minmax(96px, 1fr) both lets it shrink below its content height (so it scrolls)
+     and stops it collapsing to nothing when the diagnostics disclosure below it is open. */
+  grid-template-rows: auto minmax(96px, 1fr) auto auto;
+  height: 100vh;
+  margin: 0;
+  padding: var(--cell-2);
+  /* Horizontal is always clipped: nothing on this panel may scroll sideways. Vertical is a
+     fallback only, for a panel dragged shorter than the four rows can fit; measured with the
+     diagnostics open, the rows fit and no body scroll appears. */
+  overflow: hidden auto;
+  color: var(--cream);
+  background: var(--ground);
+  font: var(--text-base) / 1.5 var(--font-sans);
+}
+
+/* ---- Topbar ---------------------------------------------------------------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: var(--cell) var(--cell-2);
+  padding: var(--cell) var(--cell-2);
+  margin-bottom: var(--cell-2);
+  border: 1px solid var(--cream);
+  background: var(--ground);
+}
+.brand { display: flex; align-items: center; gap: var(--cell); }
+.mark { flex: none; }
+.mark .cell--fill { --cell-color: var(--cream); }
+.mark .cell--outline { --cell-color: var(--cream); }
+/* The brand is the heading for the surface: semantic h1, sized as a mark rather than a
+   headline, because the panel's first-read element is the task input (RULES.md Hierarchy 1). */
+.brand-title {
+  margin: 0;
+  font: 700 var(--text-sm) var(--font-mono);
+  letter-spacing: .1em;
+  color: var(--cream);
+}
+
+/* ---- Health line ------------------------------------------------------------
+ * The four states the spec names, carried by the chip's data-state so the palette's meaning
+ * mapping holds in the markup and not only in this stylesheet. */
+.health-line {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  margin: 0; min-width: 0;
+  font: var(--text-xs) / 1.4 var(--font-mono);
+}
+#health-text { color: var(--cream); opacity: .8; overflow-wrap: anywhere; }
+#health-chip { flex: none; }
+
+/* ---- Transcript ------------------------------------------------------------- */
+.transcript-wrap {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  margin-bottom: var(--cell-2);
+  border: 1px solid var(--cream);
+  background: var(--ground);
+}
+.transcript {
+  display: grid;
+  gap: var(--cell-2);
+  align-content: start;
+  height: 100%;
+  margin: 0;
+  padding: var(--cell-2);
+  overflow-x: hidden;
+  overflow-y: auto;
+  list-style: none;
+}
+
+/* ---- Empty state -------------------------------------------------------------
+ * The one place the cell motif appears. The dither fade is applied to the grid itself (a
+ * non-text band, per pixel.css's own note on where the primitive belongs) rather than to a
+ * text-bearing band like the transcript, where it would fade readable copy. */
+.empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: var(--cell-2);
+  padding: var(--cell-4) var(--cell-2);
+  text-align: center;
+}
+.empty-state[hidden] { display: none; }
+.empty-grid {
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  opacity: .85;
+}
+.empty-grid .cell--fill { --cell-color: var(--cream); }
+.empty-grid .cell--outline { --cell-color: var(--cream); }
+.empty-label {
+  margin: 0;
+  font: var(--text-2xs) var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: .55;
+}
+.empty-line {
+  margin: 0;
+  max-width: 34ch;
+  font: var(--text-sm) / 1.5 var(--font-sans);
+  color: var(--cream);
+  opacity: .85;
+}
+
+/* ---- Entries -----------------------------------------------------------------
+ * Base entry: a bordered block on the ground. Colour is meaning, so each kind below sets the
+ * one hue its state owns and nothing else competes at that weight. */
+.entry {
+  min-width: 0;
+  padding: var(--cell-2);
+  border: 1px solid var(--cream);
+  background: var(--ground);
+  font-size: var(--text-base);
+  overflow-wrap: anywhere;
+}
+.entry p { margin: 0; }
+.entry .note { margin: var(--cell) 0 0; }
+
+/* user: the task text, right-aligned, on a lifted ground so it reads as the user's turn. */
+.entry--user {
+  justify-self: end;
+  max-width: 88%;
+  border-color: var(--cream);
+  background: color-mix(in srgb, var(--cream) 10%, var(--ground));
+  font-size: var(--text-md);
+}
+.entry--user .entry-text { text-align: right; }
+
+/* stage: one muted line per stage, marked with a single filled cell. Never a button, never a
+   control: this is a record that the stage ran. */
+.entry--stage {
+  display: flex; align-items: baseline; gap: var(--cell);
+  padding: 6px var(--cell-2);
+  border-color: transparent;
+  border-left: 1px solid var(--cream);
+  font: var(--text-xs) / 1.5 var(--font-mono);
+}
+.entry--stage .entry-cell {
+  width: var(--cell); height: var(--cell); flex: none;
+  margin-top: 2px;
+  background: var(--cream);
+  opacity: .8;
+}
+/* The stage name never breaks: "STRIP" splitting across two lines reads as a typo. The value is
+   the part that wraps, in its own column, so the label column stays a fixed width. */
+.entry--stage .stage-name { flex: none; letter-spacing: .1em; text-transform: uppercase; opacity: .95; white-space: nowrap; }
+.entry--stage .stage-value { flex: 1 1 auto; min-width: 0; color: var(--cream); opacity: .7; }
+
+/* activity: a completed internal action. */
+.entry--activity {
+  display: flex; align-items: baseline; gap: var(--cell);
+  padding: 6px var(--cell-2);
+  border-color: transparent;
+  border-left: 2px solid var(--cream);
+  color: var(--cream);
+  font: var(--text-sm) / 1.5 var(--font-mono);
+  opacity: .85;
+}
+.entry--activity .entry-cell {
+  width: 4px; height: 12px; flex: none;
+  background: var(--cream);
+  opacity: .6;
+}
+
+/* blocked: the run is refused. Red, the colour that means personal data or a stopped run. */
+.entry--blocked {
+  border-color: var(--red);
+  background: color-mix(in srgb, var(--red-deep) 22%, var(--ground));
+}
+.entry--blocked .entry-title { color: var(--red-text); }
+.entry--blocked .entry-reason { margin-top: 6px; font: var(--text-sm) / 1.5 var(--font-mono); opacity: .85; }
+/* A refusal that recovery has overtaken keeps its record but stops carrying alarm. */
+.entry--blocked[data-resolved="true"] {
+  border-color: var(--cream);
+  background: var(--ground);
+  opacity: .7;
+}
+.entry--blocked[data-resolved="true"] .entry-title { color: var(--cream); }
+
+/* error: a real failure, naming what failed. */
+.entry--error {
+  border-color: var(--red);
+  background: var(--ground);
+}
+.entry--error .entry-title { color: var(--red-text); }
+
+/* validated: a destructive-tier or reasoned action was accepted. Blue. */
+.entry--validated {
+  border-color: var(--blue);
+  background: color-mix(in srgb, var(--blue-deep) 26%, var(--ground));
+}
+.entry--validated .entry-title { color: var(--cream); }
+
+/* ---- Blocking cards: uncertain-pii and question -------------------------------
+ * Amber, because amber means a decision is waiting on the user. They render inline in the
+ * transcript rather than as modal dialogs, and they are focus-trapped while pending (see
+ * sidepanel.js) because a blocking decision a keyboard user cannot answer is a hang. */
+.entry--uncertain-pii,
+.entry--question {
+  border-color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 7%, var(--ground));
+}
+.entry[data-pending="true"] { outline: 1px solid var(--amber); outline-offset: 2px; }
+.entry-title {
+  display: flex; align-items: center; gap: var(--cell); flex-wrap: wrap;
+  margin: 0 0 var(--cell);
+  font: var(--text-xs) var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+.entry[data-pending="true"] .entry-title .pixel-chip { animation: pixel-pulse var(--dur-pulse) var(--step-2) infinite; }
+
+.uncertain-list { display: grid; gap: var(--cell-2); margin: 0 0 var(--cell-2); padding: 0; list-style: none; }
+.uncertain-item { min-width: 0; }
+.uncertain-item .item-head {
+  display: flex; justify-content: space-between; gap: var(--cell); align-items: baseline;
+  margin-bottom: 4px;
+}
+.item-label { font: 650 var(--text-md) var(--font-sans); overflow-wrap: anywhere; }
+.item-score { font: var(--text-xs) var(--font-mono); color: var(--amber); white-space: nowrap; }
+
+/* One strip/keep choice per span. The radio pair is the labelled control; the label is the hit
+   area, at 44px, and :has(input:focus-visible) gives the ring to the label rather than to the
+   visually hidden input. */
+.choice-row { display: flex; gap: var(--cell); margin-top: var(--cell); }
+.choice-row label {
+  flex: 1 1 0; min-width: 0;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 44px;
+  padding: 6px 8px;
+  border: 1px solid var(--cream);
+  cursor: pointer;
+  font: var(--text-sm) var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.choice-row input {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.choice-row label:hover { background: color-mix(in srgb, var(--cream) 10%, transparent); }
+.choice-row label:has(input:checked)[data-choice="strip"] { background: var(--red-deep); border-color: var(--red); }
+.choice-row label:has(input:checked)[data-choice="keep"] { background: var(--blue-deep); border-color: var(--blue); }
+.choice-row label:has(input:focus-visible) { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+/* A decided item, after the run moved on: the decision stays visible, the controls do not. */
+.uncertain-item[data-decided="true"] .choice-row { display: none; }
+.decision-line {
+  margin-top: var(--cell);
+  font: var(--text-xs) var(--font-mono);
+  color: var(--cream);
+  opacity: .8;
+}
+
+.question-reasons { margin: 0 0 var(--cell-2); padding-left: var(--cell-2); font: var(--text-sm) / 1.5 var(--font-mono); opacity: .85; }
+.option-stack { display: grid; gap: var(--cell); margin-top: var(--cell); }
+.option-stack button { width: 100%; }
+.option-stack button[data-choice="proceed"] { border-color: var(--blue); background: var(--blue-deep); }
+.option-stack button[data-choice="proceed"]:hover { background: var(--blue); color: var(--ground); }
+.option-stack button[data-choice="stop"] { border-color: var(--red); background: var(--red-deep); }
+.option-stack button[data-choice="stop"]:hover { background: var(--red); color: var(--ground); }
+
+.card-error {
+  margin: var(--cell) 0 0;
+  color: var(--red-text);
+  font: var(--text-sm) var(--font-mono);
+}
+
+/* ---- Command block (the Warden start command) --------------------------------- */
+.command {
+  margin: var(--cell) 0 0;
+  padding: var(--cell);
+  border: 1px solid var(--amber);
+  background: var(--ground);
+  color: var(--cream);
+  font: var(--text-xs) / 1.5 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Composer ------------------------------------------------------------------ */
+.composer {
+  padding: var(--cell-2);
+  margin-bottom: var(--cell-2);
+  border: 1px solid var(--cream);
+  background: var(--ground);
+  min-width: 0;
+}
+.field-label {
+  display: block; margin-bottom: var(--cell);
+  color: var(--cream); opacity: .7;
+  font: var(--text-xs) var(--font-mono); letter-spacing: .07em; text-transform: uppercase;
+}
+.composer-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--cell); align-items: start; }
+.composer-actions { display: grid; gap: var(--cell); }
+
+/* ---- Controls -----------------------------------------------------------------
+ * Every control is at least 44px on its smallest dimension (DESIGN.md standing rule; finding
+ * F20 in ROAST.md was a regression of exactly this). */
+textarea, input[type="text"] {
+  width: 100%; min-width: 0;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--cream);
+  border-radius: 0;
+  color: var(--cream);
+  background: var(--ground);
+  font: var(--text-base) / 1.45 var(--font-sans);
+  resize: none;
+}
+textarea::placeholder, input::placeholder { color: var(--cream); opacity: .45; }
+
+button {
+  min-height: 44px; min-width: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--cream);
+  border-radius: 0;
+  color: var(--cream);
+  background: var(--ground);
+  font: 650 var(--text-base) var(--font-sans);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--step-4), color var(--dur-fast) var(--step-4);
+}
+button:hover:not(:disabled) { background: var(--cream); color: var(--ground); }
+button:active:not(:disabled) { transform: translate(1px, 1px); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.stop { border-color: var(--red); background: var(--red-deep); color: var(--cream); }
+button.stop:hover { background: var(--red); color: var(--ground); }
+#send { min-width: 64px; }
+.save-btn { min-width: 56px; }
+
+textarea:focus-visible, input:focus-visible, button:focus-visible, summary:focus-visible,
+.choice-row label:has(input:focus-visible) {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+
+.note { margin: 6px 0 0; color: var(--cream); opacity: .7; font: var(--text-xs) / 1.5 var(--font-mono); overflow-wrap: anywhere; }
+code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
+
+/* ---- Diagnostics ---------------------------------------------------------------
+ * One collapsed disclosure at the foot, closed by default, deliberately quiet: this is the
+ * lowest-contrast text on the panel so it cannot compete with the task input. */
+.diagnostics {
+  border: 1px solid var(--cream);
+  border-color: color-mix(in srgb, var(--cream) 35%, transparent);
+  background: var(--ground);
+  min-width: 0;
+}
+/* Open, the diagnostics scrolls inside its own cap rather than pushing the transcript to a
+   sliver: it is a diagnostics pane, and the conversation above it is the product. */
+.diagnostics[open] {
+  max-height: min(42vh, 340px);
+  overflow-y: auto;
+}
+.diagnostics > summary {
+  display: flex; align-items: center; gap: var(--cell);
+  position: sticky; top: 0; z-index: 1;
+  min-height: 44px;
+  padding: 6px var(--cell-2);
+  cursor: pointer;
+  list-style: none;
+  color: var(--cream);
+  background: var(--ground);
+  opacity: .55;
+  font: var(--text-xs) var(--font-mono);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.diagnostics > summary::-webkit-details-marker { display: none; }
+.diagnostics > summary::before {
+  content: "";
+  width: var(--cell); height: var(--cell); flex: none;
+  border: 1px solid currentColor;
+}
+.diagnostics[open] > summary::before { background: currentColor; }
+.diagnostics > summary:hover { opacity: 1; }
+.diag-block { padding: var(--cell-2); border-top: 1px solid color-mix(in srgb, var(--cream) 35%, transparent); min-width: 0; }
+.diag-block h2 {
+  margin: 0 0 6px;
+  color: var(--cream); opacity: .8;
+  font: var(--text-xs) var(--font-mono); letter-spacing: .07em; text-transform: uppercase;
+}
+.diag-block .note:first-of-type { margin-top: 0; }
+.diag-meta { margin: var(--cell) 0 0; color: var(--amber); font: var(--text-2xs) var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.body-wrap { max-width: 100%; overflow-x: auto; margin-top: 6px; }
+.diag-body {
+  margin: 0;
+  padding: var(--cell);
+  border: 1px solid color-mix(in srgb, var(--cream) 35%, transparent);
+  background: var(--ground);
+  color: var(--cream);
+  font: var(--text-2xs) / 1.5 var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.diag-body:empty { display: none; }
+
+.key-field { min-width: 0; }
+.key-field label { display: block; margin-bottom: 6px; font: var(--text-sm) var(--font-sans); color: var(--cream); }
+.key-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; align-items: stretch; }
+.key-status { margin: 6px 0 0; color: var(--cream); opacity: .7; font: var(--text-xs) var(--font-mono); overflow-wrap: anywhere; }
+
+.health-detail {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
+  margin: var(--cell-2) 0 0; padding: var(--cell-2) 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--cream) 35%, transparent);
+}
+.health-detail > div { display: flex; justify-content: space-between; gap: var(--cell); min-width: 0; }
+.health-detail dt { margin: 0; color: var(--cream); opacity: .65; font: var(--text-xs) var(--font-mono); }
+.health-detail dd { margin: 0; color: var(--cream); font: 650 var(--text-xs) var(--font-mono); text-align: right; overflow-wrap: anywhere; }
+
+/* ---- Narrow panel ---------------------------------------------------------------
+ * Chrome can shrink a side panel to roughly 320px. The composer's action column stays at its
+ * own width and the textarea absorbs the rest, so nothing overflows and no control drops under
+ * its 44px minimum. */
+@media (max-width: 360px) {
+  .entry--user { max-width: 100%; }
+  .choice-row { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

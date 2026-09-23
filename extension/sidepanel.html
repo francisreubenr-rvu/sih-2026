@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DHRISTI</title>
+  <!-- pixel.css is the design system (tokens, cell module, semantic chips, stepped motion). This
+       file consumes it and defines layout only; it never redefines a palette or motion token. -->
+  <link rel="stylesheet" href="pixel.css">
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <header class="topbar pixel-scanline">
+    <div class="brand">
+      <!-- The brand mark, same family as the empty state's motif: filled cells inside an
+           outline ring, corners empty so the form thins at the edge. -->
+      <span class="mark cell-grid" style="--cols:4;--rows:4" aria-hidden="true">
+        <span class="cell cell--outline"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--outline"></span>
+        <span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span>
+        <span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span>
+        <span class="cell cell--outline"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--outline"></span>
+      </span>
+      <h1 class="brand-title">DHRISTI</h1>
+    </div>
+    <!-- The one-line state readout. role="status" so a change from loading to ready is
+         announced without stealing focus. -->
+    <p class="health-line" role="status">
+      <span id="health-chip" class="pixel-chip" data-state="neutral">CHECKING</span>
+      <span id="health-text">Checking the Warden.</span>
+    </p>
+  </header>
+
+  <main class="transcript-wrap">
+    <!-- Shown only while the transcript is empty. The cell motif lives here and nowhere else:
+         it is the opening message, not a decoration repeated down the surface. -->
+    <div id="empty-state" class="empty-state">
+      <div id="empty-grid" class="cell-grid empty-grid" aria-hidden="true"></div>
+      <p class="empty-label">NO TASKS YET</p>
+      <p class="empty-line">The agent reviews what leaves this browser before it leaves.</p>
+    </div>
+    <!-- The transcript. aria-live="polite" announces new entries; entries already on screen are
+         updated in place rather than re-announced (see sidepanel.js renderTranscript). -->
+    <ol id="transcript" class="transcript" aria-live="polite" aria-relevant="additions text"></ol>
+  </main>
+
+  <form id="composer" class="composer" autocomplete="off">
+    <label for="task-input" class="field-label">Task</label>
+    <div class="composer-row">
+      <textarea id="task-input" name="task" rows="2" placeholder="Describe what the agent should do on this page"></textarea>
+      <div class="composer-actions">
+        <button id="send" type="submit">Send</button>
+        <!-- Shown only while a run is in flight, derived from the transcript: a run is live when
+             a user entry has no terminal marker after it. No other control is needed, because
+             every internal step happens without asking. -->
+        <button id="stop" type="button" class="stop" hidden>Stop</button>
+      </div>
+    </div>
+    <p class="note">Enter sends. Shift and Enter starts a new line.</p>
+  </form>
+
+  <!-- One collapsed disclosure at the foot, closed by default. Diagnostics, not the product: it
+       must not compete with the task input. -->
+  <details class="diagnostics">
+    <summary>Diagnostics</summary>
+
+    <section class="diag-block" aria-labelledby="outbound-title">
+      <h2 id="outbound-title">Inspect outbound data</h2>
+      <p class="note">The last request sent for planning, and only that one. It carries a tokenized task, the sanitized DOM and element metadata. The token-to-value map stays in this browser.</p>
+      <p id="outbound-meta" class="diag-meta"></p>
+      <div class="body-wrap"><pre id="outbound-body" class="diag-body"></pre></div>
+      <p id="outbound-empty" class="note">Nothing has been sent for planning yet.</p>
+    </section>
+
+    <section class="diag-block" aria-labelledby="setup-title">
+      <h2 id="setup-title">Server setup</h2>
+      <div class="key-field">
+        <label for="warden-origin">Warden origin</label>
+        <div class="key-row">
+          <input id="warden-origin" type="text" autocomplete="off" placeholder="http://127.0.0.1:8756">
+          <button id="warden-origin-save" type="button" class="save-btn">Save</button>
+        </div>
+        <p id="warden-origin-status" class="key-status">Default: http://127.0.0.1:8756.</p>
+      </div>
+
+      <dl class="health-detail">
+        <div><dt>Reachable</dt><dd id="detail-reachable">checking</dd></div>
+        <div><dt>Model loaded</dt><dd id="detail-loaded">-</dd></div>
+        <div><dt>Model</dt><dd id="detail-model">-</dd></div>
+        <div><dt>Groq configured</dt><dd id="detail-groq">-</dd></div>
+      </dl>
+      <p id="groq-note" class="note" hidden>No Groq key is configured. The key goes in <code>warden/.env</code>, never in this extension. The plan stage will fail until it is set; stripping still works.</p>
+    </section>
+  </details>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

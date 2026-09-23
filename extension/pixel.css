@@ -1,0 +1,325 @@
+/*
+ * pixel.css - DHRISTI v4 pixel design system.
+ *
+ * Shared token + primitive layer for the extension side panel (consumed by
+ * sidepanel.css) and, conceptually, for Website/ (ported, not linked;
+ * this file is not cross-origin importable by the site, so porting means
+ * copying the tokens forward, not linking this file).
+ *
+ * Source of truth: Docs/specs/2026-09-13-dhristi-v4-warden.md, "Pixel design
+ * language". Palette values are measured from the supplied reference video
+ * frame by frame, not estimated or invented. Do not edit a value here without
+ * re-reading that section; it is frozen for the v4 build.
+ *
+ * Motion rule, non-negotiable: stepped (steps()), never eased. An eased
+ * transition reads as a generic modern web animation and breaks the pixel
+ * illusion immediately. See "Motion" below.
+ */
+
+:root {
+  color-scheme: dark;
+
+  /* ---- Measured palette (2026-09-13, frame-extracted) -------------------
+   * Semantic roles, not decoration:
+   *   --ground      page/panel ground, the base surface
+   *   --cream       structure: body text, borders, the dominant mass
+   *   --amber       uncertain: a decision is waiting on the user
+   *   --red         personal data / destructive tier (marks, fills, large text)
+   *   --red-deep    red at rest: borders, fills, button backgrounds
+   *   --blue        validated: a plan was accepted (marks, fills, large text)
+   *   --blue-deep   blue at rest: borders, fills, button backgrounds
+   * A reviewer must be able to read a run's state from colour alone. Keep
+   * that mapping true in markup (class names, aria labels), not only in CSS.
+   */
+  --ground: #0b0b0f;
+  --cream: #e8e9de;
+  --amber: #fcc34a;
+  --red: #ff0000;
+  --red-deep: #b71a00;
+  --blue: #142eff;
+  --blue-deep: #1f2181;
+
+  /* ---- Accessible small-text variants -----------------------------------
+   * Measured WCAG contrast on --ground (2026-09-13, see DESIGN.md for the
+   * full table): --cream 16.04:1, --amber 12.20:1 (both pass at any size).
+   * --red is 4.91:1: it clears AA (4.5:1) but only just, so it is reserved
+   * for marks/borders/fills/large text (>=19px, or >=15px bold) and never
+   * for small body text. --blue is 2.68:1: it FAILS AA outright at any size
+   * and must never carry small text directly on --ground.
+   * --red-text and --blue-text are cream-tinted variants for the rare case
+   * where red/blue meaning must be carried by small text on --ground; they
+   * are not used for marks, fills or borders, only inline text.
+   */
+  --red-text: #f84643; /* 5.56:1 on --ground */
+  --blue-text: #6979f2; /* 5.26:1 on --ground */
+
+  /* ---- Cell module --------------------------------------------------------
+   * The signature motif: a subject built from discrete square cells on an
+   * 8px module, mixing filled cells with stroke-only outlined cells,
+   * thinning to sparse outlines at the edges. Spacing and primitive sizing
+   * below derive from --cell rather than arbitrary pixel values.
+   */
+  --cell: 8px;
+  --cell-2: 16px;
+  --cell-3: 24px;
+  --cell-4: 32px;
+
+  /* ---- Type ----------------------------------------------------------------
+   * No webfont file, no CDN: Chrome loads the panel directly. Geometric
+   * sans and mono come from the system stack; the display serif (reference
+   * image 2 and 3's pairing) also comes from the system stack.
+   */
+  --font-sans: -apple-system, "Segoe UI", system-ui, "Helvetica Neue", sans-serif;
+  --font-serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", "Consolas", monospace;
+
+  /* Type scale. Body text sits on the sans; the display serif is reserved
+   * for the one centred headline treatment (see .pixel-display); labels,
+   * scores and detection text are always mono, never sans or serif. */
+  --text-2xs: 9px;
+  --text-xs: 10px;
+  --text-sm: 11px;
+  --text-base: 13px;
+  --text-md: 15px;
+  --text-lg: 19px;
+  --text-display: 26px;
+
+  /* ---- Motion: stepped, never eased ---------------------------------------
+   * steps(n) timing functions and their paired durations. Every transition
+   * and animation in this system uses one of these, never `ease`/`linear`/
+   * a cubic-bezier. prefers-reduced-motion drops straight to the end state
+   * (see the media query at the bottom of this file).
+   */
+  --step-2: steps(2, jump-end);
+  --step-4: steps(4, jump-end);
+  --step-6: steps(6, jump-end);
+  --step-8: steps(8, jump-end);
+  --dur-fast: 140ms;
+  --dur-med: 320ms;
+  --dur-slow: 640ms;
+  --dur-pulse: 900ms;
+}
+
+/* =========================================================================
+   Primitives
+   ========================================================================= */
+
+/* ---- Cell grid: the signature motif -------------------------------------
+ * A small grid of 8px cells. Each cell is either .cell--fill (solid) or
+ * .cell--outline (stroke only); real usage mixes both, thinning to outline
+ * at the edges. Consumed by the brand mark in sidepanel.html. */
+.cell-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), var(--cell));
+  grid-template-rows: repeat(var(--rows, 4), var(--cell));
+  gap: 1px;
+}
+.cell {
+  width: var(--cell);
+  height: var(--cell);
+}
+.cell--fill {
+  background: var(--cell-color, var(--cream));
+}
+.cell--outline {
+  background: transparent;
+  border: 1px solid var(--cell-color, var(--cream));
+  box-sizing: border-box;
+}
+.cell--empty {
+  background: transparent;
+}
+
+/* ---- Detection box: 1px rect + micro mono label -------------------------
+ * From reference image 1: a 1px detection rectangle with a micro monospace
+ * label. `data-label` supplies the caption text, rendered above the box.
+ * `--box-color` selects the semantic border colour (default cream). */
+.detection-box {
+  --box-color: var(--cream);
+  position: relative;
+  border: 1px solid var(--box-color);
+  padding: var(--cell) var(--cell-2) var(--cell) var(--cell);
+  margin-top: var(--cell-2);
+  background: color-mix(in srgb, var(--box-color) 6%, transparent);
+}
+.detection-box::before {
+  content: attr(data-label);
+  position: absolute;
+  top: calc(-1 * var(--cell-2));
+  left: 0;
+  font: var(--text-2xs) var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--box-color);
+  background: var(--ground);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+.detection-box__value {
+  font: var(--text-sm) var(--font-mono);
+  color: var(--cream);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* ---- Scanline overlay ----------------------------------------------------
+ * A thin horizontal scanline texture from reference image 1. Applied as a
+ * background on a band, kept at very low opacity so it never competes with
+ * text legibility (motion-scroll playbook, decorative-effect-vs-readability
+ * check). Use `.pixel-scanline` only on non-text-dense bands (topbar,
+ * dialog header), never behind body copy or tables. */
+.pixel-scanline {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--cream) 7%, transparent) 0px,
+    color-mix(in srgb, var(--cream) 7%, transparent) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* ---- Dither falloff --------------------------------------------------------
+ * A 1-bit dither pattern used to fade an edge (reference image 2). Applied
+ * as a mask on the element it fades: content stays fully rendered, only the
+ * alpha channel dithers out. Used on the brand mark's outer ring and on the
+ * step-log scroll edge, so it signals "more content" rather than decorating
+ * for its own sake. */
+.pixel-dither-fade {
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%),
+    repeating-conic-gradient(black 0% 25%, transparent 0% 50%);
+  -webkit-mask-size: 100% 100%, 2px 2px;
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%),
+    repeating-conic-gradient(black 0% 25%, transparent 0% 50%);
+  mask-size: 100% 100%, 2px 2px;
+  mask-composite: intersect;
+}
+
+/* ---- Display serif headline ---------------------------------------------
+ * Adopted from reference image 3 (centred serif display headline). Palette
+ * of that reference is explicitly rejected; see DESIGN.md "Recorded
+ * deviation". Used sparingly: dialog titles only, never body copy. */
+.pixel-display {
+  font: 400 var(--text-lg) / 1.2 var(--font-serif);
+  text-align: center;
+  color: var(--cream);
+  letter-spacing: 0.01em;
+}
+
+/* ---- Semantic state chips --------------------------------------------------
+ * The palette-to-meaning mapping made real in markup: give a chip a
+ * `data-state` and it renders in the correct colour pairing automatically.
+ * Pairings below are the ones measured to actually pass contrast (see
+ * DESIGN.md): cream-on-red-deep and cream-on-blue-deep both clear AA;
+ * ground-on-amber clears AAA.
+ */
+.pixel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid currentColor;
+  padding: 2px 6px;
+  font: var(--text-xs) var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pixel-chip[data-state="structure"] {
+  color: var(--cream);
+  background: transparent;
+}
+.pixel-chip[data-state="uncertain"] {
+  color: var(--ground);
+  background: var(--amber);
+  border-color: var(--amber);
+}
+.pixel-chip[data-state="destructive"],
+.pixel-chip[data-state="personal-data"] {
+  color: var(--cream);
+  background: var(--red-deep);
+  border-color: var(--red-deep);
+}
+.pixel-chip[data-state="validated"] {
+  color: var(--cream);
+  background: var(--blue-deep);
+  border-color: var(--blue-deep);
+}
+.pixel-chip[data-state="neutral"] {
+  color: var(--cream);
+  background: transparent;
+  opacity: 0.7;
+}
+
+/* ---- Pass/fail cell pair ---------------------------------------------------
+ * The filled/outline cell distinction used as a real functional indicator,
+ * not decoration: a filled cell reports a passing check, an outline-only
+ * cell reports a failing one. Never invert this mapping. */
+.pixel-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--text-sm) var(--font-mono);
+  color: var(--cream);
+}
+.pixel-check__cell {
+  width: var(--cell);
+  height: var(--cell);
+  flex: none;
+  box-sizing: border-box;
+}
+.pixel-check[data-pass="true"] .pixel-check__cell {
+  background: var(--cream);
+  border: 1px solid var(--cream);
+}
+.pixel-check[data-pass="false"] .pixel-check__cell {
+  background: transparent;
+  border: 1px solid var(--red);
+}
+.pixel-check[data-pass="skipped"] .pixel-check__cell {
+  background: transparent;
+  border: 1px dashed var(--cream);
+  opacity: 0.6;
+}
+
+/* =========================================================================
+   Motion: stepped keyframes
+   ========================================================================= */
+
+/* Cell-by-cell reveal: used when a new step/prompt/dialog enters. Steps
+ * through opacity in discrete jumps rather than a smooth fade. */
+@keyframes pixel-reveal {
+  0% { opacity: 0; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+.pixel-reveal {
+  animation: pixel-reveal var(--dur-med) var(--step-4) both;
+}
+
+/* Stepped pulse: used for the single "running" status dot, replacing a
+ * smooth CSS pulse with a two-frame on/off blink. */
+@keyframes pixel-pulse {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.35; }
+}
+.pixel-pulse {
+  animation: pixel-pulse var(--dur-pulse) var(--step-2) infinite;
+}
+
+/* Stepped dialog entrance: a small discrete scale-in, no easing curve. */
+@keyframes pixel-pop {
+  0% { transform: scale(0.94); opacity: 0; }
+  60% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.pixel-pop {
+  animation: pixel-pop var(--dur-fast) var(--step-4) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-reveal,
+  .pixel-pulse,
+  .pixel-pop {
+    animation: none !important;
+  }
+}
