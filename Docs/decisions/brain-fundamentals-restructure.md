@@ -5,6 +5,14 @@
 **Authority:** Francis, this session. Halt the master wrap-finish path. Target fundamentals are the Warden / v4 architecture recorded in `Docs/grokbot-briefing.md`.  
 **This change:** docs only. No `warden/` tree. No root `extension/`. No Pages redeploy. No ledger edits.
 
+## Francis locks (2026-09-23)
+
+Settled. Do not reopen these three without a new decision from Francis.
+
+1. **Merge strategy = Option C.** `Prototype/` and the Website HUD stay the measurement and demo surface. Add a real `warden/` only when it is sourced from an existing tree. Do not invent stubs. Choose one shipping extension surface later. `Prototype/extension` is not the shipping Warden extension.
+2. **Halt wrap.** Freeze HUD and Pages polish until Phase 0 docs and the ARCH land. This PR is the Phase 0 docs. ARCH is still outstanding, so polish stays frozen.
+3. **Phase 1 planner default = Ollama local.** Planner origin is a setting. Ollama on loopback is the offline default. No cloud keys in the browser. Groq is optional host-env only, and is never described as offline.
+
 ## Halt
 
 As of 2026-09-23, wrap and polish are not the primary engineering path on master.
@@ -15,7 +23,7 @@ The shipping surface that exists today stays where it is:
 - `Website/`
 - Japanese pixel HUD wrap from PR #29 (`a87c785`, decision `Docs/decisions/brain-wrap-harder-finish.md`)
 
-Those files are historical shipping chrome and prototype code. They are not deleted. Further densify, video, or copy polish on that chrome is deprioritized until the architecture merge in the phases below is designed.
+Those files are historical shipping chrome and prototype code. They are not deleted. HUD and Pages polish stay frozen until Phase 0 docs and the ARCH land, per the locks above. This PR is the Phase 0 docs.
 
 `Docs/grokbot-briefing.md` (commit `8b2298e`) is the handoff. Its Warden sections are the record of local branch `sightline-v2-foundation` at `2afd215`. They are not shipping instructions for this checkout. This decision names that architecture as the **target**, and it does not copy the missing tree onto master.
 

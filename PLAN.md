@@ -2,6 +2,8 @@
 
 Francis halted the wrap/polish-as-primary path. Target fundamentals are the Warden / v4 pipeline (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE): browser holds no cloud key, protected scene only outbound, client op-tier gate F17 stays mandatory. Decision: `Docs/decisions/brain-fundamentals-restructure.md`. Handoff record: `Docs/grokbot-briefing.md`.
 
+Francis locks (2026-09-23): Option C — Prototype and Website HUD stay measurement/demo, real `warden/` only when sourced and no stubs, one shipping extension surface later (`Prototype/extension` is not shipping Warden); HUD/Pages polish frozen until Phase 0 docs and ARCH land (this PR is Phase 0 docs); Phase 1 planner default is Ollama on loopback (origin is a setting; Groq is optional host-env only and is never the offline path).
+
 Wrap densify (PR #29, ARCH-002 HUD) is no longer the primary queue. Wave 7 and earlier sections below stay as history. Do not delete them.
 
 Still true, and not flipped by this section: G11 **fail**, G20 **paused**, `submission_ready` **false**. `warden/` and root `extension/` are absent on master. Do not create them to match the briefing. Next work is the ordered phases in the decision (architecture merge design, then an honest source for the Warden package, then Prototype vs root extension, then PII re-measure only if strip exists, then evidence gates only from real results files). Francis must confirm before any Warden code merge. ARCH-002 remains the shipping chrome until a later decision resolves the palette conflict with the Warden-line tokens.
