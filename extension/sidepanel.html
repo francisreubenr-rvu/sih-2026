@@ -86,9 +86,10 @@
         <div><dt>Reachable</dt><dd id="detail-reachable">checking</dd></div>
         <div><dt>Model loaded</dt><dd id="detail-loaded">-</dd></div>
         <div><dt>Model</dt><dd id="detail-model">-</dd></div>
+        <div><dt>Planner</dt><dd id="detail-planner">-</dd></div>
         <div><dt>Groq configured</dt><dd id="detail-groq">-</dd></div>
       </dl>
-      <p id="groq-note" class="note" hidden>No Groq key is configured. The key goes in <code>warden/.env</code>, never in this extension. The plan stage will fail until it is set; stripping still works.</p>
+      <p id="groq-note" class="note" hidden>This Warden process is set to the optional Groq planner and has no key in <code>warden/.env</code>. The key never goes in this extension. The default planner is local Ollama and does not use Groq.</p>
     </section>
   </details>
 

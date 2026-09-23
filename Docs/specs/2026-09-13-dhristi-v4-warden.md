@@ -5,6 +5,11 @@ against it in parallel, so a change here invalidates work in flight. Supersedes 
 split for the shipping path. The v3 design at `Docs/specs/2026-09-10-sightline-v3-design.md` remains
 the record of what was measured before this run and is not restated as v4 evidence.
 
+**Amendment, 23 September 2026.** Francis locked the Phase 1 planner default to local Ollama.
+`POST /plan` follows `Docs/decisions/brain-warden-ollama-plan-harden.md`. Groq is optional and
+is not the offline path. Sentences below that say a missing Groq key blocks planning describe
+the 13 September import, not the current default.
+
 ## Why a third process
 
 v3 put the filter in the browser and used regular expressions plus an UltraFace face detector. That

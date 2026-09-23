@@ -63,6 +63,7 @@ WARDEN_DIR = Path(__file__).resolve().parent
 if str(WARDEN_DIR) not in sys.path:
     sys.path.insert(0, str(WARDEN_DIR))
 
+import app as warden_app  # noqa: E402
 import config  # noqa: E402
 import entities  # noqa: E402
 import groq_client  # noqa: E402
@@ -373,6 +374,193 @@ def test_plan_via_groq_never_leaks_tokens_or_raw_value(monkeypatch):
     assert result["plan"]["action"] == "click"
     assert raw_secret_value not in captured["prompt"]
     assert "EMAIL#1" in captured["prompt"]  # the sanitised placeholder IS expected
+
+
+def _plan_body():
+    return {
+        "tokenizedTask": "Email EMAIL#1 the report",
+        "sanitizedDom": "<div>EMAIL#1</div>",
+        "elements": [{"selector": "#go", "label": "Go", "fieldType": "button", "filled": False, "x": 1, "y": 2}],
+        "history": [],
+    }
+
+
+def _ollama_action_response():
+    class _Response:
+        status_code = 200
+
+        def json(self):
+            return {
+                "response": json.dumps({
+                    "action": "click",
+                    "target_selector": "#go",
+                    "coordinates": {"x": 1, "y": 2},
+                    "value": None,
+                    "reasoning_token": "synthetic",
+                })
+            }
+
+    return _Response()
+
+
+def test_planner_mode_defaults_to_ollama(monkeypatch):
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    assert config.planner_mode() == "ollama"
+
+
+def test_plan_default_uses_ollama_and_not_groq_even_when_key_present(monkeypatch):
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.setattr(config, "OLLAMA_HOST", "http://127.0.0.1:11434")
+    monkeypatch.setattr(config, "OLLAMA_MODEL", "qwythos-9b:latest")
+
+    groq_calls = {"n": 0}
+    seen = {}
+
+    def refuse_groq(model, prompt):
+        groq_calls["n"] += 1
+        raise AssertionError("default /plan must not call Groq")
+
+    def fake_post(url, json=None, timeout=None):
+        seen["url"] = url
+        seen["model"] = (json or {}).get("model")
+        return _ollama_action_response()
+
+    monkeypatch.setattr(groq_client, "_call_groq_model", refuse_groq)
+    monkeypatch.setattr(ollama_client.httpx, "post", fake_post)
+
+    result = warden_app.dispatch_plan(_plan_body())
+
+    assert groq_calls["n"] == 0
+    assert seen["url"] == "http://127.0.0.1:11434/api/generate"
+    assert seen["model"] == "qwythos-9b:latest"
+    assert result["planner"] == "ollama"
+    assert result["plan"]["action"] == "click"
+    assert result["model"] == "qwythos-9b:latest"
+
+
+def test_plan_ollama_down_does_not_call_groq(monkeypatch):
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.setattr(config, "OLLAMA_HOST", "http://127.0.0.1:11434")
+    monkeypatch.setattr(config, "OLLAMA_MODEL", "qwythos-9b:latest")
+
+    def refuse_groq(model, prompt):
+        raise AssertionError("Ollama failure must not fall through to Groq")
+
+    def fake_post(url, json=None, timeout=None):
+        raise httpx.ConnectError("connection refused")
+
+    monkeypatch.setattr(groq_client, "_call_groq_model", refuse_groq)
+    monkeypatch.setattr(ollama_client.httpx, "post", fake_post)
+
+    with pytest.raises(warden_app.PlanRouteError) as caught:
+        warden_app.dispatch_plan(_plan_body())
+
+    assert caught.value.status == 503
+    assert "did not call Groq" in str(caught.value)
+
+
+def test_plan_refuses_non_loopback_ollama_host(monkeypatch):
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setattr(config, "OLLAMA_HOST", "http://10.1.2.3:11434")
+    monkeypatch.setattr(config, "OLLAMA_MODEL", "qwythos-9b:latest")
+
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("non-loopback Ollama host must not be contacted")
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
+    monkeypatch.setattr(groq_client, "_call_groq_model", fail_if_called)
+
+    with pytest.raises(warden_app.PlanRouteError) as caught:
+        warden_app.dispatch_plan(_plan_body())
+
+    assert caught.value.status == 503
+    assert "loopback" in str(caught.value)
+
+
+def test_plan_refuses_cloud_ollama_tag(monkeypatch):
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setattr(config, "OLLAMA_HOST", "http://127.0.0.1:11434")
+    monkeypatch.setattr(config, "OLLAMA_MODEL", "some-model:cloud")
+
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("a :cloud model tag must not be called")
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
+
+    with pytest.raises(warden_app.PlanRouteError) as caught:
+        warden_app.dispatch_plan(_plan_body())
+
+    assert ":cloud" in str(caught.value)
+
+
+def test_plan_groq_is_explicit_opt_in(monkeypatch):
+    monkeypatch.setenv("WARDEN_PLANNER", "groq")
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+
+    def fail_if_ollama(*args, **kwargs):
+        raise AssertionError("explicit Groq path must not call Ollama")
+
+    def fake_groq(model, prompt):
+        return json.dumps({
+            "action": "click",
+            "target_selector": "#go",
+            "coordinates": {"x": 1, "y": 2},
+            "value": None,
+            "reasoning_token": "synthetic",
+        })
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_ollama)
+    monkeypatch.setattr(groq_client, "_call_groq_model", fake_groq)
+
+    result = warden_app.dispatch_plan(_plan_body())
+    assert result["planner"] == "groq"
+    assert result["plan"]["action"] == "click"
+
+
+def test_plan_explicit_groq_without_key_fails_closed(monkeypatch):
+    monkeypatch.setenv("WARDEN_PLANNER", "groq")
+    monkeypatch.setattr(config, "GROQ_API_KEY", None)
+
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("unconfigured explicit Groq path must not call a model")
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
+    monkeypatch.setattr(groq_client, "_call_groq_model", fail_if_called)
+
+    with pytest.raises(warden_app.PlanRouteError) as caught:
+        warden_app.dispatch_plan(_plan_body())
+
+    assert caught.value.status == 503
+    assert "GROQ_API_KEY" in str(caught.value)
+
+
+def test_plan_route_refuses_tokens_before_any_model(monkeypatch):
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+
+    def fail_if_called(*args, **kwargs):
+        raise AssertionError("a tokens field must be refused before any model call")
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
+    monkeypatch.setattr(groq_client, "_call_groq_model", fail_if_called)
+
+    body = _plan_body()
+    body["tokens"] = {"EMAIL#1": "francis.synthetic@example.org"}
+    with pytest.raises(warden_app.PlanRouteError) as caught:
+        warden_app.dispatch_plan(body)
+    assert caught.value.status == 400
+
+
+def test_loopback_base_accepts_only_localhost():
+    assert config.is_loopback_base("http://127.0.0.1:11434")
+    assert config.is_loopback_base("http://localhost:11434")
+    assert config.is_loopback_base("http://[::1]:11434")
+    assert not config.is_loopback_base("http://10.0.0.8:11434")
+    assert not config.is_loopback_base("https://example.com")
+    assert not config.is_loopback_base("http://127.0.0.1:11434/v1")
+    assert not config.ollama_model_is_local("qwen:cloud")
+    assert config.ollama_model_is_local("qwythos-9b:latest")
 
 
 # ---------------------------------------------------------------------------

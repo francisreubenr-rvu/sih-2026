@@ -1,4 +1,9 @@
-"""groq_client.py: POST /plan's Groq fallback chain.
+"""groq_client.py: optional POST /plan path.
+
+Used only when WARDEN_PLANNER=groq. The default planner is local Ollama
+(ollama_client.plan_via_ollama). This module is not the offline path.
+
+Groq fallback chain:
 
 Mirrors the strict-JSON validation already in extension/background.js
 (validateAction / ALLOWED_ACTIONS / ACTION_KEYS) so the Warden and the

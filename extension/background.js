@@ -2,6 +2,7 @@ import { redactScreenshot, redactText } from './utils/redactor.js';
 import { detectElements } from './utils/omniparser.js';
 import * as wardenClient from './utils/warden.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
+import { loopbackHttpUrl } from './utils/loopback.js';
 
 // DHRISTI v4 background loop, plus the session transcript that the side panel renders.
 //
@@ -24,6 +25,8 @@ const SETTLE_MS = 400;
 const PING_MAX_ATTEMPTS = 10;
 const PING_INTERVAL_MS = 300;
 const HISTORY_LIMIT = 8;
+const SCAN_SCRIPT_ID = 'dhristi-scan';
+const SITE_ACCESS_ORIGINS = ['<all_urls>'];
 
 const STANDARD_VALIDATION_OPTIONS = [
   { id: 'proceed', label: 'Proceed' },
@@ -34,6 +37,31 @@ const STANDARD_VALIDATION_OPTIONS = [
 // Verbatim from warden/README.md, "Run" section. Never invented, never paraphrased: the blocked
 // card is only useful if the command it shows actually starts the server. If that README's run
 // block changes, this constant changes with it.
+async function ensureScanRegistration() {
+  try {
+    const granted = await chrome.permissions.contains({ origins: SITE_ACCESS_ORIGINS });
+    if (!granted) return false;
+    const existing = await chrome.scripting.getRegisteredContentScripts({ ids: [SCAN_SCRIPT_ID] });
+    if (existing.length === 0) {
+      await chrome.scripting.registerContentScripts([{
+        id: SCAN_SCRIPT_ID,
+        matches: ['<all_urls>'],
+        js: ['utils/visualizer.js', 'content.js'],
+        runAt: 'document_idle',
+        persistAcrossSessions: true,
+      }]);
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+ensureScanRegistration();
+chrome.runtime.onInstalled.addListener(() => { ensureScanRegistration(); });
+chrome.runtime.onStartup.addListener(() => { ensureScanRegistration(); });
+chrome.permissions.onAdded.addListener(() => { ensureScanRegistration(); });
+
 const WARDEN_START_COMMAND = [
   'cd warden',
   'export HF_HOME="/Volumes/1TB SSD/LM/hub"',
@@ -334,6 +362,7 @@ async function refreshWardenHealth() {
       model: health.model || null,
       loaded: health.loaded === true,
       regexPatterns: health.regexPatterns ?? null,
+      planner: health.planner || 'ollama',
       groqConfigured: health.groqConfigured === true,
       warden: health.warden || null,
       error: null,
@@ -345,6 +374,7 @@ async function refreshWardenHealth() {
       model: null,
       loaded: false,
       regexPatterns: null,
+      planner: 'ollama',
       groqConfigured: false,
       warden: null,
       error: error.message,
@@ -353,12 +383,13 @@ async function refreshWardenHealth() {
   return state.wardenHealth;
 }
 
-// The spec's four states, exactly: unreachable, loading, groq-missing, ready. `loaded` is the
-// readiness signal rather than `ok`, which is a server self-report that duplicates it.
+// unreachable, loading, ready. groq-missing applies only when the server reports
+// planner "groq" and no key is configured. The default planner is local Ollama,
+// so a missing Groq key does not block a run.
 function healthState(health) {
   if (!health || health.reachable !== true) return 'unreachable';
   if (health.loaded !== true) return 'loading';
-  if (health.groqConfigured !== true) return 'groq-missing';
+  if (health.planner === 'groq' && health.groqConfigured !== true) return 'groq-missing';
   return 'ready';
 }
 
@@ -378,6 +409,7 @@ function emitHealth(health) {
     reachable: health.reachable === true,
     model: health.model || null,
     loaded: health.loaded === true,
+    planner: health.planner || 'ollama',
     groqConfigured: health.groqConfigured === true,
     elapsedMs,
     error: health.error || null,
@@ -471,9 +503,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // next Warden call with no reload.
 async function setWardenOrigin(origin) {
   const value = String(origin || '').trim();
-  if (value) await chrome.storage.local.set({ wardenOrigin: value });
+  if (!value) {
+    await chrome.storage.local.remove('wardenOrigin');
+    const health = await refreshHealthAndSync();
+    return { ok: true, origin: null, state: healthState(health) };
+  }
+  if (!loopbackHttpUrl(value)) {
+    return {
+      ok: false,
+      error: 'Warden origin must be http or https on 127.0.0.1, localhost, or ::1.',
+      origin: null,
+    };
+  }
+  await chrome.storage.local.set({ wardenOrigin: value });
   const health = await refreshHealthAndSync();
-  return { ok: true, origin: value || null, state: healthState(health) };
+  return { ok: true, origin: value, state: healthState(health) };
 }
 
 // ---- Task lifecycle --------------------------------------------------------
@@ -515,6 +559,12 @@ async function startTask(message) {
   const windowId = tab?.windowId ?? null;
   if (!tabId) return failStart(task, 'No active tab to work on.');
 
+  const siteAccess = await chrome.permissions.contains({ origins: SITE_ACCESS_ORIGINS });
+  if (!siteAccess) {
+    return failStart(task, 'Page scan needs site access. Allow it from the side panel when you send the task. Nothing was sent.');
+  }
+  await ensureScanRegistration();
+
   // v4 gate (frozen spec, "Degraded modes"): the Warden must be reachable and its model loaded
   // before a run may start at all. Falling back to the browser-only regex filter would silently
   // downgrade the privacy guarantee already shown to the user, so both cases below are a hard
@@ -546,8 +596,9 @@ async function startTask(message) {
   state.runId += 1;
   const runId = state.runId;
 
+  const rawOmni = (stored.omniparserUrl && String(stored.omniparserUrl).trim()) || OMNIPARSER_DEFAULT_URL;
   const secrets = {
-    omniparserUrl: (stored.omniparserUrl && String(stored.omniparserUrl).trim()) || OMNIPARSER_DEFAULT_URL,
+    omniparserUrl: loopbackHttpUrl(rawOmni) ? rawOmni : OMNIPARSER_DEFAULT_URL,
     useOmniparser: Boolean(stored.useOmniparser ?? USE_OMNIPARSER_DEFAULT),
   };
 
@@ -875,6 +926,14 @@ async function pingContentScript(runId) {
       if (res?.ok) return;
     } catch (error) {
       lastError = error;
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: state.tabId },
+          files: ['utils/visualizer.js', 'content.js'],
+        });
+      } catch (injectError) {
+        lastError = injectError;
+      }
     }
     if (attempt < PING_MAX_ATTEMPTS - 1) await sleep(PING_INTERVAL_MS);
   }

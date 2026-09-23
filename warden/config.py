@@ -1,12 +1,13 @@
 """config.py: environment and configuration for the Warden.
 
-No third-party dotenv dependency: warden/.env is two lines (a comment and
-GROQ_API_KEY=...), so a tiny hand-rolled loader keeps the dependency count
-down per the project's minimal-dependencies rule.
+No third-party dotenv dependency: warden/.env is a short key=value file, so a
+tiny hand-rolled loader keeps the dependency count down per the project's
+minimal-dependencies rule.
 """
 
 import os
 from pathlib import Path
+from urllib.parse import urlparse
 
 WARDEN_DIR = Path(__file__).resolve().parent
 WARDEN_VERSION = "0.1.0"
@@ -35,6 +36,46 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip() or None
 
 def groq_configured() -> bool:
     return GROQ_API_KEY is not None
+
+
+# POST /plan default. "groq" is the only explicit off-path. Anything else that
+# is not "ollama" is invalid and the route fails closed rather than guessing.
+def planner_mode() -> str:
+    raw = os.environ.get("WARDEN_PLANNER", "ollama").strip().lower()
+    if raw in ("", "ollama"):
+        return "ollama"
+    if raw == "groq":
+        return "groq"
+    return "invalid"
+
+
+_LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+
+
+def is_loopback_base(url: str) -> bool:
+    """True for http(s) URLs whose host is loopback and which have no userinfo,
+    query, fragment, or path beyond '/'. Used to refuse a non-local Ollama host
+    before any socket is opened.
+    """
+    try:
+        parsed = urlparse((url or "").strip())
+    except ValueError:
+        return False
+    if parsed.scheme not in ("http", "https"):
+        return False
+    if parsed.username or parsed.password:
+        return False
+    if parsed.query or parsed.fragment:
+        return False
+    if parsed.path not in ("", "/"):
+        return False
+    host = (parsed.hostname or "").lower()
+    return host in _LOOPBACK_HOSTS
+
+
+def ollama_model_is_local(model: str) -> bool:
+    name = (model or "").strip().lower()
+    return bool(name) and not name.endswith(":cloud")
 
 
 # Fallback chain is configuration, not a hardcoded constant: overridable via

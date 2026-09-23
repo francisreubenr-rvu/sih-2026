@@ -43,7 +43,9 @@ No real `.env` was in that tree. `.env.example` has an empty `GROQ_API_KEY=`. `w
 
 Phase 1 planner default for this port is **local Ollama** (offline path, default host `http://127.0.0.1:11434`). Tags ending in `:cloud` are not that path.
 
-The imported code does not do that yet. `POST /plan` still calls Groq and returns 503 when `GROQ_API_KEY` is missing. Ollama in this import is the optional `/validate` reasoning stage, and it may only downgrade `accept` to `ask`. Saying the planner already defaults to Ollama would be false.
+At the time of this import, the code did not do that yet. `POST /plan` still called Groq and returned 503 when `GROQ_API_KEY` was missing. Ollama in that import was the optional `/validate` reasoning stage, and it may only downgrade `accept` to `ask`.
+
+Follow-up `Docs/decisions/brain-warden-ollama-plan-harden.md` wires the default. `POST /plan` uses local Ollama unless `WARDEN_PLANNER=groq`.
 
 ## F17 execute path
 

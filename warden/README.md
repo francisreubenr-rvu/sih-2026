@@ -1,8 +1,9 @@
 # DHRISTI Warden
 
 The local application that holds the PII model. It is the single authority on what counts as
-personal data, it is the only component that talks to the cloud, and it validates every returned
-plan before the browser is allowed to act on it.
+personal data. `POST /plan` defaults to local Ollama. Groq is an explicit off-path, not the
+offline planner. The Warden validates every returned plan before the browser is allowed to act
+on it.
 
 Architecture and the frozen HTTP contract: `../Docs/specs/2026-09-13-dhristi-v4-warden.md`.
 Port decision: `../Docs/decisions/brain-option-c-warden-port.md`.
@@ -12,9 +13,9 @@ Port decision: `../Docs/decisions/brain-option-c-warden-port.md`.
 Francis locked Option C on the `sih-2026` master line. Two facts sit next to each other:
 
 1. **Phase 1 planner default is local Ollama**, the offline path on `http://127.0.0.1:11434`. A model tag ending in `:cloud` is not that path.
-2. **The files imported from `2afd215` do not implement that default.** `POST /plan` in `app.py` still calls Groq (`groq_client.plan_via_groq`) and returns 503 when `GROQ_API_KEY` is absent. Ollama in this import is the optional `/validate` reasoning stage (`ollama_client.py`). That stage may only downgrade `accept` to `ask`. It is not the planner.
+2. **`POST /plan` now implements that default.** `dispatch_plan` calls `ollama_client.plan_via_ollama` unless `WARDEN_PLANNER=groq`. If Ollama is down, not loopback, or tagged `:cloud`, `/plan` returns an error and does not call Groq. Ollama remains the optional `/validate` reasoning stage as well (`ollama_client.review`). That stage may only downgrade `accept` to `ask`.
 
-Do not describe a Groq `/plan` response as the Phase 1 offline planner. Switching `/plan` onto Ollama is later work.
+Do not describe a Groq `/plan` response as the offline planner. Groq runs only when `WARDEN_PLANNER=groq` and `GROQ_API_KEY` is set.
 
 **Start** (loopback only, port **8756**):
 
@@ -45,14 +46,15 @@ cases where a deterministic answer is better than a probabilistic one.
 | Python | `~/.venvs/data/bin/python` (3.14.7). System Python is externally managed; do not use it. |
 | Packages | gliner, torch, transformers, fastapi, uvicorn, all already installed in that venv |
 | Model weights | `urchade/gliner_multi_pii-v1`, cached under `HF_HOME` |
-| Ollama | Optional. Used only for validation reasoning. The Warden runs without it. |
-| Groq key | Optional to start, required for `/plan`. Goes in `.env`, never in a tracked file. |
+| Ollama | Required for `POST /plan` on the default path. Also used for optional `/validate` reasoning. Host must be loopback (`http://127.0.0.1:11434` unless `OLLAMA_HOST` says otherwise). |
+| Groq key | Optional. Not read by the default planner. Required only when `WARDEN_PLANNER=groq`. Goes in `.env`, never in a tracked file, never in the browser. |
 
 ## Setup
 
 ```sh
 cp .env.example .env
-# then put your Groq key in .env: GROQ_API_KEY=...
+# Default planner is local Ollama. Leave WARDEN_PLANNER unset.
+# Put a Groq key in .env only if you set WARDEN_PLANNER=groq.
 # Get one at console.groq.com/keys. Never paste a key into a chat or a tracked file.
 ```
 
@@ -231,8 +233,9 @@ incident that made this rule non-negotiable.
 | Condition | Behaviour |
 |---|---|
 | Model still loading | `/health` reports `loaded: false`, `/strip` answers 503 |
-| Groq key missing | `/health` reports `groqConfigured: false`, `/plan` returns a clear error, not a stack trace |
-| Ollama absent | Deterministic validation still runs and is authoritative; the reasoning check records as skipped |
+| Groq key missing | `/health` reports `groqConfigured: false`. Default `/plan` still uses Ollama. `WARDEN_PLANNER=groq` without a key returns 503 and does not call a model. |
+| Ollama absent for `/plan` | 503 with a clear error. Groq is not called. |
+| Ollama absent for `/validate` | Deterministic validation still runs and is authoritative; the reasoning check records as skipped |
 | Warden not running | The extension refuses to start a run. It does not fall back to the old browser regex filter, because silently downgrading a privacy guarantee the user was shown is worse than an honest stop. |
 
 ## Element pii flags
