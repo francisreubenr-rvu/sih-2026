@@ -1,18 +1,28 @@
+## Fundamentals restructure (2026-09-23)
+
+Francis halted the wrap/polish-as-primary path. Target fundamentals are the Warden / v4 pipeline (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE): browser holds no cloud key, protected scene only outbound, client op-tier gate F17 stays mandatory. Decision: `Docs/decisions/brain-fundamentals-restructure.md`. Handoff record: `Docs/grokbot-briefing.md`.
+
+Francis locks (2026-09-23): Option C — Prototype and Website HUD stay measurement/demo, real `warden/` only when sourced and no stubs, one shipping extension surface later (`Prototype/extension` is not shipping Warden); HUD/Pages polish frozen until Phase 0 docs and ARCH land (this PR is Phase 0 docs); Phase 1 planner default is Ollama on loopback (origin is a setting; Groq is optional host-env only and is never the offline path).
+
+Wrap densify (PR #29, ARCH-002 HUD) is no longer the primary queue. The Option C and Ollama checkpoints from master stay below this section. Wave 7 and earlier sections stay as history. Do not delete them.
+
+Still true, and not flipped by this section: G11 **fail**, G20 **paused** (recruitment paused; the 14 September ledger still says `unknown`; this section does not edit it), `submission_ready` **false**. `warden/` and root `extension/` are on master: PR #31 imported them from archive `2afd215`, and PR #32 set loopback Ollama as the `/plan` default. Do not invent a second copy. `Prototype/extension` is not the shipping Warden extension; choosing one shipping surface is still open. Next open work is in the decision (extension-surface choice, then PII re-measure only if strip is measured into a new results file, then evidence gates only from real results files). ARCH-002 remains Website and Prototype chrome until a later decision resolves the palette conflict with the Warden-line tokens in root `extension/`.
+
 ## Option C — selective Warden port — 23 September 2026
 
 - Source: public archive `https://github.com/francisreubenr-rvu/sih26171-dhristi` branch `sightline-v2-foundation` at `2afd215d795d781f74c8a45468a86eedfa58253e`.
 - Imported only: `warden/` (no real `.env`), root `extension/` (candidate Warden side panel), and the two 13 September Warden specs.
 - Left in place: `Prototype/`, `Website/`, `Benchmarks/`, wrap HUD, `Prototype/extension/` (measurement/demo chrome — do not load it as Warden).
-- Phase 1 planner default is local Ollama (offline). The imported `POST /plan` still calls Groq. That switch is not in this port.
+- Phase 1 planner default is local Ollama (offline). At import time `POST /plan` still called Groq. That switch is PR #32, in the next section.
 - Ports: Warden `127.0.0.1:8756`; Prototype stays `127.0.0.1:9041`.
-- `Docs/decisions/brain-fundamentals-restructure.md` is **not** on this master tip. It is on open PR #30 (`brain/fundamentals-warden-pivot`). The port decision is self-contained: `Docs/decisions/brain-option-c-warden-port.md`.
+- `Docs/decisions/brain-fundamentals-restructure.md` lands with PR #30. The port decision stays self-contained: `Docs/decisions/brain-option-c-warden-port.md`.
 - G11 remains **fail**. `submission_ready` remains **false**. No gate flip.
 
 ## Warden Ollama `/plan` default — 23 September 2026
 
 - `POST /plan` defaults to loopback Ollama. Groq runs only when `WARDEN_PLANNER=groq`. Ollama down does not call Groq.
 - Root extension install-time host permissions are loopback (`8756` and `7860`). Page scan uses optional `<all_urls>` requested on send. Residual: after that grant, and `web_accessible_resources` for `redactor.js`. Decision: `Docs/decisions/brain-warden-ollama-plan-harden.md`.
-- G11 stays **fail**. G20 stays open. `submission_ready` stays **false**. F17 client op-tier was not removed. Prototype and Website HUD were not edited.
+- G11 stays **fail**. G20 stays **paused** (ledger status not edited). `submission_ready` stays **false**. F17 client op-tier was not removed. Prototype and Website HUD were not edited.
 
 ## Wave 7 — a11y depth + load soak + latency opts — 14 September 2026
 

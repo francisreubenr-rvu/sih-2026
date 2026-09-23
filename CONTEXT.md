@@ -1,5 +1,8 @@
 # Dhristi — SIH26171
 
+## Fundamentals restructure (2026-09-23)
+
+Wrap/polish is not the primary path. Target architecture is Warden / v4 (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE), recorded in `Docs/decisions/brain-fundamentals-restructure.md` and `Docs/grokbot-briefing.md`. `warden/` and root `extension/` are on master via PR #31 (archive `2afd215`) and PR #32 (Ollama `/plan` default). G11 stays fail, G20 stays paused, `submission_ready` stays false. Website and Prototype chrome remains the ARCH-002 HUD. Root `extension/` keeps the Warden-line side-panel palette; that conflict is unresolved. Waves below are history of the master prototype.
 
 ## Product rename (2026-09-14)
 Product renamed **Sightline → Dhristi** on 2026-09-14 (user spelling: Dhristi). Repo slug and GitHub Pages path remain `sih-2026`. Name collision note: a separate Devpost project named SightLine (voice browser agent) is unrelated prior art; former name Sightline / now Dhristi for this SIH26171 candidate.
