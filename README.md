@@ -24,6 +24,7 @@ The website is hosted on GitHub Pages; the Node/Ollama prototype runs locally. P
 | Reusable template | [POTX](Docs/dhristi-template.potx); open it, replace placeholders, save a new PPTX |
 | Design and methodology | [Design comparison](Docs/design-comparison.md), [process documentation](Docs/process-documentation.md), [client audit](Docs/decisions/client-audit.md) |
 | Native extension candidate | [Unpacked test package](Docs/dhristi-extension-v01.zip) |
+| Warden side panel (Option C import) | Load unpacked **root** [`extension/`](extension/README.md). Do not load `Prototype/extension/` as Warden. Server: [`warden/`](warden/README.md) on `127.0.0.1:8756`. |
 
 ## Limits that remain open
 

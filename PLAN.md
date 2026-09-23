@@ -1,3 +1,13 @@
+## Option C — selective Warden port — 23 September 2026
+
+- Source: public archive `https://github.com/francisreubenr-rvu/sih26171-dhristi` branch `sightline-v2-foundation` at `2afd215d795d781f74c8a45468a86eedfa58253e`.
+- Imported only: `warden/` (no real `.env`), root `extension/` (candidate Warden side panel), and the two 13 September Warden specs.
+- Left in place: `Prototype/`, `Website/`, `Benchmarks/`, wrap HUD, `Prototype/extension/` (measurement/demo chrome — do not load it as Warden).
+- Phase 1 planner default is local Ollama (offline). The imported `POST /plan` still calls Groq. That switch is not in this port.
+- Ports: Warden `127.0.0.1:8756`; Prototype stays `127.0.0.1:9041`.
+- `Docs/decisions/brain-fundamentals-restructure.md` is **not** on this master tip. It is on open PR #30 (`brain/fundamentals-warden-pivot`). The port decision is self-contained: `Docs/decisions/brain-option-c-warden-port.md`.
+- G11 remains **fail**. `submission_ready` remains **false**. No gate flip.
+
 ## Wave 7 — a11y depth + load soak + latency opts — 14 September 2026
 
 - G09/G10: axe + keyboard Tab + 1.4.12 text-spacing + EN/HI (Website + popup HTTP harness); statuses **unknown**.
