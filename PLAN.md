@@ -8,7 +8,7 @@ Wrap densify (PR #29, ARCH-002 HUD) is no longer the primary queue. The Option C
 
 Still true, and not flipped by this section: G11 **fail**, G20 **paused** (recruitment paused; the 14 September ledger still says `unknown`; this section does not edit it), `submission_ready` **false**. `warden/` and root `extension/` are on master: PR #31 imported them from archive `2afd215`, and PR #32 set loopback Ollama as the `/plan` default. Do not invent a second copy. `Prototype/extension` is not the shipping Warden extension; choosing one shipping surface is still open. Next open work is in the decision (extension-surface choice, then PII re-measure only if strip is measured into a new results file, then evidence gates only from real results files).
 
-Website pixel PR1 (2026-09-23): marketing `Website/style.css` ports `extension/pixel.css` token names and primitives onto the paper/ink canvas (`--ground`/`--cream` follow `--paper`/`--ink`; `--amber` aliases `--saffron`). `extension/pixel.css` stays the measured dark source of truth and is not edited. Prototype, warden, and guardrail statuses are unchanged. Decision: `Docs/decisions/brain-website-pixel-redesign-pr1.md`. PR2/PR3 are still open.
+Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names only (`--ink`, `--navy`, `--paper`, `--mist`, `--saffron`, `--trust`) plus HudFrame / cell / stepped-motion classes. Dark v4 names stay in `extension/pixel.css`. The alias bridge is PR3, not this PR. Gates are unchanged. Decision: `Docs/decisions/brain-website-pixel-redesign-pr1.md`.
 
 ## G11 Option C harness — 23 September 2026
 

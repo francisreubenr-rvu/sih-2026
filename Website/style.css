@@ -1,11 +1,8 @@
 @font-face{font-family:Geist;src:url('assets/fonts/geist-latin.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 
-/* Pixel instrument tokens.
-   Names and motion come from extension/pixel.css (read-only SoT).
-   Marketing canvas remaps ground/cream to DESIGN.md paper/ink so body
-   copy stays readable. Measured dark-panel hexes are kept as --px-*
-   and are not the page ground. --amber aliases saffron (CTA/attention).
-   --trust is the verified-chip keyline only. */
+/* Hybrid C physical tokens (DESIGN.md). Dark v4 names stay in
+   extension/pixel.css; the alias bridge is not this Website PR.
+   Saffron is CTA/attention. Trust is the verified-chip keyline only. */
 :root{
   color-scheme:light;
   --ink:#101827;
@@ -14,7 +11,6 @@
   --mist:#c7d5d2;
   --saffron:#d88732;
   --trust:#5c8b63;
-  --trust-text:#14382a;
   --muted:#4a5568;
   --line:#101827;
   --line-soft:rgba(16,24,39,.18);
@@ -28,28 +24,6 @@
   --keyline:1px;
   --pixel-grid:url("assets/pixel-grid.svg");
   --pixel-noise:url("assets/pixel-noise.svg");
-
-  /* Measured palette (extension/pixel.css). Frozen hexes, not page ground. */
-  --px-ground:#0b0b0f;
-  --px-cream:#e8e9de;
-  --px-amber:#fcc34a;
-  --px-red:#ff0000;
-  --px-red-deep:#b71a00;
-  --px-blue:#142eff;
-  --px-blue-deep:#1f2181;
-  --px-red-text:#f84643;
-  --px-blue-text:#6979f2;
-
-  /* Marketing aliases of the pixel.css token names. */
-  --ground:var(--paper);
-  --cream:var(--ink);
-  --amber:var(--saffron);
-  --red:var(--px-red);
-  --red-deep:var(--px-red-deep);
-  --blue:var(--px-blue);
-  --blue-deep:var(--px-blue-deep);
-  --red-text:#8f1d12;
-  --blue-text:#1a237e;
 
   --cell:8px;
   --cell-2:16px;
@@ -625,16 +599,13 @@ dialog .small-note{margin-top:16px;margin-bottom:0}
     --paper:#1a2436;--surface:#222e42;--surface-alt:#1e2a3c;
     --ink:#f3ead8;--navy:#c7d5d2;--muted:#a8b4b1;
     --line:#f3ead8;--mist:#2a3a50;--focus:#d88732;
-    --trust-text:#c5e0cb;
-    --red-text:var(--px-red-text);
-    --blue-text:#c5cbfa;
     --on-saffron:#101827;
   }
   body{background-image:linear-gradient(rgba(243,234,216,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(243,234,216,.05) 1px,transparent 1px)}
   .optical-art,.closing,.command-block{background-color:#101827;color:#f3ead8}
   .primary{background:var(--saffron);color:#101827}
   .architecture-node.selected{background:#101827;color:#f3ead8}
-  .trust-bar{background:rgba(92,139,99,.2);color:var(--trust-text);border-color:var(--trust)}
+  .trust-bar{background:rgba(92,139,99,.2);color:var(--ink);border-color:var(--trust)}
   .trust-bar .hi{color:#c7d5d2}
   .demo-frame-bottom .text-button,.closing .inline-link,.closing .text-button,.closing .artifact-links>a{color:#f3ead8}
   .initial{background:#101827;color:#f3ead8}
@@ -933,7 +904,7 @@ body{
 }
 .demo-frame-top .demo-state::before{
   content:"";display:inline-block;width:6px;height:6px;margin-right:8px;vertical-align:middle;
-  background:var(--amber);border:1px solid var(--paper);
+  background:var(--saffron);border:1px solid var(--paper);
 }
 .demo-chrome-row{
   display:flex;flex-wrap:wrap;gap:4px;padding:6px 12px 10px;
@@ -1240,9 +1211,8 @@ body{
 .TextureWash{opacity:calc(var(--texture-contrast,.08));pointer-events:none}
 
 /* =========================================================================
-   PR1 — pixel.css primitives, ported (not linked).
-   Website marketing remap: --ground/--cream follow paper/ink.
-   Saffron/amber = CTA and uncertain only. Trust = verified chips only.
+   PR1 — Hybrid C chrome. Shared class vocabulary (cell, chip, stepped
+   motion, HudFrame). Colors are --ink/--navy/--paper/--mist/--saffron/--trust.
    ========================================================================= */
 
 .cell-grid{
@@ -1252,16 +1222,16 @@ body{
   gap:1px;
 }
 .cell{width:var(--cell);height:var(--cell)}
-.cell--fill{background:var(--cell-color,var(--cream))}
+.cell--fill{background:var(--cell-color,var(--ink))}
 .cell--outline{
   background:transparent;
-  border:1px solid var(--cell-color,var(--cream));
+  border:1px solid var(--cell-color,var(--ink));
   box-sizing:border-box;
 }
 .cell--empty{background:transparent}
 
 .detection-box{
-  --box-color:var(--cream);
+  --box-color:var(--ink);
   position:relative;
   border:1px solid var(--box-color);
   padding:var(--cell) var(--cell-2) var(--cell) var(--cell);
@@ -1277,13 +1247,13 @@ body{
   letter-spacing:.08em;
   text-transform:uppercase;
   color:var(--box-color);
-  background:var(--ground);
+  background:var(--paper);
   padding:0 4px;
   white-space:nowrap;
 }
 .detection-box__value{
   font:var(--text-sm) var(--font-mono);
-  color:var(--cream);
+  color:var(--ink);
   word-break:break-word;
   overflow-wrap:anywhere;
 }
@@ -1291,8 +1261,8 @@ body{
 .pixel-scanline{
   background-image:repeating-linear-gradient(
     to bottom,
-    color-mix(in srgb,var(--cream) 7%,transparent) 0px,
-    color-mix(in srgb,var(--cream) 7%,transparent) 1px,
+    color-mix(in srgb,var(--ink) 7%,transparent) 0px,
+    color-mix(in srgb,var(--ink) 7%,transparent) 1px,
     transparent 1px,
     transparent 3px
   );
@@ -1312,7 +1282,7 @@ body{
 .pixel-display{
   font:400 var(--text-lg)/1.2 var(--font-serif);
   text-align:center;
-  color:var(--cream);
+  color:var(--ink);
   letter-spacing:.01em;
 }
 
@@ -1334,21 +1304,10 @@ body{
   background:transparent;
   border-color:var(--ink);
 }
-.pixel-chip[data-state="uncertain"]{
-  color:#101827;
-  background:var(--amber);
-  border-color:#101827;
-}
-.pixel-chip[data-state="destructive"],
-.pixel-chip[data-state="personal-data"]{
-  color:#f3ead8;
-  background:var(--red-deep);
-  border-color:var(--red-deep);
-}
-.pixel-chip[data-state="validated"]{
-  color:#f3ead8;
-  background:var(--blue-deep);
-  border-color:var(--blue-deep);
+.pixel-chip[data-state="attention"]{
+  color:var(--ink);
+  background:var(--saffron);
+  border-color:var(--ink);
 }
 .pixel-chip[data-state="neutral"]{
   color:var(--ink);
@@ -1357,7 +1316,7 @@ body{
   opacity:1;
 }
 .pixel-chip[data-state="verified"]{
-  color:var(--trust-text);
+  color:var(--ink);
   background:transparent;
   border-color:var(--trust);
 }
@@ -1367,7 +1326,7 @@ body{
   align-items:center;
   gap:6px;
   font:var(--text-sm) var(--font-mono);
-  color:var(--cream);
+  color:var(--ink);
 }
 .pixel-check__cell{
   width:var(--cell);
@@ -1376,16 +1335,16 @@ body{
   box-sizing:border-box;
 }
 .pixel-check[data-pass="true"] .pixel-check__cell{
-  background:var(--cream);
-  border:1px solid var(--cream);
+  background:var(--ink);
+  border:1px solid var(--ink);
 }
 .pixel-check[data-pass="false"] .pixel-check__cell{
   background:transparent;
-  border:1px solid var(--red);
+  border:1px solid var(--ink);
 }
 .pixel-check[data-pass="skipped"] .pixel-check__cell{
   background:transparent;
-  border:1px dashed var(--cream);
+  border:1px dashed var(--ink);
   opacity:.6;
 }
 
@@ -1472,7 +1431,7 @@ footer{padding-top:24px}
 .button:active,.nav-cta:active,.button.primary:active{transform:translate(2px,2px);box-shadow:none}
 
 .trust-bar,.trust-badge,.TrustBadge,.trust-chip{
-  color:var(--trust-text);
+  color:var(--ink);
   border-color:var(--trust);
   border-width:1px;
   border-radius:0;
@@ -1486,26 +1445,27 @@ footer{padding-top:24px}
   padding:6px 8px;
 }
 .hero-hud li.pixel-chip{font-size:var(--text-xs);border-radius:0}
-.hero-hud li.pixel-chip[data-state="verified"]{
-  color:var(--trust-text);
+.hero-hud li.pixel-chip[data-state="verified"],
+.hero-hud li[data-tone="trust"]{
+  color:var(--ink);
   background:transparent;
   border-color:var(--trust);
 }
-.hero-hud li.pixel-chip[data-state="uncertain"]{
-  color:#101827;
-  background:var(--amber);
-  border-color:#101827;
+.hero-hud li.pixel-chip[data-state="attention"],
+.hero-hud li[data-tone="warn"]{
+  color:var(--ink);
+  background:var(--saffron);
+  border-color:var(--ink);
 }
-.hero-hud li.pixel-chip[data-state="destructive"]{
-  color:#f3ead8;
-  background:var(--red-deep);
-  border-color:var(--red-deep);
-}
+.hero-hud li[data-tone="fail"],
+.hero-hud li.pixel-chip[data-state="structure"],
 .hero-hud li.pixel-chip[data-state="neutral"]{
   color:var(--ink);
   background:var(--surface);
   border-color:var(--ink);
 }
+.hud-rail .hud-fail{color:var(--paper)}
+.hud-rail .hud-pip.fail{background:var(--paper)}
 
 .eyebrow,.panel-label,.hero-hud,.hud-rail,.mod-id,.timeline time,
 .architecture-node .node-id,.demo-chrome-row,.latency-note>span{
@@ -1539,14 +1499,15 @@ footer{padding-top:24px}
     --line:#f3ead8;
     --mist:#2a3a50;
     --focus:var(--saffron);
-    --trust-text:#c5e0cb;
-    --red-text:var(--px-red-text);
-    --blue-text:#c5cbfa;
     --on-saffron:#101827;
     --shadow:2px 2px 0 rgba(0,0,0,.45);
   }
   .pixel-chip[data-state="structure"],
   .pixel-chip[data-state="neutral"],
-  .hero-hud li.pixel-chip[data-state="neutral"]{color:var(--ink);border-color:var(--ink)}
-  .trust-bar,.trust-badge{color:var(--trust-text)}
+  .pixel-chip[data-state="verified"],
+  .hero-hud li.pixel-chip[data-state="neutral"],
+  .hero-hud li[data-tone="fail"],
+  .trust-bar,.trust-badge{color:var(--ink);border-color:var(--ink)}
+  .pixel-chip[data-state="verified"],.trust-bar,.trust-badge{border-color:var(--trust)}
+  .pixel-chip[data-state="attention"]{color:#101827;background:var(--saffron);border-color:#101827}
 }
