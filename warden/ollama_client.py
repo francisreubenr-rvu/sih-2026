@@ -1,8 +1,11 @@
-"""ollama_client.py: optional local-reasoning step for POST /validate.
+"""ollama_client.py: local Ollama calls.
 
-Calls Ollama's /api/generate with qwythos-9b:latest, the one genuinely local
+`plan_via_ollama` is the default POST /plan path (loopback only). `review` is
+the optional local-reasoning step for POST /validate.
+
+`review` calls Ollama's /api/generate with qwythos-9b:latest, the one genuinely local
 model on this machine (the `:cloud` entries in `ollama list` are not local
-and must never be treated as this path). Runs ONLY after every deterministic
+and must never be treated as this path). It runs ONLY after every deterministic
 check in validate.py has passed, and its result can only ever downgrade
 `accept` to `ask` -- never upgrade a `reject`, and never invent a reject of
 its own. See validate.py for where that ordering is enforced.
@@ -17,17 +20,25 @@ evidence is in the "Measured" notes next to each constant.
 """
 
 import json
+import time
 from typing import Optional
 
 import httpx
 
 import config
+import groq_client
 
 
 class OllamaSkipped(Exception):
     """Raised for any condition that means local reasoning could not run:
     absent, unreachable, timed out, or an unparseable response. Caller
     records this as a SKIPPED check, never as a pass.
+    """
+
+
+class OllamaPlanError(Exception):
+    """POST /plan could not be answered by local Ollama. Callers must fail
+    closed. This is not a signal to try Groq.
     """
 
 
@@ -169,3 +180,85 @@ def review(tokenized_task: str, plan: dict, tier: str) -> dict:
         question = None
 
     return {"downgrade_to_ask": verdict, "question": question}
+
+
+def plan_via_ollama(body: dict) -> dict:
+    """Default POST /plan implementation. Returns the same shape as
+    groq_client.plan_via_groq: {plan, model, attempts, switched, latencyMs}
+    plus planner="ollama".
+
+    Refuses a non-loopback host and a `:cloud` model tag before any request.
+    A transport or parse failure raises OllamaPlanError and does not call Groq.
+    """
+    host = config.OLLAMA_HOST
+    if not config.is_loopback_base(host):
+        raise OllamaPlanError(
+            f"OLLAMA_HOST is not a loopback address ({host}). "
+            "POST /plan refused it and did not call Groq."
+        )
+    model = config.OLLAMA_MODEL
+    if not config.ollama_model_is_local(model):
+        raise OllamaPlanError(
+            f"WARDEN_OLLAMA_MODEL {model!r} is not a local model. "
+            "A tag ending in :cloud is not the offline planner. POST /plan did not call Groq."
+        )
+
+    payload = {k: body.get(k) for k in groq_client.PLAN_INPUT_FIELDS}
+    assert "tokens" not in payload, "warden: /plan payload must never carry tokens"
+    assert set(payload.keys()) <= groq_client.PLAN_INPUT_FIELDS, "warden: /plan payload carries an unexpected field"
+
+    tokenized_task = payload.get("tokenizedTask") or ""
+    sanitized_dom = payload.get("sanitizedDom") or ""
+    elements = payload.get("elements") or []
+    history = payload.get("history") or []
+    prompt = groq_client.build_prompt(tokenized_task, sanitized_dom, elements, history)
+
+    t0 = time.monotonic()
+    try:
+        resp = httpx.post(
+            f"{host}/api/generate",
+            json={
+                "model": model,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0},
+            },
+            timeout=_timeout_s(),
+        )
+    except httpx.HTTPError as exc:
+        raise OllamaPlanError(
+            f"Ollama planner is not reachable at {host}. POST /plan did not call Groq. ({exc})"
+        ) from exc
+
+    if resp.status_code != 200:
+        raise OllamaPlanError(
+            f"Ollama planner returned HTTP {resp.status_code} from {host}. "
+            "POST /plan did not call Groq."
+        )
+
+    try:
+        data = resp.json()
+    except ValueError as exc:
+        raise OllamaPlanError(f"Ollama planner body was not JSON. POST /plan did not call Groq. ({exc})") from exc
+
+    text = data.get("response") if isinstance(data, dict) else None
+    if not isinstance(text, str) or not text.strip():
+        raise OllamaPlanError("Ollama planner returned no response text. POST /plan did not call Groq.")
+
+    try:
+        parsed = groq_client._parse_action_json(text)
+        action = groq_client.validate_action(parsed, elements)
+    except groq_client.GroqError as exc:
+        raise OllamaPlanError(
+            f"Ollama planner returned an unusable plan: {exc}. POST /plan did not call Groq."
+        ) from exc
+
+    return {
+        "plan": action,
+        "model": model,
+        "attempts": 1,
+        "switched": [],
+        "latencyMs": round((time.monotonic() - t0) * 1000.0, 1),
+        "planner": "ollama",
+    }

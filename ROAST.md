@@ -1,3 +1,11 @@
+## Round 18 — Warden planner default + host allowlist (23 September 2026)
+
+- [x] `POST /plan` default is local Ollama. Groq is explicit (`WARDEN_PLANNER=groq`) and is not used when Ollama is down.
+- [x] `wardenOrigin` and `omniparserUrl` refuse non-loopback. Install-time `<all_urls>` host permission removed. Optional `<all_urls>` is requested on send. Residual recorded in `Docs/decisions/brain-warden-ollama-plan-harden.md`.
+- [ ] Toolbar glyph / true activeTab user gesture still not driven by automation (G03).
+- [ ] Full-flow <200ms gate remains failed. Do not weaken. G11 stays fail.
+- [ ] Human/domain validation (G20) participants not yet collected. `submission_ready` stays false.
+
 ## Round 17 — wave 7 a11y + load soak (14 September 2026)
 
 - [x] G09/G10 enriched evidence (axe 0 violations, keyboard, text-spacing, EN/HI); remain unknown (no fake WCAG pass).

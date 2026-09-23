@@ -16,11 +16,12 @@
 // config.js's WARDEN_DEFAULT_ORIGIN.
 
 import { WARDEN_DEFAULT_ORIGIN } from '../config.js';
+import { loopbackHttpUrl } from './loopback.js';
 
 const TIMEOUT_MS = {
   health: 3000,
   strip: 15000, // GLiNER inference; slower on a cold or busy machine than the regex layer alone
-  plan: 25000, // a Groq call, possibly retried across the whole fallback chain server-side
+  plan: 75000, // local Ollama planner, including a cold model load
   validate: 15000, // includes an optional Ollama local-reasoning pass
 };
 
@@ -48,8 +49,17 @@ async function getOrigin() {
   try {
     const stored = await chrome.storage.local.get(['wardenOrigin']);
     const origin = stored.wardenOrigin && String(stored.wardenOrigin).trim();
-    return (origin || WARDEN_DEFAULT_ORIGIN).replace(/\/+$/, '');
-  } catch {
+    if (!origin) return WARDEN_DEFAULT_ORIGIN;
+    if (!loopbackHttpUrl(origin)) {
+      throw new WardenUnreachableError(
+        origin,
+        '',
+        'refusing non-loopback wardenOrigin; only 127.0.0.1, localhost, and ::1 are allowed',
+      );
+    }
+    return origin.replace(/\/+$/, '');
+  } catch (error) {
+    if (error instanceof WardenUnreachableError) throw error;
     return WARDEN_DEFAULT_ORIGIN;
   }
 }

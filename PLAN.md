@@ -8,6 +8,12 @@
 - `Docs/decisions/brain-fundamentals-restructure.md` is **not** on this master tip. It is on open PR #30 (`brain/fundamentals-warden-pivot`). The port decision is self-contained: `Docs/decisions/brain-option-c-warden-port.md`.
 - G11 remains **fail**. `submission_ready` remains **false**. No gate flip.
 
+## Warden Ollama `/plan` default — 23 September 2026
+
+- `POST /plan` defaults to loopback Ollama. Groq runs only when `WARDEN_PLANNER=groq`. Ollama down does not call Groq.
+- Root extension install-time host permissions are loopback (`8756` and `7860`). Page scan uses optional `<all_urls>` requested on send. Residual: after that grant, and `web_accessible_resources` for `redactor.js`. Decision: `Docs/decisions/brain-warden-ollama-plan-harden.md`.
+- G11 stays **fail**. G20 stays open. `submission_ready` stays **false**. F17 client op-tier was not removed. Prototype and Website HUD were not edited.
+
 ## Wave 7 — a11y depth + load soak + latency opts — 14 September 2026
 
 - G09/G10: axe + keyboard Tab + 1.4.12 text-spacing + EN/HI (Website + popup HTTP harness); statuses **unknown**.

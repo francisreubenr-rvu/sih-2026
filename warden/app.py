@@ -10,6 +10,7 @@ version, from inside warden/:
 """
 
 import threading
+from typing import Optional
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,6 +19,7 @@ from fastapi.responses import JSONResponse
 import config
 import entities
 import groq_client
+import ollama_client
 import strip as strip_module
 import validate as validate_module
 
@@ -46,6 +48,7 @@ def health():
         "model": entities.MODEL_ID,
         "loaded": entities.STATE.loaded,
         "regexPatterns": config.REGEX_PATTERN_COUNT,
+        "planner": config.planner_mode(),
         "groqConfigured": config.groq_configured(),
         "warden": config.WARDEN_VERSION,
     }
@@ -74,43 +77,65 @@ async def do_strip(request: Request):
     return result
 
 
+class PlanRouteError(Exception):
+    def __init__(self, status: int, message: str, switched: Optional[list] = None):
+        super().__init__(message)
+        self.status = status
+        self.switched = switched or []
+
+
+def dispatch_plan(body: dict) -> dict:
+    """Choose the planner and run it.
+
+    Default is local Ollama. Groq runs only when WARDEN_PLANNER=groq.
+    If Ollama is down, this raises. It does not call Groq.
+    """
+    if "tokens" in body:
+        raise PlanRouteError(
+            400,
+            "POST /plan must never receive a tokens field; the caller holds tokens locally",
+        )
+
+    mode = config.planner_mode()
+    if mode == "invalid":
+        raise PlanRouteError(
+            503,
+            "WARDEN_PLANNER must be 'ollama' (default) or 'groq'. POST /plan did not call a model.",
+        )
+
+    if mode == "groq":
+        if not config.groq_configured():
+            raise PlanRouteError(
+                503,
+                "WARDEN_PLANNER=groq but GROQ_API_KEY is absent. POST /plan did not call Ollama or Groq.",
+            )
+        try:
+            result = groq_client.plan_via_groq(body)
+        except groq_client.GroqError as exc:
+            raise PlanRouteError(502, str(exc), switched=exc.switched) from exc
+        result["planner"] = "groq"
+        return result
+
+    try:
+        return ollama_client.plan_via_ollama(body)
+    except ollama_client.OllamaPlanError as exc:
+        raise PlanRouteError(503, str(exc)) from exc
+
+
 @app.post("/plan")
 async def do_plan(request: Request):
     body = await request.json()
-
-    # Hard refusal, not a silent drop: the caller must never send tokens or
-    # raw values to /plan. This is a request-boundary assertion, separate
-    # from the payload-shape assertion inside groq_client.plan_via_groq.
-    if "tokens" in body:
-        return JSONResponse(
-            status_code=400,
-            content={
-                "error": "POST /plan must never receive a tokens field; the caller holds tokens locally",
-                "warden": config.WARDEN_VERSION,
-            },
-        )
-
-    if not config.groq_configured():
-        return JSONResponse(
-            status_code=503,
-            content={
-                "error": "Groq is not configured: GROQ_API_KEY is absent from the environment and warden/.env",
-                "groqConfigured": False,
-                "warden": config.WARDEN_VERSION,
-            },
-        )
-
     try:
-        result = groq_client.plan_via_groq(body)
-    except groq_client.GroqError as exc:
-        return JSONResponse(
-            status_code=502,
-            content={
-                "error": str(exc),
-                "switched": exc.switched,
-                "warden": config.WARDEN_VERSION,
-            },
-        )
+        result = dispatch_plan(body)
+    except PlanRouteError as exc:
+        content = {
+            "error": str(exc),
+            "planner": config.planner_mode(),
+            "warden": config.WARDEN_VERSION,
+        }
+        if exc.switched:
+            content["switched"] = exc.switched
+        return JSONResponse(status_code=exc.status, content=content)
 
     result["warden"] = config.WARDEN_VERSION
     return result

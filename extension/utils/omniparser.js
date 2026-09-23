@@ -1,3 +1,5 @@
+import { loopbackHttpUrl } from './loopback.js';
+
 // OmniParser element detection adapter.
 //
 // detectElements() is the single entry point the agent loop calls after a
@@ -30,6 +32,14 @@ export async function detectElements({ dataUrl, enabled, endpoint, viewport }) {
   }
 
   const base = String(endpoint || DEFAULT_ENDPOINT).replace(/\/+$/, '');
+  if (!loopbackHttpUrl(base)) {
+    return {
+      available: false,
+      status: 'unavailable',
+      error: 'omniparserUrl must be http(s) on 127.0.0.1, localhost, or ::1',
+      elements: [],
+    };
+  }
   const base64Image = stripDataUrlPrefix(dataUrl);
   if (!base64Image) {
     return { available: false, status: 'unavailable', error: 'invalid data URL', elements: [] };

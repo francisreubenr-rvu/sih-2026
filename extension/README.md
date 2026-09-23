@@ -15,8 +15,15 @@ Website and Prototype visual authority stays ARCH-002
 (`Docs/decisions/brain-arch-pixel-hud-002.md`). Do not blend the two into a third system.
 
 The panel expects the Warden on `http://127.0.0.1:8756`. Start commands are in
-`warden/README.md`. Phase 1 planner default is local Ollama; the imported `POST /plan`
-still calls Groq until that path is wired.
+`warden/README.md`. `POST /plan` defaults to local Ollama. Stored `wardenOrigin` and
+`omniparserUrl` values are refused unless they are loopback.
+
+Install-time host permissions are loopback only (Warden `8756`, OmniParser `7860`).
+Page scan uses `optional_host_permissions` `<all_urls>`, requested when you send a
+task. After that grant, the content script is registered for later navigations.
+`web_accessible_resources` still matches `<all_urls>` so the content script can import
+`utils/redactor.js`. That exposes the redaction patterns to pages, not a cloud key.
+See `Docs/decisions/brain-warden-ollama-plan-harden.md`.
 
 `extension/background.js` includes the client operation-tier gate (F17). Keep that gate
 when wiring execute. This import does not connect the loop to the Prototype server.

@@ -11,6 +11,9 @@
 // sends SESSION_UPDATE with the WHOLE transcript, so this file re-renders from one source and
 // never has to replay a stream of events it may have missed while the panel was closed.
 
+import { WARDEN_DEFAULT_ORIGIN } from './config.js';
+import { loopbackHttpUrl } from './utils/loopback.js';
+
 const els = {
   healthChip: document.getElementById('health-chip'),
   healthText: document.getElementById('health-text'),
@@ -30,11 +33,12 @@ const els = {
   detailReachable: document.getElementById('detail-reachable'),
   detailLoaded: document.getElementById('detail-loaded'),
   detailModel: document.getElementById('detail-model'),
+  detailPlanner: document.getElementById('detail-planner'),
   detailGroq: document.getElementById('detail-groq'),
   groqNote: document.getElementById('groq-note'),
 };
 
-const DEFAULT_WARDEN_ORIGIN = 'http://127.0.0.1:8756';
+const DEFAULT_WARDEN_ORIGIN = WARDEN_DEFAULT_ORIGIN;
 
 // The panel is the only context that knows it is open, so the panel drives the re-check
 // interval: on open, every few seconds while open, and the background re-checks on every task
@@ -90,8 +94,14 @@ function init() {
 
 async function restore() {
   const settings = await chrome.storage.local.get(['wardenOrigin']).catch(() => ({}));
-  els.wardenOrigin.value = settings.wardenOrigin || DEFAULT_WARDEN_ORIGIN;
-  els.wardenOriginStatus.textContent = `Default: ${DEFAULT_WARDEN_ORIGIN}.`;
+  const storedOrigin = settings.wardenOrigin && String(settings.wardenOrigin).trim();
+  if (storedOrigin && !loopbackHttpUrl(storedOrigin)) {
+    els.wardenOrigin.value = DEFAULT_WARDEN_ORIGIN;
+    els.wardenOriginStatus.textContent = 'Stored origin was not loopback and is not used. Save 127.0.0.1 or localhost.';
+  } else {
+    els.wardenOrigin.value = storedOrigin || DEFAULT_WARDEN_ORIGIN;
+    els.wardenOriginStatus.textContent = `Default: ${DEFAULT_WARDEN_ORIGIN}. Loopback only.`;
+  }
 
   // One transcript, one source. GET_SESSION is the same array SESSION_UPDATE carries.
   const session = await send({ type: 'GET_SESSION' });
@@ -132,6 +142,19 @@ async function submitTask() {
   if (!task) return;
   // A run is already in flight: the composer keeps the text so it can be sent once the run ends.
   if (runIsActive(entries)) return;
+  // First await from the click so Chrome still treats this as the user gesture.
+  // Optional <all_urls> is requested here and is not an install-time host permission.
+  let granted = false;
+  try {
+    granted = await chrome.permissions.request({ origins: ['<all_urls>'] });
+  } catch {
+    els.healthText.textContent = 'Site access could not be requested, so the task was not sent.';
+    return;
+  }
+  if (!granted) {
+    els.healthText.textContent = 'Site access was not granted, so the page was not scanned and nothing was sent.';
+    return;
+  }
   // The text is cleared only once the background has confirmed a run started or refused it for
   // a stated reason. A service worker that is asleep, or a refusal, must not swallow the task.
   const response = await send({ type: 'START_TASK', task });
@@ -596,14 +619,16 @@ function applyHealth(next) {
     chipText = 'LOADING';
     const seconds = typeof next.elapsedMs === 'number' ? Math.round(next.elapsedMs / 1000) : null;
     text = seconds === null ? 'The local model is loading.' : `The local model is loading, ${seconds}s so far.`;
-  } else if (next.groqConfigured !== true) {
+  } else if (next.planner === 'groq' && next.groqConfigured !== true) {
     chipState = 'neutral';
     chipText = 'NO GROQ KEY';
-    text = 'Stripping works. Planning will fail until a Groq key is in warden/.env.';
+    text = 'This Warden is set to the optional Groq planner, and no key is configured. The default planner is local Ollama.';
   } else {
     chipState = 'structure';
     chipText = 'READY';
-    text = next.model ? `Ready. ${next.model} is loaded.` : 'Ready.';
+    text = next.planner === 'groq'
+      ? 'Ready. Planning is using the optional Groq path.'
+      : (next.model ? `Ready. ${next.model} is loaded. Planning uses local Ollama.` : 'Ready. Planning uses local Ollama.');
   }
 
   els.healthChip.dataset.state = chipState;
@@ -614,15 +639,23 @@ function applyHealth(next) {
   els.detailReachable.textContent = reachable ? 'yes' : 'no';
   els.detailLoaded.textContent = reachable ? (next.loaded === true ? 'yes' : 'no') : '-';
   els.detailModel.textContent = reachable && next.model ? next.model : '-';
+  if (els.detailPlanner) {
+    els.detailPlanner.textContent = reachable ? (next.planner || 'ollama') : '-';
+  }
   els.detailGroq.textContent = reachable ? (next.groqConfigured === true ? 'yes' : 'no') : '-';
-  els.groqNote.hidden = !(reachable && next.loaded === true && next.groqConfigured !== true);
+  els.groqNote.hidden = !(reachable && next.loaded === true && next.planner === 'groq' && next.groqConfigured !== true);
 }
 
 async function saveOrigin() {
   const value = els.wardenOrigin.value.trim() || DEFAULT_WARDEN_ORIGIN;
   els.wardenOrigin.value = value;
+  if (!loopbackHttpUrl(value)) {
+    els.wardenOriginStatus.textContent = 'Refused. The Warden origin must be http or https on 127.0.0.1, localhost, or ::1.';
+    return;
+  }
   const response = await send({ type: 'SET_WARDEN_ORIGIN', origin: value });
-  els.wardenOriginStatus.textContent = response ? `Saved: ${value}` : `Could not save ${value}.`;
+  if (response?.ok) els.wardenOriginStatus.textContent = `Saved: ${value}`;
+  else els.wardenOriginStatus.textContent = response?.error || `Could not save ${value}.`;
   await refreshHealth();
 }
 
