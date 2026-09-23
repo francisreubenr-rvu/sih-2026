@@ -37,6 +37,7 @@ Council-binding split (see `Docs/decisions/brain-logo-hybrid-c.md`):
 
 ## Surfaces
 
-- Website: `Website/index.html` + `Website/style.css` (+ mark/lockup SVG under `Website/assets/`).
-- Extension: `Prototype/extension/popup.html` + `popup.css` (header uses bug SVG under `icons/`).
+- Website: `Website/index.html` + `Website/style.css` (+ mark/lockup SVG under `Website/assets/`). Physical color names on this surface are Hybrid C only: `--ink`, `--navy`, `--paper`, `--mist`, `--saffron`, `--trust`, at the values in the table above. Shared chrome is the HudFrame vocabulary (`.hud-frame`, cell module, 1px keylines, stepped `steps()` motion). Dark v4 names (`--ground`, `--cream`, `--amber`, `--red`, `--blue`) are not defined here. Root `extension/pixel.css` keeps those measured hexes; an alias bridge is later extension work, not this surface.
+- Extension side panel: root `extension/pixel.css` (measured dark ground). Unchanged by the Website PR.
+- Extension popup: `Prototype/extension/popup.html` + `popup.css` (header uses bug SVG under `icons/`). Unchanged by the Website port.
 - Local workspace: light chrome alignment in `Prototype/app/` — privacy boundary copy unchanged.
