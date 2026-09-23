@@ -1,3 +1,11 @@
+## Fundamentals restructure (2026-09-23)
+
+Francis halted the wrap/polish-as-primary path. Target fundamentals are the Warden / v4 pipeline (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE): browser holds no cloud key, protected scene only outbound, client op-tier gate F17 stays mandatory. Decision: `Docs/decisions/brain-fundamentals-restructure.md`. Handoff record: `Docs/grokbot-briefing.md`.
+
+Wrap densify (PR #29, ARCH-002 HUD) is no longer the primary queue. Wave 7 and earlier sections below stay as history. Do not delete them.
+
+Still true, and not flipped by this section: G11 **fail**, G20 **paused**, `submission_ready` **false**. `warden/` and root `extension/` are absent on master. Do not create them to match the briefing. Next work is the ordered phases in the decision (architecture merge design, then an honest source for the Warden package, then Prototype vs root extension, then PII re-measure only if strip exists, then evidence gates only from real results files). Francis must confirm before any Warden code merge. ARCH-002 remains the shipping chrome until a later decision resolves the palette conflict with the Warden-line tokens.
+
 ## Option C — selective Warden port — 23 September 2026
 
 - Source: public archive `https://github.com/francisreubenr-rvu/sih26171-dhristi` branch `sightline-v2-foundation` at `2afd215d795d781f74c8a45468a86eedfa58253e`.

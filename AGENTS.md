@@ -4,6 +4,8 @@ Address the user as Francis. Carry authorized work forward without repeated conf
 
 Read `CONTEXT.md`, `PLAN.md` and open findings in `ROAST.md` before edits. Update checkpoints after fixes. Preserve historical research and preparation artifacts with their original scope; do not silently relabel old Lighthouse scores or slides as new evidence.
 
+As of 2026-09-23 the primary path is the fundamentals restructure in `Docs/decisions/brain-fundamentals-restructure.md`, not further HUD wrap polish. `warden/` is absent on master; do not invent it. G11 stays fail, G20 stays paused, and `submission_ready` stays false until a results file and an explicit Francis confirmation say otherwise.
+
 ## Agent skills
 
 ### Issue tracker
