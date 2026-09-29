@@ -4,23 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DHRISTI</title>
-  <!-- pixel.css is the design system (tokens, cell module, semantic chips, stepped motion). This
-       file consumes it and defines layout only; it never redefines a palette or motion token. -->
+  <!-- signal.css carries the Signal tokens and fonts; pixel.css maps its semantic names onto
+       them (cell module, chips, stepped motion); sidepanel.css is layout. -->
+  <link rel="stylesheet" href="signal.css">
   <link rel="stylesheet" href="pixel.css">
   <link rel="stylesheet" href="sidepanel.css">
 </head>
 <body>
   <header class="topbar pixel-scanline">
     <div class="brand">
-      <!-- The brand mark, same family as the empty state's motif: filled cells inside an
-           outline ring, corners empty so the form thins at the edge. -->
-      <span class="mark cell-grid" style="--cols:4;--rows:4" aria-hidden="true">
-        <span class="cell cell--outline"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--outline"></span>
-        <span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span>
-        <span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span>
-        <span class="cell cell--outline"></span><span class="cell cell--fill"></span><span class="cell cell--fill"></span><span class="cell cell--outline"></span>
-      </span>
-      <h1 class="brand-title">DHRISTI</h1>
+      <img class="brand-mark" src="icons/dhristi-mark-signal.svg" width="22" height="22" alt="">
+      <h1 class="brand-title">Dhristi</h1>
+      <span class="brand-sub">on this device</span>
     </div>
     <!-- The one-line state readout. role="status" so a change from loading to ready is
          announced without stealing focus. -->

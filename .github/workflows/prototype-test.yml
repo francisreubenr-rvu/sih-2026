@@ -9,6 +9,8 @@ on:
       - 'Prototype/**'
       - 'scripts/**'
       - 'extension/**'
+      - 'design/**'
+      - 'Website/style.css'
       - '.github/workflows/prototype-test.yml'
   push:
     branches: [master, 'brain/**', 'feat/**', 'cursor/**']
@@ -16,6 +18,8 @@ on:
       - 'Prototype/**'
       - 'scripts/**'
       - 'extension/**'
+      - 'design/**'
+      - 'Website/style.css'
       - '.github/workflows/prototype-test.yml'
   workflow_dispatch:
 
@@ -41,6 +45,9 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: Prototype/package-lock.json
+
+      - name: Signal design tokens (drift + contrast)
+        run: node scripts/check-signal-tokens.mjs
 
       - name: Install and test (no Ollama)
         working-directory: Prototype

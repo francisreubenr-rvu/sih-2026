@@ -1,0 +1,32 @@
+/* Signal design system for the extension side panel (design/signal-tokens.css).
+   Loaded before pixel.css, which maps its semantic names onto these tokens. */
+@font-face{font-family:"Geist";src:url("fonts/geist-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url("fonts/geistmono-latin.woff2") format("woff2");font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("fonts/instrument-serif-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Instrument Serif";src:url("fonts/instrument-serif-400-italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+
+/* signal:tokens:start */
+:root{
+  color-scheme:dark;
+  --sg-void:#05060a;
+  --sg-panel:#0b0d16;
+  --sg-panel-2:#11141f;
+  --sg-line:#232842;
+  --sg-line-strong:#3a4272;
+  --sg-text:#eceef6;
+  --sg-text-2:#a9aec6;
+  --sg-text-3:#868ba5;
+  --sg-glow:#4f5dff;
+  --sg-glow-text:#a8b0ff;
+  --sg-violet:#8f5cff;
+  --sg-scan:#66e0ec;
+  --sg-ask:#f2b34a;
+  --sg-stop:#ff6b61;
+  --sg-on-glow:#ffffff;
+  --sg-font-sans:"Geist","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sg-font-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --sg-font-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --sg-radius:2px;
+  --sg-ease:cubic-bezier(.2,.7,.2,1);
+}
+/* signal:tokens:end */

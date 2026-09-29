@@ -1,0 +1,33 @@
+/* Signal design tokens: the single source for every Dhristi surface.
+   Each surface carries an identical copy of the block between the markers
+   (Website/style.css, extension/signal.css, Prototype/app/signal.css,
+   Prototype/extension/signal.css). scripts/check-signal-tokens.mjs fails CI
+   when a copy drifts or a text/ground pair drops below WCAG AA.
+   Meaning: glow = the one primary action and focus; scan = detection and
+   verified-local; ask = waiting on a person or unknown; stop = fail,
+   personal data, destructive. Violet only ever appears inside a glow. */
+/* signal:tokens:start */
+:root{
+  color-scheme:dark;
+  --sg-void:#05060a;
+  --sg-panel:#0b0d16;
+  --sg-panel-2:#11141f;
+  --sg-line:#232842;
+  --sg-line-strong:#3a4272;
+  --sg-text:#eceef6;
+  --sg-text-2:#a9aec6;
+  --sg-text-3:#868ba5;
+  --sg-glow:#4f5dff;
+  --sg-glow-text:#a8b0ff;
+  --sg-violet:#8f5cff;
+  --sg-scan:#66e0ec;
+  --sg-ask:#f2b34a;
+  --sg-stop:#ff6b61;
+  --sg-on-glow:#ffffff;
+  --sg-font-sans:"Geist","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --sg-font-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --sg-font-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --sg-radius:2px;
+  --sg-ease:cubic-bezier(.2,.7,.2,1);
+}
+/* signal:tokens:end */

@@ -16,7 +16,8 @@ The repository workflow publishes this directory directly, preserving relative a
 
 ## Brand assets (Hybrid C)
 
-- Favicon / chrome bug: `assets/dhristi-mark.svg` (pixel viewfinder).
-- Masthead lockup: `assets/dhristi-lockup.svg` (aperture + wordmark + on-device vision).
+- Favicon and header mark: `assets/dhristi-mark-signal.svg` (Hybrid C viewfinder geometry, Signal colours; see `DESIGN.md`).
+- Earlier Hybrid C files (`assets/dhristi-mark.svg`, `assets/dhristi-lockup.svg`) are kept but no longer used by the page.
+- Hero lens: `assets/perception.js`, a procedural canvas drawing (no image asset).
 - Mono / inverted bugs: `dhristi-mark-mono.svg`, `dhristi-mark-inverted.svg`.
 - Hard don’ts: no DigiLocker / MeitY / partner marks in logo chrome. See `Docs/decisions/brain-logo-hybrid-c.md`.
