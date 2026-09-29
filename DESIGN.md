@@ -42,7 +42,7 @@ Francis, 29 September 2026: follow the design playbook (`Docs/design/design-play
 | Accent | ~10% | cobalt: CTAs, links, focus, the one must-notice line | cobalt: the one primary action per view, links, focus |
 | Status | functional only | none | amber = waiting on you, brick = stop / destructive / personal data; always with a text label |
 
-The product carries two status hues beyond the playbook's five-colour cap. They mark state rather than brand, follow the red/amber convention people already know, and never appear as decoration. Emphasis inside a colour comes from ink tiers (full, text-2, text-3), not from more hues.
+The product carries two status hues beyond the playbook's five-colour cap. They mark state rather than brand, follow the red/amber convention people already know, and never appear as decoration. Francis confirmed keeping them as two separate colours on 29 September 2026. Emphasis inside a colour comes from ink tiers (full, text-2, text-3), not from more hues.
 
 ## Website landing
 
