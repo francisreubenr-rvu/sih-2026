@@ -1,7 +1,8 @@
 """groq_client.py: optional POST /plan path.
 
-Used only when WARDEN_PLANNER=groq. The default planner is local Ollama
-(ollama_client.plan_via_ollama). This module is not the offline path.
+The default planner (WARDEN_PLANNER unset or "groq"). WARDEN_PLANNER=ollama
+selects local Ollama (ollama_client.plan_via_ollama) instead; this module is
+not the offline path. The endpoint is config.GROQ_BASE_URL.
 
 Groq fallback chain:
 
@@ -140,7 +141,7 @@ def _is_finite(n) -> bool:
 
 def _call_groq_model(model: str, prompt: str) -> str:
     resp = httpx.post(
-        "https://api.groq.com/openai/v1/chat/completions",
+        f"{config.GROQ_BASE_URL}/chat/completions",
         headers={
             "Content-Type": "application/json",
             "Authorization": f"Bearer {config.GROQ_API_KEY}",

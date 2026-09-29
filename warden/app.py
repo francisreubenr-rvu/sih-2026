@@ -9,6 +9,7 @@ version, from inside warden/:
     ~/.venvs/data/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8756
 """
 
+import re
 import threading
 from typing import Optional
 
@@ -20,6 +21,7 @@ import config
 import entities
 import groq_client
 import ollama_client
+import redactor
 import strip as strip_module
 import validate as validate_module
 
@@ -49,6 +51,8 @@ def health():
         "loaded": entities.STATE.loaded,
         "regexPatterns": config.REGEX_PATTERN_COUNT,
         "planner": config.planner_mode(),
+        "destination": config.planner_destination(config.planner_mode()),
+        "plannerModel": config.planner_model(config.planner_mode()),
         "groqConfigured": config.groq_configured(),
         "warden": config.WARDEN_VERSION,
     }
@@ -78,17 +82,54 @@ async def do_strip(request: Request):
 
 
 class PlanRouteError(Exception):
-    def __init__(self, status: int, message: str, switched: Optional[list] = None):
+    def __init__(self, status: int, message: str, switched: Optional[list] = None,
+                 egress_guard: Optional[dict] = None):
         super().__init__(message)
         self.status = status
         self.switched = switched or []
+        self.egress_guard = egress_guard
+
+
+# Egress guard (added 29 September 2026). The planner is a cloud model by
+# default now, so the Warden no longer trusts the caller to have sent only
+# tokenized text: before any planner is called it runs the same deterministic
+# regex layer /strip uses over every string in the body. One hit refuses the
+# whole request. The refusal names the pattern and the field, never the value.
+#
+# TYPE#n tokens are blanked (same length, spaces) before the scan: they are
+# the sanctioned replacement for PII, and the digits in a token must not be
+# read as part of a number next to it. The shape is the browser consumer's
+# VAULT_TOKEN_PATTERN (see minter.py).
+_TOKEN_RE = re.compile(r"[A-Z][A-Z0-9]*#[0-9]+")
+
+
+def _walk_strings(value, path: str):
+    if isinstance(value, str):
+        yield path, value
+    elif isinstance(value, dict):
+        for key, item in value.items():
+            yield from _walk_strings(item, f"{path}.{key}" if path else str(key))
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            yield from _walk_strings(item, f"{path}[{index}]")
+
+
+def egress_guard(body: dict) -> Optional[dict]:
+    """First regex hit in the body as {pattern, field}, or None if clean."""
+    for field, text in _walk_strings(body, ""):
+        blanked = _TOKEN_RE.sub(lambda m: " " * len(m.group(0)), text)
+        spans = redactor.regex_spans(blanked)
+        if spans:
+            return {"pattern": spans[0]["pattern"], "field": field}
+    return None
 
 
 def dispatch_plan(body: dict) -> dict:
     """Choose the planner and run it.
 
-    Default is local Ollama. Groq runs only when WARDEN_PLANNER=groq.
-    If Ollama is down, this raises. It does not call Groq.
+    Default is Groq (cloud). Local Ollama runs only when WARDEN_PLANNER=ollama.
+    If the chosen planner fails, this raises. It never falls through to the
+    other one.
     """
     if "tokens" in body:
         raise PlanRouteError(
@@ -96,11 +137,20 @@ def dispatch_plan(body: dict) -> dict:
             "POST /plan must never receive a tokens field; the caller holds tokens locally",
         )
 
+    hit = egress_guard(body)
+    if hit is not None:
+        raise PlanRouteError(
+            422,
+            f"POST /plan refused by the egress guard: a {hit['pattern']} pattern matched in "
+            f"{hit['field']}. No model was called.",
+            egress_guard=hit,
+        )
+
     mode = config.planner_mode()
     if mode == "invalid":
         raise PlanRouteError(
             503,
-            "WARDEN_PLANNER must be 'ollama' (default) or 'groq'. POST /plan did not call a model.",
+            "WARDEN_PLANNER must be 'groq' (default) or 'ollama'. POST /plan did not call a model.",
         )
 
     if mode == "groq":
@@ -114,12 +164,15 @@ def dispatch_plan(body: dict) -> dict:
         except groq_client.GroqError as exc:
             raise PlanRouteError(502, str(exc), switched=exc.switched) from exc
         result["planner"] = "groq"
+        result["destination"] = config.planner_destination("groq")
         return result
 
     try:
-        return ollama_client.plan_via_ollama(body)
+        result = ollama_client.plan_via_ollama(body)
     except ollama_client.OllamaPlanError as exc:
         raise PlanRouteError(503, str(exc)) from exc
+    result["destination"] = config.planner_destination("ollama")
+    return result
 
 
 @app.post("/plan")
@@ -135,6 +188,8 @@ async def do_plan(request: Request):
         }
         if exc.switched:
             content["switched"] = exc.switched
+        if exc.egress_guard is not None:
+            content["egressGuard"] = exc.egress_guard
         return JSONResponse(status_code=exc.status, content=content)
 
     result["warden"] = config.WARDEN_VERSION

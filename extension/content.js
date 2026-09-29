@@ -130,7 +130,7 @@ async function scanPage() {
     elements.push({
       tag: element.tagName.toLowerCase(),
       type: element.getAttribute('type') || element.tagName.toLowerCase(),
-      selector: uniqueSelector(element),
+      selector: uniqueSelector(element, redactText),
       handle,
       // Click tier computed here, from the live element, by the extension's own rules. The
       // background gate reads this, never a tier or element list the Warden returns.
@@ -414,8 +414,17 @@ function labelFor(element) {
 
 // Display key for the planner: the short id/name selector when it matches exactly this one
 // element in the document, else the structural path. Never used to find the element again.
-function uniqueSelector(element) {
+//
+// An id or name that itself matches a PII pattern (an email-shaped id, a passport-shaped
+// "a1234567") is never used: the selector is sent to the planner verbatim, so it would carry
+// that value off the device, and the Warden's egress guard would (correctly) refuse the whole
+// planning request. The structural path carries no page-authored text, so it is used instead.
+function uniqueSelector(element, redactText) {
   const short = cssSelector(element);
+  // Tested on the raw attribute values: CSS.escape turns "a@b.co" into "a\\@b\\.co", which no
+  // pattern would match.
+  const authored = [element.getAttribute('id'), element.getAttribute('name')].filter(Boolean).join(' ');
+  if (redactText && authored && redactText(authored).count > 0) return structuralPath(element);
   try {
     const matches = document.querySelectorAll(short);
     if (matches.length === 1 && matches[0] === element) return short;

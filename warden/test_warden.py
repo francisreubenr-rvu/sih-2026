@@ -403,13 +403,20 @@ def _ollama_action_response():
     return _Response()
 
 
-def test_planner_mode_defaults_to_ollama(monkeypatch):
+def test_planner_mode_defaults_to_groq(monkeypatch):
+    # v5 (29 September 2026): planning goes to the cloud by default, the local
+    # machine runs a model only for PII redaction. "ollama" is the explicit
+    # offline mode; anything else fails closed.
     monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    assert config.planner_mode() == "groq"
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
     assert config.planner_mode() == "ollama"
+    monkeypatch.setenv("WARDEN_PLANNER", "OpenAI")
+    assert config.planner_mode() == "invalid"
 
 
-def test_plan_default_uses_ollama_and_not_groq_even_when_key_present(monkeypatch):
-    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+def test_plan_explicit_ollama_does_not_call_groq_even_when_key_present(monkeypatch):
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
     monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
     monkeypatch.setattr(config, "OLLAMA_HOST", "http://127.0.0.1:11434")
     monkeypatch.setattr(config, "OLLAMA_MODEL", "qwythos-9b:latest")
@@ -435,12 +442,13 @@ def test_plan_default_uses_ollama_and_not_groq_even_when_key_present(monkeypatch
     assert seen["url"] == "http://127.0.0.1:11434/api/generate"
     assert seen["model"] == "qwythos-9b:latest"
     assert result["planner"] == "ollama"
+    assert result["destination"] == "local"
     assert result["plan"]["action"] == "click"
     assert result["model"] == "qwythos-9b:latest"
 
 
 def test_plan_ollama_down_does_not_call_groq(monkeypatch):
-    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
     monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
     monkeypatch.setattr(config, "OLLAMA_HOST", "http://127.0.0.1:11434")
     monkeypatch.setattr(config, "OLLAMA_MODEL", "qwythos-9b:latest")
@@ -462,7 +470,7 @@ def test_plan_ollama_down_does_not_call_groq(monkeypatch):
 
 
 def test_plan_refuses_non_loopback_ollama_host(monkeypatch):
-    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
     monkeypatch.setattr(config, "OLLAMA_HOST", "http://10.1.2.3:11434")
     monkeypatch.setattr(config, "OLLAMA_MODEL", "qwythos-9b:latest")
 
@@ -480,7 +488,7 @@ def test_plan_refuses_non_loopback_ollama_host(monkeypatch):
 
 
 def test_plan_refuses_cloud_ollama_tag(monkeypatch):
-    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
     monkeypatch.setattr(config, "OLLAMA_HOST", "http://127.0.0.1:11434")
     monkeypatch.setattr(config, "OLLAMA_MODEL", "some-model:cloud")
 
@@ -516,6 +524,7 @@ def test_plan_groq_is_explicit_opt_in(monkeypatch):
 
     result = warden_app.dispatch_plan(_plan_body())
     assert result["planner"] == "groq"
+    assert result["destination"] == "cloud"
     assert result["plan"]["action"] == "click"
 
 
@@ -1026,29 +1035,411 @@ def test_reasoning_functions_contain_no_reject_literal():
 
 
 # ---------------------------------------------------------------------------
-# Optional real-model integration check. Off by default: loading GLiNER takes
-# 15-76s per warden/README.md's own measurements, so this suite does not pay
-# that cost unless asked. Set WARDEN_TEST_LOAD_GLINER=1 to load the real
-# weights and exercise this test; otherwise it skips cleanly with an explicit
-# message, never failing and never silently passing.
+# Optional real-model integration checks. Loading GLiNER takes 15-76s per
+# warden/README.md's own measurements, so the weights are loaded only when
+# asked (WARDEN_TEST_LOAD_GLINER=1) or when they are already in the local
+# Hugging Face cache (HF_HOME) and gliner is importable, in which case the
+# load is offline. Otherwise these tests skip cleanly with an explicit message,
+# never failing and never silently passing.
 # ---------------------------------------------------------------------------
+def _gliner_weights_cached() -> bool:
+    try:
+        import importlib.util
+        if importlib.util.find_spec("gliner") is None:
+            return False
+        from huggingface_hub import try_to_load_from_cache
+        return isinstance(try_to_load_from_cache(entities.MODEL_ID, "gliner_config.json"), str)
+    except Exception:  # noqa: BLE001 -- any failure here just means "not available"
+        return False
+
+
 @pytest.fixture(scope="session")
 def real_gliner_loaded():
     if entities.STATE.loaded:
         return True
     if os.environ.get("WARDEN_TEST_LOAD_GLINER") != "1":
-        return False
+        if not _gliner_weights_cached():
+            return False
+        # Cached: load from disk only, no network round trips.
+        os.environ.setdefault("HF_HUB_OFFLINE", "1")
     entities.load_model()
     return entities.STATE.loaded
 
 
+_REAL_SKIP = (
+    "GLiNER is not loaded in this process. Set WARDEN_TEST_LOAD_GLINER=1, or "
+    "point HF_HOME at a cache holding urchade/gliner_multi_pii-v1 with gliner "
+    "installed, to exercise the real weights (15-76s per warden/README.md)."
+)
+
+
 def test_real_model_flags_an_uncertain_person_name(real_gliner_loaded):
     if not real_gliner_loaded:
-        pytest.skip(
-            "GLiNER is not loaded in this process. Set WARDEN_TEST_LOAD_GLINER=1 "
-            "to load the real urchade/gliner_multi_pii-v1 weights for this test "
-            "(15-76s per warden/README.md)."
-        )
+        pytest.skip(_REAL_SKIP)
     spans = entities.gliner_spans("Log in as Francis Reuben R with the usual password.")
     person_spans = [s for s in spans if s["label"] == "person name"]
     assert person_spans, "expected the real model to raise at least one person-name span in the uncertain band"
+
+
+# ---------------------------------------------------------------------------
+# v5 wire changes (Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md)
+# ---------------------------------------------------------------------------
+def _dom_line(i, label):
+    # The exact shape extension/content.js serializeDom() emits.
+    return f'{i}. A type=link selector=#nav-{i} label="{label}" position={100 + i},{40 + i * 7}'
+
+
+def _page(n, names):
+    fillers = ["Home", "Orders", "Search", "Cart", "Returns", "Help", "Settings", "Deals"]
+    return "\n".join(_dom_line(i, names.get(i, fillers[i % len(fillers)])) for i in range(1, n + 1))
+
+
+PAGE_41 = _page(41, {2: "Welcome back Priya Raghunathan", 39: "Signed in as Arjun Mehta"})
+
+
+class _WindowedFakeModel:
+    """Behaves like the measured failure: finds a name only when it is handed a
+    SHORT text (one DOM line), and nothing at all in a long one. Offsets are
+    relative to the text it was handed, exactly as GLiNER's are."""
+
+    def __init__(self, names, max_chars=200, score=0.9):
+        self.names = names
+        self.max_chars = max_chars
+        self.score = score
+        self.calls = []
+
+    def predict_entities(self, text, labels, threshold):
+        self.calls.append(text)
+        if len(text) > self.max_chars:
+            return []
+        out = []
+        for name in self.names:
+            i = text.find(name)
+            if i != -1:
+                out.append({"start": i, "end": i + len(name), "text": name, "label": "person name", "score": self.score})
+        return out
+
+
+class _BatchedFakeModel(_WindowedFakeModel):
+    def inference(self, texts, labels, threshold, batch_size):
+        self.batch_sizes = getattr(self, "batch_sizes", []) + [batch_size]
+        return [self.predict_entities(t, labels, threshold) for t in texts]
+
+
+@pytest.mark.parametrize("model_cls", [_WindowedFakeModel, _BatchedFakeModel])
+def test_chunking_finds_names_a_whole_text_call_would_lose(monkeypatch, model_cls):
+    names = ["Priya Raghunathan", "Arjun Mehta"]
+    fake = model_cls(names)
+    # The old behaviour, for the record: one call on the whole page finds nothing.
+    assert fake.predict_entities(PAGE_41, entities.LABELS, 0.1) == []
+
+    monkeypatch.setattr(entities.STATE, "model", fake)
+    spans = entities.gliner_spans(PAGE_41)
+    found = {PAGE_41[s["start"]:s["end"]] for s in spans}
+    assert found == set(names)  # offsets map back onto the ORIGINAL text exactly
+    for s in spans:
+        assert s["value"] == PAGE_41[s["start"]:s["end"]]
+    if model_cls is _BatchedFakeModel:
+        assert fake.batch_sizes == [entities.PREDICT_BATCH_SIZE]
+
+
+def test_long_line_is_split_on_whitespace_with_offsets_preserved(monkeypatch):
+    filler = " ".join(["parcel"] * 500)
+    text = "Customer Priya Raghunathan wrote. " + filler + " Later Arjun Mehta replied."
+    chunks = entities._chunk_spans(text)
+    assert len(chunks) > 1
+    covered = "".join(text[a:b] for a, b in chunks)
+    assert covered.replace(" ", "") == text.replace(" ", "")  # every non-space char, once, in order
+    for a, b in chunks:
+        assert len(entities._GLINER_WORD_RE.findall(text[a:b])) <= entities.CHUNK_MAX_WORDS
+
+    fake = _WindowedFakeModel(["Priya Raghunathan", "Arjun Mehta"], max_chars=10_000)
+    monkeypatch.setattr(entities.STATE, "model", fake)
+    spans = entities.gliner_spans(text)
+    assert [text[s["start"]:s["end"]] for s in spans] == ["Priya Raghunathan", "Arjun Mehta"]
+
+
+def test_real_model_finds_both_names_on_a_41_line_page(real_gliner_loaded):
+    if not real_gliner_loaded:
+        pytest.skip(_REAL_SKIP)
+    result = strip_module.strip(task="open my orders", dom=PAGE_41, elements=[], resolved={})
+    stripped = set(result["tokens"].values())
+    asked = {u["preview"] for u in result["uncertain"]}
+    for name in ["Priya Raghunathan", "Arjun Mehta"]:
+        assert any(name in v for v in stripped | asked), (name, stripped, asked)
+
+
+def test_element_labels_are_tokenized_with_the_dom_tokens(monkeypatch):
+    name = "Priya Raghunathan"
+    dom = _page(3, {2: f"Welcome back {name}"})
+    monkeypatch.setattr(entities.STATE, "model", _WindowedFakeModel([name], score=0.9))
+    elements = [
+        {"selector": "#nav-2", "label": f"Welcome back {name}", "fieldType": "link", "filled": False, "x": 1, "y": 2},
+        {"selector": "#mail", "label": "Mail jordan.test@example.org", "fieldType": "link", "filled": False, "x": 1, "y": 2},
+        {"selector": "#home", "label": "Home", "fieldType": "link", "filled": False, "x": 1, "y": 2},
+    ]
+    result = strip_module.strip(task="", dom=dom, elements=elements, resolved={})
+
+    assert "PERSONNAME#1" in result["sanitizedDom"]
+    assert result["elements"][0]["label"] == "Welcome back PERSONNAME#1"
+    assert result["elements"][1]["label"] == "Mail EMAIL#1"  # regex layer ran on the label
+    assert result["elements"][2]["label"] == "Home"
+    assert result["tokens"] == {"PERSONNAME#1": name, "EMAIL#1": "jordan.test@example.org"}
+
+    by_source = {(d["token"], d["source"]) for d in result["decisions"]}
+    assert ("PERSONNAME#1", "dom") in by_source
+    assert ("PERSONNAME#1", "label") in by_source
+    assert ("EMAIL#1", "label") in by_source
+    blob = json.dumps(result["decisions"])
+    assert name not in blob and "jordan.test@example.org" not in blob
+
+
+def test_kept_value_stays_in_labels(monkeypatch):
+    name = "Priya Raghunathan"
+    dom = _page(2, {2: f"Welcome back {name}"})
+    monkeypatch.setattr(entities.STATE, "model", _WindowedFakeModel([name], score=0.4))
+    elements = [{"selector": "#nav-2", "label": f"Welcome back {name}", "fieldType": "link", "filled": False, "x": 1, "y": 2}]
+
+    first = strip_module.strip(task="", dom=dom, elements=elements, resolved={})
+    assert [u["token"] for u in first["uncertain"]] == ["PERSONNAME#1"]
+    assert first["elements"][0]["label"] == f"Welcome back {name}"  # undecided: not minted yet
+
+    kept = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "keep"})
+    assert kept["elements"][0]["label"] == f"Welcome back {name}"
+    assert kept["uncertain"] == []
+
+    stripped = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "strip"})
+    assert stripped["elements"][0]["label"] == "Welcome back PERSONNAME#1"
+    assert name not in stripped["sanitizedDom"]
+
+
+def test_repeated_value_gets_one_token_across_task_and_dom(monkeypatch):
+    monkeypatch.setattr(entities.STATE, "model", _StubGlinerModel([]))
+    email = "jordan.test@example.org"
+    result = strip_module.strip(
+        task=f"Send it to {email}", dom=f"1. A label=\"{email}\"\n2. A label=\"{email}\"",
+        elements=[], resolved={},
+    )
+    assert result["tokens"] == {"EMAIL#1": email}
+    assert result["tokenizedTask"] == "Send it to EMAIL#1"
+    assert result["sanitizedDom"].count("EMAIL#1") == 2
+    assert [(d["token"], d["source"]) for d in result["decisions"]] == [("EMAIL#1", "task"), ("EMAIL#1", "dom")]
+
+
+def test_certain_occurrence_strips_an_uncertain_repeat(monkeypatch):
+    """A name the model is sure of in the page must not survive in plaintext
+    in the task just because it scored lower there."""
+    name = "Arjun Mehta"
+
+    class _PerTextScore:
+        def predict_entities(self, text, labels, threshold):
+            i = text.find(name)
+            if i == -1:
+                return []
+            score = 0.3 if text.startswith("Book") else 0.9
+            return [{"start": i, "end": i + len(name), "text": name, "label": "person name", "score": score}]
+
+    monkeypatch.setattr(entities.STATE, "model", _PerTextScore())
+    result = strip_module.strip(task=f"Book a table for {name}", dom=f"Signed in as {name}", elements=[], resolved={})
+    assert result["tokenizedTask"] == "Book a table for PERSONNAME#1"
+    assert result["sanitizedDom"] == "Signed in as PERSONNAME#1"
+    assert result["uncertain"] == []
+
+
+def test_uncertain_repeat_is_one_question_with_a_stable_id(monkeypatch):
+    name = "Kavya Iyer"
+    other = "Rohan Deshpande"
+    monkeypatch.setattr(entities.STATE, "model", _WindowedFakeModel([name, other], score=0.4))
+    task = f"Message {name}"
+    dom = f"1. A label=\"{other}\"\n2. A label=\"{name}\""
+
+    first = strip_module.strip(task=task, dom=dom, elements=[], resolved={})
+    again = strip_module.strip(task=task, dom=dom, elements=[], resolved={})
+    assert first["uncertain"] == again["uncertain"]
+    assert [(u["token"], u["preview"], u["source"]) for u in first["uncertain"]] == [
+        ("PERSONNAME#1", name, "task"), ("PERSONNAME#2", other, "dom"),
+    ]
+
+    resolved = strip_module.strip(task=task, dom=dom, elements=[], resolved={"PERSONNAME#1": "strip"})
+    assert resolved["tokenizedTask"] == "Message PERSONNAME#1"
+    assert "PERSONNAME#1" in resolved["sanitizedDom"] and name not in resolved["sanitizedDom"]
+    assert [u["token"] for u in resolved["uncertain"]] == ["PERSONNAME#2"]
+
+
+def _refuse_every_planner(monkeypatch):
+    def refuse(*args, **kwargs):
+        raise AssertionError("the egress guard must refuse before any planner is called")
+
+    monkeypatch.setattr(groq_client, "plan_via_groq", refuse)
+    monkeypatch.setattr(groq_client, "_call_groq_model", refuse)
+    monkeypatch.setattr(ollama_client, "plan_via_ollama", refuse)
+    monkeypatch.setattr(ollama_client.httpx, "post", refuse)
+
+
+@pytest.mark.parametrize("planner", ["groq", "ollama"])
+@pytest.mark.parametrize("field,mutate,pattern", [
+    ("tokenizedTask", lambda b: b.update(tokenizedTask="Email jordan.test@example.org the report"), "email"),
+    ("sanitizedDom", lambda b: b.update(sanitizedDom="<div>Call 9876543210</div>"), "phone"),
+    ("elements[0].label", lambda b: b["elements"][0].update(label="Card 4111 1111 1111 1111"), "card"),
+    ("elements[0].selector", lambda b: b["elements"][0].update(selector="#u-jordan.test@example.org"), "email"),
+    ("history[0]", lambda b: b.update(history=["typed ABCDE1234F into #pan"]), "pan"),
+])
+def test_egress_guard_refuses_with_422_and_calls_no_planner(monkeypatch, planner, field, mutate, pattern):
+    from fastapi.testclient import TestClient  # no `with`: startup (model load) never runs
+
+    monkeypatch.setenv("WARDEN_PLANNER", planner)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    _refuse_every_planner(monkeypatch)
+    body = _plan_body()
+    mutate(body)
+
+    resp = TestClient(warden_app.app).post("/plan", json=body)
+    assert resp.status_code == 422
+    data = resp.json()
+    assert data["egressGuard"] == {"pattern": pattern, "field": field}
+    assert data["warden"] == config.WARDEN_VERSION
+    for raw in ("jordan.test@example.org", "9876543210", "4111 1111 1111 1111", "ABCDE1234F"):
+        assert raw not in resp.text
+
+
+def test_egress_guard_is_not_tripped_by_tokens(monkeypatch):
+    monkeypatch.setenv("WARDEN_PLANNER", "groq")
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    body = _plan_body()
+    body["tokenizedTask"] = "Send EMAIL#1 to PHONE#12 and CARD#3, PAN#1, PASSPORT#2, AADHAAR#9, PERSONNAME#1"
+    body["sanitizedDom"] = "1. INPUT type=tel selector=#phone label=\"PHONE#12\" position=10,40"
+    assert warden_app.egress_guard(body) is None
+
+    monkeypatch.setattr(groq_client, "_call_groq_model", lambda model, prompt: json.dumps({
+        "action": "click", "target_selector": "#go", "coordinates": {"x": 1, "y": 2},
+        "value": None, "reasoning_token": "synthetic",
+    }))
+    result = warden_app.dispatch_plan(body)
+    assert result["destination"] == "cloud"
+
+
+@pytest.mark.parametrize("env,planner,destination,model", [
+    (None, "groq", "cloud", "chain-first"),
+    ("groq", "groq", "cloud", "chain-first"),
+    ("ollama", "ollama", "local", "local-model:latest"),
+    ("bogus", "invalid", None, None),
+])
+def test_health_reports_destination_and_planner_model(monkeypatch, env, planner, destination, model):
+    if env is None:
+        monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    else:
+        monkeypatch.setenv("WARDEN_PLANNER", env)
+    monkeypatch.setattr(config, "GROQ_MODEL_CHAIN", ["chain-first", "chain-second"])
+    monkeypatch.setattr(config, "OLLAMA_MODEL", "local-model:latest")
+    health = warden_app.health()
+    assert health["planner"] == planner
+    assert health["destination"] == destination
+    assert health["plannerModel"] == model
+
+
+def test_groq_base_url_points_the_real_client_at_a_local_server(monkeypatch):
+    import http.server
+    import threading
+
+    seen = {}
+
+    class _FakeGroq(http.server.BaseHTTPRequestHandler):
+        def do_POST(self):
+            seen["path"] = self.path
+            seen["auth"] = self.headers.get("Authorization")
+            seen["body"] = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+            content = json.dumps({"action": "click", "target_selector": "#go", "coordinates": {"x": 1, "y": 2},
+                                  "value": None, "reasoning_token": "synthetic"})
+            payload = json.dumps({"choices": [{"message": {"content": content}}]}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+        def log_message(self, *args):
+            pass
+
+    server = http.server.HTTPServer(("127.0.0.1", 0), _FakeGroq)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+        monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+        monkeypatch.setattr(config, "GROQ_MODEL_CHAIN", ["fake-model"])
+        monkeypatch.setattr(config, "GROQ_BASE_URL", f"http://127.0.0.1:{server.server_port}/openai/v1")
+        result = warden_app.dispatch_plan(_plan_body())
+    finally:
+        server.shutdown()
+        server.server_close()
+
+    assert seen["path"] == "/openai/v1/chat/completions"
+    assert seen["auth"] == "Bearer test-fake-key-not-real"
+    assert seen["body"]["model"] == "fake-model"
+    assert result["model"] == "fake-model"
+    assert result["planner"] == "groq" and result["destination"] == "cloud"
+
+
+def test_groq_base_url_is_read_from_the_environment():
+    code = "import config; print(config.GROQ_BASE_URL)"
+    env = dict(os.environ, GROQ_BASE_URL="http://127.0.0.1:9/v1/")
+    out = subprocess.run([sys.executable, "-c", code], cwd=WARDEN_DIR, env=env, capture_output=True, text=True, check=True)
+    assert out.stdout.strip() == "http://127.0.0.1:9/v1"
+    env.pop("GROQ_BASE_URL")
+    out = subprocess.run([sys.executable, "-c", code], cwd=WARDEN_DIR, env=env, capture_output=True, text=True, check=True)
+    assert out.stdout.strip() == "https://api.groq.com/openai/v1"
+
+
+@pytest.mark.parametrize("exists", [True, False])
+def test_hf_home_defaults_to_the_dev_volume_only_when_it_exists(monkeypatch, tmp_path, exists):
+    import types
+
+    dev = tmp_path / "hub"
+    if exists:
+        dev.mkdir()
+    monkeypatch.setattr(entities, "_DEV_HF_HOME", str(dev))
+    monkeypatch.delenv("HF_HOME", raising=False)
+    monkeypatch.setattr(entities, "STATE", entities.ModelState())
+
+    class _NoLoad:
+        @staticmethod
+        def from_pretrained(model_id):
+            raise RuntimeError("synthetic: no weights in this test")
+
+    monkeypatch.setitem(sys.modules, "gliner", types.SimpleNamespace(GLiNER=_NoLoad))
+    entities.load_model()
+    assert "synthetic" in entities.STATE.load_error
+    assert os.environ.get("HF_HOME") == (str(dev) if exists else None)
+
+
+def test_chunk_cache_scores_an_unchanged_control_once_across_steps(monkeypatch):
+    fake = _WindowedFakeModel(["Priya Raghunathan"])
+    monkeypatch.setattr(entities.STATE, "model", fake)
+    first = entities.gliner_spans(PAGE_41)
+    calls_after_first = len(fake.calls)
+    # Next step: same page, one control changed and the rest renumbered/moved
+    # (line number, selector and position are neutralised, so they still hit).
+    changed = PAGE_41.replace("Signed in as Arjun Mehta", "Signed in as Rohan Iyer")
+    second = entities.gliner_spans(changed)
+    assert len(fake.calls) - calls_after_first == 1  # only the changed line reached the model
+    assert [s["value"] for s in first] == [s["value"] for s in second] == ["Priya Raghunathan"]
+
+
+def test_chunk_cache_is_dropped_when_the_model_changes(monkeypatch):
+    monkeypatch.setattr(entities.STATE, "model", _WindowedFakeModel(["Priya Raghunathan"]))
+    assert entities.gliner_spans(PAGE_41)
+    monkeypatch.setattr(entities.STATE, "model", _WindowedFakeModel([]))
+    assert entities.gliner_spans(PAGE_41) == []
+
+
+def test_label_replacement_is_whole_word_only(monkeypatch):
+    dom = _page(3, {2: "Welcome back Ravi"})
+    monkeypatch.setattr(entities.STATE, "model", _WindowedFakeModel(["Ravi"], score=0.9))
+    result = strip_module.strip(
+        task="open my orders", dom=dom,
+        elements=[{"selector": "#a", "label": "Ravishankar Stores"}, {"selector": "#b", "label": "Hi Ravi!"}],
+        resolved={},
+    )
+    token = next(t for t, v in result["tokens"].items() if v == "Ravi")
+    assert result["elements"][0]["label"] == "Ravishankar Stores"
+    assert result["elements"][1]["label"] == f"Hi {token}!"

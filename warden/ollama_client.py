@@ -1,6 +1,7 @@
 """ollama_client.py: local Ollama calls.
 
-`plan_via_ollama` is the default POST /plan path (loopback only). `review` is
+`plan_via_ollama` is the offline POST /plan path, selected with
+WARDEN_PLANNER=ollama (loopback only; the default planner is Groq). `review` is
 the optional local-reasoning step for POST /validate.
 
 `review` calls Ollama's /api/generate with qwythos-9b:latest, the one genuinely local
@@ -183,7 +184,7 @@ def review(tokenized_task: str, plan: dict, tier: str) -> dict:
 
 
 def plan_via_ollama(body: dict) -> dict:
-    """Default POST /plan implementation. Returns the same shape as
+    """Offline POST /plan implementation (WARDEN_PLANNER=ollama). Returns the same shape as
     groq_client.plan_via_groq: {plan, model, attempts, switched, latencyMs}
     plus planner="ollama".
 

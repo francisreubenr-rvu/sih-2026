@@ -1,11 +1,13 @@
 """entities.py: GLiNER layer (Layer 2) for free-text PII regex cannot reach.
 
-Loads urchade/gliner_multi_pii-v1 once (see load_model / model_state below)
-and applies it to a source's regex-tokenized working text (the output of
-redactor.regex_strip). Because that text no longer contains the raw
-characters of any regex hit -- they are already replaced by TYPE#n tokens --
-GLiNER structurally cannot un-strip a regex hit; it can only add spans over
-text regex left alone. That is the union property the spec requires.
+Loads urchade/gliner_multi_pii-v1 once (see load_model below) and reports
+entity spans over RAW text (gliner_spans). strip.py merges these with the
+regex layer's spans in the original coordinate space, the deterministic layer
+winning on overlap; see strip.py's docstring for why GLiNER must never be
+handed regex-tokenized text.
+
+The text is scored in short line-aligned chunks, never whole: see
+_chunk_spans() for the measurement that forced this.
 
 Label set: exactly the five the frozen spec calls out as the free-text
 entities regex cannot reach ("person name, address, date of birth, account
@@ -15,6 +17,7 @@ categories the spec does not ask this build to cover.
 """
 
 import re
+from collections import OrderedDict
 import os
 import threading
 import time
@@ -35,6 +38,8 @@ LABEL_TO_TYPE = {
 
 MODEL_ID = "urchade/gliner_multi_pii-v1"
 
+_DEV_HF_HOME = "/Volumes/1TB SSD/LM/hub"
+
 STRIP_THRESHOLD = 0.60
 UNCERTAIN_FLOOR = 0.35
 # Ask GLiNER for anything down to the uncertain floor; below that the spec
@@ -50,7 +55,6 @@ class ModelState:
         self.loading = False
         self.load_error: Optional[str] = None
         self.load_seconds: Optional[float] = None
-        self.last_inference_ms: Optional[float] = None
         self._lock = threading.Lock()
 
     @property
@@ -71,7 +75,13 @@ def load_model() -> None:
             return
         STATE.loading = True
     try:
-        os.environ.setdefault("HF_HOME", "/Volumes/1TB SSD/LM/hub")
+        # The development machine keeps its Hugging Face cache on an external
+        # volume. Defaulting to it unconditionally broke the load on every other
+        # machine (the path does not exist, so from_pretrained fails there), so
+        # it is only a default where it exists; otherwise HF_HOME, or the
+        # library's own default cache, decides.
+        if os.path.isdir(_DEV_HF_HOME):
+            os.environ.setdefault("HF_HOME", _DEV_HF_HOME)
         from gliner import GLiNER  # imported here so a missing/broken torch
         # install fails inside the background thread, not at module import.
 
@@ -84,100 +94,6 @@ def load_model() -> None:
         STATE.load_error = f"{type(exc).__name__}: {exc}"
     finally:
         STATE.loading = False
-
-
-def scan(text: str) -> list[dict]:
-    """Run GLiNER over `text`, returning entities scoring >= UNCERTAIN_FLOOR,
-    sorted by start offset ascending (the order token numbering depends on).
-    Each item: {start, end, text, label, score}.
-    """
-    if not STATE.loaded or not text:
-        return []
-    model = STATE.model
-    t0 = time.time()
-    raw = model.predict_entities(text, LABELS, threshold=PREDICT_THRESHOLD)
-    STATE.last_inference_ms = (time.time() - t0) * 1000.0
-    out = [
-        {
-            "start": e["start"],
-            "end": e["end"],
-            "text": e["text"],
-            "label": e["label"],
-            "score": float(e["score"]),
-        }
-        for e in raw
-        if e["label"] in LABEL_TO_TYPE
-    ]
-    out.sort(key=lambda e: e["start"])
-    return out
-
-
-def apply_gliner_layer(
-    text: str,
-    source: str,
-    minter,
-    resolved: dict,
-    uncertain: list,
-) -> str:
-    """Run the GLiNER layer over one source's regex-tokenized text and return
-    the further-tokenized working text.
-
-    - score >= 0.60: strip silently, always (regex-style union: adds
-      coverage, mint via minter).
-    - 0.35 <= score < 0.60: uncertain. If `resolved` already carries a
-      strip/keep decision for the token this span would get, honour it
-      (strip mints the token; keep leaves the text and does not re-ask).
-      Otherwise append to `uncertain` and leave the text untouched.
-    - score < 0.35: never reached (predict_entities is called at that floor).
-    """
-    entities = scan(text)
-    if not entities:
-        return text
-
-    # Two-pass: first decide an action per entity (in ascending-start order,
-    # so token numbering is deterministic), then apply text replacements in
-    # descending-start order so earlier replacements don't shift the offsets
-    # of ones still pending.
-    planned: list[tuple[int, int, str]] = []  # (start, end, replacement)
-
-    for ent in entities:
-        type_name = LABEL_TO_TYPE[ent["label"]]
-        score = ent["score"]
-        if score >= STRIP_THRESHOLD:
-            token = minter.mint(type_name, ent["text"], score=score, layer="gliner", pattern=ent["label"])
-            planned.append((ent["start"], ent["end"], token))
-            continue
-
-        # Uncertain band: reserve the id this span would get either way, so
-        # `resolved` lookups and the `uncertain` array agree on the same id
-        # across repeated calls with the same input.
-        token_id = minter.next_id(type_name)
-        decision = resolved.get(token_id)
-        if decision == "strip":
-            minter.tokens[token_id] = ent["text"]
-            minter.decisions.append({"pattern": ent["label"], "score": score, "layer": "gliner"})
-            planned.append((ent["start"], ent["end"], token_id))
-        elif decision == "keep":
-            continue  # already resolved: leave the text, do not re-ask
-        else:
-            uncertain.append(
-                {
-                    "id": f"u{len(uncertain) + 1}",
-                    "token": token_id,
-                    "label": ent["label"],
-                    "score": score,
-                    "preview": ent["text"],
-                    "source": source,
-                }
-            )
-
-    if not planned:
-        return text
-
-    working = text
-    for start, end, replacement in sorted(planned, key=lambda p: p[0], reverse=True):
-        working = working[:start] + replacement + working[end:]
-    return working
 
 
 # ---------------------------------------------------------------------------
@@ -228,28 +144,177 @@ def gliner_spans(text: str) -> list:
     if model is None:
         return []
 
-    # Scaffolding is neutralised for prediction only. Fillers are non-word
-    # characters, so nothing is matched there, and their length matches the
-    # original span exactly, so entity offsets still index `text` correctly.
+    # Scaffolding is neutralised for prediction only, and the filler has the
+    # original span's exact length, so offsets into the neutralised string are
+    # offsets into `text`. Each chunk is a slice of that string, so a chunk
+    # offset plus an in-chunk offset is an offset into `text` too.
+    neutral = _neutralise_scaffolding(text)
+    chunks = _chunk_spans(neutral)
+    results = _cached_predict(model, [neutral[a:b] for a, b in chunks])
+
     spans = []
-    for ent in model.predict_entities(_neutralise_scaffolding(text), LABELS, threshold=PREDICT_FLOOR):
-        label = ent["label"]
-        if ent["score"] < uncertain_floor_for(label):
-            continue
-        # A field descriptor is a field NAME, not a value. "Delivery address" is
-        # what the form calls the box; it is not somebody's address.
-        if _is_structural_descriptor(ent["text"]):
-            continue
-        spans.append({
-            "start": ent["start"],
-            "end": ent["end"],
-            "label": label,
-            "type": LABEL_TO_TYPE[label],
-            "score": ent["score"],
-            "value": ent["text"],
-        })
+    for (chunk_start, _), entities_in_chunk in zip(chunks, results):
+        for ent in entities_in_chunk:
+            label = ent["label"]
+            if label not in LABEL_TO_TYPE:
+                continue
+            if ent["score"] < uncertain_floor_for(label):
+                continue
+            start = chunk_start + ent["start"]
+            end = chunk_start + ent["end"]
+            value = text[start:end]
+            # A field descriptor is a field NAME, not a value. "Delivery address" is
+            # what the form calls the box; it is not somebody's address.
+            if _is_structural_descriptor(value):
+                continue
+            spans.append({
+                "start": start,
+                "end": end,
+                "label": label,
+                "type": LABEL_TO_TYPE[label],
+                "score": ent["score"],
+                "value": value,
+            })
     spans.sort(key=lambda s: s["start"])
     return spans
+
+
+# ---------------------------------------------------------------------------
+# Chunked scoring (added 29 September 2026)
+# ---------------------------------------------------------------------------
+# gliner_spans() used to hand the whole serialised DOM (up to 30 KB) to one
+# predict_entities() call. The model's window is max_len=384 words (read from
+# model.config on the loaded weights), and everything past it is silently
+# dropped. Worse, even text that fits scores badly when it is a list of
+# unrelated controls: the context dilutes each name. Measured in this container
+# on 29 September 2026, CPU torch, gliner 0.2.29, person names in synthetic
+# `N. TAG type= selector= label="..." position=` lines (the format
+# extension/content.js serializeDom() emits):
+#
+#   41-line DOM, names on lines 2 and 39, whole text:  0/2 found
+#   either of those lines scored alone:                 both found
+#
+#   120-line DOM, 10 names, "·" per scaffolding char (the old filler):
+#     whole text      0/10   0.45 s
+#     8 lines/chunk   3/10  10.4 s
+#     4 lines/chunk   3/10   8.4 s
+#     1 line/chunk    9/10   7.4 s
+#
+# Chunks of 4 or 8 lines sit far under the 384-word window and still lose most
+# names, so the window was not the only problem; one line per chunk is what
+# restores recall. The one name every configuration missed ("Ship to Rohan
+# Deshpande") scores 0.08 alone, below the 0.12 person-name floor: that is the
+# model, not the chunking.
+#
+# The old filler cost latency: GLiNER splits every "·" into its own word, so a
+# typical line was ~50 words of which ~40 were filler. Same 120 lines, one line
+# per chunk, batch_size 16:
+#
+#   "·" per char           9/10  7.4 s   0 spans past floors + descriptor guard
+#   spaces only            9/10  3.3 s  21 spans past floors + guard on the 110
+#                                        name-free lines ("Customer service" and
+#                                        "Returns" as person names, "Sign out"
+#                                        as a password): every one a question
+#   one "·" then spaces    9/10  3.6 s   0 spans past floors + guard
+#
+# So the filler is now one "·" followed by spaces: the marker keeps the model
+# from reading the neighbouring label as free prose, and the spaces cost
+# nothing. Batch size, same input: 8 -> 4.8 s, 16 -> 3.4 s, 32 -> 3.5 s.
+#
+# End to end through gliner_spans() as shipped (one line per chunk, new
+# filler, line index neutralised, batch_size 16), same container and date:
+#   41-line page:  both names found and stripped (scores >= 0.60), 1.3 s strip()
+#   120-line page: 9/10 names, 3.4 s, no other span on the page
+#   30,000-char page (just under content.js MAX_DOM_BYTES, 30 KB; 422 lines): 10.7 s.
+#   That is the price of recall on CPU; a GPU or a smaller DOM cuts it.
+#
+# A single line longer than CHUNK_MAX_WORDS is split on whitespace. The budget
+# is words as GLiNER's own splitter counts them (_GLINER_WORD_RE is its default
+# pattern), a third of the window, so subword expansion of long tokens cannot
+# push a chunk past it.
+CHUNK_MAX_WORDS = 128
+PREDICT_BATCH_SIZE = 16
+_GLINER_WORD_RE = re.compile(r"\w+(?:[-_]\w+)*|\S")
+
+
+def _chunk_spans(text: str) -> list:
+    """Split `text` into (start, end) slices, one per non-blank line, with a
+    line longer than CHUNK_MAX_WORDS split further on whitespace. Slices never
+    overlap and every character of every non-blank line is in exactly one."""
+    chunks = []
+    for line in re.finditer(r"[^\n]+", text):
+        if line.group(0).strip() == "":
+            continue
+        if len(_GLINER_WORD_RE.findall(line.group(0))) <= CHUNK_MAX_WORDS:
+            chunks.append((line.start(), line.end()))
+            continue
+        piece_start = None
+        piece_end = None
+        words = 0
+        for piece in re.finditer(r"\S+", line.group(0)):
+            n = len(_GLINER_WORD_RE.findall(piece.group(0)))
+            if piece_start is not None and words + n > CHUNK_MAX_WORDS:
+                chunks.append((line.start() + piece_start, line.start() + piece_end))
+                piece_start = None
+                words = 0
+            if piece_start is None:
+                piece_start = piece.start()
+            piece_end = piece.end()
+            words += n
+        if piece_start is not None:
+            chunks.append((line.start() + piece_start, line.start() + piece_end))
+    return chunks
+
+
+# Per-chunk result cache. One chunk is one serialised control with its line
+# number, selector and position already neutralised, so the same control scores
+# from the same text on every step of a run: after the first step, most of a
+# page is a cache hit and only the controls that changed reach the model.
+# Cleared whenever the model object changes, so a reload can never serve another
+# model's scores; the owner is held by reference rather than id(), so a
+# collected test stub's address can never be reused into a stale hit. The cache
+# holds page text in Warden memory only, the same text /strip already receives,
+# and is never written anywhere.
+_CHUNK_CACHE: "OrderedDict[str, list]" = OrderedDict()
+_CHUNK_CACHE_MAX = 4096
+_CHUNK_CACHE_OWNER = None
+
+
+def _cached_predict(model, texts: list) -> list:
+    global _CHUNK_CACHE_OWNER
+    if model is not _CHUNK_CACHE_OWNER:
+        _CHUNK_CACHE.clear()
+        _CHUNK_CACHE_OWNER = model
+    results = [None] * len(texts)
+    missing = []
+    for i, t in enumerate(texts):
+        hit = _CHUNK_CACHE.get(t)
+        if hit is None:
+            missing.append(i)
+        else:
+            _CHUNK_CACHE.move_to_end(t)
+            results[i] = hit
+    if missing:
+        fresh = _predict_chunks(model, [texts[i] for i in missing])
+        for i, ents in zip(missing, fresh):
+            ents = list(ents)
+            results[i] = ents
+            _CHUNK_CACHE[texts[i]] = ents
+        while len(_CHUNK_CACHE) > _CHUNK_CACHE_MAX:
+            _CHUNK_CACHE.popitem(last=False)
+    return results
+
+
+def _predict_chunks(model, texts: list) -> list:
+    """One list of entities per text. Uses the batched inference() the real
+    GLiNER exposes; a model object without it (the test stubs) is called one
+    text at a time through predict_entities()."""
+    if not texts:
+        return []
+    inference = getattr(model, "inference", None)
+    if callable(inference):
+        return inference(texts, LABELS, threshold=PREDICT_FLOOR, batch_size=PREDICT_BATCH_SIZE)
+    return [model.predict_entities(t, LABELS, threshold=PREDICT_FLOOR) for t in texts]
 
 
 # ---------------------------------------------------------------------------
@@ -279,6 +344,7 @@ def gliner_spans(text: str) -> list:
 #
 # 1. _neutralise_scaffolding(): type=, selector= and position= values are our
 #    own metadata and are never PII. They are replaced with same-length filler
+#    (one "·" then spaces since 29 September 2026; see the chunking notes above)
 #    so byte offsets are preserved and entity offsets still map 1:1 onto the
 #    original text. label= is deliberately NOT neutralised: a label is page
 #    text and can legitimately contain a person's name ("Welcome Francis").
@@ -292,7 +358,12 @@ def gliner_spans(text: str) -> list:
 # "password" is no longer tokenised in text. It is still covered by two other
 # layers, the fieldType=password element flag and the screenshot mask, so the
 # protection is not lost, and the alternative was a corrupted scene.
-_SCAFFOLDING_RE = re.compile(r"\b(type|selector|position)=[^\s]+")
+#
+# The leading "N." element index serializeDom() puts on every line is our own
+# metadata too, and is neutralised since 29 September 2026: scored one line at
+# a time, "99. A type=link ... label=\"Account holder Neha Joshi\"" returned the
+# index "99" as an account number at 0.381, a question about a line number.
+_SCAFFOLDING_RE = re.compile(r"\b(type|selector|position)=[^\s]+|^\d+\.(?= )", re.MULTILINE)
 
 _DESCRIPTOR_WORDS = {
     "password", "passwd", "pwd", "passcode", "passphrase", "secret",
@@ -309,7 +380,7 @@ def _neutralise_scaffolding(text: str) -> str:
     """Replace type=, selector= and position= values with same-length filler.
     Offsets are preserved exactly, so entity offsets still index the original.
     """
-    return _SCAFFOLDING_RE.sub(lambda m: "·" * len(m.group(0)), text)
+    return _SCAFFOLDING_RE.sub(lambda m: "·" + " " * (len(m.group(0)) - 1), text)
 
 
 def _is_structural_descriptor(value: str) -> bool:

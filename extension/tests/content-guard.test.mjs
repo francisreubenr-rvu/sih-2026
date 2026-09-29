@@ -435,3 +435,15 @@ test('type into a target with no value setter is refused, not reported as done',
   assert.equal(await p.page.evaluate(() => document.getElementById('ed').textContent), 'x');
   await p.close();
 });
+
+test('scan: an id or name that is itself personal data is never used as the selector', async () => {
+  const p = await h.open(`<!doctype html><body>
+    <button id="priya.r@example.com" type="button">Profile</button>
+    <input name="a1234567" type="text">
+    <button id="save" type="button">Save</button></body>`);
+  const scan = await p.scan();
+  const selectors = scan.elements.map((el) => el.selector);
+  assert.equal(selectors.some((s) => /priya|a1234567/.test(s)), false, selectors.join(' | '));
+  assert.ok(selectors.includes('#save'), 'an ordinary id is still used');
+  await p.close();
+});

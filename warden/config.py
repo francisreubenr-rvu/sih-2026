@@ -38,15 +38,32 @@ def groq_configured() -> bool:
     return GROQ_API_KEY is not None
 
 
-# POST /plan default. "groq" is the only explicit off-path. Anything else that
-# is not "ollama" is invalid and the route fails closed rather than guessing.
+# POST /plan planner. Default "groq" (29 September 2026): the local machine
+# runs a model for one job, PII redaction, and planning goes to the cloud on
+# already-tokenized text. "ollama" is the explicit offline mode. Anything else
+# is invalid and the route fails closed rather than guessing.
 def planner_mode() -> str:
-    raw = os.environ.get("WARDEN_PLANNER", "ollama").strip().lower()
-    if raw in ("", "ollama"):
-        return "ollama"
-    if raw == "groq":
+    raw = os.environ.get("WARDEN_PLANNER", "groq").strip().lower()
+    if raw in ("", "groq"):
         return "groq"
+    if raw == "ollama":
+        return "ollama"
     return "invalid"
+
+
+def planner_destination(mode: str):
+    """Where a /plan body goes for this planner mode: "cloud", "local", or None
+    when the mode is invalid and nothing is sent anywhere."""
+    return {"groq": "cloud", "ollama": "local"}.get(mode)
+
+
+def planner_model(mode: str):
+    """The first model the planner will try, or None."""
+    if mode == "groq":
+        return GROQ_MODEL_CHAIN[0] if GROQ_MODEL_CHAIN else None
+    if mode == "ollama":
+        return OLLAMA_MODEL or None
+    return None
 
 
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
@@ -99,6 +116,11 @@ _DEFAULT_CHAIN = "openai/gpt-oss-20b,openai/gpt-oss-120b"
 GROQ_MODEL_CHAIN = [
     m.strip() for m in os.environ.get("GROQ_MODEL_CHAIN", _DEFAULT_CHAIN).split(",") if m.strip()
 ]
+
+# OpenAI-compatible base URL the Groq client posts to. Overridable so a test can
+# point the real client at a local fake server; the API key is sent to
+# whatever this names, so it is only ever set deliberately.
+GROQ_BASE_URL = os.environ.get("GROQ_BASE_URL", "https://api.groq.com/openai/v1").strip().rstrip("/")
 
 GROQ_TIMEOUT_S = float(os.environ.get("WARDEN_GROQ_TIMEOUT_S", "10"))
 
