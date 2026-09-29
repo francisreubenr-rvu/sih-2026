@@ -1,31 +1,19 @@
-/* Earth-observation operations simulation: layout only; colour and type come from signal.css. */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px max(24px,calc((100% - 1400px)/2));border-bottom:1px solid var(--sg-line);background:var(--sg-panel)}
-.topbar a{font:600 20px/1 var(--sg-font-sans);letter-spacing:-.02em;color:var(--sg-text);text-decoration:none}
-.topbar span{font:400 11px/1.4 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3)}
-main{max-width:1448px;margin:auto;padding:48px 24px}
-.intro{max-width:900px}
-h1{font-size:clamp(2.3rem,5vw,4.6rem);letter-spacing:-.045em;line-height:1.02;margin:20px 0}
-h1 em{font-family:var(--sg-font-serif);font-weight:400;letter-spacing:0}
-.intro>p:not(.eyebrow){max-width:680px;color:var(--sg-text-2)}
-.scope{font-size:12px;color:var(--sg-text-3)}
-.control-strip{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:22px 0;margin:24px 0;border-block:1px solid var(--sg-line)}
-.control-strip p{flex-basis:100%;margin:0;color:var(--sg-text-2)}
-#confirm:not(:disabled){background:var(--sg-scan-tint);border-color:var(--sg-scan);color:var(--sg-scan)}
-#confirm:hover:not(:disabled){box-shadow:inset 0 0 0 1px var(--sg-scan)}
-.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
-.section-title{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
-.section-title h2{font-size:20px;margin:0}
-.section-title span{font:400 11px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-scan)}
-iframe{display:block;width:100%;height:660px}
-canvas{display:block;width:100%;height:auto;min-height:180px;background:var(--sg-panel-2)}
+/* Earth-observation operations simulation: page blocks only; colour, type, controls and the
+   band/12-column layout come from signal.css.
+   Hierarchy: H1 > "Prepare synthetic draft" (the one filled button; "Confirm local draft
+   fill" takes the primary role only when it becomes enabled) > the two views > the trace.
+   Bands: header panel > intro void > views tint > trace panel > closing void. */
+.control-strip{display:grid;gap:12px;margin-top:12px;padding-top:24px;border-top:1px solid var(--sg-line)}
+.workspace{row-gap:var(--col-gap)}
+#fixture{display:block;width:100%;height:660px}
+#protected{display:block;width:100%;height:auto;min-height:180px;background:var(--sg-panel-2)}
 #context-status{font:400 12px/1.5 var(--sg-font-mono);color:var(--sg-text-3)}
-.proposal{padding:20px 0;border-top:1px solid var(--sg-line)}
-.proposal h3{font:500 12px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3);margin:0}
-.trace-section{max-width:900px;margin-top:40px}
-#trace{padding-left:22px}
-#trace li{padding:7px 0;font-size:13px;color:var(--sg-text-2)}
-pre{max-height:380px;overflow:auto}
-.footnote{font-size:12px;max-width:800px;margin-top:36px;color:var(--sg-text-3)}
-.skip{position:absolute;left:20px;top:-100px}
-.skip:focus{top:12px;background:var(--sg-glow);color:var(--sg-on-glow);padding:12px;z-index:10}
-@media(max-width:800px){.workspace{grid-template-columns:1fr}.topbar{align-items:flex-start}.topbar span{max-width:150px;text-align:right}main{padding:32px 18px}iframe{height:680px}}
+.proposal{display:grid;gap:8px;padding-top:14px;border-top:1px solid var(--sg-line)}
+.proposal h3{font:500 12px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3)}
+#proposal{color:var(--sg-text)}
+#trace{margin:0;padding-left:22px}
+#trace:empty{display:none}
+#trace li{padding:7px 0;font-size:14px;color:var(--sg-text-2)}
+.trace-section pre{max-height:380px;overflow:auto}
+.footnote{font-size:13px;color:var(--sg-text-3)}
+@media (max-width:800px){#fixture{height:680px}}

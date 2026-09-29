@@ -1,15 +1,5 @@
-main{max-width:1320px}
-.eyebrow{margin-top:40px}
-main>p{max-width:850px}
-.controls{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:24px 0}
-label{display:grid;gap:8px;font:500 12px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3)}
-select{max-width:100%}
-button{margin:0}
-.views{display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.views section{min-width:0}
-iframe{display:block;width:100%;height:560px}
-canvas{width:100%;height:auto;background:var(--sg-panel-2)}
-h2{font-size:1.15rem}
-#trace li{padding:8px;line-height:1.5;color:var(--sg-text-2)}
-#record{max-height:420px;overflow:auto;font-size:12px}
-@media(max-width:800px){.views{grid-template-columns:1fr}.controls{align-items:stretch}.controls label{width:100%}}
+/* Bounded task runner and private-value draft flow: blocks on top of validation.css. */
+.controls{align-items:end}
+.controls label{min-width:260px}
+.views canvas{background:var(--sg-panel-2)}
+@media (max-width:800px){.controls label{flex:1 1 100%;min-width:0}.controls select{width:100%}}

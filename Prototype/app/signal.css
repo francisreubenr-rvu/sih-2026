@@ -36,36 +36,158 @@
 /* signal:tokens:end */
 
 /* Shared operator base: every Prototype operator page links this first. Fixture pages
-   (fixture*.html, *-fixture.html) are synthetic targets and never load it. */
+   (fixture*.html, *-fixture.html) are synthetic targets and never load it.
+
+   Palette roles (design playbook, "Color system"; DESIGN.md "Colour theory used here"):
+   - Neutrals (~60%): the void/panel/panel-2 grounds and the ink family. Text carries three
+     emphasis tiers: --sg-text (high), --sg-text-2 (medium), --sg-text-3 (meta).
+   - Secondary hue (~30%): teal --sg-scan means "on this device / verified / local".
+   - Accent (~10%): cobalt --sg-glow is reserved for the one primary button per view, links
+     and focus rings (plus their hover). Nothing decorative is cobalt.
+   - Status: amber --sg-ask = waiting on a person or a caveat; brick --sg-stop = fail, stop,
+     destructive. Always with a text label, never decoration. */
+:root{
+  --gutter:clamp(16px,3.5vw,40px);
+  --band-y:clamp(40px,6vw,72px);
+  --col-gap:clamp(16px,2.4vw,32px);
+  --container:1240px;
+  --fs-h1:clamp(32px,4.4vw,52px);
+  --fs-h2:clamp(22px,2.4vw,28px);
+  --fs-h3:17px;
+  --fs-body:15px;
+  --fs-small:13px;
+  --fs-meta:12px;
+}
 *,*::before,*::after{box-sizing:border-box}
 html{background:var(--sg-void)}
-body{margin:0;background:var(--sg-void);color:var(--sg-text);font:400 15px/1.6 var(--sg-font-sans);-webkit-font-smoothing:antialiased}
-a{color:var(--sg-glow-text);text-underline-offset:4px;text-decoration-color:color-mix(in srgb,var(--sg-glow-text) 35%,transparent)}
-a:hover{text-decoration-color:currentColor}
-h1,h2,h3{font-weight:500;letter-spacing:-.02em;text-wrap:balance}
+body{margin:0;background:var(--sg-void);color:var(--sg-text);font:400 var(--fs-body)/1.6 var(--sg-font-sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* Type: one H1 per page (--fs-h1; the workspace hero overrides it larger), H2 divides the
+   page, H3 labels a block. Geist 400/500/600, Geist Mono 400/500 for labels, Instrument
+   Serif italic only for the key phrase of the hero headline. */
+h1,h2,h3{margin:0;font-weight:500;letter-spacing:-.02em;text-wrap:balance;color:var(--sg-text)}
+h1{font-size:var(--fs-h1);line-height:1.04;letter-spacing:-.04em}
+h2{font-size:var(--fs-h2);line-height:1.15;letter-spacing:-.025em}
+h3{font-size:var(--fs-h3);line-height:1.3;font-weight:600;letter-spacing:-.01em}
+p{margin:0}
 code,pre,kbd{font-family:var(--sg-font-mono)}
-pre{background:var(--sg-panel);border:1px solid var(--sg-line);border-radius:var(--sg-radius);padding:14px;color:var(--sg-text-2);font-size:12px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
-button{font:500 14px/1.2 var(--sg-font-sans);min-height:44px;padding:10px 18px;color:var(--sg-text);background:var(--sg-panel);border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);cursor:pointer;transition:background-color .2s var(--sg-ease),border-color .2s var(--sg-ease),box-shadow .2s var(--sg-ease)}
-button:hover:not(:disabled){border-color:var(--sg-glow-text);background:var(--sg-glow-tint)}
-button:disabled{cursor:not-allowed;background:var(--sg-panel-2);border-color:var(--sg-line);color:var(--sg-text-3)}
-button.primary,button#start,button#capture,button#plan{background:var(--sg-glow);border-color:var(--sg-glow);color:var(--sg-on-glow)}
-button.primary:hover:not(:disabled),button#start:hover:not(:disabled),button#capture:hover:not(:disabled),button#plan:hover:not(:disabled){background:var(--sg-glow);border-color:var(--sg-glow);box-shadow:0 0 0 3px var(--sg-glow-tint)}
-select,input,textarea{font:inherit;color:var(--sg-text);background:var(--sg-panel);border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);min-height:44px;padding:10px 12px}
-select:focus,input:focus,textarea:focus{border-color:var(--sg-glow-text)}
+
+/* Links: an accent job. Underlined at rest so they read as links without hover. */
+a{color:var(--sg-glow-text);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;
+  text-decoration-color:color-mix(in srgb,var(--sg-glow-text) 45%,transparent);
+  transition:text-decoration-color .15s var(--sg-ease)}
+a:hover{text-decoration-color:currentColor;text-decoration-thickness:2px}
+
+/* Focus: the accent's third job. One ring for every interactive element. */
 :focus-visible{outline:2px solid var(--sg-glow-text);outline-offset:3px}
-table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--sg-line);font-size:13px}
-th{font:500 11px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3)}
-details{margin-block:18px}
-summary{cursor:pointer;color:var(--sg-text-2);font-weight:500}
-summary:hover{color:var(--sg-text)}
-button.primary:disabled,button#start:disabled,button#capture:disabled,button#plan:disabled{background:var(--sg-panel-2);border-color:var(--sg-line);color:var(--sg-text-3)}
-progress{accent-color:var(--sg-glow)}
-.eyebrow{font:500 12px/1.3 var(--sg-font-mono)!important;letter-spacing:.16em!important;text-transform:uppercase;color:var(--sg-scan)}
+
+/* Buttons. Secondary (default) is a neutral outline: white ground, 3.3:1 edge, ink label.
+   Exactly one primary per view is filled cobalt with a white label. */
+button{font:500 15px/1.2 var(--sg-font-sans);min-height:44px;padding:10px 18px;color:var(--sg-text);background:var(--sg-panel);
+  border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);cursor:pointer;
+  transition:background-color .15s var(--sg-ease),border-color .15s var(--sg-ease),box-shadow .15s var(--sg-ease)}
+button:hover:not(:disabled){background:var(--sg-panel-2);border-color:var(--sg-text)}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{cursor:not-allowed;background:var(--sg-panel-2);border-color:var(--sg-line);color:var(--sg-text-3)}
+/* Primary: .primary is the view's first action; [data-step="2"|"3"] buttons take over the
+   primary role only once their step is reached (they are enabled), and every earlier step
+   steps back to secondary, so a view never shows two filled buttons. */
+button.primary:not(:disabled),button[data-step]:not(:disabled){background:var(--sg-glow);border-color:var(--sg-glow);color:var(--sg-on-glow);font-weight:600}
+button.primary:hover:not(:disabled),button[data-step]:hover:not(:disabled){background:var(--sg-glow);border-color:var(--sg-glow);box-shadow:0 0 0 3px var(--sg-glow-tint)}
+body:has(button[data-step]:not(:disabled)) button.primary:not(:disabled),
+body:has(button[data-step="3"]:not(:disabled)) button[data-step="2"]:not(:disabled){background:var(--sg-panel);border-color:var(--sg-line-strong);color:var(--sg-text);font-weight:500}
+body:has(button[data-step]:not(:disabled)) button.primary:hover:not(:disabled),
+body:has(button[data-step="3"]:not(:disabled)) button[data-step="2"]:hover:not(:disabled){background:var(--sg-panel-2);border-color:var(--sg-text);box-shadow:none}
+
+/* Fields: a 3.3:1 edge at rest, ink edge on hover, cobalt ring on focus. */
+select,input,textarea{font:400 15px/1.3 var(--sg-font-sans);letter-spacing:0;text-transform:none;color:var(--sg-text);background:var(--sg-panel);border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);min-height:44px;padding:10px 12px;
+  transition:border-color .15s var(--sg-ease)}
+select{cursor:pointer}
+select:hover:not(:disabled),input:hover:not(:disabled),textarea:hover:not(:disabled){border-color:var(--sg-text)}
+select:focus,input:focus,textarea:focus{border-color:var(--sg-glow-text)}
+label{display:grid;gap:8px;font:500 12px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-2)}
+
+/* Disclosures: a bordered row with a +/− glyph, so they read as openable without hover. */
+details{margin:0}
+summary{display:flex;align-items:center;gap:10px;min-height:44px;padding:10px 14px;list-style:none;cursor:pointer;color:var(--sg-text);font-weight:500;
+  background:var(--sg-panel);border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);transition:background-color .15s var(--sg-ease),border-color .15s var(--sg-ease)}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";display:inline-grid;place-items:center;width:18px;height:18px;flex:0 0 auto;border:1px solid var(--sg-line-strong);font:500 14px/1 var(--sg-font-mono);color:var(--sg-text-2)}
+details[open]>summary::before{content:"\2212"}
+summary:hover{background:var(--sg-panel-2);border-color:var(--sg-text)}
+details>:not(summary){margin-top:10px}
+
+pre{margin:0;background:var(--sg-panel);border:1px solid var(--sg-line);border-radius:var(--sg-radius);padding:14px;color:var(--sg-text-2);font-size:12px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+table{width:100%;border-collapse:collapse;background:var(--sg-panel)}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--sg-line);font-size:var(--fs-small)}
+th{font:500 11px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3);background:var(--sg-panel)}
+.table-wrap{overflow-x:auto;border:1px solid var(--sg-line);border-radius:var(--sg-radius)}
+.table-wrap table{border:0}
+progress{accent-color:var(--sg-scan);width:100%;height:10px}
+iframe{border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);background:var(--sg-panel)}
+canvas{border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius)}
+::selection{background:var(--sg-scan-tint);color:var(--sg-text)}
+
+/* Labels and status text. The eyebrow is neutral meta type with a teal detection-box
+   marker (the product's signature: it detects locally). */
+.eyebrow{display:flex;align-items:center;gap:10px;margin:0;font:500 12px/1.3 var(--sg-font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sg-text-2)}
+.eyebrow::before{content:"";width:8px;height:8px;flex:0 0 auto;border:1.5px solid var(--sg-scan)}
 .pass{color:var(--sg-scan)}
 .fail{color:var(--sg-stop)}
 .warn{color:var(--sg-ask)}
-iframe{border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius);background:var(--sg-panel)}
-canvas{border:1px solid var(--sg-line-strong);border-radius:var(--sg-radius)}
-::selection{background:var(--sg-glow-tint);color:var(--sg-text)}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+.status,[role="status"]{font:400 13px/1.5 var(--sg-font-mono);color:var(--sg-text-2)}
+.notice{padding:12px 16px;border-left:3px solid var(--sg-ask);background:var(--sg-ask-tint);color:var(--sg-text);font-size:14px}
+.notice strong{color:var(--sg-ask);font:500 12px/1.3 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;margin-right:8px}
+
+/* Layout: layer cake of full-bleed bands, each holding a 12-column grid in a centred
+   container. Adjacent bands never share a ground (void / panel / tint alternate). */
+.band{padding-block:var(--band-y)}
+.band-void{background:var(--sg-void)}
+.band-panel{background:var(--sg-panel);border-block:1px solid var(--sg-line)}
+.band-tint{background:var(--sg-panel-2)}
+.wrap{width:100%;max-width:var(--container);margin-inline:auto;padding-inline:var(--gutter);display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--col-gap);row-gap:20px;align-items:start}
+.wrap>*{grid-column:1/-1;min-width:0}
+.wrap>.c-8{grid-column:span 8}
+.wrap>.c-7{grid-column:span 7}
+.wrap>.c-6{grid-column:span 6}
+.wrap>.c-5{grid-column:span 5}
+.wrap>.c-4{grid-column:span 4}
+.stack{display:grid;gap:16px;align-content:start}
+.measure{max-width:68ch;color:var(--sg-text-2)}
+.lede{font-size:17px;line-height:1.55;color:var(--sg-text-2);max-width:60ch}
+.actions{display:flex;flex-wrap:wrap;align-items:end;gap:12px}
+.meta{font:400 var(--fs-meta)/1.5 var(--sg-font-mono);color:var(--sg-text-3)}
+.small{font-size:var(--fs-small);color:var(--sg-text-2)}
+
+/* Site header and footer (panel ground). The wordmark is the brand, not a link. */
+.skip{position:absolute;left:var(--gutter);top:-100px;z-index:20;padding:10px 14px;background:var(--sg-panel);border:1px solid var(--sg-glow);border-radius:var(--sg-radius)}
+.skip:focus{top:10px}
+.site-header{background:var(--sg-panel);border-bottom:1px solid var(--sg-line)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;padding-block:16px}
+.wordmark{display:inline-flex;align-items:center;gap:12px;color:var(--sg-text);font:600 19px/1 var(--sg-font-sans);letter-spacing:-.02em}
+.wordmark::before{content:"";width:26px;height:26px;background:url("/app/dhristi-mark-signal.svg") center/contain no-repeat}
+.wordmark small{font:400 11px/1 var(--sg-font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--sg-text-3)}
+.nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;font-size:14px}
+.site-footer{background:var(--sg-panel);border-top:1px solid var(--sg-line)}
+.site-footer .bar{padding-block:22px;font:400 12px/1.4 var(--sg-font-mono);color:var(--sg-text-3)}
+
+/* Page intro (sub-pages): shorter than the workspace hero. */
+.page-intro{display:grid;gap:16px;align-content:start}
+.page-intro h1{max-width:20ch}
+
+/* Two-up media views on a tint band: white cards. */
+.view-card{display:grid;gap:12px;align-content:start;min-width:0;padding:16px;background:var(--sg-panel);border:1px solid var(--sg-line);border-radius:var(--sg-radius)}
+.view-card h2{font-size:18px;letter-spacing:-.01em}
+.view-card iframe,.view-card canvas{display:block;width:100%;max-width:100%}
+.view-card canvas{height:auto;background:var(--sg-panel)}
+.tag{font:500 11px/1.3 var(--sg-font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sg-text-3)}
+.tag.local{color:var(--sg-scan)}
+.card-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px}
+
+@media (max-width:900px){
+  .wrap>[class*="c-"]{grid-column:1/-1}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  button:active:not(:disabled){transform:none}
+}
