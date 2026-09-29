@@ -1,1 +1,14 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dhristi — Browser boundary validation</title><link rel="stylesheet" href="/app/signal.css"><link rel="stylesheet" href="/app/validation.css"></head><body><main><a href="/">Back to workspace</a><h1>Browser boundary validation</h1><p>Real DOM checks on isolated synthetic fixtures. This page makes no model-server request and is not a native-extension test.</p><button id="run">Run browser checks</button><button id="expiry">Run 31-second expiry check</button><p id="status" role="status">Not run.</p><table><thead><tr><th>Scenario</th><th>Result</th><th>Detail</th></tr></thead><tbody id="results"></tbody></table><details><summary>Machine-readable evidence</summary><pre id="record">No result.</pre></details><section><h2>Isolated fixture under test</h2><div id="fixture-mount"></div></section></main><script type="module" src="/dist/validation.js"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dhristi — Browser boundary validation</title><link rel="stylesheet" href="/app/signal.css"><link rel="stylesheet" href="/app/validation.css"></head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><div class="bar"><span class="wordmark">Dhristi<small>Boundary validation</small></span><nav class="nav" aria-label="Site"><a href="/">Back to workspace</a></nav></div></div></header>
+<main id="main">
+<section class="band band-void" aria-labelledby="page-title"><div class="wrap">
+<div class="c-8 page-intro"><p class="eyebrow">Dhristi / browser checks</p><h1 id="page-title">Browser boundary validation</h1><p class="lede">Real DOM checks on isolated synthetic fixtures. This page makes no model-server request and is not a native-extension test.</p></div>
+<div class="actions"><button id="run" class="primary">Run browser checks</button><button id="expiry">Run 31-second expiry check</button></div>
+<p id="status" role="status">Not run.</p>
+</div></section>
+<section class="band band-panel" aria-labelledby="results-title"><div class="wrap">
+<div class="stack"><h2 id="results-title">Results</h2><div class="table-wrap"><table><thead><tr><th>Scenario</th><th>Result</th><th>Detail</th></tr></thead><tbody id="results"></tbody></table></div><details><summary>Machine-readable evidence</summary><pre id="record">No result.</pre></details></div>
+</div></section>
+<section class="band band-tint" aria-labelledby="fixture-title"><div class="wrap"><div class="c-8 stack"><h2 id="fixture-title">Isolated fixture under test</h2><p class="small">Each check mounts a fresh synthetic fixture on top of this page while it runs, then removes it.</p><div id="fixture-mount"></div></div></div></section>
+</main><script type="module" src="/dist/validation.js"></script></body></html>

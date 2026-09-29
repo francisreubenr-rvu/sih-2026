@@ -3,12 +3,23 @@
  *
  * Consumes extension/pixel.css for tokens, the cell module, the semantic chips and the stepped
  * motion. This file holds layout and component structure for the chat surface only; it does not
- * redefine a palette value or a motion token. See DESIGN.md for the measured palette and the
- * semantic mapping (cream structure, red personal data, amber a decision waiting on the user,
- * blue validated).
+ * redefine a palette value or a motion token. See DESIGN.md for the palette and the semantic
+ * mapping (cream structure, red personal data or stop, amber a decision waiting on the user,
+ * teal on this device or verified).
  *
- * The pixel direction is a single fixed dark composition, not a light/dark toggle, so this file
- * does not branch on prefers-color-scheme.
+ * Colour roles (design playbook, Color system steps 5-8 and 12):
+ * - Neutrals (~60%): the void/panel/panel-2/line grounds and the ink family. Text runs on three
+ *   emphasis tiers: --sg-text high, --sg-text-2 medium, --sg-text-3 low. Never all at full ink.
+ * - Teal (~30%): on this device, verified, tokens.
+ * - Cobalt (~10%, the accent): ONLY the one primary button per view (.btn-primary, #send, the
+ *   Retry of an open blocked card), its hover, and focus rings. Nothing else is cobalt, so the
+ *   one thing to do next is the one saturated fill on the panel.
+ * - Amber and brick are status, never decoration, and always sit beside a text label.
+ *
+ * Light only (Francis, 29 September 2026: no dark colour for any background). Grounds are the
+ * cobalt-tinted neutrals (void, panel, panel-2); a hue fills a ground only as its own tint, with
+ * that hue's text-safe shade on it. Dark is for ink and hairlines. This file does not branch on
+ * prefers-color-scheme.
  *
  * Layout: the panel is a column that fills the viewport, so the transcript scrolls inside it and
  * the task input stays reachable. Everything is fluid: Chrome sizes a side panel at roughly 320
@@ -21,10 +32,10 @@ html, body { height: 100%; }
 
 body {
   display: grid;
-  /* header | transcript | task input | diagnostics. The transcript is the row that absorbs
+  /* header | boundary | inspector | transcript | task input | settings. The transcript is the row that absorbs
      slack, and minmax(96px, 1fr) both lets it shrink below its content height (so it scrolls)
      and stops it collapsing to nothing when the diagnostics disclosure below it is open. */
-  grid-template-rows: auto minmax(96px, 1fr) auto auto;
+  grid-template-rows: auto auto auto minmax(120px, 1fr) auto auto;
   height: 100vh;
   margin: 0;
   padding: var(--cell-2);
@@ -67,7 +78,7 @@ body {
   margin: 0; min-width: 0;
   font: var(--text-xs) / 1.4 var(--font-mono);
 }
-#health-text { color: var(--cream); opacity: .8; overflow-wrap: anywhere; }
+#health-text { color: var(--sg-text-2); overflow-wrap: anywhere; }
 #health-chip { flex: none; }
 
 /* ---- Transcript ------------------------------------------------------------- */
@@ -91,42 +102,6 @@ body {
   list-style: none;
 }
 
-/* ---- Empty state -------------------------------------------------------------
- * The one place the cell motif appears. The dither fade is applied to the grid itself (a
- * non-text band, per pixel.css's own note on where the primitive belongs) rather than to a
- * text-bearing band like the transcript, where it would fade readable copy. */
-.empty-state {
-  position: absolute;
-  inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: var(--cell-2);
-  padding: var(--cell-4) var(--cell-2);
-  text-align: center;
-}
-.empty-state[hidden] { display: none; }
-.empty-grid {
-  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-  opacity: .85;
-}
-.empty-grid .cell--fill { --cell-color: var(--cream); }
-.empty-grid .cell--outline { --cell-color: var(--cream); }
-.empty-label {
-  margin: 0;
-  font: var(--text-2xs) var(--font-mono);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--cream);
-  opacity: .55;
-}
-.empty-line {
-  margin: 0;
-  max-width: 34ch;
-  font: var(--text-sm) / 1.5 var(--font-sans);
-  color: var(--cream);
-  opacity: .85;
-}
-
 /* ---- Entries -----------------------------------------------------------------
  * Base entry: a bordered block on the ground. Colour is meaning, so each kind below sets the
  * one hue its state owns and nothing else competes at that weight. */
@@ -145,8 +120,8 @@ body {
 .entry--user {
   justify-self: end;
   max-width: 88%;
-  border-color: var(--cream);
-  background: color-mix(in srgb, var(--cream) 10%, var(--ground));
+  border-color: var(--sg-line);
+  background: var(--sg-panel-2);
   font-size: var(--text-md);
 }
 .entry--user .entry-text { text-align: right; }
@@ -163,13 +138,12 @@ body {
 .entry--stage .entry-cell {
   width: var(--cell); height: var(--cell); flex: none;
   margin-top: 2px;
-  background: var(--cream);
-  opacity: .8;
+  border: 4px solid var(--cream); /* a filled cell drawn as ink, not as a ground */
 }
 /* The stage name never breaks: "STRIP" splitting across two lines reads as a typo. The value is
    the part that wraps, in its own column, so the label column stays a fixed width. */
-.entry--stage .stage-name { flex: none; letter-spacing: .1em; text-transform: uppercase; opacity: .95; white-space: nowrap; }
-.entry--stage .stage-value { flex: 1 1 auto; min-width: 0; color: var(--cream); opacity: .7; }
+.entry--stage .stage-name { flex: none; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+.entry--stage .stage-value { flex: 1 1 auto; min-width: 0; color: var(--sg-text-2); }
 
 /* activity: a completed internal action. */
 .entry--activity {
@@ -177,30 +151,28 @@ body {
   padding: 6px var(--cell-2);
   border-color: transparent;
   border-left: 2px solid var(--sg-line-strong);
-  color: var(--cream);
+  color: var(--sg-text-2);
   font: var(--text-sm) / 1.5 var(--font-mono);
-  opacity: .85;
 }
 .entry--activity .entry-cell {
-  width: 4px; height: 12px; flex: none;
-  background: var(--cream);
-  opacity: .6;
+  width: var(--cell); height: var(--cell); flex: none;
+  border: 1px solid var(--sg-line-strong); /* an outline cell: done, internal, no fill */
 }
 
 /* blocked: the run is refused. Red, the colour that means personal data or a stopped run. */
 .entry--blocked {
   border-color: var(--red);
-  background: color-mix(in srgb, var(--red-deep) 22%, var(--ground));
+  background: var(--sg-stop-tint);
 }
 .entry--blocked .entry-title { color: var(--red-text); }
-.entry--blocked .entry-reason { margin-top: 6px; font: var(--text-sm) / 1.5 var(--font-mono); opacity: .85; }
+.entry--blocked .entry-reason { margin-top: 6px; font: var(--text-sm) / 1.5 var(--font-mono); color: var(--sg-text-2); }
 /* A refusal that recovery has overtaken keeps its record but stops carrying alarm. */
 .entry--blocked[data-resolved="true"] {
-  border-color: var(--cream);
-  background: var(--ground);
-  opacity: .7;
+  border-color: var(--sg-line);
+  background: var(--sg-panel);
+  color: var(--sg-text-2);
 }
-.entry--blocked[data-resolved="true"] .entry-title { color: var(--cream); }
+.entry--blocked[data-resolved="true"] .entry-title { color: var(--sg-text-2); }
 
 /* error: a real failure, naming what failed. */
 .entry--error {
@@ -209,12 +181,12 @@ body {
 }
 .entry--error .entry-title { color: var(--red-text); }
 
-/* validated: a destructive-tier or reasoned action was accepted. Blue. */
+/* validated: a destructive-tier or reasoned action was accepted. Teal, "verified here". */
 .entry--validated {
-  border-color: var(--blue);
-  background: color-mix(in srgb, var(--blue-deep) 26%, var(--ground));
+  border-color: var(--teal);
+  background: var(--sg-scan-tint);
 }
-.entry--validated .entry-title { color: var(--cream); }
+.entry--validated .entry-title { color: var(--teal); }
 
 /* ---- Blocking cards: uncertain-pii and question -------------------------------
  * Amber, because amber means a decision is waiting on the user. They render inline in the
@@ -223,7 +195,7 @@ body {
 .entry--uncertain-pii,
 .entry--question {
   border-color: var(--amber);
-  background: color-mix(in srgb, var(--amber) 7%, var(--ground));
+  background: var(--sg-ask-tint);
 }
 .entry[data-pending="true"] { outline: 1px solid var(--amber); outline-offset: 2px; }
 .entry-title {
@@ -234,7 +206,12 @@ body {
   text-transform: uppercase;
   color: var(--amber);
 }
-.entry[data-pending="true"] .entry-title .pixel-chip { animation: pixel-pulse var(--dur-pulse) var(--step-2) infinite; }
+/* The waiting chip blinks its ring, not its text: fading the text would drop it below AA. */
+.entry[data-pending="true"] .entry-title .pixel-chip { animation: chip-ring var(--dur-pulse) var(--step-2) 3; }
+@keyframes chip-ring {
+  0%, 49% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--amber) 35%, var(--sg-ask-tint)); }
+  50%, 100% { box-shadow: none; }
+}
 
 .uncertain-list { display: grid; gap: var(--cell-2); margin: 0 0 var(--cell-2); padding: 0; list-style: none; }
 .uncertain-item { min-width: 0; }
@@ -242,8 +219,8 @@ body {
   display: flex; justify-content: space-between; gap: var(--cell); align-items: baseline;
   margin-bottom: 4px;
 }
-.item-label { font: 650 var(--text-md) var(--font-sans); overflow-wrap: anywhere; }
-.item-score { font: var(--text-xs) var(--font-mono); color: var(--amber); white-space: nowrap; }
+.item-label { font: 600 var(--text-md) var(--font-sans); overflow-wrap: anywhere; }
+.item-score { font: var(--text-xs) var(--font-mono); color: var(--sg-text-2); white-space: nowrap; }
 
 /* One strip/keep choice per span. The radio pair is the labelled control; the label is the hit
    area, at 44px, and :has(input:focus-visible) gives the ring to the label rather than to the
@@ -264,27 +241,52 @@ body {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
-.choice-row label:hover { background: color-mix(in srgb, var(--cream) 10%, transparent); }
-.choice-row label:has(input:checked)[data-choice="strip"] { background: var(--red-deep); border-color: var(--red); }
-.choice-row label:has(input:checked)[data-choice="keep"] { background: var(--blue-deep); border-color: var(--blue); }
-.choice-row label:has(input:focus-visible) { outline: 2px solid var(--amber); outline-offset: 2px; }
+/* A radio drawn as a cell: an outline square at rest, a filled square once chosen, so the choice
+   reads without colour. Strip turns the value into a token that stays here, so it takes teal;
+   Keep is a plain neutral choice (ink on the raised neutral), not a status. */
+.choice-row label { background: var(--sg-panel); color: var(--sg-text); }
+.choice-row label::before {
+  content: ""; flex: none; box-sizing: border-box;
+  width: var(--cell); height: var(--cell);
+  border: 1px solid currentColor;
+}
+.choice-row label:has(input:checked)::before { border-width: 4px; }
+.choice-row label:hover { background: var(--sg-panel-2); border-color: var(--sg-text-2); }
+.choice-row label:has(input:checked)[data-choice="strip"] { background: var(--sg-scan-tint); border-color: var(--teal); color: var(--teal); box-shadow: inset 0 0 0 1px var(--teal); }
+.choice-row label:has(input:checked)[data-choice="keep"] { background: var(--sg-panel-2); border-color: var(--sg-text); color: var(--sg-text); box-shadow: inset 0 0 0 1px var(--sg-text); }
+.choice-row label:has(input:checked):hover { box-shadow: inset 0 0 0 2px currentColor; }
+.choice-row label:has(input:focus-visible) { outline: 2px solid var(--sg-glow-text); outline-offset: 2px; }
 
 /* A decided item, after the run moved on: the decision stays visible, the controls do not. */
 .uncertain-item[data-decided="true"] .choice-row { display: none; }
 .decision-line {
   margin-top: var(--cell);
   font: var(--text-xs) var(--font-mono);
-  color: var(--cream);
-  opacity: .8;
+  color: var(--sg-text-2);
 }
 
-.question-reasons { margin: 0 0 var(--cell-2); padding-left: var(--cell-2); font: var(--text-sm) / 1.5 var(--font-mono); opacity: .85; }
-.option-stack { display: grid; gap: var(--cell); margin-top: var(--cell); }
-.option-stack button { width: 100%; }
-.option-stack button[data-choice="proceed"] { border-color: var(--blue); background: var(--blue-deep); }
-.option-stack button[data-choice="proceed"]:hover { background: var(--blue); color: var(--ground); }
-.option-stack button[data-choice="stop"] { border-color: var(--red); background: var(--red-deep); }
-.option-stack button[data-choice="stop"]:hover { background: var(--red); color: var(--ground); }
+.question-reasons { margin: 0 0 var(--cell-2); padding-left: var(--cell-2); font: var(--text-sm) / 1.5 var(--font-mono); color: var(--sg-text-2); }
+/* The question itself is the card's top-ranked block: sans, one size up, full ink. The label row
+   above it and the reasons below it are quieter by size and by ink tier. */
+.entry--question .entry-text { font: 500 var(--text-md) / 1.45 var(--font-sans); color: var(--sg-text); }
+
+/* Card actions: a white footer strip across the foot of a card. The cobalt primary never sits
+   straight on another hue's tint (amber or brick): the neutral strip is the gap between them
+   (DESIGN.md, shade and tint per hue). The primary spans the row; the secondaries share one row
+   below it, one step quieter. */
+.card-actions {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cell);
+  margin: var(--cell-2) calc(-1 * var(--cell-2)) calc(-1 * var(--cell-2));
+  padding: 12px var(--cell-2) var(--cell-2);
+  border-top: 1px solid var(--sg-line);
+  background: var(--sg-panel);
+}
+.card-actions > button { width: 100%; min-width: 0; padding-inline: 8px; white-space: normal; }
+.card-actions > .btn-primary,
+.card-actions > button:only-child { grid-column: 1 / -1; }
+.option-stack button { background: var(--sg-panel); border-color: var(--sg-line-strong); color: var(--sg-text); }
+.option-stack button[data-choice="stop"] { border-color: var(--red); background: var(--sg-panel); color: var(--red-text); }
+.option-stack button[data-choice="stop"]:hover:not(:disabled) { background: var(--sg-stop-tint); color: var(--red-text); border-color: var(--red); }
 
 .card-error {
   margin: var(--cell) 0 0;
@@ -296,8 +298,8 @@ body {
 .command {
   margin: var(--cell) 0 0;
   padding: var(--cell);
-  border: 1px solid var(--amber);
-  background: var(--ground);
+  border: 1px solid var(--sg-line-strong);
+  background: var(--sg-panel);
   color: var(--cream);
   font: var(--text-xs) / 1.5 var(--font-mono);
   white-space: pre-wrap;
@@ -314,11 +316,16 @@ body {
 }
 .field-label {
   display: block; margin-bottom: var(--cell);
-  color: var(--cream); opacity: .7;
-  font: var(--text-xs) var(--font-mono); letter-spacing: .07em; text-transform: uppercase;
+  color: var(--sg-text);
+  font: 600 var(--text-base) / 1.3 var(--font-sans);
 }
 .composer-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--cell); align-items: start; }
 .composer-actions { display: grid; gap: var(--cell); }
+/* While a run is live (#send hidden, Stop in its place) the composer is not the view's job: the
+   run, and any decision card it raises, is. De-emphasise it by giving back its height, not by
+   hiding it: the box keeps its label and still takes a draft of the next task. */
+.composer:has(#send[hidden]) textarea { min-height: 44px; height: 44px; }
+.composer:has(#send[hidden]) > .note { display: none; }
 
 /* ---- Controls -----------------------------------------------------------------
  * Every control is at least 44px on its smallest dimension (DESIGN.md standing rule; finding
@@ -334,7 +341,7 @@ textarea, input[type="text"] {
   font: var(--text-base) / 1.45 var(--font-sans);
   resize: none;
 }
-textarea::placeholder, input::placeholder { color: var(--cream); opacity: .45; }
+textarea::placeholder, input::placeholder { color: var(--sg-text-3); opacity: 1; }
 
 button {
   min-height: 44px; min-width: 44px;
@@ -343,15 +350,13 @@ button {
   border-radius: var(--sg-radius);
   color: var(--cream);
   background: var(--ground);
-  font: 650 var(--text-base) var(--font-sans);
+  font: 600 var(--text-base) var(--font-sans);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--step-4), color var(--dur-fast) var(--step-4);
 }
-button:hover:not(:disabled) { background: var(--cream); color: var(--ground); }
 button:active:not(:disabled) { transform: translate(1px, 1px); }
-button:disabled { opacity: .45; cursor: not-allowed; }
-button.stop { border-color: var(--red); background: var(--red-deep); color: var(--cream); }
-button.stop:hover { background: var(--red); color: var(--ground); }
+button:disabled { cursor: not-allowed; }
+button.stop { border-color: var(--red); background: var(--sg-panel); color: var(--red-text); }
 #send { min-width: 64px; }
 .save-btn { min-width: 56px; }
 
@@ -361,7 +366,7 @@ textarea:focus-visible, input:focus-visible, button:focus-visible, summary:focus
   outline-offset: 2px;
 }
 
-.note { margin: 6px 0 0; color: var(--cream); opacity: .7; font: var(--text-xs) / 1.5 var(--font-mono); overflow-wrap: anywhere; }
+.note { margin: 6px 0 0; color: var(--sg-text-3); font: var(--text-xs) / 1.5 var(--font-mono); overflow-wrap: anywhere; }
 code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
 
 /* ---- Diagnostics ---------------------------------------------------------------
@@ -386,9 +391,8 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
   padding: 6px var(--cell-2);
   cursor: pointer;
   list-style: none;
-  color: var(--cream);
+  color: var(--sg-text-3);
   background: var(--ground);
-  opacity: .55;
   font: var(--text-xs) var(--font-mono);
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -396,25 +400,26 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
 .diagnostics > summary::-webkit-details-marker { display: none; }
 .diagnostics > summary::before {
   content: "";
+  box-sizing: border-box;
   width: var(--cell); height: var(--cell); flex: none;
   border: 1px solid currentColor;
 }
-.diagnostics[open] > summary::before { background: currentColor; }
-.diagnostics > summary:hover { opacity: 1; }
+.diagnostics[open] > summary::before { border-width: 4px; } /* filled cell drawn as ink */
+.diagnostics > summary:hover { color: var(--sg-text); background: var(--sg-panel-2); }
 .diag-block { padding: var(--cell-2); border-top: 1px solid var(--sg-line); min-width: 0; }
 .diag-block h2 {
   margin: 0 0 6px;
-  color: var(--cream); opacity: .8;
+  color: var(--sg-text-2);
   font: var(--text-xs) var(--font-mono); letter-spacing: .07em; text-transform: uppercase;
 }
 .diag-block .note:first-of-type { margin-top: 0; }
-.diag-meta { margin: var(--cell) 0 0; color: var(--amber); font: var(--text-2xs) var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.diag-meta { margin: var(--cell) 0 0; color: var(--sg-text-2); font: var(--text-2xs) var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 .body-wrap { max-width: 100%; overflow-x: auto; margin-top: 6px; }
 .diag-body {
   margin: 0;
   padding: var(--cell);
   border: 1px solid var(--sg-line);
-  background: var(--ground);
+  background: var(--sg-void);
   color: var(--cream);
   font: var(--text-2xs) / 1.5 var(--font-mono);
   white-space: pre-wrap;
@@ -427,7 +432,7 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
 .key-field { min-width: 0; }
 .key-field label { display: block; margin-bottom: 6px; font: var(--text-sm) var(--font-sans); color: var(--cream); }
 .key-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; align-items: stretch; }
-.key-status { margin: 6px 0 0; color: var(--cream); opacity: .7; font: var(--text-xs) var(--font-mono); overflow-wrap: anywhere; }
+.key-status { margin: 6px 0 0; color: var(--sg-text-3); font: var(--text-xs) var(--font-mono); overflow-wrap: anywhere; }
 
 .health-detail {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px;
@@ -435,8 +440,8 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
   border-top: 1px solid var(--sg-line);
 }
 .health-detail > div { display: flex; justify-content: space-between; gap: var(--cell); min-width: 0; }
-.health-detail dt { margin: 0; color: var(--cream); opacity: .65; font: var(--text-xs) var(--font-mono); }
-.health-detail dd { margin: 0; color: var(--cream); font: 650 var(--text-xs) var(--font-mono); text-align: right; overflow-wrap: anywhere; }
+.health-detail dt { margin: 0; color: var(--sg-text-3); font: var(--text-xs) var(--font-mono); }
+.health-detail dd { margin: 0; color: var(--cream); font: 600 var(--text-xs) var(--font-mono); text-align: right; overflow-wrap: anywhere; }
 
 /* ---- Narrow panel ---------------------------------------------------------------
  * Chrome can shrink a side panel to roughly 320px. The composer's action column stays at its
@@ -447,8 +452,11 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
   .choice-row { flex-direction: column; }
 }
 
+/* Reduced motion: every animation and transition is removed outright, not shortened. A .01ms
+   duration on an iteration-counted loop still flickers through its frames. */
 @media (prefers-reduced-motion: reduce) {
-  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  button:active:not(:disabled) { transform: none; }
 }
 
 /* ==========================================================================
@@ -457,54 +465,616 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
    semantic colours above are unchanged in meaning.
    ========================================================================== */
 body { background: var(--sg-void); color: var(--sg-text); }
+/* Surfaces: white panels on the cool-tinted void, separated by hairlines rather than shadows,
+   because on a light ground a line is enough to part two planes and a shadow adds grey. */
 .topbar,
 .transcript-wrap,
 .composer,
 .diagnostics { background: var(--sg-panel); border-color: var(--sg-line); border-radius: var(--sg-radius); }
-.topbar {
-  background:
-    radial-gradient(120% 140% at 0% 0%, rgba(79, 93, 255, .18), transparent 60%),
-    var(--sg-panel);
-}
+/* The topbar is plain white: the cobalt-tint halo that sat behind the mark was decoration in the
+   accent hue, and the accent is reserved for the primary action. */
+.topbar { background: var(--sg-panel); }
 .brand-mark { display: block; width: 22px; height: 22px; }
-.brand-title { font: 600 var(--text-md) var(--sg-font-sans); letter-spacing: -.01em; }
-.brand-sub { font: var(--text-2xs) var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--sg-text-3); }
-.transcript-wrap {
-  background:
-    radial-gradient(rgba(236, 238, 246, .06) .6px, transparent .8px) 0 0 / 5px 5px,
-    var(--sg-panel);
-}
-.entry { background: var(--sg-panel-2); border-color: var(--sg-line); }
+/* The one H1, and the one place the display serif appears: the heading font carries the brand's
+   character, Geist carries every sentence, Geist Mono every label (three families, playbook
+   Typography step 4). Sized as a mark, not a headline: the task input is the first read. */
+.brand-title { font: 400 22px / 1 var(--sg-font-serif); letter-spacing: 0; }
+.brand-sub { font: var(--text-2xs) var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--sg-text-3); }
+/* The dark edition's dot grid read as dust on a light ground, so the conversation sits on the
+   plain void: the one recessed plane, with white cards raised from it by a hairline. */
+.transcript-wrap { background: var(--sg-void); }
+.entry { background: var(--sg-panel); border-color: var(--sg-line); }
+/* Kinds re-assert their ground after the base above: each hue on its own tint only. */
+.entry--uncertain-pii,
+.entry--question { background: var(--sg-ask-tint); border-color: color-mix(in srgb, var(--sg-ask) 55%, var(--sg-ask-tint)); }
+.entry--blocked { background: var(--sg-stop-tint); border-color: color-mix(in srgb, var(--sg-stop) 55%, var(--sg-stop-tint)); }
+.entry--blocked[data-resolved="true"] { background: var(--sg-panel); border-color: var(--sg-line); }
+.entry--error { background: var(--sg-panel); border-color: var(--sg-stop); }
+.entry--validated { background: var(--sg-scan-tint); border-color: color-mix(in srgb, var(--sg-scan) 55%, var(--sg-scan-tint)); }
+.entry[data-pending="true"] { outline: 2px solid color-mix(in srgb, var(--sg-ask) 40%, var(--sg-ask-tint)); outline-offset: 2px; }
 .entry--stage,
 .entry--activity { background: transparent; border-color: transparent; }
-.entry--stage { border-left-color: var(--sg-glow-text); }
-.entry--stage .entry-cell { background: var(--sg-glow-text); }
-.entry--stage .stage-name { color: var(--sg-glow-text); }
-.entry--user { background: rgba(79, 93, 255, .12); border-color: rgba(168, 176, 255, .45); }
+.entry--stage { border-left-color: var(--sg-line-strong); }
+.entry--stage .entry-cell { border-color: var(--sg-text-3); }
+.entry--stage .stage-name { color: var(--sg-text-2); font-weight: 500; }
+.entry--stage .stage-value { color: var(--sg-text-3); }
+.entry--activity { border-left-color: var(--sg-line-strong); }
+.entry--user { background: var(--sg-panel-2); border-color: var(--sg-line); }
 textarea,
-input[type="text"] { background: var(--sg-void); border-color: var(--sg-line-strong); }
+input[type="text"] { background: var(--sg-panel); border-color: var(--sg-line-strong); }
+textarea:hover,
+input[type="text"]:hover { border-color: var(--sg-text-2); }
+/* Focus on a text field is a focus indicator, so it may take the accent. */
 textarea:focus,
 input[type="text"]:focus { border-color: var(--sg-glow-text); }
-button { border-color: var(--sg-line-strong); background: var(--sg-panel-2); font-weight: 500; }
-button:hover:not(:disabled) { background: var(--sg-text); color: var(--sg-void); border-color: var(--sg-text); }
-#send {
-  background: var(--sg-glow); border-color: var(--sg-glow); color: var(--sg-on-glow);
-  box-shadow: 0 8px 28px -10px rgba(79, 93, 255, .7);
+
+/* Secondary button: white, ink label, the 3:1 control outline, so it reads as a button with no
+   hover at all. Hover raises the ground one neutral step and darkens the outline to ink-2. */
+button { border-color: var(--sg-line-strong); background: var(--sg-panel); color: var(--sg-text); font-weight: 500; }
+button:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: var(--sg-text-2); }
+button.stop:hover:not(:disabled) { background: var(--sg-stop-tint); color: var(--red-text); border-color: var(--red); }
+button:disabled,
+button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-line); color: var(--sg-text-3); }
+
+/* Primary button: the one solid cobalt fill in a view, white label (8.2:1), weight 600. Hover
+   deepens the same hue a step instead of switching to a neutral. Exactly one is shown per view:
+   - no card open: #send (the composer is the view's job);
+   - a decision card pending: the card's own primary (.btn-primary); the run is live then, so
+     #send is hidden and Stop stands in its place;
+   - an open blocked card: its "Check the Warden again", and #send drops to a secondary. */
+#send,
+button.btn-primary,
+.entry--blocked button[data-action="retry-health"] {
+  background: var(--sg-glow); border-color: var(--sg-glow); color: var(--sg-on-glow); font-weight: 600;
 }
-#send:hover:not(:disabled) { background: #6370ff; border-color: #6370ff; color: var(--sg-on-glow); }
-.field-label { color: var(--sg-scan); opacity: 1; }
+#send:hover:not(:disabled),
+button.btn-primary:hover:not(:disabled),
+.entry--blocked button[data-action="retry-health"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sg-glow) 84%, var(--sg-text));
+  border-color: color-mix(in srgb, var(--sg-glow) 84%, var(--sg-text));
+  color: var(--sg-on-glow);
+}
+/* The primary at rest before it can act (#send with an empty task box): the accent's own tint
+   with a hairline of the hue, so the place of the next action is visible, clearly not yet live.
+   Disabled controls are exempt from contrast minimums (WCAG 1.4.3); the label still reads at 3:1. */
+#send:disabled,
+button.btn-primary:disabled {
+  background: var(--sg-glow-tint);
+  border-color: color-mix(in srgb, var(--sg-glow) 30%, var(--sg-glow-tint));
+  color: color-mix(in srgb, var(--sg-glow) 62%, var(--sg-glow-tint));
+}
+/* De-emphasise before emphasising: while an open blocked card offers the retry, Send is a plain
+   secondary (and at rest a plain disabled control), so the view keeps one primary. */
+body:has(.entry--blocked [data-action="retry-health"]) #send:not(:hover),
+body:has(.entry--blocked [data-action="retry-health"]) #send:disabled {
+  background: var(--sg-panel); border-color: var(--sg-line-strong); color: var(--sg-text); font-weight: 500;
+}
+body:has(.entry--blocked [data-action="retry-health"]) #send:disabled { background: var(--sg-panel-2); border-color: var(--sg-line); color: var(--sg-text-3); }
+body:has(.entry--blocked [data-action="retry-health"]) #send:hover:not(:disabled) { background: var(--sg-panel-2); border-color: var(--sg-text-2); color: var(--sg-text); }
 .note,
 .key-status { color: var(--sg-text-3); opacity: 1; }
 #health-text { color: var(--sg-text-2); opacity: 1; }
-.empty-state { gap: var(--cell-3); }
-.empty-grid { -webkit-mask-image: none; mask-image: none; position: relative; padding: 10px; margin-top: 18px; border: 1px solid var(--sg-scan); box-shadow: 0 0 22px -8px var(--sg-scan); }
-.empty-grid::before {
-  content: "scene · 0 controls"; position: absolute; left: -1px; top: 0; transform: translateY(-100%);
-  padding: 2px 6px; font: var(--text-2xs) var(--font-mono); letter-spacing: .06em;
-  color: var(--sg-scan); background: var(--sg-panel); border: 1px solid var(--sg-scan);
+.diagnostics > summary { background: var(--sg-panel); color: var(--sg-text-2); }
+.diagnostics > summary:hover { background: var(--sg-panel-2); color: var(--sg-text); }
+
+/* ==========================================================================
+   v5: the Boundary, the step inspector and the empty state
+   (Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md)
+   Teal is on-device, verified and tokens; ink marks the running stage; amber
+   waits on a person; brick is personal data, a stop or a failure. Every state
+   also carries text. Cobalt appears here only as a focus ring.
+   ========================================================================== */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
-.empty-grid .cell--fill { --cell-color: var(--sg-glow-text); }
-.empty-grid .cell--outline { --cell-color: var(--sg-line-strong); }
-.empty-label { color: var(--sg-scan); opacity: 1; }
-.empty-line { font: 400 var(--text-lg) / 1.3 var(--sg-font-serif); font-style: italic; color: var(--sg-text); opacity: 1; max-width: 26ch; }
-.diagnostics > summary { background: var(--sg-panel); }
+.topbar,
+.boundary,
+.inspector-wrap,
+.transcript-wrap,
+.composer { margin-bottom: 12px; }
+.topbar { padding: 8px 12px; row-gap: 4px; }
+.brand-sub { white-space: nowrap; }
+/* Chip and sentence side by side: the sentence wraps in its own column beside the chip. */
+.health-line { flex-wrap: nowrap; align-items: flex-start; width: 100%; }
+#health-text { min-width: 0; }
+.transcript:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: -2px; }
+
+/* ---- Token chip: the one visual for TYPE#n everywhere on the panel ---- */
+.tok {
+  display: inline-block;
+  padding: 0 4px;
+  margin: 0 1px;
+  border: 1px solid color-mix(in srgb, var(--sg-scan) 40%, var(--sg-scan-tint));
+  border-radius: var(--sg-radius);
+  background: var(--sg-scan-tint);
+  color: var(--sg-scan);
+  font: 500 var(--text-xs) / 1.5 var(--font-mono);
+  letter-spacing: .02em;
+  white-space: nowrap;
+  vertical-align: 1px;
+}
+
+/* ---- The Boundary ---------------------------------------------------------- */
+.boundary {
+  --band-device: color-mix(in srgb, var(--sg-scan-tint) 55%, var(--sg-panel));
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--sg-line);
+  border-radius: var(--sg-radius);
+  background: var(--sg-panel);
+}
+.boundary-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  margin: 0 0 4px;
+}
+.boundary-head p { margin: 0; }
+.lane-tag {
+  font: 500 var(--text-2xs) / 1.3 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.lane-tag--device { color: var(--sg-scan); }
+.lane-tag--cloud { color: var(--sg-text-2); }
+.boundary-meta { color: var(--sg-text-3); font: var(--text-2xs) var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+
+/* One grid, three rows: the device lane, the boundary rule, the cloud lane. The decoration and
+   the node list both take the grid through subgrid, so bands, rule and nodes line up exactly. */
+.lanes {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  /* Lanes size to their content, from a 44px floor: an idle route (names and status only) stays
+     short and gives the room to the conversation; a measured step grows to two lines of detail. */
+  grid-template-rows: minmax(44px, auto) 18px minmax(44px, auto);
+  column-gap: 5px;
+  min-width: 0;
+}
+.lanes[data-destination="local"],
+.lanes[data-destination="unknown"] { grid-template-rows: minmax(44px, auto) 18px 24px; }
+.lanes-decor,
+.nodes {
+  grid-column: 1 / -1; grid-row: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+  min-width: 0;
+}
+.lanes-decor { pointer-events: none; }
+.nodes { margin: 0; padding: 0; list-style: none; }
+
+.band { grid-column: 1 / -1; border-radius: var(--sg-radius); margin: 0 -4px; }
+/* Device lane: a wash of the teal tint (teal = verified here) with a 2px teal edge. */
+.band--device {
+  grid-row: 1;
+  background: var(--band-device);
+  box-shadow: inset 2px 0 0 var(--sg-scan);
+}
+/* Cloud lane: a neutral hatch, the "elsewhere" texture. Hatch lines are the hairline neutral at
+   70% on the void, so the lane reads as different ground while every text pair on it keeps
+   at least 5:1 (text-2 on the hatch line is 6.8:1 at full strength). */
+.band--cloud {
+  grid-row: 3;
+  background:
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--sg-line) 70%, var(--sg-void)) 0 1px, transparent 1px 6px),
+    var(--sg-void);
+  box-shadow: inset 2px 0 0 var(--sg-line-strong);
+}
+.flow {
+  grid-row: 1; grid-column: 1 / -1; align-self: center;
+  height: 0; margin: 0 6px;
+  border-top: 1px solid var(--sg-line-strong); /* a hairline, drawn as a line, not a fill */
+}
+.boundary-rule {
+  grid-row: 2; grid-column: 1 / -1; align-self: center;
+  position: relative;
+  border-top: 1px dashed var(--sg-text-3);
+}
+.boundary-rule__label {
+  position: absolute; right: 0; top: 0; transform: translateY(-50%);
+  padding: 0 0 0 6px;
+  background: var(--sg-panel);
+  color: var(--sg-text-3);
+  font: var(--text-2xs) / 1 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.lanes[data-destination="cloud"] .boundary-rule__label::after { content: " · only tokens cross"; }
+.lanes[data-destination="local"] .boundary-rule__label::after { content: " · nothing crosses"; }
+/* The one crossing: a dashed drop from the device lane, through the rule, to the Plan node. */
+.drop { display: none; }
+.lanes[data-destination="cloud"] .drop {
+  display: block;
+  grid-row: 1 / 4; grid-column: 3; justify-self: center;
+  width: 0; margin: 22px 0;
+  border-left: 1px dashed var(--sg-scan); /* only tokens cross: the token hue */
+}
+.cross {
+  grid-row: 1; grid-column: 3;
+  z-index: 1;
+  justify-self: center;
+  padding: 0 3px;
+  background: var(--band-device);
+  color: var(--sg-scan);
+  font: var(--text-2xs) / 1.3 var(--font-mono);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.cross:empty { display: none; }
+.cross--down { align-self: start; margin-top: 4px; }
+.cross--up { align-self: end; margin-bottom: 4px; }
+
+.cloud-lane {
+  grid-row: 3; grid-column: 1 / 3;
+  z-index: 1;
+  align-self: center;
+  margin: 0; padding: 0 4px 0 6px;
+  min-width: 0;
+  color: var(--sg-text-2);
+  font: var(--text-2xs) / 1.35 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.lanes:not([data-destination="cloud"]) .cloud-lane { grid-column: 1 / -1; }
+.cloud-lane .lane-tag { margin-right: 4px; }
+#cloud-lane-text[data-warn="true"] { color: var(--sg-ask); }
+.cloud-model {
+  grid-row: 3; grid-column: 4 / 6;
+  z-index: 1;
+  align-self: center;
+  margin: 0; padding: 0 2px 0 4px;
+  min-width: 0;
+  color: var(--sg-text-2);
+  font: var(--text-2xs) / 1.35 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.cloud-model:empty { display: none; }
+
+.node-slot { min-width: 0; grid-row: 1; z-index: 1; }
+.node-slot[data-stage="perceive"] { grid-column: 1; }
+.node-slot[data-stage="redact"] { grid-column: 2; }
+.node-slot[data-stage="plan"] { grid-column: 3; }
+.node-slot[data-stage="check"] { grid-column: 4; }
+.node-slot[data-stage="act"] { grid-column: 5; }
+.lanes[data-destination="cloud"] .node-slot[data-stage="plan"] { grid-row: 3; }
+
+.node {
+  position: relative;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 0;
+  width: 100%; height: 100%;
+  min-width: 0; min-height: 44px;
+  padding: 4px 5px 3px 6px;
+  overflow: hidden;
+  border: 1px solid var(--sg-line-strong);
+  border-radius: var(--sg-radius);
+  background: var(--sg-panel);
+  color: var(--sg-text);
+  text-align: left;
+  font: var(--text-2xs) / 1.3 var(--font-sans);
+  font-weight: 400;
+  transition: border-color var(--dur-fast) var(--step-2), background-color var(--dur-fast) var(--step-2);
+}
+/* Hover is a neutral lift (never the accent): the node is a way in to the inspector, not the
+   view's primary action. */
+.node:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: var(--sg-text-2); }
+.node > span { display: block; max-width: 100%; min-width: 0; }
+/* Stage name in the sans at weight 600 (not mono caps): it fits a 52px column at the 11px floor. */
+.node-name {
+  font: 600 var(--text-sm) / 1.3 var(--font-sans);
+  color: var(--sg-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.node-status {
+  display: flex !important; align-items: center; gap: 4px;
+  color: var(--sg-text-3);
+  white-space: nowrap;
+}
+.node-glyph {
+  flex: none;
+  width: 6px; height: 6px;
+  border: 1px solid currentColor;
+}
+/* A filled glyph is drawn as ink (a border that closes the square), not as a ground. */
+.node[data-status="active"] .node-glyph,
+.node[data-status="done"] .node-glyph,
+.node[data-status="error"] .node-glyph { border-width: 3px; }
+/* Measured time and the one-line detail share up to two lines, then clip with an ellipsis; the
+   full text stays in the button's accessible name. */
+.node-meta {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  width: 100%;
+  overflow: hidden;
+  color: var(--sg-text-3);
+  font: var(--text-xs) / 1.25 var(--font-sans);
+  overflow-wrap: anywhere;
+}
+.node-ms { color: var(--sg-text-2); font: var(--text-2xs) var(--font-mono); }
+.node-ms:not(:empty) + .node-detail:not(:empty)::before { content: " · "; color: var(--sg-text-3); }
+/* The running stage leads by value, not by hue: a full-ink outline doubled to 2px (an inset line,
+   so the grid does not shift) and full-ink status text, while idle stages sit at ink-3. The glyph
+   beats five times and then rests filled; "Active" in text carries the state from there. The
+   looping scan bar that used to run along the node's foot was decoration and is gone. */
+.node[data-status="active"] {
+  border-color: var(--sg-text);
+  box-shadow: inset 0 0 0 1px var(--sg-text);
+  background: var(--sg-panel);
+}
+.node[data-status="active"] .node-status { color: var(--sg-text); font-weight: 600; }
+.node[data-status="active"] .node-glyph { animation: pixel-pulse var(--dur-pulse) var(--step-2) 5; }
+.node[data-status="done"] { border-color: color-mix(in srgb, var(--sg-scan) 55%, var(--sg-line)); background: var(--sg-panel); }
+.node[data-status="done"] .node-status { color: var(--sg-scan); }
+/* Cyan means verified on this device. The cloud's Plan node finishing is not that, so it stays
+   neutral: done, in text, without the local colour. */
+.lanes[data-destination="cloud"] .node-slot[data-stage="plan"] .node[data-status="done"] { border-color: var(--sg-line-strong); background: var(--sg-panel); }
+.lanes[data-destination="cloud"] .node-slot[data-stage="plan"] .node[data-status="done"] .node-status { color: var(--sg-text-2); }
+.node[data-status="error"] {
+  border-color: var(--sg-stop);
+  background: var(--sg-stop-tint);
+}
+.node[data-status="error"] .node-status { color: var(--sg-stop); font-weight: 600; }
+.node[data-status="error"] .node-glyph { transform: rotate(45deg); }
+.node[data-status="skipped"] { border-style: dashed; background: var(--sg-panel); }
+.node[data-status="skipped"] .node-glyph { border-style: dashed; }
+/* Hover on every node state, written at a specificity that outranks each state rule above: the
+   ground lifts one neutral step and the state's own outline is kept, so hovering never erases
+   what the node reports. A failed node lifts within its own brick tint. */
+/* While a decision card waits, the route drops to names and states: the timings and details are
+   one rank below the decision and stay one click away in the inspector. */
+body:has(.entry[data-pending="true"]) .node-meta { display: none !important; }
+.lanes .nodes .node-slot .node[data-status]:hover:not(:disabled) { background: var(--sg-panel-2); }
+.lanes .nodes .node-slot .node[data-status="idle"]:hover:not(:disabled) { border-color: var(--sg-text-2); }
+.lanes .nodes .node-slot .node[data-status="error"]:hover:not(:disabled) { background: color-mix(in srgb, var(--sg-stop-tint) 90%, var(--sg-stop)); }
+
+/* ---- Inspector ------------------------------------------------------------- */
+.inspector-wrap { min-width: 0; }
+.inspector {
+  min-width: 0;
+  border: 1px solid var(--sg-line);
+  border-radius: var(--sg-radius);
+  background: var(--sg-panel);
+}
+.inspector[open] { max-height: min(40vh, 360px); overflow-y: auto; }
+.inspector > summary {
+  display: flex; align-items: center; gap: 8px;
+  position: sticky; top: 0; z-index: 2;
+  min-height: 44px;
+  padding: 4px 12px;
+  cursor: pointer;
+  list-style: none;
+  background: var(--sg-panel);
+  font: var(--text-2xs) var(--font-mono);
+  letter-spacing: .06em;
+}
+.inspector > summary:hover { background: var(--sg-panel-2); }
+.inspector > summary::-webkit-details-marker { display: none; }
+.inspector > summary::before {
+  content: "";
+  flex: none;
+  width: 0; height: 0;
+  border-left: 5px solid var(--sg-text-2);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+.inspector[open] > summary::before { transform: rotate(90deg); }
+.inspector-summary-title { flex: none; color: var(--sg-text); font: 600 var(--text-base) var(--font-sans); letter-spacing: 0; white-space: nowrap; }
+.inspector-summary-meta { color: var(--sg-text-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inspector > summary:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: -2px; }
+
+.tabs {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  position: sticky; top: 44px; z-index: 2;
+  border-top: 1px solid var(--sg-line);
+  border-bottom: 1px solid var(--sg-line);
+  background: var(--sg-panel);
+}
+/* Tabs read as tabs with no hover: unselected tabs sit on the raised neutral with a hairline
+   between them; the selected one opens onto the white panel with a 2px ink underline. */
+.tabs [role="tab"] {
+  min-width: 0; min-height: 44px;
+  padding: 4px 2px;
+  border: 0;
+  border-left: 1px solid var(--sg-line);
+  border-bottom: 2px solid var(--sg-line);
+  border-radius: 0;
+  background: var(--sg-panel-2);
+  color: var(--sg-text-2);
+  font: 500 var(--text-xs) / 1.2 var(--font-sans);
+  letter-spacing: 0;
+}
+.tabs [role="tab"]:first-child { border-left: 0; }
+.tabs [role="tab"]:hover:not(:disabled) { background: var(--sg-line); color: var(--sg-text); border-color: var(--sg-line); border-bottom-color: var(--sg-text-2); }
+.tabs [role="tab"][aria-selected="true"],
+.tabs [role="tab"][aria-selected="true"]:hover:not(:disabled) { background: var(--sg-panel); color: var(--sg-text); font-weight: 600; border-bottom-color: var(--sg-text); }
+.tabs [role="tab"]:focus-visible { outline-offset: -2px; }
+.tab-panel { padding: 10px 12px 12px; min-width: 0; }
+.tab-panel:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: -2px; }
+.panel-title {
+  margin: 0 0 4px;
+  color: var(--sg-text);
+  font: 500 var(--text-md) / 1.3 var(--sg-font-sans);
+  letter-spacing: -.01em;
+}
+.tab-panel .diag-meta { margin: 0 0 6px; color: var(--sg-text-2); overflow-wrap: anywhere; }
+.tab-panel .note { margin-top: 6px; }
+.mini-head {
+  margin: 10px 0 4px;
+  color: var(--sg-text-2);
+  font: 500 var(--text-2xs) var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.sent-task {
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--sg-line);
+  background: var(--sg-void);
+  font: var(--text-base) / 1.55 var(--sg-font-sans);
+  overflow-wrap: anywhere;
+}
+.el-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--sg-line); }
+.el-row { padding: 5px 0; border-bottom: 1px solid var(--sg-line); min-width: 0; }
+.el-head { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+.el-tag {
+  flex: none;
+  color: var(--sg-text-3);
+  font: var(--text-2xs) var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.el-sel {
+  flex: 1 1 auto; min-width: 0;
+  color: var(--sg-text-2);
+  font: var(--text-xs) var(--font-mono);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.el-label { margin: 2px 0 0; font: var(--text-sm) / 1.5 var(--sg-font-sans); color: var(--sg-text); overflow-wrap: anywhere; }
+.assurance {
+  margin: 10px 0 0;
+  padding: 6px 8px;
+  border-left: 2px solid var(--sg-scan);
+  background: var(--sg-scan-tint);
+  color: var(--sg-text);
+  font: var(--text-xs) / 1.5 var(--font-mono);
+}
+.raw-row { margin-top: 8px; }
+.quiet-btn {
+  min-height: 44px;
+  padding: 4px 10px;
+  border-color: var(--sg-line-strong);
+  background: var(--sg-panel);
+  color: var(--sg-text);
+  font: 500 var(--text-sm) var(--font-sans);
+}
+.tab-panel .body-wrap .diag-body { max-height: 260px; }
+
+.kept-counts { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; color: var(--sg-text-2); font: var(--text-xs) var(--font-mono); }
+.kept-counts[hidden] { display: none; }
+.kept-counts strong { color: var(--sg-text); font-weight: 600; }
+.kept-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--sg-line); }
+.kept-row { padding: 2px 0; border-bottom: 1px solid var(--sg-line); min-width: 0; }
+.kept-main { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.kept-meta { color: var(--sg-text-2); font: var(--text-xs) / 1.4 var(--font-mono); overflow-wrap: anywhere; }
+.kept-value { padding: 0 0 8px; }
+.reveal-box { --box-color: var(--sg-stop); background: var(--sg-stop-tint); } /* real personal data: brick on its own tint */
+
+.screen-figure { position: relative; margin: 18px 0 0; }
+.screen-figure[hidden] { display: none; }
+.screen-figure::before {
+  content: "masked · local only";
+  position: absolute; left: 0; top: -15px;
+  padding: 0 5px;
+  border: 1px solid var(--sg-scan);
+  background: var(--sg-panel);
+  color: var(--sg-scan);
+  font: var(--text-2xs) / 13px var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.screen-figure img {
+  display: block;
+  width: 100%; height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  border: 1px solid var(--sg-scan);
+  background: var(--sg-void);
+}
+.screen-figure figcaption { margin-top: 6px; }
+
+.decision-block { padding: 8px 0 10px; border-top: 1px solid var(--sg-line); }
+.decision-block:first-child { border-top: 0; padding-top: 2px; }
+.decision-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin: 0 0 6px;
+  color: var(--sg-text);
+  font: 500 var(--text-xs) var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.tone-chip {
+  padding: 1px 6px;
+  border: 1px solid currentColor;
+  border-radius: var(--sg-radius);
+  font: var(--text-2xs) / 1.4 var(--font-mono);
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+/* Each tone chip: the hue's shade on the same hue's tint, border in between; neutrals for cloud
+   and muted. The chip text always names the state, so colour is never the only signal. */
+.tone-chip[data-tone="local"],
+.tone-chip[data-tone="done"] { color: var(--sg-scan); background: var(--sg-scan-tint); border-color: color-mix(in srgb, var(--sg-scan) 45%, var(--sg-scan-tint)); }
+.tone-chip[data-tone="cloud"] { color: var(--sg-text-2); background: var(--sg-panel-2); border-color: var(--sg-line); }
+.tone-chip[data-tone="fail"] { color: var(--sg-stop); background: var(--sg-stop-tint); border-color: color-mix(in srgb, var(--sg-stop) 45%, var(--sg-stop-tint)); }
+.tone-chip[data-tone="wait"] { color: var(--sg-ask); background: var(--sg-ask-tint); border-color: color-mix(in srgb, var(--sg-ask) 45%, var(--sg-ask-tint)); }
+.tone-chip[data-tone="muted"] { color: var(--sg-text-3); background: var(--sg-panel-2); border-color: var(--sg-line); }
+.kv { display: grid; gap: 4px; margin: 0; }
+.kv > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px; align-items: baseline; }
+.kv dt { color: var(--sg-text-3); font: var(--text-2xs) var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.kv dd { margin: 0; min-width: 0; color: var(--sg-text); font: var(--text-sm) / 1.5 var(--sg-font-sans); overflow-wrap: anywhere; }
+.kv dd.mono { font: var(--text-xs) / 1.5 var(--font-mono); color: var(--sg-text-2); }
+.check-list { margin: 0 0 8px; padding: 0; list-style: none; display: grid; gap: 4px; }
+.check-row { display: flex; gap: 8px; align-items: baseline; min-width: 0; }
+.check-glyph { flex: none; width: 12px; font: 600 var(--text-base) / 1 var(--font-mono); }
+.check-row[data-pass="true"] .check-glyph { color: var(--sg-scan); }
+.check-row[data-pass="false"] .check-glyph { color: var(--sg-stop); }
+.check-text { min-width: 0; }
+.check-name { display: block; color: var(--sg-text); font: var(--text-sm) / 1.4 var(--sg-font-sans); }
+.check-detail { display: block; color: var(--sg-text-2); font: var(--text-xs) / 1.45 var(--font-mono); overflow-wrap: anywhere; }
+
+/* ---- Empty state: the boundary in three lines, and three synthetic example tasks ---- */
+.empty-state {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: safe center;
+  gap: 10px;
+  padding: 16px;
+  overflow-y: auto;
+}
+.empty-state[hidden] { display: none; }
+.empty-label {
+  margin: 0;
+  color: var(--sg-text-3);
+  font: 500 var(--text-2xs) var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.empty-steps { margin: 0 0 6px; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 6px; }
+.empty-steps li {
+  counter-increment: step;
+  display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px;
+  color: var(--sg-text-2);
+  font: var(--text-sm) / 1.5 var(--sg-font-sans);
+}
+.empty-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  color: var(--sg-text-3);
+  font: var(--text-2xs) / 19px var(--font-mono);
+}
+.examples { display: grid; gap: 6px; }
+.example {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border-color: var(--sg-line-strong);
+  background: var(--sg-panel);
+  color: var(--sg-text);
+  font: 400 var(--text-sm) / 1.4 var(--sg-font-sans);
+}
+.example::before { content: "↳ "; color: var(--sg-text-3); }
+.example:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: var(--sg-text-2); }
+
+.diagnostics-wrap { min-width: 0; }
+
+@media (max-width: 360px) {
+  .boundary { padding: 6px 4px; }
+  .lanes { column-gap: 2px; }
+  .node { padding: 4px 1px 3px 3px; }
+  .node-name { font-size: var(--text-2xs); }
+  .node-status { gap: 2px; }
+  .node-glyph { width: 5px; height: 5px; }
+  .brand-sub { display: none; }
+  .tabs [role="tab"] { letter-spacing: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .node[data-status="active"] .node-glyph { animation: none !important; }
+}

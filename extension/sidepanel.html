@@ -15,7 +15,7 @@
     <div class="brand">
       <img class="brand-mark" src="icons/dhristi-mark-signal.svg" width="22" height="22" alt="">
       <h1 class="brand-title">Dhristi</h1>
-      <span class="brand-sub">on this device</span>
+      <span class="brand-sub">private browser agent</span>
     </div>
     <!-- The one-line state readout. role="status" so a change from loading to ready is
          announced without stealing focus. -->
@@ -25,68 +25,187 @@
     </p>
   </header>
 
+  <!-- The Boundary: the five stages of one step, laid out on two lanes so the device/cloud line
+       is the picture itself. Fed by TRACE_UPDATE / GET_TRACE (sidepanel.js renderTrace); with no
+       trace it shows the route this Warden will use, every node idle. Each node is a button that
+       opens the matching inspector tab. -->
+  <section class="boundary" aria-labelledby="boundary-title">
+    <div class="boundary-head">
+      <h2 id="boundary-title" class="visually-hidden">Boundary: how this step crossed from this device to the planner</h2>
+      <p class="lane-tag lane-tag--device">On this device</p>
+      <p id="boundary-meta" class="boundary-meta"></p>
+    </div>
+    <div id="lanes" class="lanes" data-destination="unknown">
+      <!-- Decoration only: lane bands, the dashed boundary and the crossing labels share the node
+           grid's template so they line up exactly. -->
+      <div class="lanes-decor" aria-hidden="true">
+        <span class="band band--device"></span>
+        <span class="band band--cloud"></span>
+        <span class="flow"></span>
+        <span class="drop"></span>
+        <span class="boundary-rule"><span class="boundary-rule__label">boundary</span></span>
+        <span id="cross-down" class="cross cross--down"></span>
+        <span id="cross-up" class="cross cross--up"></span>
+      </div>
+      <p id="cloud-lane" class="cloud-lane"><span class="lane-tag lane-tag--cloud">Cloud</span> <span id="cloud-lane-text">Planner route not reported yet.</span></p>
+      <p id="cloud-model" class="cloud-model"></p>
+      <ol class="nodes" aria-label="Pipeline for this step">
+        <li class="node-slot" data-stage="perceive">
+          <button type="button" class="node" data-status="idle" data-tab="screen" aria-controls="inspector">
+            <span class="node-name">Perceive<span class="visually-hidden">, on this device,</span></span>
+            <span class="node-status"><span class="node-glyph" aria-hidden="true"></span><span class="node-status-text">Idle</span></span>
+            <span class="node-meta"><span class="node-ms"></span><span class="node-detail"></span></span>
+          </button>
+        </li>
+        <li class="node-slot" data-stage="redact">
+          <button type="button" class="node" data-status="idle" data-tab="kept" aria-controls="inspector">
+            <span class="node-name">Redact<span class="visually-hidden">, on this device,</span></span>
+            <span class="node-status"><span class="node-glyph" aria-hidden="true"></span><span class="node-status-text">Idle</span></span>
+            <span class="node-meta"><span class="node-ms"></span><span class="node-detail"></span></span>
+          </button>
+        </li>
+        <li class="node-slot" data-stage="plan">
+          <button type="button" class="node" data-status="idle" data-tab="sent" aria-controls="inspector">
+            <span class="node-name">Plan<span id="plan-where" class="visually-hidden"></span></span>
+            <span class="node-status"><span class="node-glyph" aria-hidden="true"></span><span class="node-status-text">Idle</span></span>
+            <span class="node-meta"><span class="node-ms"></span><span class="node-detail"></span></span>
+          </button>
+        </li>
+        <li class="node-slot" data-stage="check">
+          <button type="button" class="node" data-status="idle" data-tab="decision" aria-controls="inspector">
+            <span class="node-name">Check<span class="visually-hidden">, on this device,</span></span>
+            <span class="node-status"><span class="node-glyph" aria-hidden="true"></span><span class="node-status-text">Idle</span></span>
+            <span class="node-meta"><span class="node-ms"></span><span class="node-detail"></span></span>
+          </button>
+        </li>
+        <li class="node-slot" data-stage="act">
+          <button type="button" class="node" data-status="idle" data-tab="decision" aria-controls="inspector">
+            <span class="node-name">Act<span class="visually-hidden">, on this device,</span></span>
+            <span class="node-status"><span class="node-glyph" aria-hidden="true"></span><span class="node-status-text">Idle</span></span>
+            <span class="node-meta"><span class="node-ms"></span><span class="node-detail"></span></span>
+          </button>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- The step inspector: what exactly crossed, what stayed, what the screen looked like after
+       masking, and why the action was allowed. Collapsed by default so the conversation keeps
+       the room; a pipeline node opens it on the matching tab. -->
+  <section class="inspector-wrap" aria-label="Step inspector">
+    <details id="inspector" class="inspector">
+      <summary><span class="inspector-summary-title">Inspect step</span> <span id="inspector-summary" class="inspector-summary-meta">no step yet</span></summary>
+
+      <div class="tabs" role="tablist" aria-label="Step details">
+        <button type="button" role="tab" id="tab-sent" aria-controls="panel-sent" aria-selected="true" tabindex="0">Cloud saw</button>
+        <button type="button" role="tab" id="tab-kept" aria-controls="panel-kept" aria-selected="false" tabindex="-1">Kept here</button>
+        <button type="button" role="tab" id="tab-screen" aria-controls="panel-screen" aria-selected="false" tabindex="-1">Screen</button>
+        <button type="button" role="tab" id="tab-decision" aria-controls="panel-decision" aria-selected="false" tabindex="-1">Decision</button>
+      </div>
+
+      <div id="panel-sent" class="tab-panel" role="tabpanel" aria-labelledby="tab-sent" tabindex="0">
+        <h3 class="panel-title">What the cloud saw</h3>
+        <p id="outbound-meta" class="diag-meta"></p>
+        <p id="outbound-empty" class="note">Nothing has been sent for planning yet.</p>
+        <div id="outbound-readable" class="outbound-readable"></div>
+        <div class="raw-row">
+          <button id="outbound-raw-toggle" type="button" class="quiet-btn" aria-expanded="false" aria-controls="outbound-raw" hidden>Show raw JSON</button>
+        </div>
+        <div id="outbound-raw" class="body-wrap" hidden><pre id="outbound-body" class="diag-body"></pre></div>
+      </div>
+
+      <div id="panel-kept" class="tab-panel" role="tabpanel" aria-labelledby="tab-kept" tabindex="0" hidden>
+        <h3 class="panel-title">Kept on this device</h3>
+        <p id="kept-counts" class="kept-counts"></p>
+        <p id="kept-empty" class="note">No values have been replaced in this step.</p>
+        <ul id="kept-list" class="kept-list"></ul>
+        <p class="note">Values are shown only when you ask, only here, and are not stored.</p>
+      </div>
+
+      <div id="panel-screen" class="tab-panel" role="tabpanel" aria-labelledby="tab-screen" tabindex="0" hidden>
+        <h3 class="panel-title">Screen</h3>
+        <figure id="screen-figure" class="screen-figure" hidden>
+          <img id="screen-img" alt="">
+          <figcaption id="screen-caption" class="note"></figcaption>
+        </figure>
+        <p id="screen-empty" class="note">No masked capture this step.</p>
+      </div>
+
+      <div id="panel-decision" class="tab-panel" role="tabpanel" aria-labelledby="tab-decision" tabindex="0" hidden>
+        <h3 class="panel-title">Decision</h3>
+        <div id="decision-body" class="decision-body"></div>
+        <p id="decision-empty" class="note">No plan has come back for this step yet.</p>
+      </div>
+    </details>
+  </section>
+
   <main class="transcript-wrap">
-    <!-- Shown only while the transcript is empty. The cell motif lives here and nowhere else:
-         it is the opening message, not a decoration repeated down the surface. -->
+    <!-- Shown only while the transcript is empty: the boundary in three lines, and three
+         synthetic example tasks that fill the composer (they never send on their own). -->
     <div id="empty-state" class="empty-state">
-      <div id="empty-grid" class="cell-grid empty-grid" aria-hidden="true"></div>
-      <p class="empty-label">NO TASKS YET</p>
-      <p class="empty-line">The agent reviews what leaves this browser before it leaves.</p>
+      <p class="empty-label">How a task runs</p>
+      <ol class="empty-steps">
+        <li><span>This device reads the page and swaps personal data for tokens like <span class="tok">EMAIL#1</span>.</span></li>
+        <li><span>Only the tokens go to the planner. The real values never leave.</span></li>
+        <li><span>Every action is checked here, and risky ones wait for you.</span></li>
+      </ol>
+      <p class="empty-label" id="examples-label">Try an example (fills the task box)</p>
+      <div class="examples" role="group" aria-labelledby="examples-label">
+        <button type="button" class="example" data-example="Fill this form with my name, email and phone number">Fill this form with my name, email and phone number</button>
+        <button type="button" class="example" data-example="Find the latest invoice on this page and open it">Find the latest invoice on this page and open it</button>
+        <button type="button" class="example" data-example="Change the delivery address to my office address">Change the delivery address to my office address</button>
+      </div>
     </div>
     <!-- The transcript. aria-live="polite" announces new entries; entries already on screen are
          updated in place rather than re-announced (see sidepanel.js renderTranscript). -->
-    <ol id="transcript" class="transcript" aria-live="polite" aria-relevant="additions text"></ol>
+    <ol id="transcript" class="transcript" tabindex="0" aria-live="polite" aria-relevant="additions text" aria-label="Conversation"></ol>
   </main>
 
-  <form id="composer" class="composer" autocomplete="off">
-    <label for="task-input" class="field-label">Task</label>
+  <form id="composer" class="composer" autocomplete="off" aria-label="Task">
+    <label for="task-input" class="field-label">Task for this page</label>
     <div class="composer-row">
-      <textarea id="task-input" name="task" rows="2" placeholder="Describe what the agent should do on this page"></textarea>
+      <textarea id="task-input" name="task" rows="2" placeholder="Describe the task"></textarea>
       <div class="composer-actions">
         <button id="send" type="submit">Send</button>
         <!-- Shown only while a run is in flight, derived from the transcript: a run is live when
              a user entry has no terminal marker after it. No other control is needed, because
              every internal step happens without asking. -->
-        <button id="stop" type="button" class="stop" hidden>Stop</button>
+        <button id="stop" type="button" class="stop" hidden>Stop run</button>
       </div>
     </div>
     <p class="note">Enter sends. Shift and Enter starts a new line.</p>
   </form>
 
-  <!-- One collapsed disclosure at the foot, closed by default. Diagnostics, not the product: it
+  <!-- One collapsed disclosure at the foot, closed by default. Settings, not the product: it
        must not compete with the task input. -->
-  <details class="diagnostics">
-    <summary>Diagnostics</summary>
+  <aside class="diagnostics-wrap" aria-label="Settings">
+    <details class="diagnostics">
+      <summary>Settings</summary>
 
-    <section class="diag-block" aria-labelledby="outbound-title">
-      <h2 id="outbound-title">Inspect outbound data</h2>
-      <p class="note">The last request sent for planning, and only that one. It carries a tokenized task, the sanitized DOM and element metadata. The token-to-value map stays in this browser.</p>
-      <p id="outbound-meta" class="diag-meta"></p>
-      <div class="body-wrap"><pre id="outbound-body" class="diag-body"></pre></div>
-      <p id="outbound-empty" class="note">Nothing has been sent for planning yet.</p>
-    </section>
-
-    <section class="diag-block" aria-labelledby="setup-title">
-      <h2 id="setup-title">Server setup</h2>
-      <div class="key-field">
-        <label for="warden-origin">Warden origin</label>
-        <div class="key-row">
-          <input id="warden-origin" type="text" autocomplete="off" placeholder="http://127.0.0.1:8756">
-          <button id="warden-origin-save" type="button" class="save-btn">Save</button>
+      <section class="diag-block" aria-labelledby="setup-title">
+        <h2 id="setup-title">Server setup</h2>
+        <div class="key-field">
+          <label for="warden-origin">Warden origin</label>
+          <div class="key-row">
+            <input id="warden-origin" type="text" autocomplete="off" placeholder="http://127.0.0.1:8756">
+            <button id="warden-origin-save" type="button" class="save-btn">Save origin</button>
+          </div>
+          <p id="warden-origin-status" class="key-status">Default: http://127.0.0.1:8756.</p>
         </div>
-        <p id="warden-origin-status" class="key-status">Default: http://127.0.0.1:8756.</p>
-      </div>
 
-      <dl class="health-detail">
-        <div><dt>Reachable</dt><dd id="detail-reachable">checking</dd></div>
-        <div><dt>Model loaded</dt><dd id="detail-loaded">-</dd></div>
-        <div><dt>Model</dt><dd id="detail-model">-</dd></div>
-        <div><dt>Planner</dt><dd id="detail-planner">-</dd></div>
-        <div><dt>Groq configured</dt><dd id="detail-groq">-</dd></div>
-      </dl>
-      <p id="groq-note" class="note" hidden>This Warden process is set to the optional Groq planner and has no key in <code>warden/.env</code>. The key never goes in this extension. The default planner is local Ollama and does not use Groq.</p>
-    </section>
-  </details>
+        <dl class="health-detail">
+          <div><dt>Reachable</dt><dd id="detail-reachable">checking</dd></div>
+          <div><dt>Redaction model loaded</dt><dd id="detail-loaded">-</dd></div>
+          <div><dt>Redaction model</dt><dd id="detail-model">-</dd></div>
+          <div><dt>Planner</dt><dd id="detail-planner">-</dd></div>
+          <div><dt>Planning runs</dt><dd id="detail-destination">-</dd></div>
+          <div><dt>Planner model</dt><dd id="detail-planner-model">-</dd></div>
+          <div><dt>Groq configured</dt><dd id="detail-groq">-</dd></div>
+        </dl>
+        <p id="groq-note" class="note" hidden>The cloud planner has no key. Put <code>GROQ_API_KEY</code> in <code>warden/.env</code> and restart the Warden, or set <code>WARDEN_PLANNER=ollama</code> to plan offline on this device. The key never goes in this extension.</p>
+      </section>
+    </details>
+  </aside>
 
   <script type="module" src="sidepanel.js"></script>
 </body>

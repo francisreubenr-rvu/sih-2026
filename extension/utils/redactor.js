@@ -323,9 +323,11 @@ export async function redactScreenshot(dataUrl, fields = [], viewport = null) {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(bitmap, 0, 0, width, height);
 
-    // Privacy-critical: opaque black fill (alpha 1.0) so masked regions cannot
-    // be recovered by alpha-compositing or color-channel tricks.
-    ctx.fillStyle = '#000000';
+    // Privacy-critical: an OPAQUE fill (alpha 1.0) so masked regions cannot be
+    // recovered by alpha-compositing or colour-channel tricks. Opacity is what
+    // protects; the colour is the Signal neutral panel-2 (#eceff7), not black, because
+    // the masked capture is shown in the light side panel (no dark grounds, DESIGN.md).
+    ctx.fillStyle = '#eceff7';
     const decisions = [];
     for (const f of valid) {
       // Round outward (floor the origin, ceil the far edge) so scaling never

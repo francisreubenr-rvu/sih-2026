@@ -92,8 +92,20 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     executeAction(message.action).then((result) => respond(result)).catch((error) => respond({ error: error.message }));
     return true;
   }
+  if (message.type === 'HIGHLIGHT_REDACTIONS') {
+    respond(highlightRedactions(message.tokens));
+    return false;
+  }
+  if (message.type === 'CLEAR_HIGHLIGHTS') {
+    clearHighlights();
+    respond({ ok: true });
+    return false;
+  }
   if (message.type === 'END_TASK') {
     tokenMap.clear();
+    // A handle must not outlive its run either: after END_TASK nothing from the last scan resolves.
+    scanHandles = new Map();
+    clearHighlights();
     respond({ ok: true });
     return false;
   }
@@ -101,6 +113,9 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
 });
 
 async function scanPage() {
+  // The previous step's redaction overlay goes first, so neither this scan nor the screenshot the
+  // worker captures right after it sees the overlay. The worker redraws it after the next /strip.
+  clearHighlights();
   const redactText = await getRedactText();
   const { classifyClickTarget } = await getOpTier();
   const handles = new Map();
@@ -115,7 +130,7 @@ async function scanPage() {
     elements.push({
       tag: element.tagName.toLowerCase(),
       type: element.getAttribute('type') || element.tagName.toLowerCase(),
-      selector: uniqueSelector(element),
+      selector: uniqueSelector(element, redactText),
       handle,
       // Click tier computed here, from the live element, by the extension's own rules. The
       // background gate reads this, never a tier or element list the Warden returns.
@@ -260,6 +275,7 @@ function collectPiiFields(redactText) {
       const parent = node.parentElement;
       if (!parent || !isVisible(parent)) return NodeFilter.FILTER_REJECT;
       if (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE' || parent.tagName === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+      if (isDhristiOverlay(parent)) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
   });
@@ -398,8 +414,17 @@ function labelFor(element) {
 
 // Display key for the planner: the short id/name selector when it matches exactly this one
 // element in the document, else the structural path. Never used to find the element again.
-function uniqueSelector(element) {
+//
+// An id or name that itself matches a PII pattern (an email-shaped id, a passport-shaped
+// "a1234567") is never used: the selector is sent to the planner verbatim, so it would carry
+// that value off the device, and the Warden's egress guard would (correctly) refuse the whole
+// planning request. The structural path carries no page-authored text, so it is used instead.
+function uniqueSelector(element, redactText) {
   const short = cssSelector(element);
+  // Tested on the raw attribute values: CSS.escape turns "a@b.co" into "a\\@b\\.co", which no
+  // pattern would match.
+  const authored = [element.getAttribute('id'), element.getAttribute('name')].filter(Boolean).join(' ');
+  if (redactText && authored && redactText(authored).count > 0) return structuralPath(element);
   try {
     const matches = document.querySelectorAll(short);
     if (matches.length === 1 && matches[0] === element) return short;
@@ -483,12 +508,16 @@ async function executeAction(action) {
     target.click();
     visualizer?.pulse();
   } else if (action.action === 'type') {
+    // A target with no native value setter (a contenteditable region, a custom element) used to be
+    // "typed into" by a no-op and reported as done. Refuse instead, before anything is focused.
+    const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(target), 'value')?.set
+      || Object.getOwnPropertyDescriptor(target.constructor.prototype, 'value')?.set;
+    if (typeof setter !== 'function') throw new Error('Refused: the target does not take a typed value');
     const rawValue = action.value || '';
     const value = rehydrate(rawValue); // throws on an unknown or ambiguous token
     target.focus();
     visualizer?.type(target, maskDisplay(rawValue, value), 40 + Math.round(Math.random() * 20));
-    const setter = Object.getOwnPropertyDescriptor(target.constructor.prototype, 'value')?.set;
-    setter?.call(target, value);
+    setter.call(target, value);
     target.dispatchEvent(new Event('input', { bubbles: true }));
     target.dispatchEvent(new Event('change', { bubbles: true }));
   } else if (action.action === 'scroll') {
@@ -542,4 +571,200 @@ function rehydrate(value) {
 function maskDisplay(rawValue, value) {
   if (rawValue === value) return rawValue || '';
   return '*'.repeat(Math.min(value.length, 18));
+}
+
+// ---- Redaction overlay (HIGHLIGHT_REDACTIONS / CLEAR_HIGHLIGHTS) -----------------------------
+// After /strip, the worker sends this run's token map so the user can SEE, on the live page, what
+// was replaced before anything left the browser: a labelled box over each visible occurrence. The
+// label is the token (EMAIL#1), never the value; the value is used only here, in page memory, to
+// find where to draw, and it is never written into the overlay, a message reply, or the DOM.
+//
+// One fixed-position layer, pointer-events:none, at the maximum z-index, inside a closed shadow
+// root with inline !important host styles, so page CSS can neither restyle it nor read it. Hit
+// testing ignores pointer-events:none elements, so liveTargetRefusal()'s elementFromPoint() sees
+// the page underneath (content-guard.test.mjs proves it). The scan skips it: PAGE_SCAN removes it
+// first, the candidate selector cannot match it, and the text walkers reject it.
+//
+// Colour (Signal light edition): Dhristi's teal (#0a6b78, "verified on this device") draws the box,
+// with a 1px white ring outside it so it separates from any page, light or dark; the wash inside
+// is the teal tint at low alpha, never a dark scrim. The label chip is teal with white text
+// (6.2:1) at 11px, the type floor for every Dhristi surface, and the same white ring. Teal, not
+// cobalt: these are tokens, and cobalt is reserved for the panel's primary action.
+//
+// Scope: a value split across several text nodes (e.g. half inside a <b>) is not boxed, and text
+// inside shadow roots or iframes is not visited, matching collectPiiFields()'s documented limits.
+const OVERLAY_ATTR = 'data-dhristi-redactions';
+const OVERLAY_MAX_BOXES = 200;
+const HIGHLIGHT_SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'TITLE', 'OPTION']);
+const OVERLAY_CSS = `
+  .layer { position: fixed; inset: 0; pointer-events: none; }
+  .box {
+    position: fixed; box-sizing: border-box; pointer-events: none;
+    border: 2px solid #0a6b78; border-radius: 3px; background: rgba(223, 241, 243, 0.22);
+    box-shadow: 0 0 0 1px #ffffff;
+  }
+  .chip {
+    position: absolute; left: -2px; bottom: 100%; margin-bottom: 2px;
+    padding: 1px 5px; border-radius: 2px; white-space: nowrap;
+    background: #0a6b78; color: #ffffff; box-shadow: 0 0 0 1px #ffffff;
+    font: 600 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .box.below .chip { bottom: auto; top: 100%; margin: 2px 0 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .box.enter { animation: dhristi-in 160ms ease-out; }
+    @keyframes dhristi-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+  }
+`;
+
+let overlayHost = null;
+let overlayLayer = null;
+let overlayMatches = []; // [{ token, range } | { token, element }], found once per HIGHLIGHT_REDACTIONS
+let overlayRaf = 0;
+let overlayListening = false;
+
+function isDhristiOverlay(element) {
+  return Boolean(element && element.closest && element.closest(`[${OVERLAY_ATTR}], [data-dhristi-visualizer]`));
+}
+
+function ensureOverlay() {
+  if (overlayHost && overlayHost.isConnected) return;
+  overlayHost = document.createElement('div');
+  overlayHost.setAttribute(OVERLAY_ATTR, '');
+  overlayHost.setAttribute('aria-hidden', 'true');
+  for (const [prop, value] of [
+    ['all', 'initial'], ['position', 'fixed'], ['inset', '0'], ['pointer-events', 'none'],
+    ['z-index', '2147483647'], ['display', 'block'], ['contain', 'strict'],
+  ]) overlayHost.style.setProperty(prop, value, 'important');
+  const root = overlayHost.attachShadow({ mode: 'closed' });
+  const style = document.createElement('style');
+  style.textContent = OVERLAY_CSS;
+  overlayLayer = document.createElement('div');
+  overlayLayer.className = 'layer';
+  root.append(style, overlayLayer);
+  (document.documentElement || document.body).append(overlayHost);
+}
+
+// Finds every visible occurrence once. Ranges stay attached to their text nodes, so a scroll or a
+// resize only re-reads rects (drawHighlights) instead of walking the page again.
+function findHighlightMatches(entries) {
+  const matches = [];
+  if (!entries.length || !document.body) return matches;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      const parent = node.parentElement;
+      if (!parent || HIGHLIGHT_SKIP_TAGS.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+      if (isDhristiOverlay(parent) || !isVisible(parent)) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  let node;
+  while ((node = walker.nextNode()) && matches.length < OVERLAY_MAX_BOXES) {
+    const text = node.nodeValue;
+    const claimed = []; // [start, end) spans already boxed in this node, by a longer value
+    for (const [token, value] of entries) {
+      let at = text.indexOf(value);
+      while (at !== -1 && matches.length < OVERLAY_MAX_BOXES) {
+        const end = at + value.length;
+        if (!claimed.some(([s, e]) => at < e && s < end)) {
+          claimed.push([at, end]);
+          const range = document.createRange();
+          range.setStart(node, at);
+          range.setEnd(node, end);
+          matches.push({ token, range });
+        }
+        at = text.indexOf(value, end);
+      }
+    }
+  }
+  // Value-bearing controls whose current value IS one of the replaced values.
+  for (const element of document.querySelectorAll('input, textarea')) {
+    if (matches.length >= OVERLAY_MAX_BOXES) break;
+    const info = fieldPiiInfo(element);
+    if (!info || isDhristiOverlay(element)) continue;
+    const current = String(element.value || '').trim();
+    if (!current) continue;
+    const hit = entries.find(([, value]) => value.trim() === current);
+    if (hit) matches.push({ token: hit[0], element });
+  }
+  return matches;
+}
+
+function drawHighlights(enter = false) {
+  if (!overlayLayer) return 0;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const boxes = [];
+  for (const match of overlayMatches) {
+    let raw;
+    if (match.element) {
+      if (!match.element.isConnected || !isVisible(match.element)) continue;
+      raw = match.element.getBoundingClientRect();
+    } else {
+      if (!match.range.startContainer.isConnected) continue;
+      raw = unionRects(match.range.getClientRects());
+    }
+    const rect = clipRect(raw, vw, vh);
+    if (!rect) continue;
+    const box = document.createElement('div');
+    box.className = `box${enter ? ' enter' : ''}${rect.y < 16 ? ' below' : ''}`;
+    box.style.left = `${rect.x - 2}px`;
+    box.style.top = `${rect.y - 2}px`;
+    box.style.width = `${rect.width + 4}px`;
+    box.style.height = `${rect.height + 4}px`;
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.textContent = match.token; // the token only; never the value
+    box.append(chip);
+    boxes.push(box);
+  }
+  overlayLayer.replaceChildren(...boxes);
+  return boxes.length;
+}
+
+function scheduleHighlightRedraw() {
+  if (overlayRaf) return;
+  overlayRaf = requestAnimationFrame(() => {
+    overlayRaf = 0;
+    drawHighlights(false);
+  });
+}
+
+function highlightRedactions(tokens) {
+  clearHighlights();
+  const entries = [];
+  if (tokens && typeof tokens === 'object') {
+    for (const [token, value] of Object.entries(tokens)) {
+      // Tokens of the contract's shape only; values under 2 characters would box ordinary text.
+      if (!/^[A-Z][A-Z0-9]*#[0-9]+$/.test(token) || typeof value !== 'string' || value.trim().length < 2) continue;
+      entries.push([token, value]);
+    }
+  }
+  // Longest first, so "Ravi Kumar" is boxed as one value before "Ravi" could claim part of it.
+  entries.sort((a, b) => b[1].length - a[1].length);
+  overlayMatches = findHighlightMatches(entries);
+  if (!overlayMatches.length) return { ok: true, boxes: 0 };
+  ensureOverlay();
+  if (!overlayListening) {
+    window.addEventListener('scroll', scheduleHighlightRedraw, { capture: true, passive: true });
+    window.addEventListener('resize', scheduleHighlightRedraw, { passive: true });
+    overlayListening = true;
+  }
+  // The reply carries a count, not the tokens' values or positions: the worker needs nothing more.
+  return { ok: true, boxes: drawHighlights(true) };
+}
+
+function clearHighlights() {
+  if (overlayRaf) cancelAnimationFrame(overlayRaf);
+  overlayRaf = 0;
+  if (overlayListening) {
+    window.removeEventListener('scroll', scheduleHighlightRedraw, { capture: true });
+    window.removeEventListener('resize', scheduleHighlightRedraw);
+    overlayListening = false;
+  }
+  overlayMatches = [];
+  if (overlayHost) overlayHost.remove();
+  overlayHost = null;
+  overlayLayer = null;
 }

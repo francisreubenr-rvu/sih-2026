@@ -1,3 +1,10 @@
+## v5: device redaction, cloud planning — 29 September 2026
+
+- Francis: redaction stays local so a bigger model can do that one job; planning runs online. This supersedes the 23 September "planner default is Ollama" lock; `WARDEN_PLANNER=ollama` stays as the offline mode. Decision: `Docs/decisions/brain-v5-local-redaction-cloud-planner.md`.
+- Fixed: GLiNER lost every name on a 41-line page (window + dilution; now one chunk per line with a per-line cache); element labels and PII-shaped ids reached `/plan` raw; the Warden could not load off the author's Mac; `/validate` round trip per step removed (checks moved into `extension/utils/plan-check.js`); nine extension bugs listed in the decision's PR.
+- Evidence: `Benchmarks/results/e2e-v5-boundary-v01.json`. The run used a real extension, a real Warden and a fake cloud planner: 3 steps and 0 personal values in the cloud requests.
+- Not changed: G11 **fail**, G20 **paused**, `submission_ready` **false**. Real Groq latency and plan quality not measured here (no key).
+
 ## Ledger and CI housekeeping (2026-09-29)
 
 - G14 reset from a hand-set `pass` (7331778) to **unknown**: the three box rehearsals ran on `996e40b`, not the current tree, and the fallback video shows a different surface. Regenerated ledger: **14 pass / 1 fail / 5 unknown**, `submission_ready` false. The public Website copy and `Website/downloads/guardrails.json` were corrected to G14 unknown in a follow-up PR the same day (copy only, existing HUD classes, no styling change).

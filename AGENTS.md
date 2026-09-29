@@ -6,6 +6,11 @@ Read `CONTEXT.md`, `PLAN.md` and open findings in `ROAST.md` before edits. Updat
 
 As of 2026-09-23 the primary path is the fundamentals restructure in `Docs/decisions/brain-fundamentals-restructure.md`, not further HUD wrap polish. `warden/` and root `extension/` are present from PR #31 and PR #32; do not invent a second copy. G11 stays fail, G20 stays paused, and `submission_ready` stays false until a results file and an explicit Francis confirmation say otherwise.
 
+## UI rules (Francis, binding)
+- No dark colours for backgrounds on any surface. Dark is for text and thin lines only.
+- Every colour interaction must follow colour-theory principles. See `DESIGN.md`, "Binding UI rules" and "Colour theory used here".
+- Follow `Docs/design/design-playbook.md` for every UI change (strategy → hierarchy → type → colour → verify); `DESIGN.md`, "Design playbook", records how it applies here. `scripts/check-signal-tokens.mjs` enforces the token side.
+
 ## Agent skills
 
 ### Issue tracker

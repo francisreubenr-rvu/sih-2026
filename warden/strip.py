@@ -4,6 +4,8 @@ Both PII layers run independently over the RAW text and their spans are merged
 in the original coordinate space, then applied in one pass. One TokenMinter is
 shared across the task text and the DOM text so numbering is a single
 continuous per-type sequence: exactly one EMAIL#1 in the whole response.
+Since 29 September 2026 the same (type, value) also reuses its token wherever
+it appears, element labels included; see _decide() and _tokenize_label().
 
 Ordering history, recorded because it was a real defect. The first
 implementation ran the regex layer first and handed its tokenized output to
@@ -69,67 +71,144 @@ def _merge_spans(regex_spans: list, model_spans: list) -> list:
     return merged
 
 
-def _apply(text: str, spans: list, minter: TokenMinter, source: str,
-           resolved: dict, uncertain: list) -> str:
-    """Replace every decided span in `text` with its token.
+def _decide(sources: list, minter: TokenMinter, resolved: dict, uncertain: list) -> dict:
+    """Decide every span of every source together and return, per source name,
+    the planned (start, end, token) replacements.
 
-    Token ids are reserved in ascending start order so numbering follows
-    reading order, then the replacements are applied in descending start order
-    so an earlier substitution cannot shift the offsets of one still pending.
+    `sources` is [(name, spans)] in reading order (task before DOM). Deciding
+    them together is what makes one token per repeated value hold: a value is
+    either replaced everywhere or nowhere, so a name the model is sure of in
+    the page header cannot survive in plaintext where it scored lower in the
+    task, and one uncertain question covers every occurrence.
+
+    Per (type, value), in order:
+    - any regex hit, or any GLiNER score >= STRIP_THRESHOLD: replaced
+      everywhere, silently;
+    - otherwise uncertain. The id is reserved in first-occurrence order so a
+      `resolved` lookup and the `uncertain` array agree on the same id across
+      repeated calls with the same input. `strip` replaces every occurrence,
+      `keep` leaves them all and is not asked again, no answer yet adds ONE
+      uncertain entry (highest score, first occurrence's preview and source).
     """
-    planned = []
+    # Pass 1: reserve ids in reading order and find the certain values.
+    certain = {}  # (type, value) -> the span that makes it certain
+    best = {}     # (type, value) -> (highest-scoring span, source of first occurrence)
+    for name, spans in sources:
+        for span in spans:
+            key = (span["type"], span["value"])
+            minter.reserve(*key)
+            if span["layer"] == "regex" or span["score"] >= entities.STRIP_THRESHOLD:
+                certain.setdefault(key, span)
+            if key not in best:
+                best[key] = (span, name)
+            elif span.get("score", 0) > best[key][0].get("score", 0):
+                best[key] = (span, best[key][1])
 
-    for span in spans:
-        if span["layer"] == "regex":
-            token = minter.mint(
-                span["type"], span["value"],
-                score=1.0, layer="regex", pattern=span["pattern"],
-            )
-            planned.append((span["start"], span["end"], token))
-            continue
+    # Pass 2: plan replacements and record decisions per source.
+    planned = {name: [] for name, _ in sources}
+    asked = set()
+    for name, spans in sources:
+        for span in spans:
+            key = (span["type"], span["value"])
+            token = minter.token_for(*key)
 
-        score = span["score"]
-        if score >= entities.STRIP_THRESHOLD:
-            token = minter.mint(
-                span["type"], span["value"],
-                score=score, layer="gliner", pattern=span["label"],
-            )
-            planned.append((span["start"], span["end"], token))
-            continue
+            if key in certain:
+                basis = span if (span["layer"] == "regex" or span["score"] >= entities.STRIP_THRESHOLD) else certain[key]
+                minter.mint(
+                    span["type"], span["value"],
+                    score=1.0 if basis["layer"] == "regex" else basis["score"],
+                    layer=basis["layer"],
+                    pattern=basis["pattern"] if basis["layer"] == "regex" else basis["label"],
+                    token=token, source=name,
+                )
+                planned[name].append((span["start"], span["end"], token))
+                continue
 
-        # Uncertain band. Reserve the id this span would get either way, so a
-        # `resolved` lookup and the `uncertain` array agree on the same id
-        # across repeated calls with the same input.
-        token_id = minter.next_id(span["type"])
-        decision = resolved.get(token_id)
+            decision = resolved.get(token)
+            if decision == "strip":
+                minter.mint(
+                    span["type"], span["value"],
+                    score=span["score"], layer="gliner", pattern=span["label"],
+                    token=token, source=name,
+                )
+                planned[name].append((span["start"], span["end"], token))
+                continue
 
-        if decision == "strip":
-            minter.mint(
-                span["type"], span["value"],
-                score=score, layer="gliner", pattern=span["label"],
-                token=token_id,
-            )
-            planned.append((span["start"], span["end"], token_id))
-            continue
+            if decision == "keep":
+                # The user already said this is not personal data. Leave the text
+                # alone and do not ask again this session.
+                continue
 
-        if decision == "keep":
-            # The user already said this is not personal data. Leave the text
-            # alone and do not ask again this session.
-            continue
+            if token in asked:
+                continue
+            asked.add(token)
+            top, first_source = best[key]
+            uncertain.append({
+                "id": token,
+                "token": token,
+                "label": top["label"],
+                "score": round(float(top["score"]), 4),
+                "preview": span["value"],
+                "source": first_source,
+            })
+    return planned
 
-        uncertain.append({
-            "id": token_id,
-            "token": token_id,
-            "label": span["label"],
-            "score": round(float(score), 4),
-            "preview": span["value"],
-            "source": source,
-        })
 
+def _render(text: str, planned: list) -> str:
+    """Apply replacements in descending start order so an earlier substitution
+    cannot shift the offsets of one still pending."""
     working = text
     for start, end, token in sorted(planned, key=lambda p: p[0], reverse=True):
         working = working[:start] + token + working[end:]
     return working
+
+
+def _apply(text: str, spans: list, minter: TokenMinter, source: str,
+           resolved: dict, uncertain: list) -> str:
+    """Decide and replace the spans of one source on its own."""
+    return _render(text, _decide([(source, spans)], minter, resolved, uncertain)[source])
+
+
+# Element labels (added 29 September 2026). strip() used to return elements
+# unchanged apart from the pii flag, so a label such as "Signed in as <name>"
+# reached POST /plan in plaintext even when the same name had been tokenized in
+# sanitizedDom. A label is short and has no context of its own, so it is not
+# scored by GLiNER here (the same text was already scored as part of the DOM
+# line that carries it); instead:
+#   1. the regex layer runs on it, minting through the shared minter, and
+#   2. every value minted anywhere in this request is replaced by its token,
+#      longest first, as an exact substring, in one pass so an inserted token
+#      is never re-matched by a shorter value.
+# A value the user chose to keep was never minted, so it stays.
+def _tokenize_label(label: str, minter: TokenMinter) -> str:
+    if not label:
+        return label
+    for span in redactor.regex_spans(label):
+        minter.mint(span["type"], span["value"], score=1.0, layer="regex",
+                    pattern=span["pattern"], source="label")
+    by_value = {}
+    for token, value in minter.tokens.items():
+        if value:
+            by_value.setdefault(value, token)
+    if not by_value:
+        return label
+    # Whole-word only where the value starts or ends with a word character, so a
+    # minted "Ravi" never rewrites the inside of "Ravishankar" (which the planner
+    # would then see as "PERSONNAME#1shankar": broken text and a false token).
+    def _bounded(v: str) -> str:
+        head = r"(?<!\w)" if re.match(r"\w", v[0]) else ""
+        tail = r"(?!\w)" if re.match(r"\w", v[-1]) else ""
+        return head + re.escape(v) + tail
+
+    ordered = sorted(by_value, key=len, reverse=True)
+    alternation = re.compile("|".join(_bounded(v) for v in ordered))
+
+    def _sub(m: "re.Match[str]") -> str:
+        token = by_value[m.group(0)]
+        minter.record(token, "label")
+        return token
+
+    return alternation.sub(_sub, label)
 
 
 def strip(task: str, dom: str, elements: list, resolved: dict) -> dict:
@@ -141,18 +220,22 @@ def strip(task: str, dom: str, elements: list, resolved: dict) -> dict:
     task_text = task or ""
     dom_text = dom or ""
 
-    tokenized_task = _apply(
-        task_text,
-        _merge_spans(redactor.regex_spans(task_text), entities.gliner_spans(task_text)),
-        minter, "task", resolved, uncertain,
-    )
-    sanitized_dom = _apply(
-        dom_text,
-        _merge_spans(redactor.regex_spans(dom_text), entities.gliner_spans(dom_text)),
-        minter, "dom", resolved, uncertain,
-    )
+    sources = [
+        ("task", _merge_spans(redactor.regex_spans(task_text), entities.gliner_spans(task_text))),
+        ("dom", _merge_spans(redactor.regex_spans(dom_text), entities.gliner_spans(dom_text))),
+    ]
+    planned = _decide(sources, minter, resolved, uncertain)
+    tokenized_task = _render(task_text, planned["task"])
+    sanitized_dom = _render(dom_text, planned["dom"])
 
-    out_elements = [dict(el, pii=_element_is_pii(el)) for el in elements]
+    out_elements = []
+    for el in elements:
+        # pii is classified on the page's own label, before tokenization, so
+        # the flag means what it always meant: this control names a PII field.
+        item = dict(el, pii=_element_is_pii(el))
+        if isinstance(el.get("label"), str):
+            item["label"] = _tokenize_label(el["label"], minter)
+        out_elements.append(item)
 
     return {
         "tokenizedTask": tokenized_task,

@@ -1,4 +1,3 @@
+/* Raster privacy evaluation: the fixture mount is shown in flow inside its own band. */
 #fixture-mount iframe{display:block;max-width:none}
-#fixture-mount{position:relative;left:auto;top:auto;width:100%;height:auto;max-width:100%;z-index:auto;overflow:auto;max-height:650px;margin-top:28px;background:none}
-progress{width:100%;height:14px}
-#record{max-height:500px;overflow:auto;font-size:11px}
+#fixture-mount{position:relative;left:auto;top:auto;width:100%;height:auto;max-width:100%;z-index:auto;overflow:auto;max-height:650px;background:none}

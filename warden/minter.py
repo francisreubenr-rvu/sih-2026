@@ -25,12 +25,27 @@ separator) into a type name for that reason.
 
 from typing import Optional
 
+# One token per repeated value (added 29 September 2026). The same (type, value)
+# seen twice -- the user's name in the task and again in the page header, say
+# -- used to get PERSONNAME#1 and PERSONNAME#2, which told the planner there
+# were two people and gave the extension two vault entries for one value. Now
+# the first mint or reservation of a (type, value) fixes its token and every
+# later occurrence reuses it. Numbering stays reading order of FIRST
+# occurrence, so the same input still yields the same ids on every call, which
+# is what `resolved` lookups keyed by token id rely on.
+
 
 class TokenMinter:
     def __init__(self) -> None:
         self.counts: dict[str, int] = {}
         self.tokens: dict[str, str] = {}
         self.decisions: list[dict] = []
+        # (type, value) -> token, for both minted and merely reserved ids.
+        self._by_value: dict[tuple, str] = {}
+        # token -> the first decision recorded for it, so a later source (a
+        # label, say) can repeat its pattern/layer/score without a raw value.
+        self.meta: dict[str, dict] = {}
+        self._decided: set = set()
 
     def next_id(self, type_name: str) -> str:
         """Reserve and return the next token id for `type_name` without
@@ -42,6 +57,19 @@ class TokenMinter:
         self.counts[type_name] = count
         return f"{type_name}#{count}"
 
+    def token_for(self, type_name: str, value: str) -> Optional[str]:
+        """The token already minted or reserved for this exact (type, value)."""
+        return self._by_value.get((type_name, value))
+
+    def reserve(self, type_name: str, value: str) -> str:
+        """next_id(), deduplicated: the same (type, value) always gets the same
+        id within one request, whether or not it is ever minted."""
+        tok = self._by_value.get((type_name, value))
+        if tok is None:
+            tok = self.next_id(type_name)
+            self._by_value[(type_name, value)] = tok
+        return tok
+
     def mint(
         self,
         type_name: str,
@@ -50,19 +78,37 @@ class TokenMinter:
         layer: str,
         pattern: Optional[str] = None,
         token: Optional[str] = None,
+        source: Optional[str] = None,
     ) -> str:
-        """Record `value` under a token (reserving a fresh one via next_id()
-        unless `token` -- an already-reserved id from next_id() -- is given)
-        and append a decision. Returns the token string, which callers use as
-        the literal replacement text.
+        """Record `value` under a token and append a decision. The token is
+        `token` if given (an id from reserve()/next_id()), else the one this
+        (type, value) already has, else a fresh one. Returns the token string,
+        which callers use as the literal replacement text.
+
+        At most one decision per (token, source): a value repeated within one
+        source is one replacement decision, not one per occurrence. Decisions
+        carry the token and the source, never the raw value.
         """
-        tok = token if token is not None else self.next_id(type_name)
+        tok = token or self._by_value.get((type_name, value)) or self.next_id(type_name)
+        self._by_value[(type_name, value)] = tok
         self.tokens[tok] = value
-        self.decisions.append(
-            {
-                "pattern": pattern if pattern is not None else type_name.lower(),
-                "score": score,
-                "layer": layer,
-            }
-        )
+        decision = {
+            "pattern": pattern if pattern is not None else type_name.lower(),
+            "score": score,
+            "layer": layer,
+            "token": tok,
+            "source": source,
+        }
+        self.meta.setdefault(tok, decision)
+        if (tok, source) not in self._decided:
+            self._decided.add((tok, source))
+            self.decisions.append(decision)
         return tok
+
+    def record(self, token: str, source: str) -> None:
+        """Note that an already-minted token also replaced text in `source`,
+        reusing the token's first decision for pattern, layer and score."""
+        if token not in self.meta or (token, source) in self._decided:
+            return
+        self._decided.add((token, source))
+        self.decisions.append(dict(self.meta[token], source=source))

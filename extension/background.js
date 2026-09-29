@@ -4,23 +4,32 @@ import * as wardenClient from './utils/warden.js';
 import { createG11Trace } from './utils/g11-stage-clock.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
 import { loopbackHttpUrl } from './utils/loopback.js';
-import { decideGate, expressesDestructiveIntent, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
+import { expressesDestructiveIntent, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
+import { decideLocalGate, questionForTier, runPlanChecks } from './utils/plan-check.js';
+import {
+  createPipelineTrace, inboundFromPlan, isVaultToken, jsonByteLength, pngSize, replacedFromStrip, toValueToken, tokenizeWithVault,
+} from './utils/pipeline-trace.js';
 
-// DHRISTI v4 background loop, plus the session transcript that the side panel renders.
+// DHRISTI v5 background loop, plus the session transcript and the pipeline trace that the side
+// panel renders.
 //
 // Surface (Docs/specs/2026-09-13-sidepanel-chat-ui.md): the extension presents as a Chrome side
 // panel, opened by clicking the toolbar icon. The panel is a chat surface: the user types a task
 // in natural language and everything the agent does afterwards appears in the transcript as
-// activity. Capture, strip, plan, validate and execute are NEVER user-facing controls; they are
+// activity. Capture, strip, plan, check and execute are NEVER user-facing controls; they are
 // reported as work already performed. Only two things block on the user, because the
 // architecture requires a human in the loop: an uncertain-PII decision and a validation
-// question. There is no shared secret and no token exchange with the Warden in this build; a
-// local token handshake was a v3 concept and is gone.
+// question. There is no shared secret and no token exchange with the Warden in this build.
 //
-// The five stages are unchanged from Docs/specs/2026-09-13-dhristi-v4-warden.md: PERCEIVE
-// (content-script DOM scan + visible-tab capture) -> STRIP (POST /strip) -> PLAN (POST /plan,
-// sanitised material only) -> VALIDATE (POST /validate plus this file's own local tier gate) ->
-// EXECUTE (local execution with vault rehydration in content.js).
+// Roles (Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md): the Warden does two
+// jobs, local redaction (POST /strip) and a guarded relay to the planner (POST /plan, a cloud
+// model by default, local Ollama in offline mode). Every decision about ACTING is made here, in
+// the browser: plan schema checks, target-in-scene, the F17 tier gate, intent coherence and the
+// human confirmation. The run loop no longer calls POST /validate.
+//
+// Stages: PERCEIVE (content-script DOM scan + visible-tab capture, masked locally) -> REDACT
+// (POST /strip) -> PLAN (POST /plan, sanitised material only) -> CHECK (utils/plan-check.js +
+// utils/op-tier.js, local only) -> ACT (local execution with vault rehydration in content.js).
 
 // ---- Configuration ----------------------------------------------------------
 const SETTLE_MS = 400;
@@ -36,9 +45,6 @@ const STANDARD_VALIDATION_OPTIONS = [
   { id: 'stop', label: 'Stop the run' },
 ];
 
-// Verbatim from warden/README.md, "Run" section. Never invented, never paraphrased: the blocked
-// card is only useful if the command it shows actually starts the server. If that README's run
-// block changes, this constant changes with it.
 async function ensureScanRegistration() {
   try {
     const granted = await chrome.permissions.contains({ origins: SITE_ACCESS_ORIGINS });
@@ -64,6 +70,9 @@ chrome.runtime.onInstalled.addListener(() => { ensureScanRegistration(); });
 chrome.runtime.onStartup.addListener(() => { ensureScanRegistration(); });
 chrome.permissions.onAdded.addListener(() => { ensureScanRegistration(); });
 
+// Verbatim from warden/README.md, "Run" section. Never invented, never paraphrased: the blocked
+// card is only useful if the command it shows actually starts the server. If that README's run
+// block changes, this constant changes with it.
 const WARDEN_START_COMMAND = [
   'cd warden',
   'export HF_HOME="/Volumes/1TB SSD/LM/hub"',
@@ -115,9 +124,9 @@ const state = {
   omniStatus: 'disabled',
   stopRequested: false,
   // Last GET /health result, refreshed on every panel health check and at the start of every
-  // run: { reachable, model, loaded, regexPatterns, groqConfigured, warden, error } or null
-  // before the first check. Read-only telemetry; never used to decide execution (that is the
-  // local tier gate below).
+  // run: { reachable, model, loaded, regexPatterns, planner, destination, plannerModel,
+  // groqConfigured, warden, error } or null before the first check. Never used to decide
+  // execution (that is the local gate below); it only decides whether a run may start at all.
   wardenHealth: null,
 };
 
@@ -149,13 +158,13 @@ const g11Trace = createG11Trace();
 //
 // Entry kinds, per the frozen spec's table:
 //   user            the task text the user typed
-//   stage           one line per stage (PERCEIVE, STRIP, PLAN, VALIDATE, EXECUTE)
+//   stage           one line per stage (PERCEIVE, STRIP, PLAN, CHECK, EXECUTE; CHECK was VALIDATE before v5)
 //   activity        a completed internal action
 //   uncertain-pii   blocking card: one strip/keep choice per detected span
 //   question        blocking card: proceed / skip / stop
 //   blocked         a refused run, with the exact start command
 //   error           a real failure, naming what failed
-//   validated       a destructive-tier or reasoned action that was accepted
+//   validated       an action you approved at a validation question
 let transcript = [];
 let entrySeq = 0;
 
@@ -209,6 +218,7 @@ function emitSession() {
 // submitted, which is the one case worth keeping as a muted record after recovery.
 const BLOCKED_SERVER_ID = 'blocked-server';
 const BLOCKED_LOADING_ID = 'blocked-loading';
+const BLOCKED_GROQ_ID = 'blocked-groq';
 
 function noteBlocked(id, { text, reason, command, refused }) {
   const found = transcript.find((e) => e.id === id);
@@ -252,6 +262,11 @@ function clearBlockedOnRecovery(health, stateName) {
     // The loading refusal stands until the model is actually loaded: the reason it names has
     // not gone away yet, so retiring it here would tell the user the opposite of the truth.
     if (entry.id === BLOCKED_LOADING_ID && (stateName === 'loading' || stateName === 'unreachable')) {
+      survivors.push(entry);
+      continue;
+    }
+    // Same rule for the missing cloud key: it stands until /health stops reporting it.
+    if (entry.id === BLOCKED_GROQ_ID && (stateName === 'groq-missing' || stateName === 'unreachable')) {
       survivors.push(entry);
       continue;
     }
@@ -368,7 +383,11 @@ async function refreshWardenHealth() {
       model: health.model || null,
       loaded: health.loaded === true,
       regexPatterns: health.regexPatterns ?? null,
-      planner: health.planner || 'ollama',
+      // As reported, or null. Not defaulted: an older Warden that omits the field defaulted to
+      // Ollama and a v5 one defaults to Groq, so any default here would be a guess.
+      planner: health.planner === 'groq' || health.planner === 'ollama' ? health.planner : null,
+      destination: destinationFor(health),
+      plannerModel: typeof health.plannerModel === 'string' ? health.plannerModel : null,
       groqConfigured: health.groqConfigured === true,
       warden: health.warden || null,
       error: null,
@@ -380,7 +399,9 @@ async function refreshWardenHealth() {
       model: null,
       loaded: false,
       regexPatterns: null,
-      planner: 'ollama',
+      planner: null,
+      destination: null,
+      plannerModel: null,
       groqConfigured: false,
       warden: null,
       error: error.message,
@@ -389,9 +410,18 @@ async function refreshWardenHealth() {
   return state.wardenHealth;
 }
 
-// unreachable, loading, ready. groq-missing applies only when the server reports
-// planner "groq" and no key is configured. The default planner is local Ollama,
-// so a missing Groq key does not block a run.
+// `destination` as /health reports it, else derived from `planner` by the spec's fixed mapping
+// (groq -> cloud, ollama -> local), else null.
+function destinationFor(health) {
+  if (health && (health.destination === 'cloud' || health.destination === 'local')) return health.destination;
+  if (health?.planner === 'groq') return 'cloud';
+  if (health?.planner === 'ollama') return 'local';
+  return null;
+}
+
+// unreachable, loading, groq-missing, ready. v5's default planner is Groq (cloud), so a Warden
+// reporting planner "groq" with no key configured cannot plan at all: groq-missing blocks a run,
+// with a card naming both fixes. An offline Warden (planner "ollama") needs no key.
 function healthState(health) {
   if (!health || health.reachable !== true) return 'unreachable';
   if (health.loaded !== true) return 'loading';
@@ -399,8 +429,8 @@ function healthState(health) {
   return 'ready';
 }
 
-// HEALTH_UPDATE carries no secret and no raw value: a model identifier, three booleans, an
-// elapsed wait and an error string.
+// HEALTH_UPDATE carries no secret and no raw value: model identifiers, the planner's destination,
+// three booleans, an elapsed wait and an error string.
 function emitHealth(health) {
   const stateName = healthState(health);
   let elapsedMs = null;
@@ -415,7 +445,9 @@ function emitHealth(health) {
     reachable: health.reachable === true,
     model: health.model || null,
     loaded: health.loaded === true,
-    planner: health.planner || 'ollama',
+    planner: health.planner || null,
+    destination: health.destination || null,
+    plannerModel: health.plannerModel || null,
     groqConfigured: health.groqConfigured === true,
     elapsedMs,
     error: health.error || null,
@@ -470,16 +502,70 @@ function recordOutbound(path, body) {
   chrome.runtime.sendMessage({ type: 'OUTBOUND_UPDATE', body }).catch(() => {});
 }
 
+// ============================================================================
+// Pipeline trace (TRACE_UPDATE / GET_TRACE)
+// ============================================================================
+// The whole trace for the current step, rebuilt at the start of every step, sent whole on every
+// stage transition. Memory only, like the transcript: it holds the masked screenshot and the
+// exact /plan body, and neither belongs in chrome.storage. No vault value is ever put into it;
+// see utils/pipeline-trace.js for how each field is built to guarantee that.
+const pipeline = createPipelineTrace();
+
+function emitTrace() {
+  chrome.runtime.sendMessage({ type: 'TRACE_UPDATE', trace: pipeline.snapshot() }).catch(() => {});
+}
+
+function traceStage(name, status, detail) {
+  pipeline.stage(name, status, detail);
+  emitTrace();
+}
+
+function plannerFromHealth(health) {
+  return {
+    destination: health?.destination ?? null,
+    provider: health?.planner ?? null,
+    model: health?.plannerModel ?? null,
+  };
+}
+
+// ============================================================================
+// REVEAL_TOKEN
+// ============================================================================
+// The one path by which a vault value leaves this worker for a UI: an explicit click in the
+// extension's own side panel. Answered from the CURRENT run's vault only (null between runs), only
+// to a sender that is this extension, not a tab, at exactly the side panel page. Never logged,
+// never stored, never added to the transcript or the trace.
+function isSidePanelSender(sender) {
+  if (!sender || sender.id !== chrome.runtime.id || sender.tab) return false;
+  const url = typeof sender.url === 'string' ? sender.url.split(/[?#]/)[0] : '';
+  return url === chrome.runtime.getURL('sidepanel.html');
+}
+
+function revealToken(message, sender) {
+  const token = message && typeof message.token === 'string' ? message.token : null;
+  if (!isSidePanelSender(sender)) return { error: 'REVEAL_TOKEN is answered only to the DHRISTI side panel.' };
+  if (!isVaultToken(token)) return { error: 'Not a token.' };
+  if (!currentVault || !Object.prototype.hasOwnProperty.call(currentVault, token)) {
+    return { error: 'That token is not in the current run.' };
+  }
+  return { token, value: currentVault[token] };
+}
+
+// An async handler that throws must still answer: a rejected promise with no reply leaves the
+// panel's sendMessage waiting on a port that closes with a generic error instead of the reason.
+function respondWith(promise, sendResponse, fallback) {
+  promise.then(sendResponse, (error) => sendResponse({ ok: false, error: error?.message || String(error), ...fallback }));
+  return true;
+}
+
 // ---- Message routing: the frozen contract, exactly --------------------------
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (sender.id !== chrome.runtime.id) return false;
   switch (message.type) {
     case 'START_TASK':
-      startTask(message).then(sendResponse);
-      return true;
+      return respondWith(startTask(message), sendResponse, { entries: transcript });
     case 'STOP_TASK':
-      stopTask().then(sendResponse);
-      return true;
+      return respondWith(stopTask(), sendResponse, { entries: transcript });
     case 'GET_SESSION':
       sendResponse({ entries: transcript });
       return false;
@@ -496,12 +582,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     case 'GET_G11_TRACE':
       sendResponse(g11Trace.snapshot());
       return false;
+    case 'GET_TRACE':
+      sendResponse(pipeline.snapshot());
+      return false;
+    case 'REVEAL_TOKEN':
+      sendResponse(revealToken(message, sender));
+      return false;
     case 'SET_WARDEN_ORIGIN':
-      setWardenOrigin(message.origin).then(sendResponse);
-      return true;
+      return respondWith(setWardenOrigin(message.origin), sendResponse, { origin: null });
     case 'RETRY_HEALTH':
-      refreshHealthAndSync().then((health) => sendResponse({ ok: true, state: healthState(health) }));
-      return true;
+      return respondWith(refreshHealthAndSync().then((health) => ({ ok: true, state: healthState(health) })), sendResponse);
     default:
       return false;
   }
@@ -548,10 +638,24 @@ async function failStart(task, message) {
   return { ok: false, error: message, entries: transcript };
 }
 
+// True from the moment a START_TASK is accepted for checking until it either starts a run or is
+// refused. Without it, two sends in quick succession (a double-click on Send) both pass the status
+// check below, because status only becomes 'running' after several awaits, and both start a run.
+let startInFlight = false;
+
 async function startTask(message) {
-  if (state.status === 'running' || state.status === 'waiting') {
+  if (startInFlight || state.status === 'running' || state.status === 'waiting') {
     return { ok: false, reason: 'A run is already in progress.', entries: transcript };
   }
+  startInFlight = true;
+  try {
+    return await startTaskChecked(message);
+  } finally {
+    startInFlight = false;
+  }
+}
+
+async function startTaskChecked(message) {
   const task = String(message.task || '').trim();
   if (!task) {
     noteError('The task was empty, so nothing was sent.');
@@ -563,6 +667,16 @@ async function startTask(message) {
   appendEntry({ kind: 'user', text: task });
   emitSession();
 
+  // Every path after the user entry must end with exactly one terminal marker, including an
+  // unexpected throw from a chrome.* call, or the panel shows a run in flight forever.
+  try {
+    return await startAcceptedTask(task);
+  } catch (error) {
+    return failStart(task, `The run could not start: ${error?.message || error}`);
+  }
+}
+
+async function startAcceptedTask(task) {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const tabId = tab?.id ?? null;
   const windowId = tab?.windowId ?? null;
@@ -593,6 +707,18 @@ async function startTask(message) {
     });
     noteRunEnd('The task was not sent.', 'refused');
     return { ok: false, refused: true, reason: 'The Warden model is not loaded yet.', entries: transcript };
+  }
+  if (stateName === 'groq-missing') {
+    // No start command on this card: the constant starts the server, it does not supply a key,
+    // and a command this file cannot verify would be worse than none.
+    noteBlocked(BLOCKED_GROQ_ID, {
+      text: 'The Warden is set to plan with Groq (cloud) but has no GROQ_API_KEY, so it cannot plan and that task was refused. Set GROQ_API_KEY in warden/.env and restart the Warden, or start it with WARDEN_PLANNER=ollama for offline local planning.',
+      reason: 'GET /health reports planner: groq, groqConfigured: false.',
+      command: null,
+      refused: true,
+    });
+    noteRunEnd('The task was not sent.', 'refused');
+    return { ok: false, refused: true, reason: 'The Warden has no Groq key.', entries: transcript };
   }
 
   // Non-secret local settings only: v4 has no browser-held cloud key. omniparserUrl/useOmniparser
@@ -625,6 +751,9 @@ async function startTask(message) {
     stopRequested: false,
   });
   await persistState();
+  // The previous run's trace (its masked screenshot, its /plan body) ends with that run.
+  pipeline.clear();
+  emitTrace();
   runLoop(runId, secrets); // fire-and-forget; progress is reported through the transcript
   return { ok: true, entries: transcript };
 }
@@ -648,12 +777,16 @@ function computeElapsedMs() {
 
 async function persistState() {
   // Non-sensitive loop state only. No task text, no transcript entry, no vault value, no prompt.
-  await chrome.storage.session.set({
-    stepNumber: state.stepNumber,
-    status: state.status,
-    elapsedMs: computeElapsedMs(),
-    omniStatus: state.omniStatus,
-  });
+  // Best effort: this is telemetry for a restarted worker, and a storage failure must not abort a
+  // run or skip the run loop's terminal marker (it is awaited inside runLoop's finally).
+  try {
+    await chrome.storage.session.set({
+      stepNumber: state.stepNumber,
+      status: state.status,
+      elapsedMs: computeElapsedMs(),
+      omniStatus: state.omniStatus,
+    });
+  } catch { /* storage unavailable; the in-memory state is still authoritative */ }
 }
 
 async function restoreState() {
@@ -673,17 +806,17 @@ async function restoreState() {
 // ============================================================================
 // Local operation-tier gating -- ROAST.md F17, THE RULE THAT MUST NOT BE RELAXED
 // ============================================================================
-// The rules live in utils/op-tier.js (ported independently from warden/tiers.py, on purpose,
-// not shared). Every local tier is computed from the extension's OWN page scan: content.js tiers
-// each element from the live DOM and returns it as `tier` alongside an opaque per-scan `handle`.
-// Nothing below reads an element list or tier the Warden returned to decide whether to act; the
-// Warden's tier and verdict can only make the gate stricter (decideGate).
+// The rules live in utils/op-tier.js (tiers) and utils/plan-check.js (plan checks and the gate),
+// ported independently from warden/tiers.py and warden/validate.py, on purpose, not shared. Every
+// local tier is computed from the extension's OWN page scan: content.js tiers each element from
+// the live DOM and returns it as `tier` alongside an opaque per-scan `handle`. Nothing below reads
+// an element list or tier the Warden returned to decide whether to act. In v5 there is no Warden
+// verdict at all: the run loop does not call POST /validate, so the local gate is the whole gate.
 
 // Rewrites the plan to the reversible 'finish' action when the task expresses destructive
 // intent and the scene holds no destructive control (ROAST.md F8's mitigation: a planner
 // proposing a plausible-looking wrong click against a delete-account request when no delete
-// control is actually on the page). Computed here, locally, because /validate's response never
-// carries the Warden's own overridden plan back to the caller.
+// control is actually on the page). Reads the raw local task and the local scan only.
 function applyIntentCoherenceLocal(task, plan, elements) {
   if (!expressesDestructiveIntent(task)) return { plan, overridden: false };
   if (hasDestructiveControl(elements)) return { plan, overridden: false };
@@ -696,21 +829,29 @@ function applyIntentCoherenceLocal(task, plan, elements) {
   };
 }
 
-// ---- Warden stages: STRIP, PLAN, VALIDATE -----------------------------------
+// ---- Warden stages: STRIP, PLAN ---------------------------------------------
+//
+// Trace discipline: the pipeline trace is touched only synchronously after an aborted() check,
+// never after a bare await, so a run that was stopped and superseded while it waited can never
+// write into the next run's trace.
 
 // STRIP, with the uncertain-PII prompt loop. Blocks until every uncertain span in the
 // response has a decision (a fresh one from the user, or an already-remembered one from
 // `resolvedAnswers`), per the frozen spec: "the extension MUST prompt the user and MUST NOT
-// proceed to /plan for that span until answered."
+// proceed to /plan for that span until answered." Returns the final response and how many spans
+// the user was asked about in this step.
 async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
+  let asked = 0;
   for (;;) {
     if (aborted(runId)) throw new Error('Stopped');
     const resp = await wardenClient.strip({ task, dom, elements, resolved: resolvedAnswers });
-    if (!resp.uncertain || resp.uncertain.length === 0) return resp;
+    if (!resp || typeof resp !== 'object') throw new Error('warden: /strip returned no object');
+    if (!Array.isArray(resp.uncertain) || resp.uncertain.length === 0) return { resp, asked };
 
     const items = resp.uncertain.map((u) => ({
       id: u.id, token: u.token, label: u.label, score: u.score, preview: u.preview, source: u.source,
     }));
+    asked += items.length;
     noteActivity(`${items.length} span${items.length === 1 ? '' : 's'} scored inside the uncertain band, so the run stopped to ask.`, stepNumber);
     const answers = await requestPrompt(
       { kind: 'uncertain-pii', items },
@@ -719,7 +860,8 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
         step: stepNumber ?? null,
         text: 'The Warden was not confident enough to strip these spans automatically. Choose strip or keep for each one.',
         // `preview` is real personal data. It is rendered in this panel and lives in this
-        // worker's memory; it is never written to storage and never crosses the wire.
+        // worker's memory; it is never written to storage, never put in the trace, and never
+        // crosses the wire.
         items,
       },
     );
@@ -749,15 +891,52 @@ async function refreshVault(tokens) {
   await sendToTab('SET_VAULT', { tokens: { ...currentVault } });
 }
 
-async function planWithWarden(tokenizedTask, sanitizedDom, elements, baseHistory, rejectionReasons) {
+// Element labels for /plan. The Warden tokenizes sanitizedDom (and, from v5, the labels too), but
+// a label that repeats a value the Warden tokenized elsewhere must not carry it past /strip, so
+// every vault value is replaced with its token first; then the local regex pass runs ONCE per
+// distinct label (labels repeat, e.g. a column of "Edit" links). Computed once per step and reused
+// by every re-plan attempt.
+function planElementsFrom(elements, tokens) {
+  const cache = new Map();
+  return (elements || []).map((el) => {
+    const raw = typeof el.label === 'string' ? el.label : '';
+    let label = cache.get(raw);
+    if (label === undefined) {
+      label = redactText(tokenizeWithVault(raw, tokens)).text;
+      cache.set(raw, label);
+    }
+    return { ...el, label };
+  });
+}
+
+// A /plan failure, described without echoing anything the Warden might have quoted back. The
+// v5 egress guard refuses with 422 and names the pattern and field, never the value.
+function planErrorDetail(error) {
+  const guard = error?.body && typeof error.body === 'object' ? error.body.egressGuard : null;
+  if (error?.status === 422 && guard && typeof guard === 'object') {
+    return `the Warden's egress guard refused the request (${String(guard.pattern || 'pattern')} in ${String(guard.field || 'a field')}); nothing left this machine`;
+  }
+  return error?.message || String(error);
+}
+
+async function planWithWarden(tokenizedTask, sanitizedDom, elements, baseHistory, rejectionReasons, attempt) {
   const history = rejectionReasons && rejectionReasons.length
     ? [...baseHistory, { stepNumber: null, action: 'VALIDATION_REJECTED', target: null, status: 'reject', reasons: rejectionReasons }]
     : baseHistory;
   const body = { tokenizedTask, sanitizedDom, elements, history };
   recordOutbound('/plan', body);
+  // The exact object utils/warden.js serializes, and the byte length of that serialization.
+  pipeline.set('outbound', { path: '/plan', bytes: jsonByteLength(body), body });
+  pipeline.set('inbound', null);
+  traceStage('plan', 'active', attempt > 1 ? `re-planning with ${rejectionReasons.length} reason${rejectionReasons.length === 1 ? '' : 's'} attached, attempt ${attempt}` : null);
   const t0 = performance.now();
   try {
     return await wardenClient.plan(body);
+  } catch (error) {
+    // Rethrown with a detail that is safe for the transcript and the trace.
+    const wrapped = new Error(planErrorDetail(error));
+    wrapped.cause = error;
+    throw wrapped;
   } finally {
     g11Trace.add('plan', performance.now() - t0);
   }
@@ -783,13 +962,15 @@ function gatePathFor({ gatePath, choice, tierError }) {
   return GATE_TRACE_PATH[gatePath] || 'reject';
 }
 
-function recordF17({ localTier, wardenTier, gatePath, choice, tierError }) {
-  const tiersAgree = wardenTier != null && localTier != null && wardenTier === localTier;
+// v5: there is no Warden tier any more, so wardenTier is recorded as null and tiersAgree as false,
+// rather than copying the local tier into the Warden's slot and claiming an agreement that no
+// second party made.
+function recordF17({ localTier, gatePath, choice, tierError }) {
   g11Trace.recordF17({
     opTierLocalComputed: tierError ? true : localTier != null,
     localTier: localTier ?? null,
-    wardenTier: wardenTier ?? null,
-    tiersAgree,
+    wardenTier: null,
+    tiersAgree: false,
     trustedServerRequiresConfirmationAlone: false,
     unattendedExecuteAllowed: false,
     gatePath: gatePathFor({ gatePath, choice, tierError }),
@@ -798,137 +979,134 @@ function recordF17({ localTier, wardenTier, gatePath, choice, tierError }) {
   });
 }
 
+// A plan that failed the local checks is never run, so the exhausted-retry question does not offer
+// "Proceed": skipping re-scans and re-plans on the next step; stopping ends the run.
+const REJECTED_PLAN_OPTIONS = [
+  { id: 'skip', label: 'Skip this step' },
+  { id: 'stop', label: 'Stop the run' },
+];
+
 async function requestValidationQuestion(text, options, attempt, reasons, stepNumber) {
+  const offered = options && options.length ? options : STANDARD_VALIDATION_OPTIONS;
   const answers = await requestPrompt(
-    { kind: 'validation-question', text, options: options && options.length ? options : STANDARD_VALIDATION_OPTIONS, attempt, reasons: reasons || [] },
+    { kind: 'validation-question', text, options: offered, attempt, reasons: reasons || [] },
     {
       kind: 'question',
       step: stepNumber ?? null,
       text,
-      options: options && options.length ? options : STANDARD_VALIDATION_OPTIONS,
+      options: offered,
       attempt,
       reasons: reasons || [],
     },
   );
-  return answers.choice === 'proceed' || answers.choice === 'skip' || answers.choice === 'stop' ? answers.choice : 'stop';
+  // Only an option that was actually offered counts; anything else is a stop.
+  return offered.some((o) => o.id === answers.choice) && ['proceed', 'skip', 'stop'].includes(answers.choice) ? answers.choice : 'stop';
 }
 
-// PLAN + VALIDATE, with the bounded reject/re-plan loop and the F17 local gate. Returns
+function describeTarget(plan) {
+  return `${plan?.action ?? 'unknown action'}${plan?.target_selector ? ` on ${plan.target_selector}` : ''}`;
+}
+
+// PLAN + CHECK, with the bounded reject/re-plan loop and the F17 local gate. Returns
 // { planResp, plan, tier, verdict, checks, choice }: `plan` is the plan actually approved to
-// execute (may be the local intent-coherence override), `tier` is the stricter of the local and
-// Warden tiers, and `choice` is null unless a prompt fired ('proceed' | 'skip' | 'stop').
+// execute (may be the local intent-coherence override), `tier` the local tier, `verdict` the local
+// gate's 'accept' | 'ask' | 'reject', and `choice` null unless a prompt fired ('proceed' | 'skip' |
+// 'stop').
 //
-// `wireElements` are what the Warden sees (/plan, /validate). `localScene` is the extension's own
-// scan with handles and locally computed tiers; it alone decides the local tier.
-async function planAndValidate(runId, task, tokenizedTask, sanitizedDom, wireElements, localScene, baseHistory, stepNumber) {
+// `wireElements` are what the planner sees. `localScene` is the extension's own scan with handles
+// and locally computed tiers; it alone decides the checks and the tier.
+async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElements, localScene, baseHistory, stepNumber) {
   let reasons = [];
   for (let attempt = 1; attempt <= WARDEN_VALIDATE_MAX_ATTEMPTS; attempt += 1) {
     if (aborted(runId)) throw new Error('Stopped');
-    const planResp = await planWithWarden(tokenizedTask, sanitizedDom, wireElements, baseHistory, reasons);
+    const planResp = await planWithWarden(tokenizedTask, sanitizedDom, wireElements, baseHistory, reasons, attempt);
     if (aborted(runId)) throw new Error('Stopped');
-    const rawPlan = planResp && typeof planResp.plan === 'object' && planResp.plan ? planResp.plan : null;
+    const rawPlan = planResp && typeof planResp.plan === 'object' && planResp.plan && !Array.isArray(planResp.plan) ? planResp.plan : null;
     if (!rawPlan) throw new Error('warden: /plan returned no plan object');
 
-    // The model that actually answered, reported by /plan itself. Never a hardcoded name.
-    noteStage('PLAN', planResp.model ? `${planResp.model} proposed ${rawPlan.action}${rawPlan.target_selector ? ` on ${rawPlan.target_selector}` : ''}` : `proposed ${rawPlan.action}`, stepNumber);
+    // Planner identity as /plan itself reports it. Never a hardcoded name.
+    const planner = pipeline.current()?.planner || {};
+    pipeline.set('planner', {
+      destination: planResp.destination === 'cloud' || planResp.destination === 'local' ? planResp.destination : planner.destination ?? null,
+      provider: planner.provider ?? null,
+      model: typeof planResp.model === 'string' ? planResp.model : planner.model ?? null,
+    });
+    pipeline.set('inbound', inboundFromPlan(rawPlan, planResp));
+    const where = planResp.destination === 'cloud' ? ' (cloud)' : planResp.destination === 'local' ? ' (local)' : '';
+    traceStage('plan', 'done', `${planResp.model || 'the planner'}${where} proposed ${describeTarget(rawPlan)}`);
+    noteStage('PLAN', planResp.model ? `${planResp.model}${where} proposed ${describeTarget(rawPlan)}` : `proposed ${describeTarget(rawPlan)}`, stepNumber);
     if (Array.isArray(planResp.switched) && planResp.switched.length) {
       // A fallback is surfaced rather than silent, per the frozen spec's "cloud model switch" row.
       noteActivity(`Model fallback: ${planResp.switched.join(', ')} failed before ${planResp.model || 'the next model'} answered.`, stepNumber);
     }
 
-    // Local intent-coherence override, applied before this plan is shown to /validate's verdict
-    // at all: see applyIntentCoherenceLocal()'s comment for why trusting the Warden's own
-    // internal override is not enough. Reads the raw local task and the local scan only.
+    // CHECK, entirely local. The intent-coherence rewrite runs first, so the checks and the tier
+    // see the plan that would actually run.
+    traceStage('check', 'active', null);
     const coherence = applyIntentCoherenceLocal(task, rawPlan, localScene);
+    const plan = coherence.plan;
     if (coherence.overridden) {
       noteActivity('The task implies a destructive action but the page holds no destructive control, so the plan was rewritten locally to finish.', stepNumber);
-      const timed = timeOpTierLocal(coherence.plan, localScene);
-      if (timed.error) {
-        noteStage('VALIDATE', 'rejected locally, the plan could not be tiered', stepNumber);
-        noteError(timed.error.message, stepNumber);
-        recordF17({ localTier: null, wardenTier: null, gatePath: 'reject', choice: 'stop', tierError: timed.error });
-        return {
-          planResp, plan: coherence.plan, tier: null, verdict: 'reject',
-          checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: timed.error.message,
-        };
-      }
-      const tier = timed.tier;
-      noteStage('VALIDATE', `accept, rewritten locally (tier: ${tier})`, stepNumber);
-      recordF17({ localTier: tier, wardenTier: null, gatePath: 'unattended', choice: null, tierError: null });
-      return {
-        planResp, plan: coherence.plan, tier,
-        verdict: 'accept', checks: [{ name: 'local-intent-coherence-override', pass: true }], choice: null,
-      };
     }
+    const timed = timeOpTierLocal(plan, localScene);
+    const checkT0 = performance.now();
+    const result = runPlanChecks(plan, localScene, {
+      tier: timed.tier,
+      tierError: timed.error ? timed.error.message : null,
+      intentOverridden: coherence.overridden,
+      destructiveIntent: expressesDestructiveIntent(task),
+      hasDestructiveControl: hasDestructiveControl(localScene),
+    });
+    const gate = decideLocalGate({ checksPassed: result.ok, localTier: result.tier });
+    // Recorded under the harness's existing 'validate' key: this is the work /validate used to do.
+    g11Trace.add('validate', performance.now() - checkT0);
 
-    const timedTier = timeOpTierLocal(rawPlan, localScene);
-    if (timedTier.error) {
-      // A plan naming a target this extension's scan does not hold exactly once, or an
-      // unrecognized action, cannot be tiered at all; refuse rather than guess or execute it.
-      noteStage('VALIDATE', 'rejected locally, the plan could not be tiered', stepNumber);
-      noteError(timedTier.error.message, stepNumber);
-      recordF17({ localTier: null, wardenTier: null, gatePath: 'reject', choice: 'stop', tierError: timedTier.error });
-      return {
-        planResp, plan: rawPlan, tier: null, verdict: 'reject',
-        checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: timedTier.error.message,
-      };
-    }
-    const localTier = timedTier.tier;
-
-    if (aborted(runId)) throw new Error('Stopped');
-    const validateT0 = performance.now();
-    let vResp;
-    try {
-      // Unreachable or erroring Warden throws here: the run ends with an error, nothing executes.
-      vResp = await wardenClient.validate({ plan: rawPlan, elements: wireElements, tokenizedTask, attempt });
-    } finally {
-      g11Trace.add('validate', performance.now() - validateT0);
-    }
-    const v = vResp && typeof vResp === 'object' ? vResp : {};
-    const verdict = typeof v.verdict === 'string' ? v.verdict : null;
-    const wardenTier = typeof v.tier === 'string' ? v.tier : null;
-    const gate = decideGate({ verdict, wardenTier, localTier });
-    const checks = [...(Array.isArray(v.checks) ? v.checks : []), { name: 'local-tier-agreement', pass: wardenTier === localTier }];
-    const passed = checks.filter((c) => c && c.pass === true).length;
-    noteStage('VALIDATE', `${verdict ?? 'no verdict'}, ${passed} of ${checks.length} checks passed (tier: ${gate.finalTier ?? localTier})`, stepNumber);
+    const passed = result.checks.filter((c) => c.pass).length;
+    const summary = `${passed} of ${result.checks.length} checks passed`;
+    pipeline.set('check', { checks: result.checks, tier: result.tier, gate: gate.path, choice: null });
 
     if (gate.path === 'reject') {
-      reasons = Array.isArray(v.reasons) ? v.reasons : [];
-      noteActivity(`Plan rejected on attempt ${attempt}: ${reasons.length ? reasons.join('; ') : 'no reason returned'}. Re-planning with the reasons attached.`, stepNumber);
+      reasons = result.reasons.length ? result.reasons : gate.reasons;
+      traceStage('check', 'error', `rejected on attempt ${attempt}: ${reasons.join('; ')}`);
+      noteStage('CHECK', `rejected locally, ${summary}`, stepNumber);
+      if (timed.error) noteError(timed.error.message, stepNumber);
+      noteActivity(`Plan rejected on attempt ${attempt}: ${reasons.join('; ')}.${attempt < WARDEN_VALIDATE_MAX_ATTEMPTS ? ' Re-planning with the reasons attached.' : ''}`, stepNumber);
       if (attempt === WARDEN_VALIDATE_MAX_ATTEMPTS) {
         const choice = await requestValidationQuestion(
-          `The plan was rejected ${attempt} times in a row and the retry budget is exhausted.`,
-          STANDARD_VALIDATION_OPTIONS, attempt, reasons, stepNumber,
+          `The plan failed the local checks ${attempt} times in a row and the retry budget is exhausted. A plan that failed its checks is never run.`,
+          REJECTED_PLAN_OPTIONS, attempt, reasons, stepNumber,
         );
-        recordF17({ localTier, wardenTier, gatePath: 'reject', choice, tierError: null });
-        return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: 'reject', checks, choice };
+        if (aborted(runId)) throw new Error('Stopped');
+        pipeline.patch('check', { choice });
+        emitTrace();
+        recordF17({ localTier: result.tier, gatePath: 'reject', choice, tierError: timed.error });
+        return { planResp, plan, tier: result.tier, verdict: 'reject', checks: result.checks, choice };
       }
-      recordF17({ localTier, wardenTier, gatePath: 'reject', choice: null, tierError: null });
+      recordF17({ localTier: result.tier, gatePath: 'reject', choice: null, tierError: timed.error });
       continue; // informed re-plan: planWithWarden's next call carries `reasons`
     }
 
-    if (gate.path === 'ask') {
-      const q = v.question && typeof v.question === 'object' ? v.question : {};
-      const choice = await requestValidationQuestion(q.text || 'The Warden asked for confirmation before this step.', q.options, attempt, [], stepNumber);
-      recordF17({ localTier, wardenTier, gatePath: 'ask', choice, tierError: null });
-      return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: 'ask', checks, choice };
-    }
+    traceStage('check', 'done', `${gate.path === 'unattended' ? 'accepted' : gate.path === 'ask' ? 'accepted, asks a human' : 'accepted, needs your confirmation'} (tier: ${gate.finalTier}), ${summary}`);
+    noteStage('CHECK', `${coherence.overridden ? 'accept, rewritten locally' : 'accept'}, ${summary} (tier: ${gate.finalTier})`, stepNumber);
 
-    // The Warden's accept is necessary, never sufficient (F17): anything short of an exact
-    // accept with a matching, unattended-safe tier stops for a LOCAL confirmation.
-    if (gate.path === 'confirm') {
-      const choice = await requestValidationQuestion(
-        `This action is tier '${gate.finalTier}' and requires local confirmation before it runs. This confirmation is the extension's own gate, not the Warden's.`,
-        STANDARD_VALIDATION_OPTIONS, attempt, gate.reasons, stepNumber,
-      );
-      recordF17({ localTier, wardenTier, gatePath: 'confirm', choice, tierError: null });
-      return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: verdict === 'accept' ? 'accept' : 'ask', checks, choice };
+    if (gate.path === 'ask' || gate.path === 'confirm') {
+      // Destructive always asks a human (the rule the Warden's ALWAYS_ASK_TIERS carried); any
+      // other tier that is not unattended-safe stops for the extension's own confirmation.
+      const text = gate.path === 'ask'
+        ? questionForTier(gate.finalTier, plan)
+        : `This action is tier '${gate.finalTier}' and requires local confirmation before it runs.`;
+      const choice = await requestValidationQuestion(text, STANDARD_VALIDATION_OPTIONS, attempt, gate.reasons, stepNumber);
+      if (aborted(runId)) throw new Error('Stopped');
+      pipeline.patch('check', { choice });
+      emitTrace();
+      recordF17({ localTier: result.tier, gatePath: gate.path, choice, tierError: null });
+      return { planResp, plan, tier: gate.finalTier, verdict: gate.path === 'ask' ? 'ask' : 'accept', checks: result.checks, choice };
     }
-    recordF17({ localTier, wardenTier, gatePath: 'unattended', choice: null, tierError: null });
-    return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: 'accept', checks, choice: null };
+    recordF17({ localTier: result.tier, gatePath: 'unattended', choice: null, tierError: null });
+    return { planResp, plan, tier: gate.finalTier, verdict: 'accept', checks: result.checks, choice: null };
   }
   // Unreachable: every branch inside the loop returns by attempt === WARDEN_VALIDATE_MAX_ATTEMPTS at the latest.
-  throw new Error('warden: validation retry loop exited without a verdict');
+  throw new Error('check: retry loop exited without a decision');
 }
 
 // ---- Agent loop ------------------------------------------------------------
@@ -975,8 +1153,15 @@ async function pingContentScript(runId) {
   throw new Error(`Content script unreachable after ${PING_MAX_ATTEMPTS} attempts (~${waitedS}s): ${lastError?.message || 'no response'}`);
 }
 
+// The trace's act node for an outcome that never reached the page (skip or stop).
+function traceActNotRun(plan, outcome, detail) {
+  pipeline.set('act', { action: plan?.action ?? null, target: plan?.target_selector ?? null, outcome, error: null });
+  traceStage('act', 'skipped', detail);
+}
+
 async function runLoop(runId, secrets) {
   g11Trace.beginRun();
+  let lastError = null;
   try {
     while (state.stepNumber < MAX_STEPS) {
       if (aborted(runId)) {
@@ -987,9 +1172,14 @@ async function runLoop(runId, secrets) {
       const stepNumber = state.stepNumber;
       state.status = 'running';
       await persistState();
+      if (aborted(runId)) return;
+
+      pipeline.begin(runId, stepNumber);
+      pipeline.set('planner', plannerFromHealth(state.wardenHealth));
 
       // 1. PERCEIVE: wait for the content script, then scan the page.
       g11Trace.markWallStart();
+      traceStage('perceive', 'active', null);
       const perceiveT0 = performance.now();
       // Declared outside the timed block: STRIP, PLAN and the step records below read them.
       let scan;
@@ -1001,6 +1191,8 @@ async function runLoop(runId, secrets) {
       await pingContentScript(runId);
       if (aborted(runId)) return;
 
+      // PAGE_SCAN also removes the previous step's redaction overlay (content.js), so neither the
+      // scan nor the capture below sees it.
       scan = await sendToTab('PAGE_SCAN');
       if (aborted(runId)) return;
       if (!scan || !Array.isArray(scan.elements)) throw new Error('Invalid scan result');
@@ -1008,6 +1200,7 @@ async function runLoop(runId, secrets) {
       localScene = scan.elements;
       // What the Warden sees: the same elements without the handle or the local tier.
       wireElements = scan.elements.map(({ handle, tier, ...rest }) => rest);
+      pipeline.set('scene', { controls: scan.elements.length });
       noteStage('PERCEIVE', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'} found on the page`, stepNumber);
 
       // PRIVACY: refuse to capture unless the task tab is the browser's visible active tab.
@@ -1018,15 +1211,21 @@ async function runLoop(runId, secrets) {
         throw new Error('Task tab is not the visible tab; bring it to the front.');
       }
 
+      // One capture per step. It feeds the local mask below, the optional local detector, and
+      // the panel's view of what the agent saw; it never goes to the Warden.
       const screenshot = await chrome.tabs.captureVisibleTab(state.windowId, { format: 'png' });
       if (aborted(runId)) return;
 
       // PRIVACY: redact PII from the screenshot before it goes anywhere, including the local
-      // OmniParser detector below. Fails CLOSED: a masking failure returns dataUrl: null,
-      // never the original unmasked capture.
+      // OmniParser detector below and the panel. Fails CLOSED: a masking failure returns
+      // dataUrl: null, never the original unmasked capture.
       redacted = await redactScreenshot(screenshot, scan.piiFields || [], scan.viewport);
       if (aborted(runId)) return;
-      noteActivity(`Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}.`, stepNumber);
+      pipeline.set('screenshot', { dataUrl: redacted.dataUrl || null, ...pngSize(redacted.dataUrl) });
+      pipeline.patch('redaction', { screenMasked: redacted.maskedCount });
+      noteActivity(redacted.dataUrl
+        ? `Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}.`
+        : 'The screen capture could not be masked, so it was discarded.', stepNumber);
 
       if (secrets.useOmniparser) {
         if (redacted.dataUrl) {
@@ -1041,28 +1240,35 @@ async function runLoop(runId, secrets) {
         g11Trace.add('perceive', performance.now() - perceiveT0);
       }
       if (aborted(runId)) return;
+      traceStage('perceive', 'done', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'}, ${redacted.maskedCount} screen region${redacted.maskedCount === 1 ? '' : 's'} masked`);
 
       // 2. STRIP: the Warden is the sole stripping authority for the wire from here on. Raw
       //    `state.task`, raw `scan.dom` and the wire elements go to this ONE loopback call and
       //    no further; everything sent downstream uses only what /strip returns. The F17 gate
       //    and EXECUTE use `localScene`, which never leaves this worker.
+      traceStage('redact', 'active', null);
       const stripT0 = performance.now();
       let stripResp;
+      let uncertainAsked = 0;
       try {
-        stripResp = await resolveUncertainLoop(runId, state.task, scan.dom, wireElements, stepNumber);
+        ({ resp: stripResp, asked: uncertainAsked } = await resolveUncertainLoop(runId, state.task, scan.dom, wireElements, stepNumber));
       } finally {
         g11Trace.add('strip', performance.now() - stripT0);
       }
       if (aborted(runId)) return;
+      if (!Array.isArray(stripResp.elements)) throw new Error('warden: /strip returned no elements');
 
       const tokenCount = Object.keys(stripResp.tokens || {}).length;
+      // Tokens and types only; replacedFromStrip() never reads a value.
+      pipeline.patch('redaction', { replaced: replacedFromStrip(stripResp, resolvedAnswers), uncertainAsked });
+      traceStage('redact', 'done', `${tokenCount} value${tokenCount === 1 ? '' : 's'} replaced${uncertainAsked ? `, ${uncertainAsked} asked` : ''}${uncertainAsked ? ' (time includes your answers)' : ''}`);
       noteStage('STRIP', tokenCount === 0
         ? 'no personal data found, nothing was replaced'
         : `${tokenCount} value${tokenCount === 1 ? '' : 's'} replaced with tokens`, stepNumber);
       if (tokenCount > 0) {
         noteActivity(`Stripped ${tokenCount} value${tokenCount === 1 ? '' : 's'} before anything left this browser.`, stepNumber);
       }
-      const regexHits = (stripResp.decisions || []).length;
+      const regexHits = (stripResp.decisions || []).filter((d) => d && d.layer === 'regex').length;
       if (regexHits > 0) {
         noteActivity(`${regexHits} deterministic pattern match${regexHits === 1 ? '' : 'es'} in the strip layer.`, stepNumber);
       }
@@ -1070,15 +1276,17 @@ async function runLoop(runId, secrets) {
         noteActivity(`Stripped by Warden ${stripResp.warden}${state.wardenHealth?.model ? ` running ${state.wardenHealth.model}` : ''}.`, stepNumber);
       }
 
-      // Defense in depth beyond the frozen contract's minimum: /strip does not rewrite
-      // `elements[].label` (only the tokenizedTask/sanitizedDom text is tokenized; see
-      // warden/strip.py's out_elements), so a label like "Delete John Smith's account" would
-      // otherwise reach /plan verbatim. Apply the same local text-redaction pass v3 used, on
-      // the label field only, before these elements go anywhere else.
-      const planElements = stripResp.elements.map((el) => ({ ...el, label: redactText(el.label).text }));
+      // Defense in depth beyond the wire contract: see planElementsFrom().
+      const planElements = planElementsFrom(stripResp.elements, stripResp.tokens);
 
       await refreshVault(stripResp.tokens);
       if (aborted(runId)) return;
+      if (tokenCount > 0) {
+        // Local page overlay: labelled boxes over the visible text that was replaced. Best effort
+        // and not awaited: a page that cannot draw it must not stop the run. The map goes only to
+        // this tab's content script, which already holds it (SET_VAULT above).
+        chrome.tabs.sendMessage(state.tabId, { type: 'HIGHLIGHT_REDACTIONS', tokens: { ...currentVault } }).catch(() => {});
+      }
 
       const redactionRows = [
         ...(stripResp.decisions || []).map((d) => ({ pattern: d.pattern, match: d.layer, confidence: String(d.score) })),
@@ -1107,15 +1315,15 @@ async function runLoop(runId, secrets) {
       };
       state.steps.push(scanStep);
 
-      // 3. PLAN + 4. VALIDATE, with the bounded reject/re-plan loop and the local F17 gate.
-      const outcome = await planAndValidate(runId, state.task, stripResp.tokenizedTask, stripResp.sanitizedDom, planElements, localScene, buildHistory(state.steps), stepNumber);
+      // 3. PLAN + 4. CHECK, with the bounded reject/re-plan loop and the local F17 gate.
+      const outcome = await planAndCheck(runId, state.task, stripResp.tokenizedTask, stripResp.sanitizedDom, planElements, localScene, buildHistory(state.steps), stepNumber);
       if (aborted(runId)) return;
 
       if (outcome.choice === 'proceed') {
         appendEntry({
           kind: 'validated',
           step: stepNumber,
-          text: `Approved by you: ${outcome.plan.action}${outcome.plan.target_selector ? ` on ${outcome.plan.target_selector}` : ''} (tier: ${outcome.tier ?? 'unknown'}, verdict: ${outcome.verdict}).`,
+          text: `Approved by you: ${describeTarget(outcome.plan)} (tier: ${outcome.tier ?? 'unknown'}, verdict: ${outcome.verdict}).`,
         });
       }
 
@@ -1124,15 +1332,16 @@ async function runLoop(runId, secrets) {
         state.finishedAt = Date.now();
         state.steps.push({
           stepNumber, action: outcome.plan?.action || 'ERROR', status: 'error',
-          reasoningToken: outcome.localError || 'Run stopped by user at a validation prompt.',
+          reasoningToken: 'Run stopped by user at a validation prompt.',
           piiMaskedCount: redacted.maskedCount, latencyMs: outcome.planResp?.latencyMs ?? 0,
           elements: planElements, elementCount: planElements.length,
           omniElements: omni.elements, omniStatus: omni.status,
           domPreview: (stripResp.sanitizedDom || '').slice(0, 2000), valueToken: null,
-          result: { error: outcome.localError || 'stopped' },
+          result: { error: 'stopped' },
           wardenModel: outcome.planResp?.model || null, switched: outcome.planResp?.switched || [],
           tier: outcome.tier, verdict: outcome.verdict, checks: outcome.checks,
         });
+        traceActNotRun(outcome.plan, 'stopped', 'you stopped the run at a validation question');
         noteActivity('You stopped the run at a validation question.', stepNumber);
         g11Trace.setTerminal(outcome.verdict === 'reject' ? 'reject' : outcome.verdict === 'ask' ? 'ask' : 'blocked');
         return;
@@ -1150,7 +1359,8 @@ async function runLoop(runId, secrets) {
           wardenModel: outcome.planResp?.model || null, switched: outcome.planResp?.switched || [],
           tier: outcome.tier, verdict: outcome.verdict, checks: outcome.checks,
         });
-        noteActivity(`You skipped this step: ${outcome.plan.action}${outcome.plan.target_selector ? ` on ${outcome.plan.target_selector}` : ''}.`, stepNumber);
+        traceActNotRun(outcome.plan, 'skipped', 'you skipped this step');
+        noteActivity(`You skipped this step: ${describeTarget(outcome.plan)}.`, stepNumber);
         state.status = 'waiting';
         await sleep(SETTLE_MS);
         continue;
@@ -1165,6 +1375,8 @@ async function runLoop(runId, secrets) {
       if (outcome.choice == null && outcome.verdict === 'accept' && tierPermitsUnattended(outcome.tier)) {
         g11Trace.patchLatestF17({ unattendedExecuteAllowed: true, gatePath: 'unattended_ok' });
       }
+      pipeline.set('act', { action: action.action, target: action.target_selector ?? null, outcome: null, error: null });
+      traceStage('act', 'active', describeTarget(action));
       let result;
       let navigated = false;
       let executeChoice = null;
@@ -1181,13 +1393,19 @@ async function runLoop(runId, secrets) {
       if (executeChoice === 'stop') {
         state.status = 'stopped';
         state.finishedAt = Date.now();
+        pipeline.patch('act', { outcome: 'stopped', error: null });
+        traceStage('act', 'skipped', 'you stopped the run when the page changed the target after planning');
         noteActivity('You stopped the run when the page changed the target after planning.', stepNumber);
         g11Trace.setTerminal('blocked');
         return;
       }
 
-      const failed = !navigated && Boolean(result?.error);
-      noteStage('EXECUTE', `${action.action}${action.target_selector ? ` on ${action.target_selector}` : ''}, ${navigated ? 'the page navigated' : failed ? 'failed' : 'done'}`, stepNumber);
+      const skippedLive = executeChoice === 'skip';
+      const failed = !navigated && !skippedLive && Boolean(result?.error);
+      const actOutcome = navigated ? 'navigated' : skippedLive ? 'skipped' : failed ? 'failed' : 'done';
+      pipeline.patch('act', { outcome: actOutcome, error: failed ? String(result.error) : null });
+      traceStage('act', failed ? 'error' : skippedLive ? 'skipped' : 'done', actOutcome);
+      noteStage('EXECUTE', `${describeTarget(action)}, ${navigated ? 'the page navigated' : skippedLive ? 'skipped by you' : failed ? 'failed' : 'done'}`, stepNumber);
       if (failed) noteError(`The page refused that step: ${result.error}`, stepNumber);
 
       state.steps.push({
@@ -1205,7 +1423,7 @@ async function runLoop(runId, secrets) {
         tier: outcome.tier, verdict: outcome.verdict, checks: outcome.checks,
       });
 
-      if (action.action === 'finish') {
+      if (action.action === 'finish' && !skippedLive) {
         state.status = 'finished';
         state.finishedAt = Date.now();
         g11Trace.setTerminal(failed ? 'error' : 'ok');
@@ -1226,6 +1444,7 @@ async function runLoop(runId, secrets) {
       noteError(`The step limit (${MAX_STEPS}) was reached without the agent finishing.`, state.stepNumber);
     }
   } catch (error) {
+    lastError = error;
     if (runId === state.runId) {
       g11Trace.setTerminal(state.status === 'stopped' && error.message === 'Stopped' ? 'blocked' : 'error');
       // A Stop pressed while a prompt was pending unblocks this loop by rejecting that
@@ -1242,6 +1461,12 @@ async function runLoop(runId, secrets) {
     // The finally block, and every state write in it, applies only to the loop's own run: a
     // superseded run must never clobber a newer one's state.
     if (runId === state.runId) {
+      // A stage still active when the run ended is closed with what actually happened to it.
+      const active = pipeline.current()?.runId === runId ? pipeline.activeStage() : null;
+      if (active) {
+        if (state.status === 'error') traceStage(active, 'error', lastError?.message || 'the run ended with an error');
+        else traceStage(active, 'skipped', 'the run was stopped');
+      }
       const traced = g11Trace.snapshot();
       if (!traced.terminal) {
         if (state.status === 'finished') g11Trace.setTerminal('ok');
@@ -1253,6 +1478,9 @@ async function runLoop(runId, secrets) {
       // Exactly one terminal marker per accepted task, which is what the panel reads to decide
       // whether a run is still in flight.
       noteRunEnd(`Run ${state.status} after ${state.stepNumber} step${state.stepNumber === 1 ? '' : 's'}.`, state.status);
+      // CLEAR_HIGHLIGHTS removes the redaction overlay (per the v5 contract); END_TASK clears the
+      // content script's vault and handles, and the overlay too in case the first was dropped.
+      chrome.tabs.sendMessage(state.tabId, { type: 'CLEAR_HIGHLIGHTS' }).catch(() => {});
       chrome.tabs.sendMessage(state.tabId, { type: 'END_TASK' }).catch(() => {});
       currentVault = null; // hygiene: the vault must not outlive its run.
     }
@@ -1320,16 +1548,6 @@ function buildHistory(steps) {
     .filter((step) => step.action !== 'PAGE_SCAN')
     .slice(-HISTORY_LIMIT)
     .map((step) => ({ stepNumber: step.stepNumber, action: step.action, target: step.target ?? null, status: step.status }));
-}
-
-// PRIVACY: never echo a literal typed value into the transcript. Numeric amounts (scroll/wait)
-// are safe. A vault token (EMAIL#1, PERSONNAME#1, ...) is also safe to show verbatim: it names
-// a PII type and position, not content.
-function toValueToken(value) {
-  if (value == null || value === '') return null;
-  if (/^[A-Z]+#\d+$/.test(value)) return value;
-  if (/^\d+$/.test(value)) return value;
-  return '*'.repeat(Math.min(value.length, 18));
 }
 
 // ---- Startup ---------------------------------------------------------------

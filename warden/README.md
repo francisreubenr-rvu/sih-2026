@@ -1,21 +1,23 @@
 # DHRISTI Warden
 
 The local application that holds the PII model. It is the single authority on what counts as
-personal data. `POST /plan` defaults to local Ollama. Groq is an explicit off-path, not the
-offline planner. The Warden validates every returned plan before the browser is allowed to act
-on it.
+personal data. The local machine runs a model for one job, PII redaction; `POST /plan` defaults to
+Groq (cloud) over already-tokenized text, behind an egress guard. `WARDEN_PLANNER=ollama` selects the
+offline local planner instead. The Warden validates every returned plan before the browser is allowed
+to act on it.
 
-Architecture and the frozen HTTP contract: `../Docs/specs/2026-09-13-dhristi-v4-warden.md`.
+Architecture and the frozen HTTP contract: `../Docs/specs/2026-09-13-dhristi-v4-warden.md`, with the
+additive wire changes in `../Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md`.
 Port decision: `../Docs/decisions/brain-option-c-warden-port.md`.
 
 ## This port (Option C)
 
 Francis locked Option C on the `sih-2026` master line. Two facts sit next to each other:
 
-1. **Phase 1 planner default is local Ollama**, the offline path on `http://127.0.0.1:11434`. A model tag ending in `:cloud` is not that path.
-2. **`POST /plan` now implements that default.** `dispatch_plan` calls `ollama_client.plan_via_ollama` unless `WARDEN_PLANNER=groq`. If Ollama is down, not loopback, or tagged `:cloud`, `/plan` returns an error and does not call Groq. Ollama remains the optional `/validate` reasoning stage as well (`ollama_client.review`). That stage may only downgrade `accept` to `ask`.
+1. **The planner default is Groq (cloud)** since 29 September 2026 (v5 spec). `dispatch_plan` calls `groq_client.plan_via_groq` unless `WARDEN_PLANNER=ollama`. Any other value fails closed with 503 and calls no model. Without `GROQ_API_KEY` the default path returns 503 and does not call Ollama.
+2. **`WARDEN_PLANNER=ollama` is the offline path**, local Ollama on `http://127.0.0.1:11434`. If Ollama is down, not loopback, or tagged `:cloud`, `/plan` returns an error and does not call Groq. A model tag ending in `:cloud` is not that path. Ollama remains the optional `/validate` reasoning stage as well (`ollama_client.review`). That stage may only downgrade `accept` to `ask`.
 
-Do not describe a Groq `/plan` response as the offline planner. Groq runs only when `WARDEN_PLANNER=groq` and `GROQ_API_KEY` is set.
+Do not describe a Groq `/plan` response as the offline planner. Every `/plan` response and `/health` carry `destination` (`cloud` for Groq, `local` for Ollama) so the extension can say where the body went.
 
 **Start** (loopback only, port **8756**):
 
@@ -46,16 +48,16 @@ cases where a deterministic answer is better than a probabilistic one.
 | Python | `~/.venvs/data/bin/python` (3.14.7). System Python is externally managed; do not use it. |
 | Packages | gliner, torch, transformers, fastapi, uvicorn, all already installed in that venv |
 | Model weights | `urchade/gliner_multi_pii-v1`, cached under `HF_HOME` |
-| Ollama | Required for `POST /plan` on the default path. Also used for optional `/validate` reasoning. Host must be loopback (`http://127.0.0.1:11434` unless `OLLAMA_HOST` says otherwise). |
-| Groq key | Optional. Not read by the default planner. Required only when `WARDEN_PLANNER=groq`. Goes in `.env`, never in a tracked file, never in the browser. |
+| Groq key | Required for `POST /plan` on the default path. Goes in `.env`, never in a tracked file, never in the browser. `GROQ_BASE_URL` (default `https://api.groq.com/openai/v1`) names the OpenAI-compatible endpoint; the key is sent there, so change it only deliberately (the test suite points it at a local fake server). |
+| Ollama | Required for `POST /plan` only when `WARDEN_PLANNER=ollama`. Also used for optional `/validate` reasoning. Host must be loopback (`http://127.0.0.1:11434` unless `OLLAMA_HOST` says otherwise). |
 
 ## Setup
 
 ```sh
 cp .env.example .env
-# Default planner is local Ollama. Leave WARDEN_PLANNER unset.
-# Put a Groq key in .env only if you set WARDEN_PLANNER=groq.
+# Default planner is Groq. Put GROQ_API_KEY in .env.
 # Get one at console.groq.com/keys. Never paste a key into a chat or a tracked file.
+# For offline local planning instead, set WARDEN_PLANNER=ollama.
 ```
 
 ## Run
@@ -68,6 +70,10 @@ export HF_HOME="/Volumes/1TB SSD/LM/hub"
 
 It binds to 127.0.0.1 only, never 0.0.0.0. This service is a PII oracle: anything that can reach it
 can ask it what in a piece of text is personal data, so it must not be exposed to the network.
+
+`HF_HOME` above is the development machine's cache. On any other machine point it at your own cache,
+or leave it unset: the Warden only defaults to that path when the directory exists, otherwise the
+Hugging Face library's own default cache is used.
 
 The model loads at startup. `/health` reports `loaded: false` until it finishes and `/strip` answers
 503 in the meantime. Poll `/health` rather than assuming it is ready.
@@ -90,9 +96,9 @@ confidence interval is claimed.
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | Readiness, model id, regex pattern count, whether Groq is configured |
-| POST | `/strip` | Two-layer PII removal, returns tokenized text, the token map, and uncertain spans |
-| POST | `/plan` | Groq planning over sanitised material, with model fallback |
+| GET | `/health` | Readiness, model id, regex pattern count, `planner` (`groq`/`ollama`/`invalid`), `destination` (`cloud`/`local`/null), `plannerModel` (first model of `GROQ_MODEL_CHAIN` for Groq, `WARDEN_OLLAMA_MODEL` for Ollama, null if invalid), whether Groq is configured |
+| POST | `/strip` | Two-layer PII removal, returns tokenized text, tokenized element labels, the token map, uncertain spans and value-free decisions |
+| POST | `/plan` | Egress guard, then planning over sanitised material (Groq with model fallback by default, Ollama when `WARDEN_PLANNER=ollama`) |
 | POST | `/validate` | Deterministic checks, then optional local reasoning |
 
 Request and response shapes are in the frozen spec. `/health` never returns the Groq key, only
@@ -109,6 +115,35 @@ space, with the deterministic layer winning on overlap.
    A regex hit is certain and never enters the uncertain band.
 2. **GLiNER layer** (`entities.py`) for what regex cannot reach: person name, address, date of birth,
    account number, password.
+
+### GLiNER scores one line at a time
+
+The model's window is 384 words and everything past it is dropped. Handing it the whole serialised
+DOM lost every name after the first few lines, and even a few lines together scored badly because a
+list of unrelated controls dilutes each name. Measured in a Linux container on 29 September 2026
+(CPU torch, gliner 0.2.29), 120 synthetic DOM lines with 10 names:
+
+| Chunking | Names found | Latency |
+|---|---|---|
+| Whole text (old) | 0/10 | 0.45 s |
+| 8 lines per chunk | 3/10 | 10.4 s |
+| 4 lines per chunk | 3/10 | 8.4 s |
+| 1 line per chunk (now) | 9/10 | 7.4 s with the old filler, 3.4 s as shipped |
+
+On a 41-line page with names on lines 2 and 39, the old whole-text call found neither; one line per
+chunk finds both and strips them (scores at or above 0.60). A line longer than 128 words is split on whitespace. Offsets map back to the
+original text exactly. The scaffolding filler is now one `·` then spaces instead of one `·` per
+character, which halved latency with no added false positives on the same fixture, and the leading
+`N.` element index is neutralised too (scored alone, a line index came back as an account number). Full numbers are
+in the comment above `entities._chunk_spans`. One run, one fixture: not a benchmark.
+
+### One token per value, and labels
+
+The same (type, value) gets one token across the task and the DOM, and one uncertain question covers
+every occurrence. `elements[].label` comes back tokenized with the same tokens as `sanitizedDom`: the
+regex layer runs on each label, then every value minted in the request is replaced by its token,
+longest first, as an exact substring. A value the user chose to keep stays. Each `decisions[]` entry
+carries `token` and `source` (`task`, `dom` or `label`) and never a raw value.
 
 ### Why both layers see raw text
 
@@ -153,7 +188,20 @@ shows the underscore form; that example is wrong and `minter.py` deliberately do
 
 ## Planning and model fallback
 
-The section below describes the **imported Groq `/plan` chain** from commit `2afd215`. It is not the Option C Phase 1 default. That default is local Ollama, and it is not wired to `/plan` in this import. See "This port (Option C)" above.
+This is the default planner (`WARDEN_PLANNER` unset or `groq`). See "This port (Option C)" above for
+the offline Ollama mode.
+
+### Egress guard
+
+Before any planner is called, `/plan` runs the same deterministic regex layer `/strip` uses over every
+string in the body: `tokenizedTask`, `sanitizedDom`, every element field (labels, selectors), and
+`history`. Any hit refuses the request with HTTP 422
+`{error, egressGuard: {pattern, field}, planner, warden}` and no model is called. The refusal names the
+pattern and the field path (for example `elements[0].label`), never the value. `TYPE#n` tokens are
+blanked before the scan, so they never trip it. A body carrying `tokens` is still refused first, with
+400.
+
+### Model fallback
 
 `/plan` tries the chain in order, moving on immediately on HTTP 5xx, 429, a timeout, or an
 unparseable body. The response lists every model that failed in `switched`, so a fallback is visible
@@ -233,8 +281,10 @@ incident that made this rule non-negotiable.
 | Condition | Behaviour |
 |---|---|
 | Model still loading | `/health` reports `loaded: false`, `/strip` answers 503 |
-| Groq key missing | `/health` reports `groqConfigured: false`. Default `/plan` still uses Ollama. `WARDEN_PLANNER=groq` without a key returns 503 and does not call a model. |
-| Ollama absent for `/plan` | 503 with a clear error. Groq is not called. |
+| Groq key missing | `/health` reports `groqConfigured: false`. Default `/plan` returns 503 and does not call a model. |
+| `WARDEN_PLANNER` set to anything but `groq` or `ollama` | `/plan` returns 503 and calls no model; `/health` reports `planner: invalid`, `destination: null`. |
+| Ollama absent for `/plan` with `WARDEN_PLANNER=ollama` | 503 with a clear error. Groq is not called. |
+| `/plan` body contains a regex-detectable value | 422 from the egress guard. No model is called. |
 | Ollama absent for `/validate` | Deterministic validation still runs and is authoritative; the reasoning check records as skipped |
 | Warden not running | The extension refuses to start a run. It does not fall back to the old browser regex filter, because silently downgrading a privacy guarantee the user was shown is worse than an honest stop. |
 

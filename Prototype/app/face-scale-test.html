@@ -4,32 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dhristi — face scale matrix</title>
+<link rel="stylesheet" href="/app/signal.css">
 <style>
-  :root { color-scheme: light; }
-  body { margin:0; padding:32px; background:#f4f1ea; color:#111;
-         font:15px/1.5 ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
-  h1 { font-size:26px; letter-spacing:-.02em; margin:0 0 8px; }
-  p.lede { max-width:64ch; margin:0 0 20px; color:#333; }
-  button { font:inherit; padding:10px 16px; border:1px solid #111; background:#111; color:#f4f1ea;
-           border-radius:2px; cursor:pointer; margin-right:8px; }
-  button[disabled] { opacity:.5; cursor:progress; }
-  #status { margin:16px 0 8px; font-variant-numeric:tabular-nums; }
-  pre { background:#fff; border:1px solid #d8d3c8; padding:14px; overflow:auto; max-height:60vh;
-        font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
-  table { border-collapse:collapse; margin-top:16px; }
-  th, td { border-bottom:1px solid #d8d3c8; padding:6px 14px 6px 0; text-align:left;
-           font-variant-numeric:tabular-nums; }
+  /* Local detector diagnostic. Colour, type, controls and bands come from signal.css.
+     Bands: header panel > intro void (H1 + the one primary button) > results panel. */
+  #status { font-variant-numeric:tabular-nums; }
+  #record { overflow:auto; max-height:60vh; }
+  td { font-variant-numeric:tabular-nums; }
+  button[disabled] { cursor:progress; }
 </style>
 </head>
 <body>
-<h1>Face detection across input scales</h1>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><div class="bar"><span class="wordmark">Dhristi<small>Local detector diagnostic</small></span><nav class="nav" aria-label="Site"><a href="/">Back to workspace</a></nav></div></div></header>
+<main id="main">
+<section class="band band-void" aria-labelledby="page-title"><div class="wrap">
+<div class="c-8 page-intro"><p class="eyebrow">Dhristi / local detector diagnostic</p>
+<h1 id="page-title">Face detection across input scales</h1>
 <p class="lede">Runs the packaged UltraFace RFB-320 detector over one synthetic source image rendered at a range of square sizes.
-Each size is drawn into a fresh canvas, then passed to the real detector. Purely local; no network request leaves this page.</p>
-<button id="run" type="button">Run scale matrix</button>
-<button id="run48" type="button">Run 48–128 px only</button>
+Each size is drawn into a fresh canvas, then passed to the real detector. Purely local; no network request leaves this page.</p></div>
+<div class="actions"><button id="run" class="primary" type="button">Run scale matrix</button>
+<button id="run48" type="button">Run 48–128 px only</button></div>
 <p id="status">Bootstrapping.</p>
-<table id="table"><thead><tr><th>Input size</th><th>Detections</th><th>Inference ms</th><th>Wall ms</th></tr></thead><tbody></tbody></table>
+</div></section>
+<section class="band band-panel" aria-labelledby="results-title"><div class="wrap"><div class="c-8 stack">
+<h2 id="results-title">Detections by input size</h2>
+<div class="table-wrap"><table id="table"><thead><tr><th>Input size</th><th>Detections</th><th>Inference ms</th><th>Wall ms</th></tr></thead><tbody></tbody></table></div>
 <pre id="record" hidden></pre>
+</div></div></section>
+</main>
 <script type="module" src="/app/face-scale-test.mjs"></script>
 </body>
 </html>
