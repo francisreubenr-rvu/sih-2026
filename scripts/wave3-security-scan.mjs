@@ -1,6 +1,6 @@
 /**
  * Wave 3 honest security evidence: secret/pattern scan + sanitize boundary citation.
- * Never prints matched secret values — only path + pattern id.
+ * Never prints matched secret values; only path + pattern id.
  */
 import { readFile, writeFile, mkdir, readdir, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';

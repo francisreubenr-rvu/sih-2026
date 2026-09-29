@@ -1,4 +1,4 @@
-# Brain — Pixel UI wrap densify
+# Brain: Pixel UI wrap densify
 
 **Date:** 2026-09-22  
 **Branch:** `brain/wrap-pixel-proto-video`  
@@ -30,11 +30,11 @@ Francis board pins (Japanese pixel art, not too simple):
 
 ## Honesty (unchanged)
 
-- DigiLocker-inspired UX only — not partner/API/custody.
+- DigiLocker-inspired UX only, not partner/API/custody.
 - Fast ≠ G11; G11 remains fail.
 - Semantic scene egress only; raw pixels local.
 - No named ISRO portal fiction; no MeitY seal.
-- G20 paused; `officialScore` may stay null — UI copy stays honest.
+- G20 paused; `officialScore` may stay null; UI copy stays honest.
 - No invented metrics/passes in chrome.
 
 ## Files

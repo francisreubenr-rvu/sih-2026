@@ -1,6 +1,6 @@
 # SIH 2026 engineering process and readiness record
 
-**Status: PREPARATION DELIVERY — NOT SUBMISSION READY.** Requested problem: SIH2171. Internal deadline: 11 September 2026, Asia/Kolkata. Prepared 8–9 September 2026 for Francis and the six-person RV University team. This records work performed and decisions taken; planned engineering is explicitly distinguished from completed implementation.
+**Status: PREPARATION DELIVERY, NOT SUBMISSION READY.** Requested problem: SIH2171. Internal deadline: 11 September 2026, Asia/Kolkata. Prepared 8–9 September 2026 for Francis and the six-person RV University team. This records work performed and decisions taken; planned engineering is explicitly distinguished from completed implementation.
 
 ## 1. Scope and outcome
 

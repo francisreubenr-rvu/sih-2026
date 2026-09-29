@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * One-command Fast-path judge harness — no Ollama required.
+ * One-command Fast-path judge harness, no Ollama required.
  *
  * Runs:
  *  1) Prototype unit tests with OLLAMA_URL forced unreachable (same as test:ci)
@@ -33,7 +33,7 @@ const checks = {};
 function record(name, status, detail = {}) {
   checks[name] = { status, ...detail, at: new Date().toISOString() };
   const mark = status === 'pass' ? 'PASS' : status === 'fail' ? 'FAIL' : status.toUpperCase();
-  console.log(`[${mark}] ${name}${detail.message ? ` — ${detail.message}` : ''}`);
+  console.log(`[${mark}] ${name}${detail.message ? `: ${detail.message}` : ''}`);
 }
 
 function run(cmd, args, opts = {}) {

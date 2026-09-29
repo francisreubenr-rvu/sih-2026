@@ -59,7 +59,7 @@ for (let i = 0; i < HEALTH_ROUNDS; i++) {
 }
 await Promise.all(healthJobs);
 
-// Direct durable store capacity (bypasses HTTP rate limit — measures audit persistence).
+// Direct durable store capacity (bypasses HTTP rate limit; measures audit persistence).
 const directStarted = Date.now();
 for (let i = 0; i < WRITE_TARGET; i++) {
   audits.push({

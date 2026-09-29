@@ -95,7 +95,7 @@ const userDataDir = await mkdtemp(join(tmpdir(), 'dhristi-ext-loop-'));
 
 try {
   if (!existsSync(join(extPath, 'manifest.json'))) {
-    throw new Error('Missing Prototype/extension-build — run npm run build:extension first');
+    throw new Error('Missing Prototype/extension-build: run npm run build:extension first');
   }
   serverHandle = await ensureServer();
   record.server = { started_by_harness: serverHandle.started, origin: serverOrigin };

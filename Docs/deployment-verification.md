@@ -1,4 +1,4 @@
-# Latest video checkpoint — 10 September 2026
+# Latest video checkpoint (10 September 2026)
 
 Published commit `7e9b692a04c4e69003397dc6acb6c630e25e8b7e` through successful [Pages run34418979547](https://github.com/francisreubenr-rvu/sih-2026/actions/runs/34418979547).
 
@@ -12,7 +12,7 @@ Evidence: `Benchmarks/results/pages-dhristi-v02.json`, `Benchmarks/results/light
 
 ---
 
-# Dhristi candidate deployment — verified 9 September 2026
+# Dhristi candidate deployment (verified 9 September 2026)
 
 - Public URL: https://francisreubenr-rvu.github.io/sih-2026/
 - Deployed source: `69188d797820519ce2e82361661dfe0b3c07714d` on `master`.

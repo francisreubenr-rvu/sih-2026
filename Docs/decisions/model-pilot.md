@@ -1,4 +1,4 @@
-# Model adapter development pilot — 10 September 2026
+# Model adapter development pilot (10 September 2026)
 
 The single-choice adapter improves Qwen2.5 7B from 16/24 to 22/24 on the authored development cases. Keep Qwen7B as the current default. Do not promote the faster 0.5B model: it gets only 7/24 correct in the latest run. None of these results establishes general browser-agent reliability.
 

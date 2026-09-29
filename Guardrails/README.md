@@ -1,4 +1,4 @@
-# Guardrails — release rules
+# Guardrails: release rules
 
 **Current disposition: NOT SUBMISSION READY.** SIH2171 identity is unverified. The proposed rules below do not validate the problem, its eligibility, the deadline or a prototype. `guardrails.json` is the machine-readable source of truth; its current results are a failed identity check and unknown implementation checks.
 

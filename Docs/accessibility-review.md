@@ -1,4 +1,4 @@
-# Accessibility review — preparation website
+# Accessibility review: preparation website
 
 Target: WCAG 2.1 AA. Status: partial evaluation, conformance unknown. Source: https://www.w3.org/TR/WCAG21/ .
 
@@ -31,6 +31,6 @@ Automated axe-core CDN inject recorded in `Benchmarks/results/accessibility.json
 - WCAG 1.4.12 text-spacing CSS override: no horizontal overflow on Website or popup probes.
 - EN/HI: Website site-lang toggle sets `html lang`; popup lang buttons have aria-labels and set `documentElement.lang` (HTTP harness after runtime guard).
 - DigiLocker-credible navy/paper trust chip contrast retained; Hindi trust string darkened to `#0a5230`.
-- Partial criterion checklist recorded in accessibility.json — **not** full WCAG AA conformance.
+- Partial criterion checklist recorded in accessibility.json, **not** full WCAG AA conformance.
 
 **G09/G10 remain unknown** until criterion-level WCAG documentation, real AT review, and native 200% browser zoom / complete motion-safety are complete.

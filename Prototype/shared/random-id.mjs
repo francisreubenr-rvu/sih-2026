@@ -1,8 +1,8 @@
 // Revision identity for the page agent.
 //
 // crypto.randomUUID() is gated to secure contexts (HTTPS, localhost, file:,
-// extension origins). A content script injected into an ordinary http:// page —
-// the extension's whole purpose — would therefore throw inside createPageAgent()
+// extension origins). A content script injected into an ordinary http:// page
+// (the extension's whole purpose) would therefore throw inside createPageAgent()
 // before it could observe anything. crypto.getRandomValues() is available in
 // every context, so it carries the real fallback.
 

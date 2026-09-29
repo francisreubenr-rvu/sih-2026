@@ -67,7 +67,7 @@ def base(family,title,kicker,number,dark=False):
     return sl
 
 def notes(sl,seconds,text,refs=''):
-    sl.notes_slide.notes_text_frame.text=(f'BLUEPRINT — NOT SUBMISSION READY\nPlanned slot: {seconds} seconds. Timing is an allocation, not a measured rehearsal.\n\n'+text+'\n\n'+('Sources / provenance:\n'+refs if refs else 'Provenance: authored planning framework; no measured outcome claimed.'))
+    sl.notes_slide.notes_text_frame.text=(f'BLUEPRINT: NOT SUBMISSION READY\nPlanned slot: {seconds} seconds. Timing is an allocation, not a measured rehearsal.\n\n'+text+'\n\n'+('Sources / provenance:\n'+refs if refs else 'Provenance: authored planning framework; no measured outcome claimed.'))
 
 F=['TITLE PAGE','IDEA TITLE','TECHNICAL APPROACH','FEASIBILITY AND VIABILITY','IMPACT AND BENEFITS','RESEARCH  AND REFERENCES']
 
@@ -79,7 +79,7 @@ txt(s,'Before this becomes a pitch',8.72,3.48,3.8,.5,22,PAPER,True)
 txt(s,'Confirm statement identity\nConfirm registered team details\nReplace evidence slots',8.72,4.25,3.8,1.65,21,PAPER)
 notes(s,25,'This file is an expanded preparation blueprint, not a completed competition pitch. The supplied identifier is SIH2171. Its official problem title, theme, category and edition have not been verified. The team facts come from Francis’s brief. Before presenting this as a solution, replace these open fields with the exact organizer-issued statement and registered team details. The separate submission deck must follow the supplied six-slide format.','User brief; Docs/team-plan.md; supplied SIH2025-IDEA-Presentation-Format (2).pptx')
 
-s=base(F[1],'Make the problem measurable.','A population, a burden and a baseline — all three need sources.',2)
+s=base(F[1],'Make the problem measurable.','A population, a burden and a baseline: all three need sources.',2)
 panel(s,.58,3.06,3.85,2.92,'WHO','Target audience\nGeography and context\nSource + date')
 panel(s,4.72,3.06,3.85,2.92,'WHAT IT COSTS','Time, money or access\nUnit and denominator\nMeasurement method')
 panel(s,8.86,3.06,3.85,2.92,'WHAT EXISTS','Present workflow\nBaseline result\nKnown limitations')

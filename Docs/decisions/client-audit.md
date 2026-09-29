@@ -1,4 +1,4 @@
-# Client boundary audit — 9 September 2026
+# Client boundary audit (9 September 2026)
 
 Scope: shared page agent, geometric privacy contract, local vision lifecycle and web capture cleanup. Automated checks are dependency-free DOM/runtime doubles, not native browser certification.
 

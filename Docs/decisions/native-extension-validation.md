@@ -37,7 +37,7 @@ The fixture carries allow-listed labels (`Pending`, `Next`, `Cancel`) and a synt
 
 ## The defect this harness found
 
-`crypto.randomUUID()` is gated to secure contexts, so it does not exist on a plain `http://` page — exactly the extension's target. `createPageAgent()` called it unconditionally, threw, and `content.mjs` never registered `globalThis.__dhristiController`. The extension was inert on every non-HTTPS page.
+`crypto.randomUUID()` is gated to secure contexts, so it does not exist on a plain `http://` page, exactly the extension's target. `createPageAgent()` called it unconditionally, threw, and `content.mjs` never registered `globalThis.__dhristiController`. The extension was inert on every non-HTTPS page.
 
 `Prototype/shared/random-id.mjs` now exports `newRevisionId(source, { allowWeakFallback })`: it prefers `randomUUID`, falls back to a UUID v4 built from `getRandomValues`, exposes an explicit `weakRevisionId()` nonce for callers that accept `Math.random`, and throws when no crypto source exists at all. Both `page-agent.mjs` call sites and the default `randomId` in `local-values.mjs` use it. Two regression tests cover a page with no secure-context `randomUUID` and a source that reports a crypto object it cannot use; the suite is 77 tests, all passing.
 

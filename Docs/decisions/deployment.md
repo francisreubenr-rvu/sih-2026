@@ -1,4 +1,4 @@
-# ADR 003 — Static project site and separate inference service
+# ADR 003: Static project site and separate inference service
 
 The user's website publication target is GitHub Pages. It serves static Website files; it cannot host the Node API or Ollama. Keep the static project site independently usable with a recorded demonstration, source/extension download and explicitly labeled instructions for running the real local prototype.
 

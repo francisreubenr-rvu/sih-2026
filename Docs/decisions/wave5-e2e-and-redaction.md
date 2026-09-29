@@ -1,4 +1,4 @@
-# Wave 5 — e2e maximize + selective redaction utility (14 September 2026)
+# Wave 5: e2e maximize + selective redaction utility (14 September 2026)
 
 ## Decisions
 

@@ -1,4 +1,4 @@
-# ADR 002 — UltraFace RFB-320 on local WASM
+# ADR 002: UltraFace RFB-320 on local WASM
 
 Implemented and observed in browser 9 September 2026. Runtime: pinned `onnxruntime-web@1.23.2`, single thread, packaged same-origin assets. Model and runtime hashes/licenses: `Prototype/models/manifest.json`.
 

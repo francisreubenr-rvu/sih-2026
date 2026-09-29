@@ -1,4 +1,4 @@
-# Dhristi — pixel UI design direction
+# Dhristi: pixel UI design direction
 
 Distilled from the 25-pin **Dhristi Pixel Refs** board.
 

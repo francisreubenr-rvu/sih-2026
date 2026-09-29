@@ -1,4 +1,4 @@
-# Dhristi — SIH26171 prototype
+# Dhristi: SIH26171 prototype
 
 An implemented local demonstration of browser vision → protected semantic layout → open-weight server reasoning → reviewed browser action. This is an engineering candidate, not a completed competition submission.
 
@@ -10,7 +10,7 @@ Requires Node.js 22+ with `node:sqlite` and npm. **Ollama is optional** (Reason 
 cd Prototype
 npm ci
 node ../scripts/build-prototype.mjs
-# Optional planner (Reason path) — skip for privacy-only Fast / CI:
+# Optional planner (Reason path); skip for privacy-only Fast / CI:
 # ollama serve
 # ollama pull qwen2.5:7b-instruct
 npm start
@@ -39,15 +39,15 @@ Open the popup's **Server setup**, copy its exact extension origin into `ALLOWED
 ## Tests and builds
 
 ```sh
-npm test          # local unit/integration — test-double providers only
+npm test          # local unit/integration, test-double providers only
 npm run test:ci   # CI entry: same suite with OLLAMA_URL forced unreachable
-npm run judge:fast # one-command Fast/Score judge path — no Ollama
+npm run judge:fast # one-command Fast/Score judge path, no Ollama
 node ../scripts/build-prototype.mjs
 node ../scripts/build-extension.mjs
 npm audit --omit=dev
 ```
 
-Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/origins, request-size/rate limits, provider error handling and detector math. **CI never starts Ollama** — see `../Docs/decisions/brain-72h-ci-demo.md` and `.github/workflows/prototype-test.yml`. Browser evidence is recorded separately in `Benchmarks/results/prototype-v01-browser.json`; unit tests and load-soak scripts use explicit model test doubles (`infer` / `fetchImpl`); recorded manual Reason-path workflow uses real Qwen2.5 when available.
+Node tests cover schema rejection, geometry bounds, unsafe commands, HTTP auth/origins, request-size/rate limits, provider error handling and detector math. **CI never starts Ollama**. See `../Docs/decisions/brain-72h-ci-demo.md` and `.github/workflows/prototype-test.yml`. Browser evidence is recorded separately in `Benchmarks/results/prototype-v01-browser.json`; unit tests and load-soak scripts use explicit model test doubles (`infer` / `fetchImpl`); recorded manual Reason-path workflow uses real Qwen2.5 when available.
 
 ### Human toolbar Capture & protect (not automated)
 
@@ -63,20 +63,20 @@ The authenticated API is `/api/v1/plans`; strict JSON, max256KiB, 20requests/min
 
 
 
-## Wave 3 — popup loop + packaging (14 September 2026)
+## Wave 3: popup loop + packaging (14 September 2026)
 
 Production popup UI shows a stage strip and toolbar/activeTab guidance (EN/HI). Capture re-injects the content script on disconnect and prefers an http(s) page when the popup is opened as a document tab. Harness `../scripts/validate-extension-loop.mjs` drives `#capture` through selective preview + sanitize (overlay for capture only; shipped `activeTab` manifest unchanged). Extension version **0.1.1** packages Chrome + Firefox zips via `npm run build:extension` (UltraFace+ORT only). Toolbar glyph click and Firefox live validation remain human/host-dependent. Ollama planner E2E skipped when unreachable.
 
-## Wave 2 — capture harness + held-out fixtures (14 September 2026)
+## Wave 2: capture harness + held-out fixtures (14 September 2026)
 
 Chromium harness `../scripts/validate-extension-capture.mjs` proves production `scripting.executeScript` injection, scene collect, sanitized semantics egress, the shipped `activeTab` gate for `captureVisibleTab`, and a temporary harness-only overlay that captures a real PNG without changing the shipped manifest. Held-out synthetic PII/redaction/utility scores land in `../Benchmarks/results/wave2-pii-redaction-utility-v01.json` (official score still null; <200 ms gate still fail). Client resource hooks: `shared/client-resources.mjs`. Firefox live run and Ollama planner E2E remain optional/unverified when binaries/services are absent.
 
-## Wave 1 P0 — selective local preview (14 September 2026)
+## Wave 1 P0: selective local preview (14 September 2026)
 
-The extension and web workspace now paint a **local selective pixelation preview** (sensitive face/private/field/media regions mosaicked; surrounding layout pixels kept) before any planner call. The outbound `/api/v1/plans` body remains the existing semantic scene JSON — `assertSanitizedPayload` rejects screenshot/dataUrl/pixel fields. Trust chip copy: "on this device" / "इस उपकरण पर". EN/HI string map is wired in the extension popup. Rubric hooks live in `shared/rubric-hooks.mjs`; official score stays null and the <200 ms full-flow gate stays failed.
+The extension and web workspace now paint a **local selective pixelation preview** (sensitive face/private/field/media regions mosaicked; surrounding layout pixels kept) before any planner call. The outbound `/api/v1/plans` body remains the existing semantic scene JSON; `assertSanitizedPayload` rejects screenshot/dataUrl/pixel fields. Trust chip copy: "on this device" / "इस उपकरण पर". EN/HI string map is wired in the extension popup. Rubric hooks live in `shared/rubric-hooks.mjs`; official score stays null and the <200 ms full-flow gate stays failed.
 
 
-## Wave 5 — e2e harness + redaction saturation (14 September 2026)
+## Wave 5: e2e harness + redaction saturation (14 September 2026)
 
 `../scripts/validate-extension-e2e.mjs` maximizes automated proof (inject/collect, activeTab gate, overlay UI loop, screenshots) without faking the toolbar glyph. Held-out fixtures expand to 18 cases (`wave5-pii-redaction-utility-v01.json`). `classifySensitive` adds IFSC/voter/card-like telemetry; page-agent mosaics only classifier-flagged text and merges abutting regions. Official score null; G11 fail retained. Human-eval protocol: `../Docs/human-evaluation-protocol.md`.
 
@@ -90,7 +90,7 @@ The extension and web workspace now paint a **local selective pixelation preview
 - Initial live server steps took seconds, so the original <200ms full-flow guardrail is not passed. A fast local capture observation does not replace that requirement.
 - No representative-user study, broad WCAG conformance, benchmark saturation, final pitch deck, final Stitch comparison, public backend deployment or screen-recording fallback is claimed yet.
 
-## Additional validation evidence — 10 September
+## Additional validation evidence (10 September)
 
 Run `npm test` for the current 119 automated tests. With the app running, open `/app/validation.html` and run the browser checks plus the 31-second expiry check. This harness tests the shared JavaScript boundary on synthetic fixtures, not an installed native extension. The recorded Chrome run passes 18 checks in `Benchmarks/results/chrome-boundary-v02.json`.
 

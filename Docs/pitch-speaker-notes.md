@@ -1,4 +1,4 @@
-# Dhristi — 15-slide speaker notes
+# Dhristi: 15-slide speaker notes
 
 Planned talk slots: 700 seconds (11m 40s). Approximately 12 minutes; not a measured rehearsal. Allow operator time on slide 9. Sources and limitations are retained in the PPTX notes.
 

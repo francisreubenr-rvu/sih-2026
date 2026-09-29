@@ -1,4 +1,4 @@
-# Demo protocol — production Chrome toolbar Capture & protect (Fast / privacy-only)
+# Demo protocol: production Chrome toolbar Capture & protect (Fast / privacy-only)
 
 **Status:** Protocol only. **Do not claim G03 pass** until a completed human log exists and Guardrails acceptance is met.  
 **Related stub:** `Benchmarks/results/toolbar-capture-log-v01.json` (empty until first run).  
@@ -6,17 +6,17 @@
 
 ## Purpose
 
-Exact steps for a human operator to exercise the **shipped** MV3 extension via the **Chrome toolbar glyph** (`activeTab`), privacy-only **Fast** path — no planner, no Ollama, no Google login, no purchases.
+Exact steps for a human operator to exercise the **shipped** MV3 extension via the **Chrome toolbar glyph** (`activeTab`), privacy-only **Fast** path: no planner, no Ollama, no Google login, no purchases.
 
 ## Preconditions
 
 | Item | Requirement |
 |------|-------------|
-| Browser | Google Chrome (stable) on the operator machine — record exact version |
+| Browser | Google Chrome (stable) on the operator machine; record exact version |
 | Extension | Unpacked `Prototype/extension-build/` built from a frozen commit (`git rev-parse HEAD`); version **0.1.1** (or note if different) |
 | Node | 22+; `cd Prototype && npm ci && npm start` → `http://127.0.0.1:9041/` (local server for fixture; planner **not** required) |
-| Ollama | **Off / unused** — leave **Privacy-only / Fast** checked |
-| Fixture | Synthetic only: `/app/fixture.html` or operations desk — no real accounts |
+| Ollama | **Off / unused**; leave **Privacy-only / Fast** checked |
+| Fixture | Synthetic only: `/app/fixture.html` or operations desk; no real accounts |
 | Permissions | No Google account login required for Capture & protect on localhost fixture |
 
 ## Exact steps
@@ -44,12 +44,12 @@ Blind public multi-site smoke after PR#17/#22 showed intermittent MV3 balloon cr
 **Operator rules (required for multi-site):**
 
 1. **Reload** the extension between sites (or immediately after any chrome://extensions **Errors** badge). Fixture G14 streak rules still require Reload before each consecutive Capture.
-2. After every **navigation** or tab switch: close the popup → **fresh toolbar click** on the target page → wait past “Loading local vision…” → Capture. Do not Capture across a navigation with the same popup open (DBG-003 H3 — Capture refuses with a clear status if the tab URL changed since toolbar open).
+2. After every **navigation** or tab switch: close the popup → **fresh toolbar click** on the target page → wait past “Loading local vision…” → Capture. Do not Capture across a navigation with the same popup open (DBG-003 H3: Capture refuses with a clear status if the tab URL changed since toolbar open).
 3. Prefer the default **wireframe** preview on public / heavy pages; uncheck only when you need selective mosaic review (mosaic now runs in the sandbox, but wireframe stays cheaper).
-4. If the sandbox soft-restarts (“Local vision sandbox restarted…”) and Capture still fails, **Reload** — Chrome may still attribute sandbox process death to the whole extension.
+4. If the sandbox soft-restarts (“Local vision sandbox restarted…”) and Capture still fails, **Reload**. Chrome may still attribute sandbox process death to the whole extension.
 5. Close unused heavy tabs when possible. Fixture-only is not required for blind smoke, but reduces GPU / SharedImage pressure.
 
-**Honesty:** Multi-site smoke with fewer crashes is hardening evidence — **not** a G03 pass.
+**Honesty:** Multi-site smoke with fewer crashes is hardening evidence, **not** a G03 pass.
 
 ## What to log (copy into the stub JSON / notes)
 
@@ -66,9 +66,9 @@ Blind public multi-site smoke after PR#17/#22 showed intermittent MV3 balloon cr
 | `path` | Must be `fast-privacy-only` |
 | `ollama_used` | `false` |
 | `stages_observed` | e.g. inject→detect→mask→review |
-| `preview_ok` | true/false — selective/wireframe visible |
-| `semantics_only_ok` | true/false — no screenshot/dataUrl in egress |
-| `activeTab_ok` | true/false — capture succeeded after toolbar gesture |
+| `preview_ok` | true/false; selective/wireframe visible |
+| `semantics_only_ok` | true/false; no screenshot/dataUrl in egress |
+| `activeTab_ok` | true/false; capture succeeded after toolbar gesture |
 | `metrics` | Any popup Fast-path ms strings **as displayed** (label as Fast ≠ G11); empty if none |
 | `screenshots` | Paths under `Benchmarks/results/` or `Docs/demo-recording/` where stills were saved |
 | `notes` | Failures, HI/EN language, anything unexpected |

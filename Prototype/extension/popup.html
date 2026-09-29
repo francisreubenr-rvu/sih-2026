@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Dhristi — local privacy review</title>
+  <title>Dhristi: local privacy review</title>
   <link rel="stylesheet" href="signal.css">
   <link rel="stylesheet" href="popup.css">
 </head>
@@ -62,9 +62,9 @@ this device.</h1>
       </label>
       <fieldset class="mode-row">
         <legend data-i18n="mode_legend">Path selection</legend>
-        <label class="check"><input id="mode-privacy" type="checkbox" checked aria-describedby="path-policy"> <span data-i18n="mode_privacy">Fast path — privacy-only (no LLM)</span></label>
-        <label class="check"><input id="mode-score" type="checkbox" aria-describedby="score-panel"> <span data-i18n="mode_score">Score path — local risk after protect</span></label>
-        <label class="check"><input id="preview-wireframe" type="checkbox" checked> <span data-i18n="mode_wireframe">Wireframe preview (default — safer for public / multi-site)</span></label>
+        <label class="check"><input id="mode-privacy" type="checkbox" checked aria-describedby="path-policy"> <span data-i18n="mode_privacy">Fast path: privacy-only (no LLM)</span></label>
+        <label class="check"><input id="mode-score" type="checkbox" aria-describedby="score-panel"> <span data-i18n="mode_score">Score path: local risk after protect</span></label>
+        <label class="check"><input id="preview-wireframe" type="checkbox" checked> <span data-i18n="mode_wireframe">Wireframe preview (default, safer for public / multi-site)</span></label>
         <p class="mode-hint" data-i18n="mode_hint">Score runs after Fast protect (no LLM). Uncheck Fast to enable Reason. Official SIH score stays null.</p>
       </fieldset>
       <button id="capture" type="button" class="cta-primary command-lane" data-i18n="capture">Capture &amp; protect</button>
@@ -91,14 +91,14 @@ this device.</h1>
       <p id="metrics" class="telemetry"></p>
     </section>
 
-    <section class="band band-tint panel-score" id="score-panel" aria-label="Score path — local risk" hidden>
+    <section class="band band-tint panel-score" id="score-panel" aria-label="Score path: local risk" hidden>
       <p class="path-tag" data-i18n="score_tag">Score path · local heuristic risk · not official SIH score</p>
       <p id="score-summary" class="score-summary" data-i18n="score_empty">Capture &amp; protect first. Score ranks local scene risk only.</p>
       <ul id="score-reasons" class="score-reasons" hidden></ul>
-      <p class="score-disclaimer" data-i18n="score_disclaimer">Organizer weights accuracy+PII+redaction ≈65% — evaluation weights, not our measured score. officialScore remains null. Not WebPII.</p>
+      <p class="score-disclaimer" data-i18n="score_disclaimer">Organizer weights accuracy+PII+redaction ≈65%. Evaluation weights, not our measured score. officialScore remains null. Not WebPII.</p>
     </section>
 
-    <section class="band band-panel panel-actions CommandLane" aria-label="Reason path — plan and confirm">
+    <section class="band band-panel panel-actions CommandLane" aria-label="Reason path: plan and confirm">
       <p class="path-tag" data-i18n="reason_tag">Reason path · local Ollama/Qwen · outside &lt;200&nbsp;ms G11 budget</p>
       <button id="plan" type="button" class="cta-secondary command-lane" data-step="2" disabled data-i18n="plan">Send protected layout (Reason)</button>
       <p id="proposal" data-i18n="proposal_empty">No action proposed.</p>

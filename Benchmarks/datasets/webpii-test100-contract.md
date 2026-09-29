@@ -1,4 +1,4 @@
-# WebPII test100 — frozen evaluation contract
+# WebPII test100: frozen evaluation contract
 
 Declared 10 September 2026 before running Dhristi on the sample. Baseline implementation: b7b2f33 (provider v4; shared vision/privacy unchanged from v0.1).
 

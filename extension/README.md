@@ -1,4 +1,4 @@
-# Root `extension/` — Warden side panel
+# Root `extension/`: Warden side panel
 
 This folder is the candidate shipping Warden UI, imported from
 `francisreubenr-rvu/sih26171-dhristi` at commit `2afd215d795d781f74c8a45468a86eedfa58253e`.
