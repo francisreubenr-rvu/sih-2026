@@ -1,57 +1,39 @@
 /*
- * pixel.css - DHRISTI v4 pixel design system.
+ * pixel.css - DHRISTI side-panel primitives (cell module, detection box,
+ * semantic chips, stepped motion).
  *
- * Shared token + primitive layer for the extension side panel (consumed by
- * sidepanel.css) and, conceptually, for Website/ (ported, not linked;
- * this file is not cross-origin importable by the site, so porting means
- * copying the tokens forward, not linking this file).
+ * Palette and type now come from the Signal design system (signal.css, a
+ * verbatim copy of design/signal-tokens.css). Francis replaced the measured
+ * 13 September palette with Signal on 29 September 2026
+ * (Docs/decisions/brain-signal-redesign.md). The semantic names below are kept
+ * so sidepanel.css and sidepanel.js keep their meaning: amber = a decision is
+ * waiting, red = personal data or destructive, blue = a plan was accepted.
  *
- * Source of truth: Docs/specs/2026-09-13-dhristi-v4-warden.md, "Pixel design
- * language". Palette values are measured from the supplied reference video
- * frame by frame, not estimated or invented. Do not edit a value here without
- * re-reading that section; it is frozen for the v4 build.
- *
- * Motion rule, non-negotiable: stepped (steps()), never eased. An eased
- * transition reads as a generic modern web animation and breaks the pixel
- * illusion immediately. See "Motion" below.
+ * Motion rule for this surface stays stepped (steps()), never eased.
  */
 
 :root {
   color-scheme: dark;
 
-  /* ---- Measured palette (2026-09-13, frame-extracted) -------------------
-   * Semantic roles, not decoration:
-   *   --ground      page/panel ground, the base surface
-   *   --cream       structure: body text, borders, the dominant mass
-   *   --amber       uncertain: a decision is waiting on the user
-   *   --red         personal data / destructive tier (marks, fills, large text)
-   *   --red-deep    red at rest: borders, fills, button backgrounds
-   *   --blue        validated: a plan was accepted (marks, fills, large text)
-   *   --blue-deep   blue at rest: borders, fills, button backgrounds
-   * A reviewer must be able to read a run's state from colour alone. Keep
-   * that mapping true in markup (class names, aria labels), not only in CSS.
-   */
-  --ground: #0b0b0f;
-  --cream: #e8e9de;
-  --amber: #fcc34a;
-  --red: #ff0000;
-  --red-deep: #b71a00;
-  --blue: #142eff;
-  --blue-deep: #1f2181;
+  /* ---- Semantic palette, mapped onto Signal ---------------------------
+   * Roles, not decoration: --ground surface, --cream structure and text,
+   * --amber a decision is waiting, --red personal data or destructive tier,
+   * --blue a plan was accepted; the -deep variants are fills at rest. A
+   * reviewer must be able to read a run's state from colour alone. Keep that
+   * mapping true in markup (class names, aria labels), not only in CSS. */
+  --ground: var(--sg-void);
+  --cream: var(--sg-text);
+  --amber: var(--sg-ask);
+  --red: var(--sg-stop);
+  --red-deep: #5c1f24;
+  --blue: var(--sg-glow);
+  --blue-deep: #1c2272;
 
-  /* ---- Accessible small-text variants -----------------------------------
-   * Measured WCAG contrast on --ground (2026-09-13, see DESIGN.md for the
-   * full table): --cream 16.04:1, --amber 12.20:1 (both pass at any size).
-   * --red is 4.91:1: it clears AA (4.5:1) but only just, so it is reserved
-   * for marks/borders/fills/large text (>=19px, or >=15px bold) and never
-   * for small body text. --blue is 2.68:1: it FAILS AA outright at any size
-   * and must never carry small text directly on --ground.
-   * --red-text and --blue-text are cream-tinted variants for the rare case
-   * where red/blue meaning must be carried by small text on --ground; they
-   * are not used for marks, fills or borders, only inline text.
-   */
-  --red-text: #f84643; /* 5.56:1 on --ground */
-  --blue-text: #6979f2; /* 5.26:1 on --ground */
+  /* ---- Small-text variants ------------------------------------------
+   * --red and --blue carry marks and fills; small text uses these. Ratios
+   * are checked by scripts/check-signal-tokens.mjs. */
+  --red-text: var(--sg-stop); /* 7.26:1 on --sg-void */
+  --blue-text: var(--sg-glow-text); /* 9.95:1 on --sg-void */
 
   /* ---- Cell module --------------------------------------------------------
    * The signature motif: a subject built from discrete square cells on an
@@ -64,14 +46,11 @@
   --cell-3: 24px;
   --cell-4: 32px;
 
-  /* ---- Type ----------------------------------------------------------------
-   * No webfont file, no CDN: Chrome loads the panel directly. Geometric
-   * sans and mono come from the system stack; the display serif (reference
-   * image 2 and 3's pairing) also comes from the system stack.
-   */
-  --font-sans: -apple-system, "Segoe UI", system-ui, "Helvetica Neue", sans-serif;
-  --font-serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Menlo", "Consolas", monospace;
+  /* ---- Type ----------------------------------------------------------
+   * Self-hosted OFL faces from fonts/ (see signal.css); no CDN. */
+  --font-sans: var(--sg-font-sans);
+  --font-serif: var(--sg-font-serif);
+  --font-mono: var(--sg-font-mono);
 
   /* Type scale. Body text sits on the sans; the display serif is reserved
    * for the one centred headline treatment (see .pixel-display); labels,

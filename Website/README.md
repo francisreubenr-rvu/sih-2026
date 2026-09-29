@@ -16,7 +16,14 @@ The repository workflow publishes this directory directly, preserving relative a
 
 ## Brand assets (Hybrid C)
 
-- Favicon / chrome bug: `assets/dhristi-mark.svg` (pixel viewfinder).
-- Masthead lockup: `assets/dhristi-lockup.svg` (aperture + wordmark + on-device vision).
+- Favicon and header mark: `assets/dhristi-mark.svg` (Hybrid C viewfinder bug). `assets/dhristi-lockup.svg` is kept but not used by the landing page.
+
+## Landing page media
+
+- `assets/video/dhristi-prototype-demo.mp4` (+ poster): 25 s recorded from the local Prototype with synthetic data. Caption bar and cursor are annotation overlays.
+- `assets/img/still-original.webp`, `still-protected.webp`: stills from the same run.
+- `assets/img/himalayas-iss074e0002581.jpg`, `india-srilanka-iss071e700080.jpg`: NASA ISS photographs, public domain, credited on the page.
+- Fonts: Anton, Open Sans, Glacial Indifference (SIL OFL, `assets/fonts/OFL.txt`).
+- Older videos and images in `assets/` are kept because historical records cite them; the landing page does not use them.
 - Mono / inverted bugs: `dhristi-mark-mono.svg`, `dhristi-mark-inverted.svg`.
 - Hard don’ts: no DigiLocker / MeitY / partner marks in logo chrome. See `Docs/decisions/brain-logo-hybrid-c.md`.

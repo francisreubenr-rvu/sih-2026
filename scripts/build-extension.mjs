@@ -33,10 +33,11 @@ async function atomicReplace(fromUrl, toUrl) {
 }
 
 async function populateExtensionTree(dest) {
-  for (const name of ['manifest.json', 'popup.html', 'popup.css', 'ort-sandbox.html']) {
+  for (const name of ['manifest.json', 'popup.html', 'signal.css', 'popup.css', 'ort-sandbox.html']) {
     await copyFile(new URL(`extension/${name}`, root), new URL(name, dest));
   }
   await cp(new URL('extension/icons/', root), new URL('icons/', dest), { recursive: true });
+  await cp(new URL('extension/fonts/', root), new URL('fonts/', dest), { recursive: true });
   for (const [source, destName, format] of [
     ['popup.mjs', 'popup.js', 'esm'],
     ['content.mjs', 'content.js', 'iife'],

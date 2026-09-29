@@ -1,3 +1,12 @@
+## Round 21 — Signal redesign (29 September 2026)
+
+- [x] One design system (Signal) across Website, side panel, Prototype operator pages and popup; canonical tokens in `design/signal-tokens.css`, CI check for drift and WCAG AA contrast. Decision: `Docs/decisions/brain-signal-redesign.md`. Resolves the ARCH-002 vs side-panel palette conflict.
+- [x] axe-core: 0 violations on Website, Prototype pages and popup. Behaviour, IDs and harness selectors unchanged; tests 141/58/13 pass.
+- [ ] Mobile Lighthouse 97–98 vs master 99 on the same machine (LCP +0.25 s from the serif hero face). Desktop 100.
+- [ ] Side panel carries three axe findings that also exist on master (list, region, aria-allowed-role in `sidepanel.js` markup); not fixed here.
+- [x] Website redirected by Francis the same day: light landing page, key information only, Anton / Open Sans / Glacial Indifference, real prototype footage replacing the explain video, NASA public-domain imagery. No Pinterest images (copyright).
+- [ ] Committed extension zips still package the earlier interface. Demo footage shows the dark Signal Prototype.
+
 ## Round 20 — F17 target identity (29 September 2026)
 
 - [x] HIGH, reproduced on master `84fd497` in real Chromium: the scan recorded only a selector string, execute ran `document.querySelector` on it (first match, hidden or not), then synthetic pointer events and `click()`. A hidden `<button id=next>` in a `/account/delete` form ahead of a visible `<a id=next>Next page</a>` tiered navigational and posted the delete. Same for `aria-label="Next"` on a "Delete my account" button.
