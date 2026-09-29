@@ -4,32 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dhristi — face scale matrix</title>
+<link rel="stylesheet" href="/app/signal.css">
 <style>
-  :root { color-scheme: light; }
-  body { margin:0; padding:32px; background:#f4f1ea; color:#111;
-         font:15px/1.5 ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
-  h1 { font-size:26px; letter-spacing:-.02em; margin:0 0 8px; }
-  p.lede { max-width:64ch; margin:0 0 20px; color:#333; }
-  button { font:inherit; padding:10px 16px; border:1px solid #111; background:#111; color:#f4f1ea;
-           border-radius:2px; cursor:pointer; margin-right:8px; }
-  button[disabled] { opacity:.5; cursor:progress; }
-  #status { margin:16px 0 8px; font-variant-numeric:tabular-nums; }
-  pre { background:#fff; border:1px solid #d8d3c8; padding:14px; overflow:auto; max-height:60vh;
-        font:12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
-  table { border-collapse:collapse; margin-top:16px; }
-  th, td { border-bottom:1px solid #d8d3c8; padding:6px 14px 6px 0; text-align:left;
-           font-variant-numeric:tabular-nums; }
+  main { max-width:1000px; margin:0 auto; padding:40px 24px 64px; }
+  h1 { font-size:clamp(1.8rem,4vw,2.6rem); line-height:1.08; letter-spacing:-.03em; margin:0 0 12px; }
+  p.lede { max-width:64ch; margin:0 0 24px; color:var(--sg-text-2); }
+  button { margin:0 8px 8px 0; }
+  button#run:not(:disabled) { background:var(--sg-glow); border-color:var(--sg-glow); color:var(--sg-on-glow); }
+  button#run:hover:not(:disabled) { box-shadow:0 0 0 3px var(--sg-glow-tint); }
+  button[disabled] { cursor:progress; }
+  #status { margin:16px 0 8px; font:400 13px/1.5 var(--sg-font-mono); color:var(--sg-text-2); font-variant-numeric:tabular-nums; }
+  pre { overflow:auto; max-height:60vh; }
+  .table-wrap { overflow-x:auto; }
+  table { margin-top:16px; background:var(--sg-panel); border:1px solid var(--sg-line); }
+  td { font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body>
+<main>
+<p class="eyebrow">Dhristi / local detector diagnostic</p>
 <h1>Face detection across input scales</h1>
 <p class="lede">Runs the packaged UltraFace RFB-320 detector over one synthetic source image rendered at a range of square sizes.
 Each size is drawn into a fresh canvas, then passed to the real detector. Purely local; no network request leaves this page.</p>
 <button id="run" type="button">Run scale matrix</button>
 <button id="run48" type="button">Run 48–128 px only</button>
 <p id="status">Bootstrapping.</p>
-<table id="table"><thead><tr><th>Input size</th><th>Detections</th><th>Inference ms</th><th>Wall ms</th></tr></thead><tbody></tbody></table>
+<div class="table-wrap"><table id="table"><thead><tr><th>Input size</th><th>Detections</th><th>Inference ms</th><th>Wall ms</th></tr></thead><tbody></tbody></table></div>
 <pre id="record" hidden></pre>
+</main>
 <script type="module" src="/app/face-scale-test.mjs"></script>
 </body>
 </html>

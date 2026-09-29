@@ -1,5 +1,5 @@
 /* Earth-observation operations simulation: layout only; colour and type come from signal.css. */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px max(24px,calc((100% - 1400px)/2));border-bottom:1px solid var(--sg-line);background:rgba(5,6,10,.85)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px max(24px,calc((100% - 1400px)/2));border-bottom:1px solid var(--sg-line);background:var(--sg-panel)}
 .topbar a{font:600 20px/1 var(--sg-font-sans);letter-spacing:-.02em;color:var(--sg-text);text-decoration:none}
 .topbar span{font:400 11px/1.4 var(--sg-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sg-text-3)}
 main{max-width:1448px;margin:auto;padding:48px 24px}
@@ -10,7 +10,8 @@ h1 em{font-family:var(--sg-font-serif);font-weight:400;letter-spacing:0}
 .scope{font-size:12px;color:var(--sg-text-3)}
 .control-strip{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:22px 0;margin:24px 0;border-block:1px solid var(--sg-line)}
 .control-strip p{flex-basis:100%;margin:0;color:var(--sg-text-2)}
-#confirm:not(:disabled){background:var(--sg-scan);border-color:var(--sg-scan);color:var(--sg-void)}
+#confirm:not(:disabled){background:var(--sg-scan-tint);border-color:var(--sg-scan);color:var(--sg-scan)}
+#confirm:hover:not(:disabled){box-shadow:inset 0 0 0 1px var(--sg-scan)}
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
 .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
 .section-title h2{font-size:20px;margin:0}

@@ -2,9 +2,9 @@ main{max-width:1320px}
 h1{max-width:900px}
 main>p{max-width:820px}
 .eyebrow{margin-top:48px}
-.notice{padding:14px 18px;border-left:2px solid var(--sg-ask);background:rgba(242,179,74,.07);color:var(--sg-text-2)}
+.notice{padding:14px 18px;border-left:2px solid var(--sg-ask);background:var(--sg-ask-tint);color:var(--sg-text)}
 .views{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:28px 0}
-canvas{display:block;width:100%;height:auto;background:#fff}
+canvas{display:block;width:100%;height:auto;background:var(--sg-panel)}
 h2{font-size:1.15rem}
 progress{width:100%;height:12px}
 button{margin-left:0}

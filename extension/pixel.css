@@ -13,7 +13,7 @@
  */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* ---- Semantic palette, mapped onto Signal ---------------------------
    * Roles, not decoration: --ground surface, --cream structure and text,
@@ -25,9 +25,12 @@
   --cream: var(--sg-text);
   --amber: var(--sg-ask);
   --red: var(--sg-stop);
-  --red-deep: #5c1f24;
+  --red-deep: var(--sg-stop-tint); /* light edition: the "deep" fills are now each hue's own tint */
   --blue: var(--sg-glow);
-  --blue-deep: #1c2272;
+  --blue-deep: var(--sg-glow-tint);
+  --amber-tint: var(--sg-ask-tint);
+  --teal: var(--sg-scan);
+  --teal-tint: var(--sg-scan-tint);
 
   /* ---- Small-text variants ------------------------------------------
    * --red and --blue carry marks and fills; small text uses these. Ratios
@@ -98,7 +101,8 @@
   height: var(--cell);
 }
 .cell--fill {
-  background: var(--cell-color, var(--cream));
+  border: 4px solid var(--cell-color, var(--cream)); /* ink, not a ground */
+  box-sizing: border-box;
 }
 .cell--outline {
   background: transparent;
@@ -116,10 +120,12 @@
 .detection-box {
   --box-color: var(--cream);
   position: relative;
-  border: 1px solid var(--box-color);
+  /* The rectangle is a hairline at half strength of its hue, the value sits on white: the box
+     frames the span without a heavy ink outline. The label keeps the full-strength hue. */
+  border: 1px solid color-mix(in srgb, var(--box-color) 55%, var(--sg-panel));
   padding: var(--cell) var(--cell-2) var(--cell) var(--cell);
   margin-top: var(--cell-2);
-  background: color-mix(in srgb, var(--box-color) 6%, transparent);
+  background: var(--sg-panel);
 }
 .detection-box::before {
   content: attr(data-label);
@@ -130,7 +136,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--box-color);
-  background: var(--ground);
+  background: transparent; /* the label sits above the box, on whatever card it is drawn in */
   padding: 0 4px;
   white-space: nowrap;
 }
@@ -141,21 +147,11 @@
   overflow-wrap: anywhere;
 }
 
-/* ---- Scanline overlay ----------------------------------------------------
- * A thin horizontal scanline texture from reference image 1. Applied as a
- * background on a band, kept at very low opacity so it never competes with
- * text legibility (motion-scroll playbook, decorative-effect-vs-readability
- * check). Use `.pixel-scanline` only on non-text-dense bands (topbar,
- * dialog header), never behind body copy or tables. */
-.pixel-scanline {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--cream) 7%, transparent) 0px,
-    color-mix(in srgb, var(--cream) 7%, transparent) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-}
+/* ---- Scanline overlay (retired on the light scheme) ----------------------
+ * The CRT scanline read as texture on a dark ground; on a light ground ink
+ * stripes read as dirt behind text. The class is kept so markup that carries
+ * it stays valid, but it paints nothing: a hairline border does the work. */
+.pixel-scanline { background-image: none; }
 
 /* ---- Dither falloff --------------------------------------------------------
  * A 1-bit dither pattern used to fade an edge (reference image 2). Applied
@@ -188,9 +184,10 @@
 /* ---- Semantic state chips --------------------------------------------------
  * The palette-to-meaning mapping made real in markup: give a chip a
  * `data-state` and it renders in the correct colour pairing automatically.
- * Pairings below are the ones measured to actually pass contrast (see
- * DESIGN.md): cream-on-red-deep and cream-on-blue-deep both clear AA;
- * ground-on-amber clears AAA.
+ * Light edition rule (design/signal-tokens.css): each chip is its hue's
+ * text-safe shade on that same hue's tint, with a border in the shade; a hue
+ * never sits on another hue's tint, and the chip text always names the state.
+ * Ratios (shade on own tint): stop 4.95:1, ask 5.56:1, glow 6.87:1, scan 5.32:1.
  */
 .pixel-chip {
   display: inline-flex;
@@ -203,30 +200,37 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
+.pixel-chip {
+  border-radius: var(--sg-radius);
+}
+/* READY: the system has verified itself, so the cool "verified" hue. */
 .pixel-chip[data-state="structure"] {
-  color: var(--cream);
-  background: transparent;
+  color: var(--teal);
+  background: var(--teal-tint);
+  border-color: color-mix(in srgb, var(--teal) 45%, var(--teal-tint));
 }
 .pixel-chip[data-state="uncertain"] {
-  color: var(--ground);
-  background: var(--amber);
-  border-color: var(--amber);
+  color: var(--amber);
+  background: var(--amber-tint);
+  border-color: color-mix(in srgb, var(--amber) 45%, var(--amber-tint));
 }
 .pixel-chip[data-state="destructive"],
 .pixel-chip[data-state="personal-data"] {
-  color: var(--cream);
+  color: var(--red);
   background: var(--red-deep);
-  border-color: var(--red-deep);
+  border-color: color-mix(in srgb, var(--red) 45%, var(--red-deep));
 }
 .pixel-chip[data-state="validated"] {
-  color: var(--cream);
+  color: var(--blue-text);
   background: var(--blue-deep);
-  border-color: var(--blue-deep);
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--blue-deep));
 }
+/* Neutral (checking, loading, answered): ink-2 on the cool neutral tint. No
+   opacity: fading text is how a chip drops under AA. */
 .pixel-chip[data-state="neutral"] {
-  color: var(--cream);
-  background: transparent;
-  opacity: 0.7;
+  color: var(--sg-text-2);
+  background: var(--sg-panel-2);
+  border-color: var(--sg-line);
 }
 
 /* ---- Pass/fail cell pair ---------------------------------------------------
@@ -247,8 +251,7 @@
   box-sizing: border-box;
 }
 .pixel-check[data-pass="true"] .pixel-check__cell {
-  background: var(--cream);
-  border: 1px solid var(--cream);
+  border: 4px solid var(--teal); /* filled cell drawn as ink: a pass is "verified", so teal */
 }
 .pixel-check[data-pass="false"] .pixel-check__cell {
   background: transparent;

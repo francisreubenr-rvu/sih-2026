@@ -532,17 +532,17 @@ $('#capture').addEventListener('click', async () => {
         previewCtx.drawImage(previewBitmap, 0, 0);
         previewCtx.save();
         previewCtx.lineWidth = 2;
-        previewCtx.strokeStyle = '#0b1f3a';
-        previewCtx.fillStyle = 'rgba(11, 31, 58, 0.08)';
+        previewCtx.strokeStyle = '#12162b';
+        previewCtx.fillStyle = 'rgba(18, 22, 43, 0.06)';
         previewCtx.font = '12px system-ui, sans-serif';
         previewCtx.textBaseline = 'middle';
         for (const c of prepared.scene.controls || []) {
           const r = c.rect;
           previewCtx.fillRect(r.x, r.y, r.width, r.height);
           previewCtx.strokeRect(r.x + 0.5, r.y + 0.5, Math.max(0, r.width - 1), Math.max(0, r.height - 1));
-          previewCtx.fillStyle = '#0b1f3a';
+          previewCtx.fillStyle = '#12162b';
           previewCtx.fillText(`${c.id} ${c.label}`, r.x + 6, r.y + r.height / 2);
-          previewCtx.fillStyle = 'rgba(11, 31, 58, 0.08)';
+          previewCtx.fillStyle = 'rgba(18, 22, 43, 0.06)';
         }
         previewCtx.restore();
       } else {

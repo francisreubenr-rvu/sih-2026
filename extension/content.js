@@ -585,6 +585,11 @@ function maskDisplay(rawValue, value) {
 // the page underneath (content-guard.test.mjs proves it). The scan skips it: PAGE_SCAN removes it
 // first, the candidate selector cannot match it, and the text walkers reject it.
 //
+// Colour (Signal light edition): Dhristi's teal (#0a6b78, "verified on this device") draws the box,
+// with a 1px white ring outside it so it separates from any page, light or dark; the wash inside
+// is the teal tint at low alpha, never a dark scrim. The label chip is teal with white text
+// (6.2:1) and the same white ring.
+//
 // Scope: a value split across several text nodes (e.g. half inside a <b>) is not boxed, and text
 // inside shadow roots or iframes is not visited, matching collectPiiFields()'s documented limits.
 const OVERLAY_ATTR = 'data-dhristi-redactions';
@@ -594,12 +599,13 @@ const OVERLAY_CSS = `
   .layer { position: fixed; inset: 0; pointer-events: none; }
   .box {
     position: fixed; box-sizing: border-box; pointer-events: none;
-    border: 2px solid #66e0ec; border-radius: 3px; background: rgba(102, 224, 236, 0.10);
+    border: 2px solid #0a6b78; border-radius: 3px; background: rgba(223, 241, 243, 0.22);
+    box-shadow: 0 0 0 1px #ffffff;
   }
   .chip {
     position: absolute; left: -2px; bottom: 100%; margin-bottom: 2px;
     padding: 1px 5px; border-radius: 2px; white-space: nowrap;
-    background: #66e0ec; color: #04161a;
+    background: #0a6b78; color: #ffffff; box-shadow: 0 0 0 1px #ffffff;
     font: 600 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     letter-spacing: 0.04em; text-transform: uppercase;
   }

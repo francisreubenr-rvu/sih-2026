@@ -48,7 +48,20 @@ export const PAIRS = [
   ...['sg-text', 'sg-text-2', 'sg-text-3', 'sg-glow-text', 'sg-scan', 'sg-ask', 'sg-stop']
     .flatMap((fg) => ['sg-void', 'sg-panel', 'sg-panel-2'].map((bg) => [fg, bg, 4.5])),
   ['sg-on-glow', 'sg-glow', 4.5],
+  // Each semantic hue on its own tint (chips, cards), and control outlines at the 3:1 that
+  // WCAG 1.4.11 asks of a UI component boundary.
+  ['sg-glow-text', 'sg-glow-tint', 4.5],
+  ['sg-scan', 'sg-scan-tint', 4.5],
+  ['sg-ask', 'sg-ask-tint', 4.5],
+  ['sg-stop', 'sg-stop-tint', 4.5],
+  ['sg-text', 'sg-glow-tint', 4.5],
+  ['sg-line-strong', 'sg-panel', 3],
+  ['sg-line-strong', 'sg-void', 3],
 ];
+
+// Light only (Francis, 29 September 2026): every ground token must be light. Relative
+// luminance above 0.8 keeps a "ground" from drifting into a mid or dark surface.
+export const GROUNDS = ['sg-void', 'sg-panel', 'sg-panel-2', 'sg-glow-tint', 'sg-scan-tint', 'sg-ask-tint', 'sg-stop-tint'];
 
 export async function check() {
   const problems = [];
@@ -66,6 +79,11 @@ export async function check() {
     if (ratio < min) problems.push(`contrast ${fg} on ${bg}: ${ratio.toFixed(2)} < ${min}`);
     return { fg, bg, ratio: Math.round(ratio * 100) / 100 };
   });
+  for (const g of GROUNDS) {
+    if (!tokens[g]) { problems.push(`missing ground token ${g}`); continue; }
+    if (luminance(tokens[g]) < 0.8) problems.push(`ground ${g} ${tokens[g]} is not light (luminance ${luminance(tokens[g]).toFixed(2)} < 0.8)`);
+  }
+  if (!/color-scheme:\s*light/.test(canonical)) problems.push('token block must declare color-scheme:light');
   return { problems, ratios };
 }
 

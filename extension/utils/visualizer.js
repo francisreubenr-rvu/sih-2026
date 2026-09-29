@@ -5,8 +5,11 @@
   'use strict';
   if (window.__dhristiVisualizer) return;
 
-  const PURPLE = 'rgba(139, 92, 246, 0.38)';
-  const PURPLE_RING = 'rgba(139, 92, 246, 0.65)';
+  // Signal light edition: the agent's cursor is cobalt (#1f36d6, "the system is acting"), as a
+  // light cobalt-tint disc with a cobalt ring and a white outer ring, so it separates from any
+  // page. The typing chip is a white card with ink text and a cobalt hairline, never a dark scrim.
+  const CURSOR_FILL = 'rgba(231, 234, 252, 0.55)';
+  const CURSOR_RING = '#1f36d6';
   const RADIUS = 20;
   const Z_INDEX = '2147483647';
   const PII_TOKEN = '<mask-pii/>';
@@ -28,17 +31,19 @@
     'position:absolute', 'top:0', 'left:0',
     'width:' + (RADIUS * 2) + 'px', 'height:' + (RADIUS * 2) + 'px',
     'margin:' + (-RADIUS) + 'px 0 0 ' + (-RADIUS) + 'px',
-    'border-radius:50%', 'background:' + PURPLE,
-    'box-shadow:0 0 0 1px ' + PURPLE_RING,
+    'box-sizing:border-box',
+    'border-radius:50%', 'background:' + CURSOR_FILL,
+    'border:2px solid ' + CURSOR_RING,
+    'box-shadow:0 0 0 1px #ffffff',
     'opacity:0', 'pointer-events:none', 'will-change:transform,opacity'
   ].join(';');
 
   const typing = document.createElement('div');
   typing.style.cssText = [
     'position:absolute', 'display:none', 'max-width:280px',
-    'padding:6px 8px', 'border-radius:8px',
-    'background:#111820', 'color:#e6edf3', 'border:1px solid #223140',
-    'box-shadow:0 8px 24px rgba(0,0,0,0.35)',
+    'padding:6px 8px', 'border-radius:2px',
+    'background:#ffffff', 'color:#12162b', 'border:1px solid #1f36d6',
+    'box-shadow:0 1px 2px rgba(18,22,43,0.06),0 8px 24px -12px rgba(18,22,43,0.18)',
     'font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',
     'white-space:pre-wrap', 'word-break:break-word', 'pointer-events:none'
   ].join(';');
@@ -142,7 +147,7 @@
     const textNode = document.createTextNode('');
     const cursor = document.createElement('span');
     cursor.textContent = '▏';
-    cursor.style.cssText = 'color:#8b5cf6;';
+    cursor.style.cssText = 'color:#1f36d6;';
     typing.append(textNode, cursor);
     if (typeof cursor.animate === 'function') {
       cursorAnim = cursor.animate(

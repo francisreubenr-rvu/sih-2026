@@ -1,30 +1,49 @@
-/* Signal design tokens: the single source for every Dhristi surface.
+/* Signal design tokens: the single source for every Dhristi product surface.
    Each product surface carries an identical copy of the block between the
    markers (extension/signal.css, Prototype/app/signal.css,
-   Prototype/extension/signal.css). The public Website uses its own light
-   landing palette (DESIGN.md, "Website landing"). scripts/check-signal-tokens.mjs fails CI
+   Prototype/extension/signal.css). scripts/check-signal-tokens.mjs fails CI
    when a copy drifts or a text/ground pair drops below WCAG AA.
-   Meaning: glow = the one primary action and focus; scan = detection and
-   verified-local; ask = waiting on a person or unknown; stop = fail,
-   personal data, destructive. Violet only ever appears inside a glow. */
+
+   Light only (Francis, 29 September 2026: no dark colours for backgrounds).
+   Token names are kept from the dark edition so every rule that reads them
+   follows without edits; "void" is now the page ground, not a black.
+
+   Colour scheme, and why (DESIGN.md, "Colour theory"):
+   - Neutrals are one family, tinted toward the cobalt hue (~230deg) at very
+     low chroma, so grounds, lines and ink read as one material with the
+     primary colour instead of a warm grey fighting a cool blue.
+   - Meaning is split by temperature. Cool = the system is acting or has
+     verified: glow (cobalt, 230deg) and scan (teal, 188deg) are analogous,
+     45deg apart. Warm = a person is needed: ask (amber, 36deg) and stop
+     (brick red, 9deg) are analogous to each other and sit across the wheel
+     from the cool pair, so "needs you" always contrasts with "working".
+   - Each hue has one text-safe shade (AA on every ground) and one tint used
+     only as a fill behind that same shade; a hue never sits on another hue's
+     tint.
+   - Violet (analogous to cobalt) only ever appears inside a glow. */
 /* signal:tokens:start */
 :root{
-  color-scheme:dark;
-  --sg-void:#05060a;
-  --sg-panel:#0b0d16;
-  --sg-panel-2:#11141f;
-  --sg-line:#232842;
-  --sg-line-strong:#3a4272;
-  --sg-text:#eceef6;
-  --sg-text-2:#a9aec6;
-  --sg-text-3:#868ba5;
-  --sg-glow:#4f5dff;
-  --sg-glow-text:#a8b0ff;
-  --sg-violet:#8f5cff;
-  --sg-scan:#66e0ec;
-  --sg-ask:#f2b34a;
-  --sg-stop:#ff6b61;
+  color-scheme:light;
+  --sg-void:#f4f5f8;
+  --sg-panel:#ffffff;
+  --sg-panel-2:#eceff7;
+  --sg-line:#d5d9e6;
+  --sg-line-strong:#7f87a3;
+  --sg-text:#12162b;
+  --sg-text-2:#3d4460;
+  --sg-text-3:#565d78;
+  --sg-glow:#1f36d6;
+  --sg-glow-text:#1f36d6;
+  --sg-glow-tint:#e7eafc;
+  --sg-violet:#6b3fd4;
+  --sg-scan:#0a6b78;
+  --sg-scan-tint:#dff1f3;
+  --sg-ask:#8a5300;
+  --sg-ask-tint:#fbefd9;
+  --sg-stop:#b8321c;
+  --sg-stop-tint:#fbe5e0;
   --sg-on-glow:#ffffff;
+  --sg-shadow:0 1px 2px rgba(18,22,43,.06),0 8px 24px -12px rgba(18,22,43,.18);
   --sg-font-sans:"Geist","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif;
   --sg-font-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
   --sg-font-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;

@@ -7,22 +7,27 @@
 
 /* signal:tokens:start */
 :root{
-  color-scheme:dark;
-  --sg-void:#05060a;
-  --sg-panel:#0b0d16;
-  --sg-panel-2:#11141f;
-  --sg-line:#232842;
-  --sg-line-strong:#3a4272;
-  --sg-text:#eceef6;
-  --sg-text-2:#a9aec6;
-  --sg-text-3:#868ba5;
-  --sg-glow:#4f5dff;
-  --sg-glow-text:#a8b0ff;
-  --sg-violet:#8f5cff;
-  --sg-scan:#66e0ec;
-  --sg-ask:#f2b34a;
-  --sg-stop:#ff6b61;
+  color-scheme:light;
+  --sg-void:#f4f5f8;
+  --sg-panel:#ffffff;
+  --sg-panel-2:#eceff7;
+  --sg-line:#d5d9e6;
+  --sg-line-strong:#7f87a3;
+  --sg-text:#12162b;
+  --sg-text-2:#3d4460;
+  --sg-text-3:#565d78;
+  --sg-glow:#1f36d6;
+  --sg-glow-text:#1f36d6;
+  --sg-glow-tint:#e7eafc;
+  --sg-violet:#6b3fd4;
+  --sg-scan:#0a6b78;
+  --sg-scan-tint:#dff1f3;
+  --sg-ask:#8a5300;
+  --sg-ask-tint:#fbefd9;
+  --sg-stop:#b8321c;
+  --sg-stop-tint:#fbe5e0;
   --sg-on-glow:#ffffff;
+  --sg-shadow:0 1px 2px rgba(18,22,43,.06),0 8px 24px -12px rgba(18,22,43,.18);
   --sg-font-sans:"Geist","Noto Sans Devanagari",system-ui,-apple-system,"Segoe UI",sans-serif;
   --sg-font-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
   --sg-font-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
