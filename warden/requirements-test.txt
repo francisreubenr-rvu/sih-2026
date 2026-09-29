@@ -1,0 +1,5 @@
+# Test-only dependencies for warden/test_warden.py. Model-dependent tests skip without
+# WARDEN_TEST_LOAD_GLINER / WARDEN_TEST_OLLAMA. Regex-parity tests need `node` on PATH.
+pytest==9.1.1
+httpx==0.28.1
+fastapi==0.141.1

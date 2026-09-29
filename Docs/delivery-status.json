@@ -17,7 +17,7 @@
     "Responsive Dhristi site published on GitHub Pages",
     "Current methodology Markdown/PDF and deployment evidence",
     "100-screen external synthetic raster diagnostic, corrected scoring, 7 scorer tests and experimental worker comparison",
-    "G14 pass (3 consecutive + VP9 offline fallback) on 996e40b 2026-09-15; G20 paused; G11 fail; submission_ready false"
+    "G14 rehearsals (3 consecutive + VP9 offline fallback) logged on 996e40b 2026-09-15; gate reset to unknown 2026-09-29 because that build and fallback do not match the current tree; G20 paused; G11 fail; submission_ready false"
   ],
   "remaining": [
     "Useful raster context and broader PII/native-DOM task evaluation; current external slice exposes complete visual utility loss",

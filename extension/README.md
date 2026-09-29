@@ -25,8 +25,12 @@ task. After that grant, the content script is registered for later navigations.
 `utils/redactor.js`. That exposes the redaction patterns to pages, not a cloud key.
 See `Docs/decisions/brain-warden-ollama-plan-harden.md`.
 
-`extension/background.js` includes the client operation-tier gate (F17). Keep that gate
-when wiring execute. This import does not connect the loop to the Prototype server.
+`extension/background.js` runs the client operation-tier gate (F17) on the execute path
+(`planAndValidate`). It currently resolves the click target by a selector string, which does
+not bind the tier to the element that gets clicked. On this tree every run also stops after
+STRIP with `redacted is not defined` (introduced in `562ae03`). Both are addressed by the open
+F17 target-identity PR, francisreubenr-rvu/sih-2026#35. Do not describe F17 as enforcing
+consent until that lands. This surface is not connected to the Prototype server on 9041.
 
 G11 timing for this surface is `scripts/g11-warden-option-c-harness.mjs`. Run notes:
 `Docs/decisions/g11-warden-option-c-harness.md`. A dry run writes a fail artifact and

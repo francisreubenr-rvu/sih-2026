@@ -1,4 +1,4 @@
-name: Deploy Sightline website to Pages
+name: Deploy Dhristi website to Pages
 on:
   push:
     branches: [master]

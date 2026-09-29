@@ -8,7 +8,7 @@ Browser-local visual perception and protected-context reasoning for the ISRO Sma
 
 ## What works
 
-Actual local UltraFace/ONNX WASM inference, strict protected-scene construction, authenticated Node API, Qwen2.5 reasoning through Ollama, reviewed revision-bound actions, and metadata-only SQLite persistence. The real browser fixture reached **Request ready for review** after Pending and Review confirmations. One hundred nineteen automated tests pass (`cd Prototype && npm test`, measured 2026-09-15). Local Lighthouse dhristi-v02 (six runs): mobile performance **99**, desktop performance **100**, accessibility/best-practices/SEO **100** on both profiles — not all-four 100 on mobile.
+Actual local UltraFace/ONNX WASM inference, strict protected-scene construction, authenticated Node API, Qwen2.5 reasoning through Ollama, reviewed revision-bound actions, and metadata-only SQLite persistence. The real browser fixture reached **Request ready for review** after Pending and Review confirmations. Automated tests measured 2026-09-29 on `84fd497`: Prototype 141/141 (`cd Prototype && npm run test:ci`), Warden 62 passed with 5 model-dependent skips (`cd warden && python -m pytest test_warden.py`), G11 harness 13/13, extension loopback guard 2/2. Local Lighthouse dhristi-v02 (six runs): mobile performance **99**, desktop performance **100**, accessibility/best-practices/SEO **100** on both profiles — not all-four 100 on mobile.
 
 The website is hosted on GitHub Pages; the Node/Ollama prototype runs locally. Pages cannot run its backend. Use the explicit setup instructions before opening localhost.
 
@@ -42,4 +42,11 @@ npm run build
 npm run build:extension
 ```
 
-From the repository root, serve Website on port 4173 and run `python3 scripts/run_lighthouse.py --label dhristi-v01` for new local measurements. `python3 scripts/check_release.py` deliberately returns a nonzero exit while mandatory gates fail or remain unknown. GitHub Actions publishes only Website when master receives a website change.
+Warden unit tests (no model weights or Ollama needed; `node` must be on PATH for the regex-parity tests):
+
+```sh
+python -m pip install -r warden/requirements-test.txt
+cd warden && python -m pytest -rs test_warden.py
+```
+
+From the repository root, serve Website on port 4173 and run `python3 scripts/run_lighthouse.py --label dhristi-v01` for new local measurements. `python3 scripts/check_release.py` deliberately returns a nonzero exit while mandatory gates fail or remain unknown; `--dry-run` prints the ledger (with per-gate evidence freshness) without rewriting `Benchmarks/release-status.json`. GitHub Actions publishes only Website when master receives a website change.
