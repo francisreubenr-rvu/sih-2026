@@ -31,7 +31,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["utils/redactor.js"],
+      "resources": ["utils/redactor.js", "utils/op-tier.js"],
       "matches": ["<all_urls>"]
     }
   ],

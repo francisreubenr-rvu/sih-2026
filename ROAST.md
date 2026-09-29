@@ -1,3 +1,10 @@
+## Round 20 — F17 target identity (29 September 2026)
+
+- [x] HIGH, reproduced on master `84fd497` in real Chromium: the scan recorded only a selector string, execute ran `document.querySelector` on it (first match, hidden or not), then synthetic pointer events and `click()`. A hidden `<button id=next>` in a `/account/delete` form ahead of a visible `<a id=next>Next page</a>` tiered navigational and posted the delete. Same for `aria-label="Next"` on a "Delete my account" button.
+- [x] Fixed in root `extension/`: per-scan opaque handles held in the content script (execute resolves only a handle; selectors are display keys, made unique); execute-time refusal of stale/detached/hidden (incl. opacity:0 ancestor)/offscreen/covered/`pointer-events:none`/inert targets; tier re-derived from the live element and escalated to a prompt when stricter than planned; tiering on visible text, accessible name, title, value, form action, formaction, href and type (`extension/utils/op-tier.js`); local tier from the extension's own scan only; final tier is the stricter of Warden and local, and anything but an exact `accept` with an agreeing unattended-safe tier prompts. Synthetic pointer sequence removed.
+- [x] Pre-existing master bug found while testing: since `562ae03`, `redacted`/`omni` were block-scoped inside the PERCEIVE timing `try`, so every side-panel run threw `redacted is not defined` after STRIP and never reached PLAN. Hoisted.
+- [ ] Evidence scope: unit tests, the real `background.js` against a fake Warden, and `content.js` in real Chromium (main world, not an extension isolated world). No live Warden/Ollama run, no loaded-extension run. Iframes and shadow DOM out of scope. No consent-enforcement claim beyond these tests; no guardrail status changed.
+
 ## Round 19 — G11 Option C harness (23 September 2026)
 
 - [x] Measurement harness for root `extension/` + Warden `:8756` only. Privacy-only and Prototype `:9041` cannot set `mayFlipG11`.
