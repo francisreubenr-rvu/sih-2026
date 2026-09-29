@@ -1443,3 +1443,13 @@ def test_label_replacement_is_whole_word_only(monkeypatch):
     token = next(t for t, v in result["tokens"].items() if v == "Ravi")
     assert result["elements"][0]["label"] == "Ravishankar Stores"
     assert result["elements"][1]["label"] == f"Hi {token}!"
+
+
+@pytest.mark.parametrize("value", ["city", "City", "Postal code", "First name", "Last name", "State"])
+def test_address_form_field_names_are_descriptors_not_values(value):
+    assert entities._is_structural_descriptor(value)
+
+
+@pytest.mark.parametrize("value", ["Priya Raghunathan", "Bengaluru", "560001"])
+def test_real_values_are_not_descriptors(value):
+    assert not entities._is_structural_descriptor(value)

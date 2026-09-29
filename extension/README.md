@@ -10,12 +10,19 @@ measurement and demo popup (port **9041** harness). Loading it and then judging 
 Warden panel is the two-build trap recorded in
 `Docs/decisions/brain-option-c-warden-port.md`.
 
-`pixel.css` in this folder is Warden-line archive chrome for this surface only.
-Website and Prototype visual authority stays ARCH-002
-(`Docs/decisions/brain-arch-pixel-hud-002.md`). Do not blend the two into a third system.
+Since 29 September 2026 (v5) the roles are: the Warden redacts on this device and relays
+the sanitized request to a cloud planner; this extension checks every plan and acts. Decision:
+`Docs/decisions/brain-v5-local-redaction-cloud-planner.md`. Contract:
+`Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md`. The side panel shows the
+work live: a device/cloud pipeline with measured times, the exact body that left the browser,
+the tokens kept on this device (a value is shown only on Reveal), the masked screen and the
+local checks. On the page, labelled boxes mark each value replaced before planning.
+
+Styling is the Signal system (`DESIGN.md`).
 
 The panel expects the Warden on `http://127.0.0.1:8756`. Start commands are in
-`warden/README.md`. `POST /plan` defaults to local Ollama. Stored `wardenOrigin` and
+`warden/README.md`. `POST /plan` defaults to the cloud planner (Groq, key in `warden/.env`);
+`WARDEN_PLANNER=ollama` is the offline mode. Stored `wardenOrigin` and
 `omniparserUrl` values are refused unless they are loopback.
 
 Install-time host permissions are loopback only (Warden `8756`, OmniParser `7860`).
@@ -25,20 +32,21 @@ task. After that grant, the content script is registered for later navigations.
 `utils/redactor.js`. That exposes the redaction patterns to pages, not a cloud key.
 See `Docs/decisions/brain-warden-ollama-plan-harden.md`.
 
-`extension/background.js` runs the client operation-tier gate (F17) on the execute path
-(`planAndValidate`). Since francisreubenr-rvu/sih-2026#35, the scan gives each control an
+`extension/background.js` runs the plan checks (`utils/plan-check.js`) and the client
+operation-tier gate (F17) locally (`planAndValidate`); since v5 it no longer calls the Warden's
+`POST /validate`. Destructive steps always ask; state-changing steps ask for local confirmation. Since francisreubenr-rvu/sih-2026#35, the scan gives each control an
 opaque per-scan handle held only in the content script, execute resolves that handle (never a
 selector), refuses hidden, covered, offscreen, detached or stale targets, and re-derives the tier
 from the live element before clicking. The local tier comes from the extension's own scan, and
-anything short of an exact Warden `accept` with an agreeing tier asks first. Evidence is unit
-tests, the real `background.js` against a fake Warden, and `content.js` in real Chromium (main
-world); there is no loaded-extension or live Warden run yet, and iframes and shadow DOM are not
-covered. Tests: `node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs`
+anything the local gate cannot tier is refused. Evidence: unit tests, the real `background.js`
+against a fake Warden, `content.js` in real Chromium, and one loaded-extension run against a real
+Warden with GLiNER and a fake cloud planner (`scripts/e2e-v5/`,
+`Benchmarks/results/e2e-v5-boundary-v01.json`: 3 steps, 0 personal values in the 3 cloud
+requests). Iframes and shadow DOM are not covered. Tests: `node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs`
 (needs `Prototype/node_modules` and a Chromium). This surface is not connected to the Prototype
 server on 9041.
 
 G11 timing for this surface is `scripts/g11-warden-option-c-harness.mjs`. Run notes:
 `Docs/decisions/g11-warden-option-c-harness.md`. A dry run writes a fail artifact and
 does not call the Warden. A live L2 run needs this extension loaded, Warden on
-`127.0.0.1:8756`, and a planner probe of `POST /plan` (Ollama on `127.0.0.1:11434`
-only counts when `/plan` itself is served by that Ollama).
+`127.0.0.1:8756`, and a planner probe of `POST /plan`.

@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Synthetic account desk</title>
+<style>body{font:16px system-ui;margin:40px;max-width:640px}label{display:block;margin:14px 0 4px}input{font:inherit;padding:8px;width:100%}button{font:inherit;padding:10px 16px;margin:16px 8px 0 0}.danger{color:#b00}</style></head>
+<body><h1>Account desk (synthetic)</h1>
+<p><a id="me" href="#profile">Signed in as Priya Raghunathan</a></p>
+<p id="welcome">Welcome back Priya Raghunathan. Your registered email is priya.r@example.com and your phone is +91 98765 43210.</p>
+<form id="f" action="/profile/save" method="post" onsubmit="event.preventDefault();document.getElementById('status').textContent='Saved '+document.getElementById('email').value">
+<label for="email">Contact email</label><input id="email" name="email" type="email" autocomplete="email">
+<label for="city">City</label><input id="city" name="city" type="text">
+<button id="save" type="submit">Save profile</button>
+</form>
+<button id="del" class="danger" type="button" onclick="document.getElementById('status').textContent='DELETED'">Delete account</button>
+<p id="status" role="status"></p>
+</body></html>

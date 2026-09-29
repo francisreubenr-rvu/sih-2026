@@ -1,0 +1,25 @@
+{
+  "id": "e2e-v5-boundary-v01",
+  "date": "2026-09-29",
+  "harness": "scripts/e2e-v5/run.mjs",
+  "surface": "root extension/ (unpacked, Chromium headless=new) + warden/ with GLiNER urchade/gliner_multi_pii-v1 loaded on CPU + fake OpenAI-compatible cloud planner (scripts/e2e-v5/fake-cloud.mjs)",
+  "scope": "Synthetic fixture only (scripts/e2e-v5/fixture.html). The cloud planner is a scripted fake: this proves what leaves the machine and that the loop completes, not planning quality of a real cloud model.",
+  "task": "Update my contact email to priya.r@example.com and save the profile",
+  "result": {
+    "run_status": "finished",
+    "steps": 3,
+    "plans": ["type #email EMAIL#1", "click #save", "finish"],
+    "human_prompts": 2,
+    "human_prompt_reason": "tier state-changing requires local confirmation (type, then form submit)",
+    "page_outcome": "status 'Saved priya.r@example.com'; email field holds the real value, typed locally from the vault",
+    "cloud_requests": 3,
+    "raw_pii_hits_in_cloud_requests": 0,
+    "values_checked": ["priya.r@example.com", "Priya", "Raghunathan", "98765"],
+    "cloud_saw_task": "Update my contact email to EMAIL#1 and save the profile",
+    "cloud_saw_label": "Signed in as PERSONNAME#1",
+    "panel_console_errors": 0
+  },
+  "fixed_during_run": "An input labelled 'city' was asked about as a person name (score 0.13 against the 0.12 person-name floor); address-form field names were added to the Warden's descriptor list.",
+  "not_measured": "Real Groq latency and plan quality (no key in this container); Ollama offline mode; toolbar-opened side panel (the harness opens sidepanel.html as a tab); Firefox.",
+  "guardrails": "No guardrail status changed. G11 stays fail; submission_ready stays false."
+}

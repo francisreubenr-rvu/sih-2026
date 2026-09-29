@@ -373,6 +373,14 @@ _DESCRIPTOR_WORDS = {
     "new", "old", "card", "account", "dob", "birth", "date",
     "aadhaar", "aadhar", "pan", "passport", "ssn", "otp", "pin",
     "cvv", "token", "key", "field", "input", "enter", "your", "my",
+    # Address-form and profile field names (added 29 September 2026): an
+    # end-to-end run asked the user about an input labelled "city" as a person
+    # name at 0.13, above the 0.12 person-name floor. A pointless question
+    # trains people to click through the real ones.
+    "city", "town", "state", "country", "region", "province", "district",
+    "zip", "postcode", "postal", "pincode", "code", "street", "line",
+    "first", "last", "middle", "full", "given", "family", "surname",
+    "company", "organisation", "organization", "title", "display",
 }
 
 
