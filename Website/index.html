@@ -2,266 +2,168 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Dhristi is an RV University SIH26171 engineering prototype: on-device browser vision, protected context, local model reasoning and reviewed actions.">
-  <meta name="theme-color" content="#05060a"><meta name="color-scheme" content="dark">
-  <meta property="og:title" content="Dhristi | Your screen. Your boundary."><meta property="og:description" content="On-device visual perception for browser agents. Explore the privacy boundary and run the local engineering prototype."><meta property="og:type" content="website">
   <title>Dhristi | Your screen. Your boundary.</title>
-  <link rel="icon" href="assets/dhristi-mark-signal.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/instrument-serif-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <meta name="description" content="Dhristi lets a browser agent understand your screen without sending your screen anywhere. A student prototype for SIH26171, ISRO's on-device visual perception challenge.">
+  <meta name="theme-color" content="#f3f4f1"><meta name="color-scheme" content="light">
+  <meta property="og:title" content="Dhristi | Your screen. Your boundary.">
+  <meta property="og:description" content="On-device visual perception for browser agents. Personal details stay on your device; the agent sees only the layout it needs.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/video/dhristi-prototype-demo-poster.jpg">
+  <link rel="icon" href="assets/dhristi-mark.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/glacial-indifference-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="style.css">
-  <script defer src="app.js"></script>
-  <script defer src="assets/perception.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap header-row">
-    <a class="brand" href="#main" aria-label="Dhristi home, on-device vision"><img src="assets/dhristi-mark-signal.svg" width="28" height="28" alt=""><span class="brand-name">Dhristi</span><span class="brand-sub">on-device vision</span></a>
-    <nav aria-label="Main navigation"><a href="#pipeline">How it works</a><a href="#demo">The demo</a><a href="#evidence">Evidence</a><a href="#team">The team</a></nav>
-    <div class="header-actions">
-      <p class="site-lang" role="group" aria-label="Language">
-        <button type="button" class="site-lang-btn" id="site-lang-en" aria-pressed="true" aria-label="English">EN</button>
-        <button type="button" class="site-lang-btn" id="site-lang-hi" aria-pressed="false" aria-label="हिन्दी">हिं</button>
-      </p>
-      <button class="button ghost nav-cta" data-open-demo data-i18n-demo>Run local demo <span aria-hidden="true">↗</span></button>
-    </div>
+    <a class="brand" href="#main" aria-label="Dhristi home"><img src="assets/dhristi-mark.svg" width="32" height="32" alt=""><span>Dhristi</span></a>
+    <nav aria-label="Main navigation"><a href="#how">How it works</a><a href="#demo">Demo</a><a href="#team">Team</a></nav>
+    <a class="button small" href="https://github.com/francisreubenr-rvu/sih-2026">View on GitHub <span aria-hidden="true">↗</span></a>
   </div>
 </header>
 
 <main id="main">
-  <section class="hero wrap" aria-labelledby="hero-title">
-    <div class="hero-copy">
-      <p class="eyebrow">SIH26171 · On-device visual perception</p>
-      <h1 id="hero-title">Your screen.<br><em>Your boundary.</em></h1>
-      <p class="hero-summary">Browser agents that reason from protected context, while raw screenshots and personal details stay on your device.</p>
-      <p class="trust-chip" id="trust-bar" data-state="verified" title="Capture and privacy filter run on-device. What can leave: semantic scene fields only. Raw pixels stay local."><span class="dot" aria-hidden="true"></span><span id="trust-en">on this device</span><span class="hi" lang="hi" id="trust-hi" hidden>इस उपकरण पर</span></p>
-      <div class="hero-actions">
-        <button class="button primary" data-open-demo data-i18n-demo>Run local demo <span aria-hidden="true">↗</span></button>
-        <a class="button ghost" href="#pipeline">See the pipeline <span aria-hidden="true">↓</span></a>
-      </div>
-    </div>
-    <figure class="lens" aria-labelledby="lens-caption">
-      <div class="lens-stage">
-        <canvas id="perception-canvas" width="560" height="560" aria-hidden="true"></canvas>
-        <div class="detections" aria-hidden="true">
-          <span class="det" data-kind="face" style="--x:31%;--y:24%;--w:38%;--h:40%"><b>face 0.91</b><i>masked</i></span>
-          <span class="det" data-kind="pii" style="--x:9%;--y:71%;--w:42%;--h:9%"><b>field:password</b><i>masked</i></span>
-          <span class="det" data-kind="ctrl" style="--x:58%;--y:76%;--w:32%;--h:9%"><b>ctrl · next page</b><i>navigational</i></span>
-          <span class="det" data-kind="region" style="--x:66%;--y:8%;--w:26%;--h:14%"><b>region</b><i>opaque</i></span>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="kicker">SIH26171 · On-device visual perception</p>
+        <h1 id="hero-title">Your screen.<br><span>Your boundary.</span></h1>
+        <p class="lead">Dhristi lets a browser agent understand what is on your screen without sending your screen anywhere. Faces, personal details and form values stay on your device. The agent only sees the layout it needs to help.</p>
+        <div class="actions">
+          <a class="button" href="#demo">Watch the demo</a>
+          <a class="button ghost" href="#how">How it works</a>
         </div>
       </div>
-      <figcaption id="lens-caption">Illustration of what the model is allowed to know: boxes, roles and region kinds. The pixels under each box never leave the device. Not a live capture.</figcaption>
-    </figure>
-  </section>
-
-  <section class="wrap gate-board" aria-labelledby="gates-title">
-    <h2 id="gates-title" class="eyebrow">Release gates · Guardrails/guardrails.json</h2>
-    <ul class="gates">
-      <li data-state="ok"><span>Capture</span><b>On device</b></li>
-      <li data-state="ok"><span>Egress</span><b>Semantic only</b></li>
-      <li data-state="ask"><span>Score</span><b>Official null</b></li>
-      <li data-state="stop"><span>G11 · &lt;200 ms full flow</span><b>Fail</b></li>
-      <li data-state="ask"><span>G14 · live demo</span><b>Unknown</b></li>
-      <li data-state="ask"><span>G20 · human validation</span><b>Paused</b></li>
-      <li data-state="neutral"><span>Submission</span><b>Not ready</b></li>
-    </ul>
-  </section>
-
-  <div class="project-context wrap"><p><strong>SIH26171</strong> <span>ISRO problem statement</span></p><p>Built by six CSE students at RV University.</p><a href="https://www.sih.gov.in/sih2026PS">Read the challenge <span aria-hidden="true">↗</span></a></div>
-
-  <section class="section privacy-section wrap" aria-labelledby="privacy-title">
-    <div class="section-heading">
-      <p class="eyebrow">The boundary</p>
-      <h2 id="privacy-title">Useful context. <em>A smaller exposure.</em></h2>
-      <p>A browser agent needs enough information to help. It does not need an unrestricted copy of your screen.</p>
+      <figure class="hero-media">
+        <img src="assets/img/himalayas-iss074e0002581-960.webp" srcset="assets/img/himalayas-iss074e0002581-640.webp 640w, assets/img/himalayas-iss074e0002581-960.webp 960w, assets/img/himalayas-iss074e0002581-1280.webp 1280w" sizes="(max-width: 820px) calc(100vw - 32px), 46vw" width="1280" height="853" alt="The Himalayas and the Indian subcontinent seen from the International Space Station." fetchpriority="high">
+        <figcaption>The Himalayas from the ISS. Photo: NASA (iss074e0002581).</figcaption>
+      </figure>
     </div>
-    <div class="boundary-card">
-      <div class="boundary-side boundary-local">
-        <span class="panel-label">On your device</span>
-        <h3>Original screen</h3>
-        <ul><li>Screenshot pixels</li><li>Names and field values</li><li>Images and unknown text</li></ul>
-        <p>Excluded from the request.</p>
-      </div>
-      <div class="boundary-divider" aria-hidden="true"><span></span></div>
-      <div class="boundary-side boundary-shared">
-        <span class="panel-label">Approved context</span>
-        <h3>Protected scene</h3>
-        <ul><li>Control labels from an allowlist</li><li>Position and size</li><li>Opaque region types</li></ul>
-        <p>Reviewed before model processing.</p>
+  </section>
+
+  <section class="band problem" aria-labelledby="problem-title">
+    <div class="wrap two-col">
+      <h2 id="problem-title">Agents need to see.<br>You need privacy.</h2>
+      <div class="prose">
+        <p>AI browser agents can fill forms and move through websites for you. To do that, most of them send a screenshot of your screen to a model in the cloud.</p>
+        <p>That screenshot holds whatever you had open: your name, your email, account numbers, photos. Dhristi keeps those on your computer and gives the agent a protected outline of the page instead.</p>
       </div>
     </div>
-    <p class="boundary-limit"><strong>What leaves this device:</strong> semantic scene fields only (allowlisted control labels, geometry, opaque region kinds). <strong>What stays local:</strong> raw pixels, screenshots, field values, URLs, and free text. A smaller payload is not a guarantee of anonymity; layout can still reveal context.</p>
   </section>
 
-  <section class="section wrap pipeline-section" id="pipeline" aria-labelledby="pipeline-title">
-    <div class="section-heading">
-      <p class="eyebrow">How it works · shipping build</p>
-      <h2 id="pipeline-title">Five stages. <em>One machine.</em></h2>
-      <p>The extension side panel and the local Warden service run every step on your computer. Only the protected scene reaches the planner.</p>
-    </div>
-    <ol class="pipeline">
-      <li><span class="stage-no">01</span><h3>Perceive</h3><p>The extension scans the page's controls and captures the visible tab. Personal fields are painted over in the capture before anything else sees it.</p><span class="where">Browser</span></li>
-      <li><span class="stage-no">02</span><h3>Strip</h3><p>Pattern rules and a GLiNER model replace personal values with tokens such as <code>EMAIL#1</code>. Spans it is unsure about stop the run and ask you.</p><span class="where">Warden · 127.0.0.1:8756</span></li>
-      <li><span class="stage-no">03</span><h3>Plan</h3><p>A local model proposes the next action from the tokenized task and a sanitized page outline. No screenshot, no field values.</p><span class="where">Ollama · 127.0.0.1:11434</span></li>
-      <li><span class="stage-no">04</span><h3>Validate</h3><p>Deterministic checks, then the extension's own gate. Anything beyond a reversible or navigational step waits for your confirmation.</p><span class="where">Warden + extension</span></li>
-      <li><span class="stage-no">05</span><h3>Execute</h3><p>The extension acts only on the exact element it scanned, after checking that it is still visible and still means the same thing.</p><span class="where">Browser</span></li>
-    </ol>
-    <p class="boundary-limit">Status: the side panel and Warden are covered by unit and browser tests, but have not yet run end to end against a live Warden and Ollama. The full flow currently takes seconds, so the &lt;200&nbsp;ms gate (G11) stays fail.</p>
-  </section>
-
-  <section class="section wrap architecture-section" id="architecture" aria-labelledby="architecture-title">
-    <div class="section-heading">
-      <p class="eyebrow">Prototype · measurement surface</p>
-      <h2 id="architecture-title">Three paths. <em>Separate SLOs.</em></h2>
-      <p>The local Prototype measures three paths separately: Fast, Score and Reason. Select a path for its boundary, timing policy and limits.</p>
-    </div>
-    <div class="paths">
-      <div class="architecture-buttons path-buttons" aria-label="Fast Score Reason paths">
-        <button class="architecture-node selected" data-stage="fast" aria-pressed="true" aria-controls="stage-panel"><span class="node-id">P-01</span><strong>Fast</strong><span>Local protect · no LLM</span></button>
-        <button class="architecture-node" data-stage="score" aria-pressed="false" aria-controls="stage-panel"><span class="node-id">P-02</span><strong>Score</strong><span>Local risk · official null</span></button>
-        <button class="architecture-node" data-stage="reason" aria-pressed="false" aria-controls="stage-panel"><span class="node-id">P-03</span><strong>Reason</strong><span>Outside &lt;200&nbsp;ms</span></button>
+  <section class="section" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">How it works</p>
+        <h2 id="how-title">Four steps. All on your computer.</h2>
       </div>
-      <div class="stage-panel" id="stage-panel" aria-live="polite" aria-atomic="true">
-        <p class="panel-label" id="stage-location">P-01 · FAST PATH · ON DEVICE</p>
-        <h3 id="stage-title">Capture → detect → mask → privacy review.</h3>
-        <p id="stage-description">Toolbar capture, UltraFace WASM, selective or wireframe preview, sanitize, human review. No planner network call. Extension popup shows local capture timing with an explicit “not G11 full-flow” label.</p>
-        <p class="stage-limit" id="stage-limit">SLO: local protect diagnostic only. Fast ≠ G11. G11 remains fail until Reason-inclusive p95&nbsp;&lt;200&nbsp;ms at n≥100.</p>
+      <ol class="steps">
+        <li><span class="step-no">01</span><h3>See</h3><p>Dhristi reads the page and its controls right in your browser.</p></li>
+        <li><span class="step-no">02</span><h3>Protect</h3><p>Faces, personal details and form values are removed before anything is shared.</p></li>
+        <li><span class="step-no">03</span><h3>Plan</h3><p>A local AI model suggests the next step using only the page's protected layout.</p></li>
+        <li><span class="step-no">04</span><h3>Confirm</h3><p>Nothing happens until you approve it. Risky steps always ask first.</p></li>
+      </ol>
+      <div class="compare">
+        <figure>
+          <img src="assets/img/still-original.webp" width="1124" height="1042" alt="A synthetic service desk page showing a photo, a name, an email address, an account number and a password field." loading="lazy">
+          <figcaption><b>What you see</b> The full page, on your screen only.</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/still-protected.webp" width="1124" height="1042" alt="The same page after protection: the photo, email and account number are pixelated and the buttons are marked as controls." loading="lazy">
+          <figcaption><b>What stays protected</b> The face, email and account number are masked on your device.</figcaption>
+        </figure>
+      </div>
+      <p class="note">Screens from the working prototype, using a synthetic demo account.</p>
+    </div>
+  </section>
+
+  <section class="section demo" id="demo" aria-labelledby="demo-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">See it working</p>
+        <h2 id="demo-title">The prototype, recorded live.</h2>
+      </div>
+      <figure class="video-frame">
+        <video controls playsinline preload="none" poster="assets/video/dhristi-prototype-demo-poster.jpg" width="1280" height="720" aria-describedby="demo-caption">
+          <source src="assets/video/dhristi-prototype-demo.mp4" type="video/mp4">
+          <p><a href="assets/video/dhristi-prototype-demo.mp4">Download the demo video</a>.</p>
+        </video>
+        <figcaption id="demo-caption">25 seconds, recorded from the local prototype with synthetic demo data. It captures a page, masks it on the device and shows the only data that may leave.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="boundary-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">The privacy boundary</p>
+        <h2 id="boundary-title">What stays. What leaves.</h2>
+      </div>
+      <div class="boundary">
+        <div class="side stays">
+          <h3>Stays on your device</h3>
+          <ul><li>Screenshots and pixels</li><li>Names, emails and field values</li><li>Photos and faces</li><li>Web addresses and free text</li></ul>
+        </div>
+        <div class="side leaves">
+          <h3>May be shared with the planner</h3>
+          <ul><li>Which buttons and fields exist</li><li>Where they sit on the page</li><li>Placeholders such as <code>EMAIL#1</code> instead of real values</li></ul>
+        </div>
+      </div>
+      <p class="note">A smaller view is not a guarantee of anonymity: the layout of a page can still reveal something about it.</p>
+    </div>
+  </section>
+
+  <section class="band sih" aria-labelledby="sih-title">
+    <div class="wrap sih-grid">
+      <figure class="sih-media">
+        <img src="assets/img/india-srilanka-iss071e700080-960.webp" srcset="assets/img/india-srilanka-iss071e700080-640.webp 640w, assets/img/india-srilanka-iss071e700080-960.webp 960w, assets/img/india-srilanka-iss071e700080-1280.webp 1280w" sizes="(max-width: 820px) calc(100vw - 32px), 46vw" width="1280" height="853" alt="The limestone shoals between India and Sri Lanka seen from orbit." loading="lazy">
+        <figcaption>The shoals between India and Sri Lanka. Photo: NASA (iss071e700080).</figcaption>
+      </figure>
+      <div>
+        <p class="kicker">Smart India Hackathon 2026</p>
+        <h2 id="sih-title">Built for SIH26171.</h2>
+        <p>ISRO's problem statement asks for on-device visual perception for lightweight browser agents. Dhristi is our answer: perception and privacy protection run in the browser, and planning runs on a local model.</p>
+        <p class="status">Dhristi is a student engineering prototype. It is not a released product.</p>
+        <a class="button ghost" href="https://www.sih.gov.in/sih2026PS">Read the problem statement <span aria-hidden="true">↗</span></a>
       </div>
     </div>
-    <p class="section-links"><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Docs/decisions/brain-72h-three-path.md">Read the three-path measurement policy <span aria-hidden="true">↗</span></a></p>
   </section>
 
-  <section class="section wrap demo-section" id="demo" aria-labelledby="demo-title">
-    <div class="section-heading">
-      <p class="eyebrow">The working prototype</p>
-      <h2 id="demo-title">See what stays. <em>Inspect what leaves.</em></h2>
-      <p>Capture a synthetic service desk. Inspect what leaves (semantic scene fields only; raw pixels stay local). Review the model's next action before it runs.</p>
-    </div>
-    <div class="demo-frame">
-      <div class="demo-frame-top"><span>Explain · prototype paths</span><span>v01 · ~108s · captions · synthetic only</span></div>
-      <video class="demo-video" controls playsinline preload="metadata" poster="assets/prototype-viewport-v01.png" width="1440" height="810" aria-label="Dhristi prototype explain video (title cards + captions)" aria-describedby="demo-transcript"><source src="assets/dhristi-prototype-explain-v01.mp4" type="video/mp4"><p><a href="assets/dhristi-prototype-explain-v01.mp4">Download the explain video</a></p></video>
-      <div class="demo-frame-bottom"><p>Title cards and local screen captures: what Dhristi is, Fast/Score/Reason (Fast ≠ G11), the privacy boundary, and capture → protect → review. Burned-in English captions. Synthetic fixture only; no real accounts. The recording shows the earlier interface.</p><button class="text-button" data-open-demo>Run local demo <span aria-hidden="true">↗</span></button></div>
-    </div>
-    <details class="demo-transcript" id="demo-transcript"><summary>Read the explain transcript</summary><p>See <code>Docs/demo-explain-transcript-v01.md</code> for the full caption script. This video explains the SIH26171 on-device visual perception prototype: local Fast protect, local Score risk (officialScore null), Reason with human confirm, and semantic-only egress. It is not a silent capture-only reel.</p><a href="assets/dhristi-prototype-explain-v01.mp4" download>Download explain video</a></details>
-    <p class="demo-explain-secondary">Earlier silent browser recording (10 Sep 2026, 37s) kept as secondary evidence: <a href="assets/dhristi-browser-v02.mp4" download>dhristi-browser-v02.mp4</a>.</p>
-    <div class="evidence-grid">
-      <article class="evidence-card"><h3><span class="mod-id">EV-01</span>Extension capture → review loop</h3><ul class="evidence-list"><li><strong>Production popup UI completed protect stages.</strong><p>Chromium harness clicked Capture &amp; protect and advanced inject→collect→capture→filter→sanitize→review with selective preview. Outbound JSON stayed semantics-only.</p></li><li><strong>Toolbar glyph still needs a human.</strong><p>Shipped manifest correctly refuses captureVisibleTab without activeTab. Automation cannot click the Chrome toolbar icon; packaging and Firefox live runs remain separate.</p></li></ul><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/extension-loop-v01.json">Read the loop record <span aria-hidden="true">↗</span></a></article>
-      <article class="evidence-card"><h3><span class="mod-id">EV-02</span>Packaging + security scan</h3><ul class="evidence-list"><li><strong>Extension 0.1.1 zip refreshed.</strong><p>Chrome and Firefox unpacked packages rebuilt; download zip excludes OCR/PII lab weights. Loadable Chromium path harness-verified.</p></li><li><strong>Secret scan: 0 high findings.</strong><p>G06/G07 moved to pass on sanitize + synthetic-boundary evidence. Full-flow &lt;200&nbsp;ms (G11) remains fail.</p></li></ul><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/security.json">Read security.json <span aria-hidden="true">↗</span></a></article>
-    </div>
-    <div class="proof-notes"><p><strong>Browser vision runs locally.</strong> UltraFace detects faces using ONNX Runtime Web and WASM.</p><p><strong>The model receives structure.</strong> Approved controls and geometry replace original pixels and free text.</p><p><strong>You review the action.</strong> Expired captures and changed pages require a fresh review.</p></div>
-  </section>
-
-  <section class="section wrap evidence-section" id="evidence" aria-labelledby="evidence-title">
-    <div class="section-heading">
-      <p class="eyebrow">Evidence before claims</p>
-      <h2 id="evidence-title">A working slice. <em>An honest scorecard.</em></h2>
-      <p>The first browser run connected local face inference to real model reasoning and confirmed actions on a synthetic task.</p>
-    </div>
-    <div class="evidence-grid">
-      <article class="evidence-card"><h3><span class="mod-id">EV-03</span>Observed in the local build</h3><ul class="evidence-list"><li><strong>A task reached its review screen.</strong><p>Real Qwen2.5 suggestions opened Pending, then Review, with confirmation between actions.</p></li><li><strong>Personal fields stayed out of the payload.</strong><p>The synthetic email, account number and image data were absent in the inspected request.</p></li><li><strong>An expired capture stopped execution.</strong><p>The workspace disabled planning and confirmation until context was refreshed.</p></li></ul><a class="inline-link" href="downloads/prototype-v01-browser.json" download>Download the observation record <span aria-hidden="true">↓</span></a></article>
-      <article class="evidence-card limits-card"><h3><span class="mod-id">LIM-01</span>Still to prove</h3><p>Broader dataset accuracy beyond authored DOM-text fixtures. Resource use. Native extension behavior. Broader accessibility. <strong>G20 non-author human validation is paused</strong> (Francis paused recruits); templates exist, and no recruiting is active.</p><div class="latency-note"><span>The latency trade-off</span><strong>Seconds, currently.</strong><p>Historical model responses are 2–3&nbsp;s. Privacy-only local protect is faster but is not a G11 pass. The &lt;200&nbsp;ms full-flow gate stays fail with recorded evidence.</p></div><p class="evidence-footnote">Single-run observations on an Apple M1 Pro with 16 GB memory and embedded Chromium. These are not benchmark distributions or a privacy certification.</p></article>
+  <section class="section" id="team" aria-labelledby="team-title">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="kicker">RV University · B.Tech CSE</p>
+        <h2 id="team-title">The team.</h2>
+      </div>
+      <ul class="team">
+        <li><span class="initial" aria-hidden="true">G</span><h3>Gopreet</h3><p>API and persistence</p></li>
+        <li><span class="initial" aria-hidden="true">H</span><h3>Hiranmayi</h3><p>UX and accessibility</p></li>
+        <li><span class="initial" aria-hidden="true">V</span><h3>Varun</h3><p>Core implementation</p></li>
+        <li><span class="initial" aria-hidden="true">K</span><h3>Koushaik</h3><p>Testing and reliability</p></li>
+        <li><span class="initial" aria-hidden="true">F</span><h3>Francis</h3><p>Integration and pitch</p></li>
+        <li><span class="initial" aria-hidden="true">N</span><h3>Niharika</h3><p>Research and narrative</p></li>
+      </ul>
     </div>
   </section>
 
-  <section class="section wrap evidence-section" id="latest-evidence" aria-labelledby="latest-evidence-title">
-    <div class="section-heading">
-      <p class="eyebrow">Latest measurements</p>
-      <h2 id="latest-evidence-title">Wave 5–7 evidence <em>beside earlier Wave 4 runs.</em></h2>
-      <p>Each entry below is a recorded local measurement with a downloadable record. None of them is a benchmark distribution. Live gate board: see <code>Guardrails/guardrails.json</code>; do not treat a single wave footer as authoritative.</p>
+  <section class="band cta" aria-labelledby="cta-title">
+    <div class="wrap cta-row">
+      <h2 id="cta-title">Take a closer look.</h2>
+      <div class="actions">
+        <a class="button" href="https://github.com/francisreubenr-rvu/sih-2026">Explore the source <span aria-hidden="true">↗</span></a>
+        <a class="button ghost" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Prototype/README.md">Run it locally <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
-    <div class="evidence-grid">
-      <article class="evidence-card"><h3><span class="mod-id">WV-57</span>Wave 5–7: harness, hardening, a11y, load</h3><ul class="evidence-list"><li><strong>Wave 5 e2e maximized; fixtures 18→24 by Wave 6.</strong><p>Chromium harness proves inject/collect, activeTab refusal, overlay protect loop, and demo screenshots. Held-out synthetic cases grew from 18 (Wave 5) to 24 (Wave 6). Official rubric score stays null; G11 full-flow remains fail.</p></li><li><strong>Wave 6/7 hardening + a11y depth + 5-minute soak.</strong><p>G08 Node/API controls proven; Wave 7 axe + keyboard + text-spacing + EN/HI recorded (G09/G10 still unknown). Load soak sustained ≥5 minutes with heap snapshots (G05 pass). G11 budget not weakened.</p></li></ul><p class="card-links"><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/e2e.json">Read e2e.json <span aria-hidden="true">↗</span></a><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/hardening.json">hardening.json <span aria-hidden="true">↗</span></a><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/load.json">load.json <span aria-hidden="true">↗</span></a></p></article>
-      <article class="evidence-card"><h3><span class="mod-id">G14</span>G14: reset to unknown</h3><ul class="evidence-list"><li><strong>G14 is unknown (reset 29 Sep 2026).</strong><p>Three consecutive live box rehearsals succeeded on build <code>996e40b</code> on 15 Sep. That build is not the current tree, the capture path has changed since, and the offline fallback video shows a different surface. The gate stays unknown until three rehearsals and a fallback are recorded on the current build. G20 paused; G03 toolbar multi-scenario still unclaimed.</p></li><li><strong>Score path local risk is runnable.</strong><p>Extension popup ranks post-protect scene risk from opaque region kinds. <code>officialScore</code> remains null: not WebPII, not a G11 pass. Held-out fixture bridge records local bands plus a descriptive GT-kind correlation (still null WebPII/officialScore).</p></li></ul><p class="card-links"><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/demo-rehearsal.json">Read demo-rehearsal.json <span aria-hidden="true">↗</span></a><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Guardrails/guardrails.json">guardrails.json <span aria-hidden="true">↗</span></a></p></article>
-      <article class="evidence-card"><h3><span class="mod-id">C05</span>Cycle 5: DOM text PII vs face-only gap</h3><ul class="evidence-list"><li><strong>Held-out DOM/text span eval (24 synthetic cases).</strong><p>Measured DOM span detector: instance P/R 1.0 / 1.0 and char coverage 1.0 on this authored set (preservation 1.0). <code>officialScore</code> and WebPII remain null: not organizer saturation.</p></li><li><strong>Face-only gap is explicit.</strong><p>On positive text-PII fixtures, face-only char coverage and instance recall are <strong>0</strong>. Passwords/OTP/cards/PII text need DOM (+ OCR lab) paths; UltraFace alone is insufficient for the ~65% visual+PII+redaction weights.</p></li></ul><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/cycle05-dom-text-pii-heldout-v01.json">Read cycle05-dom-text-pii-heldout-v01.json <span aria-hidden="true">↗</span></a></article>
-      <article class="evidence-card"><h3><span class="mod-id">WV-04</span>Earlier Wave 4: latency + fixtures (context)</h3><ul class="evidence-list"><li><strong>Privacy-only skip-LLM path first recorded.</strong><p>Capture→filter→sanitize→review without planner. Detector cache and optional wireframe preview cut local cost. Face-scale 14/14 and Earth-observation desk runs remain in the archive.</p></li><li><strong>Twelve held-out synthetic cases (Wave 4 baseline).</strong><p>Coverage vs preservation reported separately. WebPII 58/100 text retention failure unchanged and still published.</p></li></ul><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Benchmarks/results/core-latency.json">Read core-latency.json <span aria-hidden="true">↗</span></a></article>
-    </div>
-    <div class="proof-notes against"><p><strong>One result went against us.</strong> On 100 frozen synthetic screens, local OCR and the PII model retained exact annotated personal data on 58 of them. That is why text export stays disabled and the outbound schema stays structural.</p><p><strong>Why it is published anyway.</strong> A privacy filter that reports only its wins is not evidence. The failure record is in the repository beside the passes.</p></div>
-    <details class="wave-records">
-      <summary>Wave 5–7 evidence records</summary>
-      <section class="wave-evidence" id="wave5-evidence" aria-labelledby="wave5-h">
-        <h3 id="wave5-h">Wave 5 evidence (14 Sep 2026)</h3>
-        <p>Extension e2e harness maximized (toolbar glyph still human). Held-out synthetic fixtures: 18 cases. Official rubric score null. Full-flow &lt;200&nbsp;ms remains fail. G17/G18 closed at Wave 5. Later ledger: G05/G08 pass; G14 unknown (a 15 Sep pass was reset on 29 Sep); G11 fail; G03/G09/G10/G20 unknown or paused. Treat <code>Guardrails/guardrails.json</code> as the live gate board, not this Wave 5 snapshot.</p>
-        <ul><li><code>Benchmarks/results/e2e.json</code></li><li><code>Benchmarks/results/wave5-pii-redaction-utility-v01.json</code></li><li><code>Benchmarks/results/core-latency.json</code> (judge breakdown)</li></ul>
-      </section>
-      <section class="wave-evidence" id="wave6-evidence" aria-labelledby="wave6-h">
-        <h3 id="wave6-h">Wave 6 evidence (14 Sep 2026)</h3>
-        <p>Automatable hardening, a11y probe, latency instrumentation, held-out fixtures, and human-path templates. No invented WebPII scores; G11 full-flow remains fail.</p>
-        <ul><li><code>Benchmarks/results/hardening.json</code>: G08 Node/API controls proven</li><li><code>Benchmarks/results/accessibility.json</code>: axe Website + extension popup (G09 unknown)</li><li><code>Benchmarks/results/wave6-pii-redaction-utility-v01.json</code>: 24 synthetic fixtures</li><li><code>Benchmarks/results/core-latency.json</code>: stage breakdown; G11 fail retained</li><li><code>Docs/demo-rehearsal-checklist.md</code> / <code>Docs/human-evaluation-forms.md</code>: G14/G20 templates (G14 rehearsed on 996e40b, reset to unknown 29 Sep; G20 paused)</li></ul>
-      </section>
-      <section class="wave-evidence" id="wave7-evidence" aria-labelledby="wave7-h">
-        <h3 id="wave7-h">Wave 7 evidence (14 Sep 2026)</h3>
-        <p>Accessibility depth (axe + keyboard + text-spacing + EN/HI), 5-minute local load soak with heap snapshots, honest G11 optimizations. Post–Wave 7 ledger: G14 rehearsed on 996e40b (reset to unknown 29 Sep); G20 paused; G03 toolbar multi-scenario still unknown.</p>
-        <ul><li><code>Benchmarks/results/accessibility.json</code>: Wave7 axe + keyboard + 1.4.12 + lang (G09 unknown)</li><li><code>Benchmarks/results/browser-review.json</code>: reflow + zoom notes (G10 unknown)</li><li><code>Benchmarks/results/load.json</code>: 5-minute soak + heap floor (G05)</li><li><code>Benchmarks/results/core-latency.json</code>: G11 fail retained</li><li><code>Benchmarks/results/security.json</code>: rescan</li></ul>
-      </section>
-    </details>
-  </section>
-
-  <section class="section wrap team-section" id="team" aria-labelledby="team-title">
-    <div class="section-heading">
-      <p class="eyebrow">The team</p>
-      <h2 id="team-title">Six minds. <em>Shared responsibility.</em></h2>
-      <p>Second-year B.Tech CSE, RV University. These are proposed work responsibilities; individual experience and ownership are not yet verified.</p>
-    </div>
-    <div class="team-list">
-      <article><span class="initial" aria-hidden="true">G</span><div><h3>Gopreet</h3><p>API and persistence</p></div></article>
-      <article><span class="initial" aria-hidden="true">H</span><div><h3>Hiranmayi</h3><p>UX and accessibility</p></div></article>
-      <article><span class="initial" aria-hidden="true">V</span><div><h3>Varun</h3><p>Core domain implementation</p></div></article>
-      <article><span class="initial" aria-hidden="true">K</span><div><h3>Koushaik</h3><p>Testing and reliability</p></div></article>
-      <article><span class="initial" aria-hidden="true">F</span><div><h3>Francis</h3><p>Integration and technical pitch</p></div></article>
-      <article><span class="initial" aria-hidden="true">N</span><div><h3>Niharika</h3><p>Research and narrative</p></div></article>
-    </div>
-    <p class="small-note">Initials are used until authentic, consented team portraits are available.</p>
-  </section>
-
-  <section class="section wrap delivery-section" id="delivery" aria-labelledby="delivery-title">
-    <div class="section-heading">
-      <p class="eyebrow">Delivery</p>
-      <h2 id="delivery-title">Build. Test. <em>Make it inspectable.</em></h2>
-    </div>
-    <ol class="timeline">
-      <li><time datetime="2026-09-09">09 Sep</time><h3>Working slice</h3><p>Correct problem verified. Local vision, protected context and reviewed model actions connected.</p><span class="timeline-state" data-state="ok">Implemented candidate</span></li>
-      <li><time datetime="2026-09-10">10–14 Sep</time><h3>Validation waves</h3><p>Extension harnesses, held-out fixtures, hardening, accessibility probes, and load soak recorded in Benchmarks/results. Toolbar glyph and some human gates remain open.</p><span class="timeline-state" data-state="ok">Evidence recorded</span></li>
-      <li><time datetime="2026-09-15">15 Sep</time><h3>Engineering continues</h3><p>Internal 11 September target passed; submission_ready remains false. G14 rehearsals logged 15 Sep on an older build (gate unknown since 29 Sep); G11 fail; G03 toolbar multi-scenario still open; <strong>G20 human validation paused</strong> (Francis paused non-author recruits). Claim audit continues against the live guardrail ledger.</p><span class="timeline-state" data-state="ask">Not submission-ready</span></li>
-      <li><time datetime="2026-09-29">29 Sep</time><h3>Execute gate hardened</h3><p>The side panel now acts only on the element it scanned and re-checks it before clicking. G14 reset to unknown after a stale pass.</p><span class="timeline-state" data-state="ask">Live run still to do</span></li>
-    </ol>
-    <p class="small-note">11 September was the team's internal target, not a verified national cutoff. Institutional registration and submission requirements need separate confirmation.</p>
-  </section>
-
-  <section class="section wrap closing" aria-labelledby="closing-title">
-    <p class="eyebrow">Inspect the work</p>
-    <h2 id="closing-title">Trust starts <em>with a closer look.</em></h2>
-    <div class="closing-actions"><button class="button primary" data-open-demo>Run local demo <span aria-hidden="true">↗</span></button><a class="button ghost" href="https://github.com/francisreubenr-rvu/sih-2026">Explore the source <span aria-hidden="true">↗</span></a></div>
-    <div class="artifact-links"><a href="downloads/dhristi-extension-v01.zip" download>Download extension package <span aria-hidden="true">↓</span></a><a href="https://github.com/francisreubenr-rvu/sih-2026/issues">Questions &amp; feedback <span aria-hidden="true">↗</span></a><button class="text-button" id="share">Copy page link <span aria-hidden="true">↗</span></button></div>
-    <p class="small-note">The extension package (v0.1.1) is for unpacked local testing. Chromium harnesses pass; Firefox package is built but not live-validated here. Not a store release.</p>
-    <p id="share-status" role="status"></p>
   </section>
 </main>
 
 <footer class="site-footer">
   <div class="wrap footer-row">
-    <div><a class="brand" href="#main" aria-label="Dhristi home"><img src="assets/dhristi-mark-signal.svg" width="24" height="24" alt=""><span class="brand-name">Dhristi</span></a><p>An RV University student project for SIH26171.<br>Not an official SIH or ISRO website.</p></div>
-    <div class="footer-links"><a href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Docs/design-comparison.md">Design comparison</a><details><summary>Earlier preparation artifacts</summary><p>Historical material from before SIH26171 was resolved. These files are not current implementation evidence.</p><a href="downloads/preparation-brief.pdf">Original preparation brief</a><a href="downloads/guardrails.json">Guardrails (gate board)</a></details></div>
+    <p><strong>Dhristi</strong> is an RV University student project for SIH26171. Not an official SIH or ISRO website.</p>
+    <p>Earth photographs courtesy of NASA. Fonts: Anton, Open Sans and Glacial Indifference (SIL Open Font License).</p>
   </div>
 </footer>
-
-<dialog id="demo-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description">
-  <div class="dialog-header"><span class="brand"><img src="assets/dhristi-mark-signal.svg" width="24" height="24" alt=""><span class="brand-name">Dhristi</span></span><button id="close-dialog" class="close-button" aria-label="Close local demo instructions">×</button></div>
-  <p class="eyebrow">Local engineering prototype</p>
-  <h2 id="dialog-title">Run it on <em>your machine.</em></h2>
-  <p id="dialog-description">This website is static. The working demo needs the repository and Node.js 22+. Privacy-only Fast Capture &amp; protect runs without Ollama; the Reason path needs a local Ollama model when you want planner suggestions.</p>
-  <ol class="setup-list"><li>Clone the repository and install the prototype dependencies.</li><li>Start Dhristi, then open the local workspace and try <strong>Capture &amp; protect</strong> (Fast path, no LLM).</li><li>Optional Reason path: start Ollama and pull <code>qwen2.5:7b-instruct</code> before asking the local model.</li></ol>
-  <div class="command-block"><pre id="setup-command">git clone https://github.com/francisreubenr-rvu/sih-2026.git
-cd sih-2026/Prototype
-npm ci
-node ../scripts/build-prototype.mjs
-npm start
-# Optional Reason path (separate terminal):
-# ollama serve
-# ollama pull qwen2.5:7b-instruct</pre><button class="text-button" id="copy-setup">Copy commands</button></div>
-  <p id="copy-status" role="status"></p>
-  <div class="dialog-actions"><a class="button primary" href="http://127.0.0.1:9041/" target="_blank" rel="noopener">Open local workspace <span aria-hidden="true">↗</span></a><a class="inline-link" href="https://github.com/francisreubenr-rvu/sih-2026/blob/master/Prototype/README.md">Full setup guide <span aria-hidden="true">↗</span></a></div>
-  <p class="small-note">The localhost link works only after setup on your computer. Use the synthetic fixture; no real account or external submission is connected.</p>
-</dialog>
 </body>
 </html>

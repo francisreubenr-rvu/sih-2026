@@ -1,7 +1,8 @@
 /* Signal design tokens: the single source for every Dhristi surface.
-   Each surface carries an identical copy of the block between the markers
-   (Website/style.css, extension/signal.css, Prototype/app/signal.css,
-   Prototype/extension/signal.css). scripts/check-signal-tokens.mjs fails CI
+   Each product surface carries an identical copy of the block between the
+   markers (extension/signal.css, Prototype/app/signal.css,
+   Prototype/extension/signal.css). The public Website uses its own light
+   landing palette (DESIGN.md, "Website landing"). scripts/check-signal-tokens.mjs fails CI
    when a copy drifts or a text/ground pair drops below WCAG AA.
    Meaning: glow = the one primary action and focus; scan = detection and
    verified-local; ask = waiting on a person or unknown; stop = fail,

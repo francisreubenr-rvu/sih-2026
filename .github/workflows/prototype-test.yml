@@ -10,7 +10,6 @@ on:
       - 'scripts/**'
       - 'extension/**'
       - 'design/**'
-      - 'Website/style.css'
       - '.github/workflows/prototype-test.yml'
   push:
     branches: [master, 'brain/**', 'feat/**', 'cursor/**']
@@ -19,7 +18,6 @@ on:
       - 'scripts/**'
       - 'extension/**'
       - 'design/**'
-      - 'Website/style.css'
       - '.github/workflows/prototype-test.yml'
   workflow_dispatch:
 

@@ -10,7 +10,6 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL = 'design/signal-tokens.css';
 export const SURFACES = [
-  'Website/style.css',
   'extension/signal.css',
   'Prototype/app/signal.css',
   'Prototype/extension/signal.css',

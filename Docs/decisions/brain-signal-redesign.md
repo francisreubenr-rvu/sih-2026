@@ -43,3 +43,28 @@ The detection-box motif is also what the product does: it draws boxes around wha
 ## Not changed
 
 No guardrail status changed: G11 stays fail, G14 unknown, G20 paused, and `submission_ready` false. No behaviour changed in the extension, Warden or Prototype. The committed extension zips (`Docs/*.zip`, `Website/downloads/*.zip`) are not rebuilt in this change. The explain video still shows the earlier interface, and the site says so.
+
+## Amendment: Website is a light landing page (29 September 2026, later the same day)
+
+Francis redirected the public Website after reviewing the Signal version.
+
+**His direction:**
+- The page is the landing page for the world, with key information only.
+- No engineering detail: no waves, gates, blocks or code specifics.
+- No dark colours; a light palette with dark text for contrast.
+- Fonts: Glacial Indifference (or similar) for paragraphs, Open Sans for headings, and Anton for display headings.
+- Real prototype footage in place of the old video.
+
+**Decided:**
+- The Website leaves Signal and gets its own light landing palette (`DESIGN.md`, "Website landing"). Signal stays the product system for the side panel, Prototype pages and popup; `scripts/check-signal-tokens.mjs` now covers those three.
+- Content is cut to: what Dhristi is, the problem, four plain-language steps, the demo, what stays and what leaves, SIH26171 context with an explicit "student engineering prototype, not a released product" line, and the team. Gate, wave and benchmark detail stays in the repository (`Guardrails/`, `Benchmarks/`, `README.md`).
+- Fonts: the actual Glacial Indifference web files (fontlibrary.org, SIL OFL, used unmodified because it has a Reserved Font Name), plus Anton and Open Sans (SIL OFL, via Fontsource). All are self-hosted.
+- Footage: `Website/assets/video/dhristi-prototype-demo.mp4` is 25 s of H.264, recorded with Playwright from the local Prototype in this container on synthetic data. It shows a real Fast-path Capture & protect and the outbound request.
+  - The caption bar and cursor dot are annotation overlays; everything else is the live app.
+  - A first cut said "personal fields are masked"; the preview still shows the synthetic name heading. The caption was corrected to name exactly what is masked (face, email, account number).
+  - The Reason path is not shown: it needs a local Ollama model, which was not available.
+  - Stills (`assets/img/still-*.webp`) come from the same run.
+- Images: Francis asked for images "preferably from Pinterest". Pinterest pins are third-party copyrighted works, and this is a public site, so none were used. The two Earth photographs are NASA ISS images (iss074e0002581, iss071e700080), which are public domain and credited on the page.
+- Removed from the Website: `app.js` (no interactive modules remain) and this PR's Signal-only assets (`perception.js`, the Signal mark and fonts). The older videos and images stay in `Website/assets/` because historical records cite them; the page no longer uses them.
+
+**Known gap:** the demo footage shows the Prototype on the dark Signal theme, as this PR ships it. If the product surfaces should also go light, that is a separate decision.

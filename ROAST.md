@@ -4,7 +4,8 @@
 - [x] axe-core: 0 violations on Website, Prototype pages and popup. Behaviour, IDs and harness selectors unchanged; tests 141/58/13 pass.
 - [ ] Mobile Lighthouse 97–98 vs master 99 on the same machine (LCP +0.25 s from the serif hero face). Desktop 100.
 - [ ] Side panel carries three axe findings that also exist on master (list, region, aria-allowed-role in `sidepanel.js` markup); not fixed here.
-- [ ] Explain video and committed extension zips still show or package the earlier interface.
+- [x] Website redirected by Francis the same day: light landing page, key information only, Anton / Open Sans / Glacial Indifference, real prototype footage replacing the explain video, NASA public-domain imagery. No Pinterest images (copyright).
+- [ ] Committed extension zips still package the earlier interface. Demo footage shows the dark Signal Prototype.
 
 ## Round 20 — F17 target identity (29 September 2026)
 

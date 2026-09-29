@@ -1,10 +1,30 @@
-# Dhristi design system: Signal
+# Dhristi design system
 
-One dark system for every surface: the Website, the extension side panel, the Prototype operator pages and the Prototype popup. Decision and references: `Docs/decisions/brain-signal-redesign.md` (29 September 2026, supersedes ARCH-PIXEL-HUD-002 and the 13 September side-panel palette).
+Two systems. **Signal** (dark) is the product: the extension side panel, the Prototype operator pages and the Prototype popup. **Website landing** (light) is the public page, set by Francis on 29 September 2026: key information only, no dark colours, Anton / Open Sans / Glacial Indifference.
+
+## Website landing
+
+| Token | Value | Role |
+|---|---|---|
+| `--paper` | `#f3f4f1` | Page ground |
+| `--white` | `#ffffff` | Cards, alternating bands |
+| `--tint` | `#e4e8ff` | Pale cobalt band, image offset |
+| `--ink` / `--ink-2` / `--ink-3` | `#0d1014` / `#3f4550` / `#5a616d` | Text (lowest: ink-3 on the tint band, 5.1:1) |
+| `--line` | `#d6d9d2` | Hairlines |
+| `--cobalt` | `#1f36d6` | Links, primary buttons (white text 8.2:1) |
+| `--flame` | `#ff5b2e` | Large numerals on white cards (3.1:1) and decorative marks only, never body text |
+
+- **Type:** Anton (display headings, uppercase), Open Sans 600/700 (subheadings, labels, buttons), Glacial Indifference (paragraphs). All are OFL and self-hosted in `Website/assets/fonts/`.
+- **Content rule:** public key information only (what Dhristi is, the problem, how it works, the demo, the privacy boundary, SIH26171 context, the team). Engineering evidence (waves, gates, benchmarks) lives in the repository, not on the landing page.
+- **Imagery:** real prototype screenshots and footage recorded from the local build with synthetic data, plus public-domain NASA Earth photography, credited on the page. No third-party copyrighted images (e.g. Pinterest pins).
+
+# Signal (product surfaces)
+
+One dark system for the extension side panel, the Prototype operator pages and the Prototype popup. Decision and references: `Docs/decisions/brain-signal-redesign.md` (29 September 2026, supersedes ARCH-PIXEL-HUD-002 and the 13 September side-panel palette).
 
 ## Tokens
 
-Canonical source: `design/signal-tokens.css`. Each surface carries a verbatim copy between `/* signal:tokens:start */` and `/* signal:tokens:end */`; `node scripts/check-signal-tokens.mjs` fails on drift or on contrast below WCAG AA.
+Canonical source: `design/signal-tokens.css`. Each product surface carries a verbatim copy between `/* signal:tokens:start */` and `/* signal:tokens:end */`; `node scripts/check-signal-tokens.mjs` fails on drift or on contrast below WCAG AA.
 
 | Token | Value | Role |
 |---|---|---|
@@ -29,7 +49,7 @@ Canonical source: `design/signal-tokens.css`. Each surface carries a verbatim co
 ## Motifs
 
 - **Detection box.** A 1px scan-cyan box with a mono label chip above it. It is the signature, because it is what the product does. Cards use detection corner ticks instead of full frames.
-- **Dither.** Halftone dot fields for imagery and empty states (the hero lens is procedural canvas, `Website/assets/perception.js`), at a low-opacity page texture.
+- **Dither.** Halftone dot fields for empty states and a low-opacity page texture.
 - **Bloom.** At most one indigo-to-violet radial glow per view, behind the hero or the closing call to action.
 
 ## Rules
@@ -37,7 +57,7 @@ Canonical source: `design/signal-tokens.css`. Each surface carries a verbatim co
 - Colour carries meaning. Indigo means act, cyan means detected or verified, amber means waiting, red means stop. Status is never colour alone: each chip also has a text label.
 - Radius is 2px. Hairlines are preferred over shadows; the primary button is the only element with a glow shadow.
 - Keep a 16px minimum gutter, never scroll the page horizontally, and use 44px controls.
-- Motion: eased on the Website, stepped on the side panel. Everything stops under `prefers-reduced-motion`, and content is visible at rest (reveals move and never hide).
+- Motion: eased on the Prototype pages, stepped on the side panel. Everything stops under `prefers-reduced-motion`, and content is visible at rest (reveals move and never hide).
 - Fixture pages (`Prototype/app/*fixture*.html`) are synthetic targets, not UI. Never restyle them.
 
 ## Brand
@@ -48,7 +68,6 @@ The Hybrid C viewfinder geometry is unchanged (`Docs/decisions/brain-logo-hybrid
 
 | Surface | Tokens | Layout |
 |---|---|---|
-| Website | `Website/style.css` | same file, `Website/assets/perception.js` |
 | Extension side panel | `extension/signal.css` | `extension/pixel.css` (semantic aliases) + `extension/sidepanel.css` |
 | Prototype operator pages | `Prototype/app/signal.css` (+ shared base) | `style.css`, `validation.css`, `operations.css`, … |
 | Prototype popup | `Prototype/extension/signal.css` | `Prototype/extension/popup.css` (Signal layer at the end) |
