@@ -8,12 +8,14 @@ on:
     paths:
       - 'Prototype/**'
       - 'scripts/**'
+      - 'extension/**'
       - '.github/workflows/prototype-test.yml'
   push:
     branches: [master, 'brain/**', 'feat/**', 'cursor/**']
     paths:
       - 'Prototype/**'
       - 'scripts/**'
+      - 'extension/**'
       - '.github/workflows/prototype-test.yml'
   workflow_dispatch:
 
@@ -52,3 +54,11 @@ jobs:
 
       - name: G11 Option C harness checks
         run: node --test scripts/g11-warden-option-c-harness.test.mjs
+
+      # Root extension/: loopback guard, F17 tier rules, the real background.js gate against a
+      # fake Warden, and content.js target checks in real Chrome (playwright-core from
+      # Prototype/node_modules, the runner's preinstalled /usr/bin/google-chrome).
+      - name: Extension F17 and loopback checks
+        env:
+          DHRISTI_CHROMIUM: /usr/bin/google-chrome
+        run: node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs
