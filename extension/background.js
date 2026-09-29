@@ -4,6 +4,7 @@ import * as wardenClient from './utils/warden.js';
 import { createG11Trace } from './utils/g11-stage-clock.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
 import { loopbackHttpUrl } from './utils/loopback.js';
+import { decideGate, expressesDestructiveIntent, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
 
 // DHRISTI v4 background loop, plus the session transcript that the side panel renders.
 //
@@ -672,49 +673,11 @@ async function restoreState() {
 // ============================================================================
 // Local operation-tier gating -- ROAST.md F17, THE RULE THAT MUST NOT BE RELAXED
 // ============================================================================
-// Ported independently from warden/tiers.py (itself adapted from the v3 reference,
-// Prototype/shared/op-tier.mjs). Independent, on purpose, not imported: a spoofed or
-// compromised loopback listener must not be able to authorise a destructive action by
-// controlling both sides of a shared implementation. This copy is what actually gates
-// EXECUTE; the Warden's tier and verdict are necessary but never sufficient.
-const DESTRUCTIVE_INTENT_RE = /\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\b|\bclose (?:my|the) account\b|\bcancel (?:my|the) (?:account|subscription)\b/i;
-const DESTRUCTIVE_LABEL_RE = /delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)/i;
-const SUBMIT_LABEL_RE = /submit|save|confirm|pay|checkout|place order|purchase|send/i;
-const NAV_LABEL_RE = /^(go to|view|open|back|next|home|menu)\b|\blink\b/i;
-
-function expressesDestructiveIntent(task) {
-  return DESTRUCTIVE_INTENT_RE.test(String(task || ''));
-}
-
-function findElementBySelector(selector, elements) {
-  return (elements || []).find((el) => el.selector === selector) || null;
-}
-
-function hasDestructiveControl(elements) {
-  return (elements || []).some((el) => DESTRUCTIVE_LABEL_RE.test(`${el.label || ''} ${el.fieldType || ''}`));
-}
-
-// Classifies a plan into reversible / navigational / state-changing / destructive. Resolves a
-// click target's tier from the scene's own label/fieldType text, never from anything the plan
-// or the Warden claims about it. Throws if a click names a selector this scene does not
-// contain: this doubles as an independent re-check of the "selector-in-scene" deterministic
-// check /validate already runs server-side, so a hostile Warden double cannot get a
-// nonexistent target past this extension by lying about that check having passed.
-function opTierLocal(plan, elements) {
-  const action = plan.action;
-  if (action === 'scroll' || action === 'wait' || action === 'finish') return 'reversible';
-  if (action === 'type') return 'state-changing';
-  if (action === 'click') {
-    const el = findElementBySelector(plan.target_selector, elements);
-    if (!el) throw new Error(`local tier: click targets a selector not present in this scene: ${plan.target_selector}`);
-    const haystack = `${el.label || ''} ${el.fieldType || ''}`;
-    if (DESTRUCTIVE_LABEL_RE.test(haystack)) return 'destructive';
-    if (SUBMIT_LABEL_RE.test(haystack)) return 'state-changing';
-    if (NAV_LABEL_RE.test(haystack)) return 'navigational';
-    return 'state-changing'; // conservative default: stop for confirmation, not proven safe
-  }
-  throw new Error(`local tier: unrecognized action ${action}`);
-}
+// The rules live in utils/op-tier.js (ported independently from warden/tiers.py, on purpose,
+// not shared). Every local tier is computed from the extension's OWN page scan: content.js tiers
+// each element from the live DOM and returns it as `tier` alongside an opaque per-scan `handle`.
+// Nothing below reads an element list or tier the Warden returned to decide whether to act; the
+// Warden's tier and verdict can only make the gate stricter (decideGate).
 
 // Rewrites the plan to the reversible 'finish' action when the task expresses destructive
 // intent and the scene holds no destructive control (ROAST.md F8's mitigation: a planner
@@ -731,10 +694,6 @@ function applyIntentCoherenceLocal(task, plan, elements) {
     },
     overridden: true,
   };
-}
-
-function tierPermitsUnattended(tier) {
-  return tier === 'reversible' || tier === 'navigational';
 }
 
 // ---- Warden stages: STRIP, PLAN, VALIDATE -----------------------------------
@@ -804,10 +763,10 @@ async function planWithWarden(tokenizedTask, sanitizedDom, elements, baseHistory
   }
 }
 
-function timeOpTierLocal(plan, elements) {
+function timeOpTierLocal(plan, localScene) {
   const t0 = performance.now();
   try {
-    return { tier: opTierLocal(plan, elements), error: null };
+    return { tier: tierForPlan(plan, localScene), error: null };
   } catch (error) {
     return { tier: null, error };
   } finally {
@@ -815,16 +774,16 @@ function timeOpTierLocal(plan, elements) {
   }
 }
 
-function gatePathFor({ verdict, localTier, choice, tierError }) {
-  if (tierError || localTier == null) return 'reject';
-  if (verdict === 'reject' || choice === 'stop') return 'reject';
-  if (verdict === 'ask') return 'ask';
-  if (choice === 'skip') return 'ask';
-  if (!tierPermitsUnattended(localTier) || choice === 'proceed') return 'local_confirm_required';
-  return 'unattended_ok';
+const GATE_TRACE_PATH = { reject: 'reject', ask: 'ask', confirm: 'local_confirm_required', unattended: 'unattended_ok' };
+
+function gatePathFor({ gatePath, choice, tierError }) {
+  if (tierError || gatePath === 'reject' || choice === 'stop') return 'reject';
+  if (gatePath === 'ask' || choice === 'skip') return 'ask';
+  if (choice === 'proceed') return 'local_confirm_required';
+  return GATE_TRACE_PATH[gatePath] || 'reject';
 }
 
-function recordF17({ localTier, wardenTier, verdict, choice, tierError }) {
+function recordF17({ localTier, wardenTier, gatePath, choice, tierError }) {
   const tiersAgree = wardenTier != null && localTier != null && wardenTier === localTier;
   g11Trace.recordF17({
     opTierLocalComputed: tierError ? true : localTier != null,
@@ -833,7 +792,7 @@ function recordF17({ localTier, wardenTier, verdict, choice, tierError }) {
     tiersAgree,
     trustedServerRequiresConfirmationAlone: false,
     unattendedExecuteAllowed: false,
-    gatePath: gatePathFor({ verdict, localTier, choice, tierError }),
+    gatePath: gatePathFor({ gatePath, choice, tierError }),
     bypassedLocalTier: false,
     tierError: Boolean(tierError),
   });
@@ -854,17 +813,21 @@ async function requestValidationQuestion(text, options, attempt, reasons, stepNu
   return answers.choice === 'proceed' || answers.choice === 'skip' || answers.choice === 'stop' ? answers.choice : 'stop';
 }
 
-// PLAN + VALIDATE, with the bounded reject/re-plan loop (frozen spec's "Retry and escalation
-// loop") and the F17 local gate. Returns { planResp, plan, tier, verdict, checks, choice }:
-// `plan` is the plan actually approved to execute (may be the local intent-coherence override)
-// and `choice` is null unless a prompt fired, in which case it is 'proceed' | 'skip' | 'stop'.
-async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, baseHistory, stepNumber) {
+// PLAN + VALIDATE, with the bounded reject/re-plan loop and the F17 local gate. Returns
+// { planResp, plan, tier, verdict, checks, choice }: `plan` is the plan actually approved to
+// execute (may be the local intent-coherence override), `tier` is the stricter of the local and
+// Warden tiers, and `choice` is null unless a prompt fired ('proceed' | 'skip' | 'stop').
+//
+// `wireElements` are what the Warden sees (/plan, /validate). `localScene` is the extension's own
+// scan with handles and locally computed tiers; it alone decides the local tier.
+async function planAndValidate(runId, task, tokenizedTask, sanitizedDom, wireElements, localScene, baseHistory, stepNumber) {
   let reasons = [];
   for (let attempt = 1; attempt <= WARDEN_VALIDATE_MAX_ATTEMPTS; attempt += 1) {
     if (aborted(runId)) throw new Error('Stopped');
-    const planResp = await planWithWarden(tokenizedTask, sanitizedDom, elements, baseHistory, reasons);
+    const planResp = await planWithWarden(tokenizedTask, sanitizedDom, wireElements, baseHistory, reasons);
     if (aborted(runId)) throw new Error('Stopped');
-    const rawPlan = planResp.plan;
+    const rawPlan = planResp && typeof planResp.plan === 'object' && planResp.plan ? planResp.plan : null;
+    if (!rawPlan) throw new Error('warden: /plan returned no plan object');
 
     // The model that actually answered, reported by /plan itself. Never a hardcoded name.
     noteStage('PLAN', planResp.model ? `${planResp.model} proposed ${rawPlan.action}${rawPlan.target_selector ? ` on ${rawPlan.target_selector}` : ''}` : `proposed ${rawPlan.action}`, stepNumber);
@@ -875,15 +838,15 @@ async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, bas
 
     // Local intent-coherence override, applied before this plan is shown to /validate's verdict
     // at all: see applyIntentCoherenceLocal()'s comment for why trusting the Warden's own
-    // internal override is not enough.
-    const coherence = applyIntentCoherenceLocal(tokenizedTask, rawPlan, elements);
+    // internal override is not enough. Reads the raw local task and the local scan only.
+    const coherence = applyIntentCoherenceLocal(task, rawPlan, localScene);
     if (coherence.overridden) {
       noteActivity('The task implies a destructive action but the page holds no destructive control, so the plan was rewritten locally to finish.', stepNumber);
-      const timed = timeOpTierLocal(coherence.plan, elements);
+      const timed = timeOpTierLocal(coherence.plan, localScene);
       if (timed.error) {
         noteStage('VALIDATE', 'rejected locally, the plan could not be tiered', stepNumber);
         noteError(timed.error.message, stepNumber);
-        recordF17({ localTier: null, wardenTier: null, verdict: 'reject', choice: 'stop', tierError: timed.error });
+        recordF17({ localTier: null, wardenTier: null, gatePath: 'reject', choice: 'stop', tierError: timed.error });
         return {
           planResp, plan: coherence.plan, tier: null, verdict: 'reject',
           checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: timed.error.message,
@@ -891,20 +854,20 @@ async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, bas
       }
       const tier = timed.tier;
       noteStage('VALIDATE', `accept, rewritten locally (tier: ${tier})`, stepNumber);
-      recordF17({ localTier: tier, wardenTier: null, verdict: 'accept', choice: null, tierError: null });
+      recordF17({ localTier: tier, wardenTier: null, gatePath: 'unattended', choice: null, tierError: null });
       return {
         planResp, plan: coherence.plan, tier,
         verdict: 'accept', checks: [{ name: 'local-intent-coherence-override', pass: true }], choice: null,
       };
     }
 
-    const timedTier = timeOpTierLocal(rawPlan, elements);
+    const timedTier = timeOpTierLocal(rawPlan, localScene);
     if (timedTier.error) {
-      // A plan naming a selector this scene does not contain, or an unrecognized action,
-      // cannot be tiered at all; refuse rather than guess or execute it anyway.
+      // A plan naming a target this extension's scan does not hold exactly once, or an
+      // unrecognized action, cannot be tiered at all; refuse rather than guess or execute it.
       noteStage('VALIDATE', 'rejected locally, the plan could not be tiered', stepNumber);
       noteError(timedTier.error.message, stepNumber);
-      recordF17({ localTier: null, wardenTier: null, verdict: 'reject', choice: 'stop', tierError: timedTier.error });
+      recordF17({ localTier: null, wardenTier: null, gatePath: 'reject', choice: 'stop', tierError: timedTier.error });
       return {
         planResp, plan: rawPlan, tier: null, verdict: 'reject',
         checks: [{ name: 'local-tier-computed', pass: false }], choice: 'stop', localError: timedTier.error.message,
@@ -916,52 +879,53 @@ async function planAndValidate(runId, tokenizedTask, sanitizedDom, elements, bas
     const validateT0 = performance.now();
     let vResp;
     try {
-      vResp = await wardenClient.validate({ plan: rawPlan, elements, tokenizedTask, attempt });
+      // Unreachable or erroring Warden throws here: the run ends with an error, nothing executes.
+      vResp = await wardenClient.validate({ plan: rawPlan, elements: wireElements, tokenizedTask, attempt });
     } finally {
       g11Trace.add('validate', performance.now() - validateT0);
     }
-    const checks = [...(vResp.checks || []), { name: 'local-tier-agreement', pass: vResp.tier === localTier }];
-    const passed = checks.filter((c) => c.pass === true).length;
-    noteStage('VALIDATE', `${vResp.verdict}, ${passed} of ${checks.length} checks passed (tier: ${localTier})`, stepNumber);
+    const v = vResp && typeof vResp === 'object' ? vResp : {};
+    const verdict = typeof v.verdict === 'string' ? v.verdict : null;
+    const wardenTier = typeof v.tier === 'string' ? v.tier : null;
+    const gate = decideGate({ verdict, wardenTier, localTier });
+    const checks = [...(Array.isArray(v.checks) ? v.checks : []), { name: 'local-tier-agreement', pass: wardenTier === localTier }];
+    const passed = checks.filter((c) => c && c.pass === true).length;
+    noteStage('VALIDATE', `${verdict ?? 'no verdict'}, ${passed} of ${checks.length} checks passed (tier: ${gate.finalTier ?? localTier})`, stepNumber);
 
-    if (vResp.verdict === 'reject') {
-      reasons = vResp.reasons || [];
+    if (gate.path === 'reject') {
+      reasons = Array.isArray(v.reasons) ? v.reasons : [];
       noteActivity(`Plan rejected on attempt ${attempt}: ${reasons.length ? reasons.join('; ') : 'no reason returned'}. Re-planning with the reasons attached.`, stepNumber);
       if (attempt === WARDEN_VALIDATE_MAX_ATTEMPTS) {
         const choice = await requestValidationQuestion(
           `The plan was rejected ${attempt} times in a row and the retry budget is exhausted.`,
           STANDARD_VALIDATION_OPTIONS, attempt, reasons, stepNumber,
         );
-        recordF17({ localTier, wardenTier: vResp.tier, verdict: 'reject', choice, tierError: null });
-        return { planResp, plan: rawPlan, tier: localTier, verdict: 'reject', checks, choice };
+        recordF17({ localTier, wardenTier, gatePath: 'reject', choice, tierError: null });
+        return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: 'reject', checks, choice };
       }
-      recordF17({ localTier, wardenTier: vResp.tier, verdict: 'reject', choice: null, tierError: null });
+      recordF17({ localTier, wardenTier, gatePath: 'reject', choice: null, tierError: null });
       continue; // informed re-plan: planWithWarden's next call carries `reasons`
     }
 
-    if (vResp.verdict === 'ask') {
-      const q = vResp.question || {};
-      const choice = await requestValidationQuestion(q.text, q.options, attempt, [], stepNumber);
-      recordF17({ localTier, wardenTier: vResp.tier, verdict: 'ask', choice, tierError: null });
-      return { planResp, plan: rawPlan, tier: localTier, verdict: 'ask', checks, choice };
+    if (gate.path === 'ask') {
+      const q = v.question && typeof v.question === 'object' ? v.question : {};
+      const choice = await requestValidationQuestion(q.text || 'The Warden asked for confirmation before this step.', q.options, attempt, [], stepNumber);
+      recordF17({ localTier, wardenTier, gatePath: 'ask', choice, tierError: null });
+      return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: 'ask', checks, choice };
     }
 
-    // verdict === 'accept'. Necessary, never sufficient (F17): this extension's own tier
-    // check is the deciding gate, and a tier that is not proven reversible-or-navigational
-    // stops for a LOCAL confirmation even though the Warden already said yes.
-    if (!tierPermitsUnattended(localTier)) {
-      const disagreement = vResp.tier === localTier
-        ? []
-        : [`Warden reported tier '${vResp.tier}'; this extension independently computed '${localTier}' from the same scene`];
+    // The Warden's accept is necessary, never sufficient (F17): anything short of an exact
+    // accept with a matching, unattended-safe tier stops for a LOCAL confirmation.
+    if (gate.path === 'confirm') {
       const choice = await requestValidationQuestion(
-        `This action is tier '${localTier}' and requires local confirmation before it runs. The Warden accepted the plan; this confirmation is the extension's own gate, not the Warden's.`,
-        STANDARD_VALIDATION_OPTIONS, attempt, disagreement, stepNumber,
+        `This action is tier '${gate.finalTier}' and requires local confirmation before it runs. This confirmation is the extension's own gate, not the Warden's.`,
+        STANDARD_VALIDATION_OPTIONS, attempt, gate.reasons, stepNumber,
       );
-      recordF17({ localTier, wardenTier: vResp.tier, verdict: 'accept', choice, tierError: null });
-      return { planResp, plan: rawPlan, tier: localTier, verdict: 'accept', checks, choice };
+      recordF17({ localTier, wardenTier, gatePath: 'confirm', choice, tierError: null });
+      return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: verdict === 'accept' ? 'accept' : 'ask', checks, choice };
     }
-    recordF17({ localTier, wardenTier: vResp.tier, verdict: 'accept', choice: null, tierError: null });
-    return { planResp, plan: rawPlan, tier: localTier, verdict: 'accept', checks, choice: null };
+    recordF17({ localTier, wardenTier, gatePath: 'unattended', choice: null, tierError: null });
+    return { planResp, plan: rawPlan, tier: gate.finalTier, verdict: 'accept', checks, choice: null };
   }
   // Unreachable: every branch inside the loop returns by attempt === WARDEN_VALIDATE_MAX_ATTEMPTS at the latest.
   throw new Error('warden: validation retry loop exited without a verdict');
@@ -1027,7 +991,12 @@ async function runLoop(runId, secrets) {
       // 1. PERCEIVE: wait for the content script, then scan the page.
       g11Trace.markWallStart();
       const perceiveT0 = performance.now();
+      // Declared outside the timed block: STRIP, PLAN and the step records below read them.
       let scan;
+      let localScene;
+      let wireElements;
+      let redacted;
+      let omni = { available: false, status: 'disabled', elements: [] };
       try {
       await pingContentScript(runId);
       if (aborted(runId)) return;
@@ -1035,6 +1004,10 @@ async function runLoop(runId, secrets) {
       scan = await sendToTab('PAGE_SCAN');
       if (aborted(runId)) return;
       if (!scan || !Array.isArray(scan.elements)) throw new Error('Invalid scan result');
+      // The extension's own scene: handles and locally computed tiers. Stays in this worker.
+      localScene = scan.elements;
+      // What the Warden sees: the same elements without the handle or the local tier.
+      wireElements = scan.elements.map(({ handle, tier, ...rest }) => rest);
       noteStage('PERCEIVE', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'} found on the page`, stepNumber);
 
       // PRIVACY: refuse to capture unless the task tab is the browser's visible active tab.
@@ -1051,11 +1024,10 @@ async function runLoop(runId, secrets) {
       // PRIVACY: redact PII from the screenshot before it goes anywhere, including the local
       // OmniParser detector below. Fails CLOSED: a masking failure returns dataUrl: null,
       // never the original unmasked capture.
-      const redacted = await redactScreenshot(screenshot, scan.piiFields || [], scan.viewport);
+      redacted = await redactScreenshot(screenshot, scan.piiFields || [], scan.viewport);
       if (aborted(runId)) return;
       noteActivity(`Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}.`, stepNumber);
 
-      let omni = { available: false, status: 'disabled', elements: [] };
       if (secrets.useOmniparser) {
         if (redacted.dataUrl) {
           omni = await detectElements({ dataUrl: redacted.dataUrl, enabled: true, endpoint: secrets.omniparserUrl, viewport: scan.viewport });
@@ -1071,12 +1043,13 @@ async function runLoop(runId, secrets) {
       if (aborted(runId)) return;
 
       // 2. STRIP: the Warden is the sole stripping authority for the wire from here on. Raw
-      //    `state.task` and raw `scan.dom`/`scan.elements` go to this ONE loopback call and
-      //    no further; everything downstream in this iteration uses only what /strip returns.
+      //    `state.task`, raw `scan.dom` and the wire elements go to this ONE loopback call and
+      //    no further; everything sent downstream uses only what /strip returns. The F17 gate
+      //    and EXECUTE use `localScene`, which never leaves this worker.
       const stripT0 = performance.now();
       let stripResp;
       try {
-        stripResp = await resolveUncertainLoop(runId, state.task, scan.dom, scan.elements, stepNumber);
+        stripResp = await resolveUncertainLoop(runId, state.task, scan.dom, wireElements, stepNumber);
       } finally {
         g11Trace.add('strip', performance.now() - stripT0);
       }
@@ -1135,7 +1108,7 @@ async function runLoop(runId, secrets) {
       state.steps.push(scanStep);
 
       // 3. PLAN + 4. VALIDATE, with the bounded reject/re-plan loop and the local F17 gate.
-      const outcome = await planAndValidate(runId, stripResp.tokenizedTask, stripResp.sanitizedDom, planElements, buildHistory(state.steps), stepNumber);
+      const outcome = await planAndValidate(runId, state.task, stripResp.tokenizedTask, stripResp.sanitizedDom, planElements, localScene, buildHistory(state.steps), stepNumber);
       if (aborted(runId)) return;
 
       if (outcome.choice === 'proceed') {
@@ -1194,20 +1167,24 @@ async function runLoop(runId, secrets) {
       }
       let result;
       let navigated = false;
+      let executeChoice = null;
       const executeT0 = performance.now();
       try {
-        result = await sendToTab('EXECUTE_ACTION', { action });
-      } catch (error) {
-        if (action.action === 'click' && isPortClosedError(error)) {
-          navigated = true;
-          result = { ok: true, navigated: true };
-        } else {
-          throw error;
-        }
+        const executed = await executeWithLiveTierCheck(runId, action, outcome, localScene, stepNumber);
+        result = executed.result;
+        navigated = executed.navigated;
+        executeChoice = executed.choice;
       } finally {
         g11Trace.add('execute', performance.now() - executeT0);
       }
       if (aborted(runId)) return;
+      if (executeChoice === 'stop') {
+        state.status = 'stopped';
+        state.finishedAt = Date.now();
+        noteActivity('You stopped the run when the page changed the target after planning.', stepNumber);
+        g11Trace.setTerminal('blocked');
+        return;
+      }
 
       const failed = !navigated && Boolean(result?.error);
       noteStage('EXECUTE', `${action.action}${action.target_selector ? ` on ${action.target_selector}` : ''}, ${navigated ? 'the page navigated' : failed ? 'failed' : 'done'}`, stepNumber);
@@ -1280,6 +1257,46 @@ async function runLoop(runId, secrets) {
       currentVault = null; // hygiene: the vault must not outlive its run.
     }
   }
+}
+
+// EXECUTE for one approved plan. The content script receives the target's per-scan handle and
+// the tier that was approved, never a selector to look up. If the live element now tiers stricter
+// than that (the page changed after the scan), nothing is clicked and the user is asked; on
+// "proceed" the action is re-sent with the stricter tier, and the content script re-checks again.
+async function executeWithLiveTierCheck(runId, action, outcome, localScene, stepNumber) {
+  const needsTarget = action.action === 'click' || action.action === 'type';
+  const contentAction = { action: action.action, value: action.value ?? null, plannedTier: outcome.tier };
+  if (needsTarget) contentAction.handle = tierTargetHandle(action, localScene);
+  for (let round = 0; round < 2; round += 1) {
+    let result;
+    try {
+      result = await sendToTab('EXECUTE_ACTION', { action: contentAction });
+    } catch (error) {
+      if (action.action === 'click' && isPortClosedError(error)) {
+        return { result: { ok: true, navigated: true }, navigated: true, choice: null };
+      }
+      throw error;
+    }
+    if (!result || result.tierEscalated !== true) return { result, navigated: false, choice: null };
+    if (aborted(runId)) return { result, navigated: false, choice: 'stop' };
+    const choice = await requestValidationQuestion(
+      `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`,
+      STANDARD_VALIDATION_OPTIONS, null, [], stepNumber,
+    );
+    if (choice !== 'proceed') {
+      return { result: { skipped: choice === 'skip', error: choice === 'skip' ? null : 'stopped after a live tier change' }, navigated: false, choice };
+    }
+    contentAction.plannedTier = result.liveTier;
+  }
+  return { result: { error: 'the target kept changing tier; nothing was clicked' }, navigated: false, choice: null };
+}
+
+function tierTargetHandle(action, localScene) {
+  const matches = (localScene || []).filter((el) => el.selector === action.target_selector);
+  if (matches.length !== 1 || typeof matches[0].handle !== 'string') {
+    throw new Error(`execute: no single scanned handle for ${action.target_selector}`);
+  }
+  return matches[0].handle;
 }
 
 // ---- Helpers ---------------------------------------------------------------

@@ -35,6 +35,26 @@ function getRedactText() {
   return redactTextPromise;
 }
 
+// The extension's own tier rules (ROAST.md F17), loaded the same way as the redactor.
+let opTierPromise = null;
+function getOpTier() {
+  if (!opTierPromise) opTierPromise = import(chrome.runtime.getURL('utils/op-tier.js'));
+  return opTierPromise;
+}
+
+// Per-scan element handles (F17 target identity). Each PAGE_SCAN replaces this map, so a handle
+// from an earlier scan never resolves. A handle is a random nonce that exists only here and in the
+// background worker's copy of the scan: it is never written to the DOM, so the page cannot read,
+// forge or re-point it. EXECUTE_ACTION resolves ONLY a handle; selectors are display keys for the
+// planner and are never looked up with querySelector on the execute path.
+let scanHandles = new Map();
+
+function newHandle() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes); // randomUUID() is undefined outside secure contexts
+  return `h${Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')}`;
+}
+
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
   if (sender.id !== chrome.runtime.id) return false;
   if (message.type === 'PING') {
@@ -82,16 +102,24 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
 
 async function scanPage() {
   const redactText = await getRedactText();
+  const { classifyClickTarget } = await getOpTier();
+  const handles = new Map();
   const elements = [];
   const candidates = document.querySelectorAll('button, input, select, textarea, a[href], [role="button"], [onclick], [jsaction], [data-action]');
   for (const element of candidates) {
     const rect = element.getBoundingClientRect();
-    if (!isVisible(element) || rect.width < 1 || rect.height < 1) continue;
+    if (!isRenderedVisible(element) || rect.width < 1 || rect.height < 1) continue;
     const label = labelFor(element);
+    const handle = newHandle();
+    handles.set(handle, new WeakRef(element));
     elements.push({
       tag: element.tagName.toLowerCase(),
       type: element.getAttribute('type') || element.tagName.toLowerCase(),
-      selector: cssSelector(element),
+      selector: uniqueSelector(element),
+      handle,
+      // Click tier computed here, from the live element, by the extension's own rules. The
+      // background gate reads this, never a tier or element list the Warden returns.
+      tier: classifyClickTarget(tierDescriptor(element)),
       label,
       x: Math.round(rect.left + rect.width / 2),
       y: Math.round(rect.top + rect.height / 2),
@@ -101,6 +129,7 @@ async function scanPage() {
     });
     if (elements.length >= 180) break;
   }
+  scanHandles = handles;
   const dom = serializeDom(elements);
   const piiFields = collectPiiFields(redactText);
   const viewport = { width: window.innerWidth, height: window.innerHeight };
@@ -290,6 +319,72 @@ function isVisible(element) {
   return style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) !== 0;
 }
 
+// Stricter than isVisible(): display, visibility and zero opacity on the element OR any ancestor
+// (an opacity:0 wrapper hides a control just as well as its own opacity). Used for the scan's
+// candidate filter and for the execute-time target check. isVisible() stays as it was for the
+// PII masking pass, which over-masks by design.
+function isRenderedVisible(element) {
+  if (typeof element.checkVisibility === 'function'
+    && !element.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true, opacityProperty: true, visibilityProperty: true })) {
+    return false;
+  }
+  if (getComputedStyle(element).visibility !== 'visible') return false;
+  for (let node = element; node && node.nodeType === Node.ELEMENT_NODE; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    if (style.display === 'none' || Number(style.opacity) === 0) return false;
+  }
+  return true;
+}
+
+// The strings classifyClickTarget() tiers on, read from the live element. Form attributes are
+// read through Element.prototype so a control named "action" or "getAttribute" inside the form
+// cannot clobber them.
+function tierDescriptor(element) {
+  const tag = element.tagName.toLowerCase();
+  const attr = (el, name) => Element.prototype.getAttribute.call(el, name);
+  const resolve = (value) => {
+    if (value == null) return '';
+    try { return new URL(value, document.baseURI).href; } catch { return String(value); }
+  };
+  const form = (tag === 'button' || tag === 'input') ? element.form : null;
+  const type = tag === 'button'
+    ? (element.type || 'submit')
+    : tag === 'input' ? (attr(element, 'type') || 'text').toLowerCase() : (attr(element, 'type') || '');
+  const submitsForm = Boolean(form) && (
+    (tag === 'button' && type === 'submit') || (tag === 'input' && (type === 'submit' || type === 'image')));
+  const labelledBy = (attr(element, 'aria-labelledby') || '').split(/\s+/).filter(Boolean)
+    .map((id) => document.getElementById(id)?.textContent || '').join(' ');
+  return {
+    visibleText: (element.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 200),
+    ariaLabel: [attr(element, 'aria-label') || '', labelledBy].join(' ').trim(),
+    title: attr(element, 'title') || '',
+    value: typeof element.value === 'string' ? element.value : (attr(element, 'value') || ''),
+    placeholder: attr(element, 'placeholder') || '',
+    formAction: form ? resolve(attr(form, 'action') ?? document.URL) : '',
+    formaction: resolve(attr(element, 'formaction')),
+    href: tag === 'a' ? resolve(attr(element, 'href')) : '',
+    type,
+    submitsForm,
+  };
+}
+
+// Why a live target must not be clicked right now, or null when it may be. Checked at execute time,
+// synchronously, immediately before the click, against the element the handle points at.
+function liveTargetRefusal(element) {
+  if (!element.isConnected) return 'the element is no longer in the page';
+  if (!isRenderedVisible(element)) return 'the element is not visible';
+  if (getComputedStyle(element).pointerEvents === 'none') return 'the element does not accept pointer input';
+  if (element.closest('[inert]')) return 'the element is inert';
+  const rect = element.getBoundingClientRect();
+  if (rect.width < 1 || rect.height < 1) return 'the element has no size';
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  if (cx < 0 || cy < 0 || cx >= window.innerWidth || cy >= window.innerHeight) return 'the element is outside the viewport';
+  const hit = document.elementFromPoint(cx, cy);
+  if (!hit || (hit !== element && !element.contains(hit))) return 'another element covers the target';
+  return null;
+}
+
 function labelFor(element) {
   const explicit = element.getAttribute('aria-label') || element.getAttribute('placeholder') || element.getAttribute('title');
   if (explicit) return explicit;
@@ -301,11 +396,26 @@ function labelFor(element) {
   return wrap ? (wrap.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120) : '';
 }
 
+// Display key for the planner: the short id/name selector when it matches exactly this one
+// element in the document, else the structural path. Never used to find the element again.
+function uniqueSelector(element) {
+  const short = cssSelector(element);
+  try {
+    const matches = document.querySelectorAll(short);
+    if (matches.length === 1 && matches[0] === element) return short;
+  } catch { /* fall through to the structural path */ }
+  return structuralPath(element);
+}
+
 function cssSelector(element) {
   const id = element.getAttribute('id');
   if (id && !/\s/.test(id)) return `#${CSS.escape(id)}`;
   const name = element.getAttribute('name');
   if (name) return `${element.tagName.toLowerCase()}[name="${CSS.escape(name)}"]`;
+  return structuralPath(element);
+}
+
+function structuralPath(element) {
   const path = [];
   let node = element;
   while (node && node.nodeType === Node.ELEMENT_NODE && node !== document.documentElement) {
@@ -334,19 +444,45 @@ function digest(text) {
   return `${text.length}:${hash.toString(16)}`;
 }
 
+// Resolves a handle from the CURRENT scan to its live element, or throws. There is no selector
+// fallback: an unknown, stale (earlier scan) or collected handle is refused.
+function resolveHandle(handle) {
+  const ref = typeof handle === 'string' ? scanHandles.get(handle) : undefined;
+  if (!ref) throw new Error('Refused: the target handle is not from the current page scan');
+  const element = ref.deref();
+  if (!element) throw new Error('Refused: the target element no longer exists');
+  return element;
+}
+
 async function executeAction(action) {
-  const target = action.target_selector ? document.querySelector(action.target_selector) : null;
-  if (target) {
-    const rect = rectOf(target);
-    await visualizer?.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+  const needsTarget = action.action === 'click' || action.action === 'type';
+  let target = null;
+  if (needsTarget) {
+    target = resolveHandle(action.handle);
+    const { classifyClickTarget, isKnownTier, stricterTier, tierRank } = await getOpTier();
+    // Cursor animation first: it awaits, so everything that decides whether to act runs after it,
+    // synchronously, with no await between the checks and the action.
+    if (target.isConnected) {
+      const rect = rectOf(target);
+      await visualizer?.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
+    }
+    const refusal = liveTargetRefusal(target);
+    if (refusal) throw new Error(`Refused: ${refusal}`);
+    // Re-derive the tier from the live element. If the page changed it into something stricter
+    // than what was planned (and approved), do nothing and report it so the worker can prompt.
+    const clickTier = classifyClickTarget(tierDescriptor(target));
+    const liveTier = action.action === 'type' ? stricterTier('state-changing', clickTier) : clickTier;
+    if (!isKnownTier(action.plannedTier) || tierRank(liveTier) > tierRank(action.plannedTier)) {
+      return { tierEscalated: true, liveTier, plannedTier: action.plannedTier ?? null };
+    }
   }
   if (action.action === 'click') {
-    if (!target) throw new Error('Target not found');
-    dispatchPointer(target, rectOf(target));
+    // No synthetic pointerover/pointerdown/pointerup before the click: a page listener on those
+    // events could rewire the target between the checks above and click(). click() runs directly
+    // after the checks.
     target.click();
     visualizer?.pulse();
   } else if (action.action === 'type') {
-    if (!target) throw new Error('Target not found');
     const rawValue = action.value || '';
     const value = rehydrate(rawValue); // throws on an unknown or ambiguous token
     target.focus();
@@ -372,20 +508,6 @@ async function executeAction(action) {
 function rectOf(element) {
   const rect = element.getBoundingClientRect();
   return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
-}
-
-function dispatchPointer(element, rect) {
-  const options = {
-    bubbles: true,
-    cancelable: true,
-    clientX: rect.x + rect.width / 2,
-    clientY: rect.y + rect.height / 2,
-    pointerId: 1
-  };
-  element.dispatchEvent(new PointerEvent('pointerover', options));
-  element.dispatchEvent(new PointerEvent('pointerenter', options));
-  element.dispatchEvent(new PointerEvent('pointerdown', options));
-  element.dispatchEvent(new PointerEvent('pointerup', options));
 }
 
 // Replace every TYPE#n token (and, when unambiguous, the <mask-pii/> alias)
