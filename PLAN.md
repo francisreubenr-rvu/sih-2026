@@ -1,3 +1,11 @@
+## Real cloud planner, cloud-model bench, branch merge — 29 September 2026
+
+- First end-to-end run with the **real** Groq planner (earlier v5 evidence used a scripted fake): 48 cloud requests over five runs, **0 personal values** (`Benchmarks/results/e2e-v5-boundary-v02.json`). The first run never finished: the planner could not see the page's "Saved" status and history had no value, so it retyped and resaved to the 25-step limit. Fixed (`extension/content.js` STATUS lines, `buildHistory` vault token, finish rule in `groq_client`); 3 of 3 runs then finished in 3 to 4 steps, planner round trip 325 to 1219 ms. Tests: extension 104/104 (two new, each failing on the old code).
+- Cloud models vs local models: `Docs/decisions/brain-cloud-models-jev.md`. GLiNER and UltraFace stay local (privacy boundary). Groq `qwen/qwen3.8-27b` 36/36 at p50 342 ms vs default gpt-oss-20b 31/31 at 615 ms; Jev (TypeSafe decision model) 55/60 at p50 191 ms, every miss a free-text value it cannot produce. Reviewer: Jev 30/30 at 194 ms. Recommendations only; defaults unchanged. OpenCode: no valid key present. "Layla": not found, needs a link.
+- Branches: `feat/dhristi-wave8` stage a11y ported onto the Signal popup (`aria-current`, polite live region); `cursor/website-pixel-redesign-pr1-ac89` not merged, superseded by the Signal redesign and it reintroduces dark background tokens.
+- Claims corrected: Website and README cited the fake-planner run as "reached the cloud planner"; now cite v02. 305 ms tile marked as one run. README no longer lists Qwen2.5/Ollama as the current planner. `warden/README.md` names `protobuf` (GLiNER failed to load without it in a fresh venv).
+- Verified unchanged: Prototype 141/141, Warden 101 + 6 skips (103 + 4 with GLiNER loaded), G11 harness 13/13, ledger 14 pass / 1 fail / 5 unknown matching the committed file. G11 **fail**, G20 **paused**, `submission_ready` **false**.
+
 ## v5: device redaction, cloud planning — 29 September 2026
 
 - Francis: redaction stays local so a bigger model can do that one job; planning runs online. This supersedes the 23 September "planner default is Ollama" lock; `WARDEN_PLANNER=ollama` stays as the offline mode. Decision: `Docs/decisions/brain-v5-local-redaction-cloud-planner.md`.

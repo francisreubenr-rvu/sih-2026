@@ -1,3 +1,12 @@
+## Round 22 — real cloud planner + cloud-model bench (29 September 2026)
+
+- [x] HIGH, found by the first real-Groq end-to-end run: the planner never chose finish on a completed task and looped to the 25-step limit (it could not see the page's status message, and history carried no value). The fake planner in e2e v01 was scripted to finish, so it hid this. Fixed in `extension/content.js` (STATUS lines), `extension/background.js` (vault token in history), `warden/groq_client.py` (finish rule). Two new tests, each failing on the old code. Evidence: `Benchmarks/results/e2e-v5-boundary-v02.json`.
+- [x] Privacy boundary against a real cloud planner: 48 requests, 0 personal values, recorded at a loopback relay.
+- [x] Claims corrected: Website and README had called the fake-planner run "the cloud planner".
+- [ ] Round 18's "`/plan` default is local Ollama" was superseded by v5 (Groq default); left above as history.
+- [ ] Jev hybrid fast path and a Groq chain reorder are recommendations only (`Docs/decisions/brain-cloud-models-jev.md`). No end-to-end G11 measurement with either. G11 stays fail.
+- [ ] Groq free-tier 429s under back-to-back runs are a live-demo risk.
+
 ## Round 21 — Signal redesign (29 September 2026)
 
 - [x] One design system (Signal) across Website, side panel, Prototype operator pages and popup; canonical tokens in `design/signal-tokens.css`, CI check for drift and WCAG AA contrast. Decision: `Docs/decisions/brain-signal-redesign.md`. Resolves the ARCH-002 vs side-panel palette conflict.

@@ -3,7 +3,7 @@
  "date": "2026-09-29",
  "harness": "scripts/e2e-v5/run.mjs with scripts/e2e-v5/recording-relay.mjs",
  "surface": "root extension/ (unpacked, Chromium headless=new) + warden/ with GLiNER urchade/gliner_multi_pii-v1 loaded on CPU + REAL Groq planner (openai/gpt-oss-20b, fallback openai/gpt-oss-120b). The Warden posts to a loopback recording relay (GROQ_BASE_URL=http://127.0.0.1:8799) that logs each body and forwards it unchanged to https://api.groq.com/openai/v1, so the log is exactly what left the machine.",
- "scope": "Synthetic fixture only (scripts/e2e-v5/fixture.html), same task as v01. Run in a Linux cloud container in the US behind an egress proxy, not on the team machine in India. Five runs: run1 on master as merged (8c04ecd), run2 after the STATUS-text fix, run3-run5 after the STATUS-text and history-token fixes. The harness answers every prompt with proceed.",
+ "scope": "Synthetic fixture only (scripts/e2e-v5/fixture.html), same task as v01. Run in a Linux cloud container (location not verified) behind an egress proxy, not on the team machine in India. Five runs: run1 on master as merged (8c04ecd), run2 after the STATUS-text fix, run3-run5 after the STATUS-text and history-token fixes. The harness answers every prompt with proceed.",
  "task": "Update my contact email to priya.r@example.com and save the profile",
  "values_checked": ["priya.r@example.com", "Priya", "Raghunathan", "98765", "43210"],
  "runs": {
