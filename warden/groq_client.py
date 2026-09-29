@@ -79,6 +79,9 @@ def build_prompt(tokenized_task: str, sanitized_dom: str, elements: list, histor
         "",
         "RULES:",
         "- One action per response.",
+        "- STATUS lines are the page's own status messages. When they or the action history show "
+        "every part of USER TASK is done, choose finish. Do not repeat an action the history "
+        "shows already succeeded.",
         "- USER TASK may contain placeholder tokens (e.g. EMAIL#1, PHONE#1). When a value should "
         "be that data, emit the literal token as value, exactly as it appears in USER TASK. Never "
         "invent a token not present there.",
