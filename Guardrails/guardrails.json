@@ -211,8 +211,8 @@
         "Docs/demo-fallback.webm",
         "Benchmarks/results/demo-rehearsal.json"
       ],
-      "status": "pass",
-      "reason": "Three consecutive live box rehearsals success on product build 996e40b (PR#17 ORT sandbox) logged in Benchmarks/results/demo-rehearsal.json (indices after prior reset); Docs/demo-fallback.webm VP9 opens offline in Chrome. Evidence dirs g14-box-05..07. Operator brain-box. Fast privacy-only path.",
+      "status": "unknown",
+      "reason": "Reset from a hand-set pass (7331778). The three consecutive box rehearsals (g14-box-05..07) ran on 996e40b, not on the current tree; the capture path has changed since, and Docs/demo-fallback.webm dates from 10 September and shows a different surface. Acceptance requires the tested version to match. Needs three consecutive rehearsals from reset and a fallback recorded on the current build before this can pass.",
       "evidence_refs": [
         "Benchmarks/results/demo-rehearsal.json",
         "Benchmarks/results/g14-box-05/",

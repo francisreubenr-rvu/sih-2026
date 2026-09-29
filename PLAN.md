@@ -1,3 +1,9 @@
+## Ledger and CI housekeeping (2026-09-29)
+
+- G14 reset from a hand-set `pass` (7331778) to **unknown**: the three box rehearsals ran on `996e40b`, not the current tree, and the fallback video shows a different surface. Regenerated ledger: **14 pass / 1 fail / 5 unknown**, `submission_ready` false. The public Website copy still says G14 PASS and needs a correction PR (not done here: Pages freeze, redesign in flight).
+- `scripts/check_release.py --dry-run` computes without rewriting the ledger; every pass now reports evidence freshness (commits since its evidence last changed). `--max-behind N` demotes stale passes; it is off by default and nothing is promoted.
+- Warden tests run in CI (`.github/workflows/warden-test.yml`, `warden/requirements-test.txt`), failing if the node-backed regex-parity tests skip.
+
 ## Fundamentals restructure (2026-09-23)
 
 Francis halted the wrap/polish-as-primary path. Target fundamentals are the Warden / v4 pipeline (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE): browser holds no cloud key, protected scene only outbound, client op-tier gate F17 stays mandatory. Decision: `Docs/decisions/brain-fundamentals-restructure.md`. Handoff record: `Docs/grokbot-briefing.md`.

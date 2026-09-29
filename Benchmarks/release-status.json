@@ -1,5 +1,6 @@
 {
-  "timestamp": "2026-09-14T11:32:43.967052+00:00",
+  "timestamp": "2026-09-29T07:48:26.306845+00:00",
+  "head_commit": "84fd49790a87d4ca54de58e59b8f101be02dfb0d",
   "scope": "complete SIH26171 competition entry",
   "status": "fail",
   "submission_ready": false,
@@ -15,14 +16,24 @@
       "name": "Verified problem identity",
       "status": "pass",
       "reason": "Full user supplied statement cross-checked against retrieved organizer catalogue on 9 September 2026. Initial SIH2171 shorthand superseded.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "d6e9af996200",
+        "commits_behind": 101,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G02",
       "name": "Six-person delivery ceiling",
       "status": "pass",
       "reason": "Architecture and scope docs record one primary journey, \u22642 services (browser client + Node server), \u22641 SQLite audit store, \u22641 optional local Ollama provider. No custom training or specialized hardware required for the candidate. Evidence: Docs/architecture.md, Docs/scope.md.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "d7bb8e7bf399",
+        "commits_behind": 66,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G03",
@@ -36,35 +47,60 @@
       "name": "Evidence-backed differentiation",
       "status": "pass",
       "reason": "Wiki/competitors.md compares \u22655 adjacent solutions. Implemented differentiator (pixel-free egress + selective local preview + expiring references) demonstrated against full-image mask baseline via held-out fixtures and extension sanitize evidence. No first/unique global claims. Evidence: Benchmarks/results/differentiation.json.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "fdc24f2502d1",
+        "commits_behind": 72,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G05",
       "name": "Prototype capacity floor",
       "status": "pass",
       "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "9852e561c3a7",
+        "commits_behind": 74,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G06",
       "name": "Validated requests and safe output",
       "status": "pass",
       "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "fdc24f2502d1",
+        "commits_behind": 72,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G07",
       "name": "Access and data boundaries",
       "status": "pass",
       "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "fdc24f2502d1",
+        "commits_behind": 72,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G08",
       "name": "Deployment controls",
       "status": "pass",
       "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "fdc24f2502d1",
+        "commits_behind": 72,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G09",
@@ -92,20 +128,30 @@
       "name": "Website Lighthouse quality",
       "status": "pass",
       "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "fdc24f2502d1",
+        "commits_behind": 72,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G13",
       "name": "Error recovery",
       "status": "pass",
       "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "e5d29b1211db",
+        "commits_behind": 79,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G14",
       "name": "Live and recorded fallback",
       "status": "unknown",
-      "reason": "Docs/demo-rehearsal-checklist.md + demo-fallback.webm + demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown.",
+      "reason": "Reset from a hand-set pass (7331778). The three consecutive box rehearsals (g14-box-05..07) ran on 996e40b, not on the current tree; the capture path has changed since, and Docs/demo-fallback.webm dates from 10 September and shows a different surface. Acceptance requires the tested version to match. Needs three consecutive rehearsals from reset and a fallback recorded on the current build before this can pass.",
       "missing_evidence": []
     },
     {
@@ -113,46 +159,72 @@
       "name": "Honest impact and capability",
       "status": "pass",
       "reason": "Docs/claim-ledger.json lists empirical claims with source, type and limits; fabricated metrics forbidden. Official score null; G11 fail retained; WebPII failure published.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "454c8d3dfd30",
+        "commits_behind": 19,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G16",
       "name": "Measurable social impact framework",
       "status": "pass",
       "reason": "Docs/impact-model.md defines outcome specification, pilot design, cost ledger and environmental account with null parameters until sourced. No projected results reported as observed outcomes.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "d6e9af996200",
+        "commits_behind": 101,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G17",
       "name": "Submission format and narrative",
       "status": "pass",
       "reason": "Docs/template-audit.md verifies six-slide supplied structure; Docs/submission-deck.pptx and Docs/presentation-render/ exist; longer pitch deck is separate. SIH26171 identity and honesty caveats visible. Evidence: Docs/template-audit.md, Docs/submission-deck.pptx, Docs/presentation-render/.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "ec7483c62fd5",
+        "commits_behind": 29,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G18",
       "name": "Deployable and maintainable handoff",
       "status": "pass",
       "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "ec7483c62fd5",
+        "commits_behind": 29,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G19",
       "name": "Attribution and channel integrity",
       "status": "pass",
       "reason": "Raw/sources.json and Wiki/source-index.md retain attribution; failed private channels recorded as inaccessible in reference intake. Competitor and problem citations mapped in Wiki.",
-      "missing_evidence": []
+      "missing_evidence": [],
+      "freshness": {
+        "evidence_commit": "2d65852e7a52",
+        "commits_behind": 99,
+        "source": "last commit touching evidence"
+      }
     },
     {
       "id": "G20",
       "name": "Real human validation",
       "status": "unknown",
-      "reason": "Docs/human-evaluation-protocol.md + Docs/human-evaluation-forms.md + human-evaluation.json publish templates with zero non-author participants \u2014 status stays unknown.",
+      "reason": "Recruitment paused by Francis (2026-09-15). Docs/human-evaluation-protocol.md + forms + human-evaluation.json retain templates with zero non-author participants \u2014 status stays unknown; do not claim active recruiting or G20 pass.",
       "missing_evidence": []
     }
   ],
   "limitations": [
     "This aggregator checks recorded review states and evidence presence; it does not execute or authenticate all tests.",
-    "Website-only measurements do not validate the domain prototype."
+    "Website-only measurements do not validate the domain prototype.",
+    "Freshness counts commits since evidence last changed; it does not prove the evidence still describes HEAD."
   ]
 }

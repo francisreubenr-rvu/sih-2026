@@ -1,5 +1,5 @@
 {
-  "scope": "SIH26171 engineering candidate claims; Wave 1\u20137 + G14 pass evidence. No fabricated metrics.",
+  "scope": "SIH26171 engineering candidate claims; Wave 1\u20137 evidence. G14 reset to unknown 2026-09-29. No fabricated metrics.",
   "claims": [
     {
       "claim": "Six named RV University second-year B.Tech CSE team members",
@@ -91,10 +91,10 @@
     },
     {
       "id": "g14-pass-996e40b",
-      "claim": "G14 pass: three consecutive live box rehearsals on build 996e40b plus offline VP9 Docs/demo-fallback.webm.",
-      "type": "reviewed_gate",
+      "claim": "Three consecutive live box rehearsals logged on build 996e40b plus offline VP9 Docs/demo-fallback.webm (historical; not a current G14 pass).",
+      "type": "historical_evidence",
       "source": "Guardrails/guardrails.json G14; Benchmarks/results/demo-rehearsal.json; Docs/delivery-status.json",
-      "limit": "Fast privacy-only path on box; G20 paused; G03 toolbar multi-scenario still unclaimed; not a G11 pass."
+      "limit": "G14 was hand-set to pass in 7331778 and reset to unknown on 2026-09-29: 996e40b is not the current tree, the capture path has changed, and the fallback video shows a different surface. Fast privacy-only path; G20 paused; not a G11 pass."
     },
     {
       "id": "score-path-heldout-bridge",
@@ -115,7 +115,7 @@
       "claim": "GitHub Pages latest-evidence section promotes Wave 5\u20137 + G14 pass ahead of Wave 4 archive cards; Wave footer copy no longer claims G14 unknown against the live ledger.",
       "type": "site_copy",
       "source": "Website/index.html; Guardrails/guardrails.json",
-      "limit": "Pages deploy follows merge; treat guardrails.json as live gate board."
+      "limit": "Pages deploy follows merge; treat guardrails.json as live gate board. The site copy still says G14 pass; G14 is unknown as of 2026-09-29 and the copy needs correcting."
     },
     {
       "id": "g20-recruitment-paused",

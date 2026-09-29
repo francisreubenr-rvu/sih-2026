@@ -25,8 +25,17 @@ task. After that grant, the content script is registered for later navigations.
 `utils/redactor.js`. That exposes the redaction patterns to pages, not a cloud key.
 See `Docs/decisions/brain-warden-ollama-plan-harden.md`.
 
-`extension/background.js` includes the client operation-tier gate (F17). Keep that gate
-when wiring execute. This import does not connect the loop to the Prototype server.
+`extension/background.js` runs the client operation-tier gate (F17) on the execute path
+(`planAndValidate`). Since francisreubenr-rvu/sih-2026#35, the scan gives each control an
+opaque per-scan handle held only in the content script, execute resolves that handle (never a
+selector), refuses hidden, covered, offscreen, detached or stale targets, and re-derives the tier
+from the live element before clicking. The local tier comes from the extension's own scan, and
+anything short of an exact Warden `accept` with an agreeing tier asks first. Evidence is unit
+tests, the real `background.js` against a fake Warden, and `content.js` in real Chromium (main
+world); there is no loaded-extension or live Warden run yet, and iframes and shadow DOM are not
+covered. Tests: `node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs`
+(needs `Prototype/node_modules` and a Chromium). This surface is not connected to the Prototype
+server on 9041.
 
 G11 timing for this surface is `scripts/g11-warden-option-c-harness.mjs`. Run notes:
 `Docs/decisions/g11-warden-option-c-harness.md`. A dry run writes a fail artifact and
