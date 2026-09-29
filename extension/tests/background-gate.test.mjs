@@ -1,4 +1,7 @@
 // F17 gate in the real extension/background.js, driven end to end against a fake Warden.
+//
+// v5: the run loop makes every acting decision locally (utils/plan-check.js + utils/op-tier.js).
+// POST /validate is never called; each test below also proves that.
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
@@ -7,6 +10,7 @@ import { defaultStrip, runTask } from './helpers/background-harness.mjs';
 
 const H_NEXT = `h${'a'.repeat(32)}`;
 const H_DEL = `h${'b'.repeat(32)}`;
+const H_FIELD = `h${'c'.repeat(32)}`;
 
 function scanOf(elements) {
   const dom = elements.map((el, i) => `${i + 1}. ${el.tag.toUpperCase()} selector=${el.selector} label="${el.label}"`).join('\n');
@@ -15,63 +19,132 @@ function scanOf(elements) {
 
 const NEXT_LINK = { tag: 'a', type: 'a', selector: 'body > a', handle: H_NEXT, tier: 'navigational', label: 'Next page', x: 10, y: 10, filled: false, fieldType: 'a', pii: false };
 const DELETE_BUTTON = { tag: 'button', type: 'button', selector: 'body > form > button', handle: H_DEL, tier: 'destructive', label: 'Next', x: 10, y: 40, filled: false, fieldType: 'button', pii: false };
+const SEARCH_FIELD = { tag: 'input', type: 'text', selector: '#q', handle: H_FIELD, tier: 'state-changing', label: 'Search', x: 10, y: 70, filled: false, fieldType: 'text', pii: false };
 
-const clickNextThenFinish = (body, n) => ({
-  model: 'fake-planner',
-  plan: n === 1
-    ? { action: 'click', target_selector: 'body > a', coordinates: { x: 10, y: 10 }, value: null, reasoning_token: 'next' }
-    : { action: 'finish', target_selector: null, coordinates: { x: 0, y: 0 }, value: null, reasoning_token: 'done' },
-});
+const FINISH = { action: 'finish', target_selector: null, coordinates: { x: 0, y: 0 }, value: null, reasoning_token: 'done' };
+const click = (selector) => ({ action: 'click', target_selector: selector, coordinates: { x: 10, y: 10 }, value: null, reasoning_token: 'next' });
 
-const acceptAs = (tier) => (body) => (body.plan.action === 'finish'
-  ? { verdict: 'accept', tier: 'reversible', checks: [] }
-  : { verdict: 'accept', tier, checks: [] });
+// Plans the given sequence, one per /plan call, then finish forever after.
+const planSeq = (...plans) => (body, n) => ({ model: 'fake-planner', destination: 'cloud', plan: plans[n - 1] || FINISH });
 
-test('agreeing navigational accept executes unattended, by handle only', async () => {
-  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: clickNextThenFinish, validate: acceptAs('navigational') } });
+function assertNoValidate(run) {
+  assert.equal(run.validateCalls, 0, 'POST /validate was called');
+  assert.equal(run.fetchBodies.some((b) => b.path === '/validate'), false);
+}
+
+test('navigational click executes unattended, by handle only, with no /validate call', async () => {
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(click('body > a')) } });
+  assertNoValidate(run);
   assert.equal(run.prompts.length, 0);
   assert.equal(run.executed.length, 2);
   assert.deepEqual(run.executed[0], { action: 'click', value: null, plannedTier: 'navigational', handle: H_NEXT });
   assert.equal('target_selector' in run.executed[0], false, 'no selector reaches the content script');
   assert.equal(run.terminal.status, 'finished');
-  assert.equal(run.trace.f17Steps[0].gatePath, 'unattended_ok');
-  assert.equal(run.trace.f17Steps[0].unattendedExecuteAllowed, true);
+  const f17 = run.trace.f17Steps[0];
+  assert.equal(f17.gatePath, 'unattended_ok');
+  assert.equal(f17.unattendedExecuteAllowed, true);
+  assert.equal(f17.localTier, 'navigational');
+  assert.equal(f17.wardenTier, null, 'there is no Warden tier in v5');
+  assert.equal(f17.tiersAgree, false, 'no agreement is claimed without a second party');
+  assert.equal(typeof run.trace.stagesMs.validate, 'number', 'local check time is recorded under validate');
+  assert.equal(typeof run.trace.stagesMs.f17_local_tier, 'number');
 });
 
-test('Warden destructive + local navigational prompts; stop executes nothing', async () => {
-  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: clickNextThenFinish, validate: acceptAs('destructive') } });
+test('reversible actions run unattended', async () => {
+  const scroll = { action: 'scroll', target_selector: null, coordinates: { x: 0, y: 0 }, value: '300', reasoning_token: 'down' };
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(scroll) } });
+  assertNoValidate(run);
+  assert.equal(run.prompts.length, 0);
+  assert.deepEqual(run.executed.map((a) => [a.action, a.plannedTier]), [['scroll', 'reversible'], ['finish', 'reversible']]);
+  assert.equal(run.terminal.status, 'finished');
+});
+
+test('destructive always asks a human; stop executes nothing', async () => {
+  const run = await runTask({ scan: scanOf([DELETE_BUTTON]), warden: { plan: planSeq(click('body > form > button')) } });
+  assertNoValidate(run);
   assert.equal(run.prompts.length, 1);
-  assert.match(run.prompts[0].text, /tier 'destructive'/);
-  assert.ok(run.prompts[0].reasons.some((r) => /computed 'navigational'/.test(r)));
+  assert.match(run.prompts[0].text, /classified destructive/);
+  assert.deepEqual(run.prompts[0].options.map((o) => o.id), ['proceed', 'skip', 'stop']);
+  assert.equal(run.executed.length, 0);
+  assert.equal(run.terminal.status, 'stopped');
+  assert.equal(run.trace.f17Steps[0].gatePath, 'reject');
+  assert.equal(run.trace.terminal, 'ask');
+});
+
+test('destructive, user proceeds: executes with the destructive tier', async () => {
+  const run = await runTask({ scan: scanOf([DELETE_BUTTON]), choices: ['proceed'], warden: { plan: planSeq(click('body > form > button')) } });
+  assert.equal(run.executed[0].plannedTier, 'destructive');
+  assert.equal(run.executed[0].handle, H_DEL);
+  assert.ok(run.entries.some((e) => e.kind === 'validated'));
+});
+
+test('state-changing stops for local confirmation', async () => {
+  const type = { action: 'type', target_selector: '#q', coordinates: { x: 10, y: 70 }, value: 'orbits', reasoning_token: 'search' };
+  const stopped = await runTask({ scan: scanOf([SEARCH_FIELD]), warden: { plan: planSeq(type) } });
+  assert.equal(stopped.prompts.length, 1);
+  assert.match(stopped.prompts[0].text, /tier 'state-changing' and requires local confirmation/);
+  assert.equal(stopped.executed.length, 0);
+
+  const proceeded = await runTask({ scan: scanOf([SEARCH_FIELD]), choices: ['proceed'], warden: { plan: planSeq(type) } });
+  assert.equal(proceeded.executed[0].action, 'type');
+  assert.equal(proceeded.executed[0].plannedTier, 'state-changing');
+  assert.equal(proceeded.terminal.status, 'finished');
+});
+
+test('a target not in the local scan is rejected and re-planned with the reasons', async () => {
+  const strip = (body) => {
+    const resp = defaultStrip(body);
+    resp.elements.push({ ...resp.elements[0], selector: '#injected' }); // exists only on the wire
+    return resp;
+  };
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { strip, plan: planSeq(click('#injected'), click('body > a')) } });
+  assertNoValidate(run);
+  const plans = run.fetchBodies.filter((b) => b.path === '/plan');
+  assert.ok(plans.length >= 2);
+  const rejected = plans[1].body.history.find((h) => h.action === 'VALIDATION_REJECTED');
+  assert.ok(rejected, 'the second /plan carries the rejection');
+  assert.ok(rejected.reasons.some((r) => /^selector-in-scene: .*not in this extension's own scan/.test(r)));
+  assert.equal(run.executed[0].handle, H_NEXT, 'the re-planned, valid target ran');
+  assert.equal(run.executed.some((a) => a.handle === undefined && a.action === 'click'), false);
+  assert.equal(run.prompts.length, 0);
+  assert.equal(run.trace.f17Steps[0].gatePath, 'reject');
+  assert.equal(run.trace.f17Steps[0].tierError, true);
+});
+
+test('an unknown action is rejected every time, then asks with no Proceed option; nothing runs', async () => {
+  const hover = { action: 'hover', target_selector: 'body > a', coordinates: { x: 1, y: 1 }, value: null, reasoning_token: 'x' };
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: () => ({ model: 'fake-planner', plan: hover }) } });
+  assertNoValidate(run);
+  assert.equal(run.fetchBodies.filter((b) => b.path === '/plan').length, 3);
+  assert.equal(run.prompts.length, 1);
+  assert.deepEqual(run.prompts[0].options.map((o) => o.id), ['skip', 'stop']);
+  assert.ok(run.prompts[0].reasons.some((r) => /^action-allowed: invalid action "hover"/.test(r)));
   assert.equal(run.executed.length, 0);
   assert.equal(run.terminal.status, 'stopped');
 });
 
-test('Warden destructive + local navigational, user proceeds: executes with the stricter tier', async () => {
-  const run = await runTask({ scan: scanOf([NEXT_LINK]), choices: ['proceed'], warden: { plan: clickNextThenFinish, validate: acceptAs('destructive') } });
-  assert.equal(run.executed[0].plannedTier, 'destructive');
+test('answering Proceed to an exhausted rejection (not offered) is a stop', async () => {
+  const hover = { action: 'hover', target_selector: 'body > a', coordinates: { x: 1, y: 1 }, value: null, reasoning_token: 'x' };
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), choices: ['proceed'], warden: { plan: () => ({ model: 'fake-planner', plan: hover }) } });
+  assert.equal(run.executed.length, 0);
+  assert.equal(run.terminal.status, 'stopped');
 });
 
-const BAD_VALIDATE_BODIES = [
-  ['missing verdict', { tier: 'navigational', checks: [] }],
-  ['unknown verdict', { verdict: 'ok', tier: 'navigational', checks: [] }],
-  ['verdict with different case', { verdict: 'Accept', tier: 'navigational', checks: [] }],
-  ['non-string verdict', { verdict: ['accept'], tier: 'navigational', checks: [] }],
-  ['null body', null],
-  ['missing tier', { verdict: 'accept', checks: [] }],
-  ['unknown tier', { verdict: 'accept', tier: 'harmless', checks: [] }],
-];
+test('unexpected plan keys are rejected and re-planned', async () => {
+  const extra = { ...click('body > a'), url: 'https://example.com/' };
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(extra, click('body > a')) } });
+  const second = run.fetchBodies.filter((b) => b.path === '/plan')[1];
+  assert.ok(second.body.history.some((h) => h.action === 'VALIDATION_REJECTED' && h.reasons.some((r) => /no-unexpected-keys: .*url/.test(r))));
+  assert.equal(run.executed[0].handle, H_NEXT);
+  assert.equal(run.terminal.status, 'finished');
+});
 
-for (const [name, body] of BAD_VALIDATE_BODIES) {
-  test(`malformed /validate (${name}) prompts and never executes unattended`, async () => {
-    const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: clickNextThenFinish, validate: () => body } });
-    assert.equal(run.prompts.length, 1, 'a prompt fired');
-    assert.equal(run.executed.length, 0);
-    assert.equal(run.trace.f17Steps.length, 1);
-    assert.equal(run.trace.f17Steps[0].gatePath, 'reject', 'recorded as refused after the user stopped');
-    assert.equal(run.trace.f17Steps.some((s) => s.unattendedExecuteAllowed), false);
-  });
-}
+test('non-finite coordinates are rejected', async () => {
+  const bad = { ...click('body > a'), coordinates: { x: -1, y: 'a' } };
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(bad, bad, bad) } });
+  assert.equal(run.executed.length, 0);
+  assert.ok(run.prompts[0].reasons.some((r) => /^coordinates-finite/.test(r)));
+});
 
 test('Warden-tampered /strip elements do not change the local tier', async () => {
   const strip = (body) => {
@@ -81,61 +154,99 @@ test('Warden-tampered /strip elements do not change the local tier', async () =>
     resp.elements.push({ ...resp.elements[0], label: 'Home' });
     return resp;
   };
-  const plan = (body, n) => ({
-    model: 'fake-planner',
-    plan: n === 1
-      ? { action: 'click', target_selector: 'body > form > button', coordinates: { x: 10, y: 40 }, value: null, reasoning_token: 'next' }
-      : { action: 'finish', target_selector: null, coordinates: { x: 0, y: 0 }, value: null, reasoning_token: 'done' },
-  });
-  const run = await runTask({ scan: scanOf([DELETE_BUTTON]), warden: { strip, plan, validate: acceptAs('navigational') } });
+  const run = await runTask({ scan: scanOf([DELETE_BUTTON]), warden: { strip, plan: planSeq(click('body > form > button')) } });
   assert.equal(run.prompts.length, 1);
-  assert.match(run.prompts[0].text, /tier 'destructive'/);
+  assert.match(run.prompts[0].text, /classified destructive/);
   assert.equal(run.executed.length, 0);
-});
-
-test('a plan target that exists only in Warden-returned elements is rejected locally', async () => {
-  const strip = (body) => {
-    const resp = defaultStrip(body);
-    resp.elements.push({ ...resp.elements[0], selector: '#injected' });
-    return resp;
-  };
-  const plan = () => ({ model: 'fake-planner', plan: { action: 'click', target_selector: '#injected', coordinates: { x: 0, y: 0 }, value: null, reasoning_token: 'x' } });
-  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { strip, plan, validate: acceptAs('navigational') } });
-  assert.equal(run.executed.length, 0);
-  assert.ok(run.entries.some((e) => e.kind === 'error' && /not in this extension's own scan/.test(e.text)));
 });
 
 test('an ambiguous key in the local scan is rejected, not resolved to the first match', async () => {
   const twin = { ...DELETE_BUTTON, selector: NEXT_LINK.selector };
-  const run = await runTask({ scan: scanOf([twin, NEXT_LINK]), warden: { plan: clickNextThenFinish, validate: acceptAs('navigational') } });
+  const run = await runTask({ scan: scanOf([twin, NEXT_LINK]), warden: { plan: () => ({ model: 'fake-planner', plan: click('body > a') }) } });
   assert.equal(run.executed.length, 0);
   assert.ok(run.entries.some((e) => e.kind === 'error' && /ambiguous/.test(e.text)));
+  assert.ok(run.prompts[0].reasons.some((r) => /ambiguous/.test(r)));
 });
 
-test('Warden unreachable at /validate fails closed: no execute', async () => {
+test('intent coherence: destructive task with no destructive control is rewritten to finish', async () => {
+  const run = await runTask({ task: 'delete my account', scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(click('body > a')) } });
+  assert.equal(run.prompts.length, 0);
+  assert.deepEqual(run.executed.map((a) => a.action), ['finish']);
+  assert.equal(run.terminal.status, 'finished');
+});
+
+test('Warden unreachable at /plan fails closed: no execute', async () => {
   const run = await runTask({
     scan: scanOf([NEXT_LINK]),
-    warden: { plan: clickNextThenFinish, validate: () => { throw new TypeError('connection refused'); } },
+    warden: { plan: () => { throw new TypeError('connection refused'); } },
   });
   assert.equal(run.executed.length, 0);
   assert.equal(run.terminal.status, 'error');
 });
 
+test('egress guard 422 ends the run naming the pattern and field, never a value', async () => {
+  const run = await runTask({
+    scan: scanOf([NEXT_LINK]),
+    warden: { plan: () => { throw Object.assign(new Error('guard'), { status: 422, body: { error: 'egress guard', egressGuard: { pattern: 'email', field: 'elements[0].label' } } }); } },
+  });
+  assert.equal(run.executed.length, 0);
+  assert.equal(run.terminal.status, 'error');
+  assert.ok(run.entries.some((e) => e.kind === 'error' && /egress guard refused the request \(email in elements\[0\]\.label\)/.test(e.text)));
+  assert.equal(run.pipelineTrace.stages.plan.status, 'error');
+  assert.match(run.pipelineTrace.stages.plan.detail, /egress guard/);
+});
+
 test('Warden unreachable at /health refuses the task before any scan', async () => {
   const run = await runTask({
     scan: scanOf([NEXT_LINK]),
-    warden: { health: () => { throw new TypeError('connection refused'); }, plan: clickNextThenFinish, validate: acceptAs('navigational') },
+    warden: { health: () => { throw new TypeError('connection refused'); }, plan: planSeq(click('body > a')) },
   });
   assert.equal(run.start.ok, false);
   assert.equal(run.scans, 0);
   assert.equal(run.executed.length, 0);
 });
 
+test('planner groq with no key refuses the run with a card naming both fixes', async () => {
+  const run = await runTask({
+    scan: scanOf([NEXT_LINK]),
+    warden: { health: () => ({ ok: true, loaded: true, model: 'g', planner: 'groq', groqConfigured: false, destination: 'cloud', plannerModel: 'm' }), plan: planSeq(click('body > a')) },
+  });
+  assert.equal(run.start.ok, false);
+  assert.equal(run.start.refused, true);
+  assert.equal(run.scans, 0);
+  assert.equal(run.fetchBodies.some((b) => b.path === '/strip' || b.path === '/plan'), false);
+  const card = run.entries.find((e) => e.kind === 'blocked' && e.id === 'blocked-groq');
+  assert.ok(card);
+  assert.match(card.text, /GROQ_API_KEY in warden\/\.env/);
+  assert.match(card.text, /WARDEN_PLANNER=ollama/);
+  assert.equal(run.terminal.status, 'refused');
+});
+
+test('offline planner (ollama) needs no key', async () => {
+  const run = await runTask({
+    scan: scanOf([NEXT_LINK]),
+    warden: { health: () => ({ ok: true, loaded: true, model: 'g', planner: 'ollama', groqConfigured: false }), plan: planSeq(click('body > a')) },
+  });
+  assert.equal(run.terminal.status, 'finished');
+  const health = run.healthUpdates.at(-1);
+  assert.equal(health.planner, 'ollama');
+  assert.equal(health.destination, 'local', 'derived from planner when /health omits it');
+  assert.equal(health.plannerModel, null);
+});
+
+test('HEALTH_UPDATE carries destination and plannerModel', async () => {
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(click('body > a')) } });
+  const health = run.healthUpdates.at(-1);
+  assert.equal(health.destination, 'cloud');
+  assert.equal(health.plannerModel, 'fake-cloud-planner');
+  assert.equal(health.planner, 'groq');
+});
+
 test('a live tier escalation reported by the content script prompts; stop clicks nothing further', async () => {
   const run = await runTask({
     scan: scanOf([NEXT_LINK]),
     choices: ['stop'],
-    warden: { plan: clickNextThenFinish, validate: acceptAs('navigational') },
+    warden: { plan: planSeq(click('body > a')) },
     execute: () => ({ tierEscalated: true, liveTier: 'destructive', plannedTier: 'navigational' }),
   });
   assert.equal(run.executed.length, 1);
@@ -148,7 +259,7 @@ test('a live tier escalation, user proceeds: re-sent once with the live tier', a
   const run = await runTask({
     scan: scanOf([NEXT_LINK]),
     choices: ['proceed'],
-    warden: { plan: clickNextThenFinish, validate: acceptAs('navigational') },
+    warden: { plan: planSeq(click('body > a')) },
     execute: (action, n) => (n === 1 ? { tierEscalated: true, liveTier: 'destructive', plannedTier: action.plannedTier } : { digest: 'd' }),
   });
   assert.equal(run.executed[1].plannedTier, 'destructive');
@@ -156,7 +267,8 @@ test('a live tier escalation, user proceeds: re-sent once with the live tier', a
 });
 
 test('egress: handles, local tiers and the screenshot never reach the Warden', async () => {
-  const run = await runTask({ scan: scanOf([NEXT_LINK, DELETE_BUTTON]), warden: { plan: clickNextThenFinish, validate: acceptAs('navigational') } });
+  const run = await runTask({ scan: scanOf([NEXT_LINK, DELETE_BUTTON]), warden: { plan: planSeq(click('body > a')) } });
+  assertNoValidate(run);
   assert.ok(run.fetchBodies.some((b) => b.path === '/strip'));
   assert.ok(run.fetchBodies.some((b) => b.path === '/plan'));
   for (const { path, raw, body } of run.fetchBodies) {
@@ -166,4 +278,15 @@ test('egress: handles, local tiers and the screenshot never reach the Warden', a
   }
   const planBody = run.fetchBodies.find((b) => b.path === '/plan').body;
   assert.deepEqual(Object.keys(planBody).sort(), ['elements', 'history', 'sanitizedDom', 'tokenizedTask']);
+});
+
+test('two START_TASK sends at once start exactly one run (double-click on Send)', async () => {
+  const run = await runTask({ scan: scanOf([NEXT_LINK]), starts: 2, warden: { plan: planSeq(click('body > a')) } });
+  assert.equal(run.start.ok, true);
+  assert.equal(run.extraStarts.length, 1);
+  assert.equal(run.extraStarts[0].ok, false);
+  assert.match(run.extraStarts[0].reason, /already in progress/);
+  assert.equal(run.entries.filter((e) => e.kind === 'user').length, 1);
+  assert.equal(run.entries.filter((e) => e.terminal === true).length, 1);
+  assert.equal(run.executed.length, 2);
 });

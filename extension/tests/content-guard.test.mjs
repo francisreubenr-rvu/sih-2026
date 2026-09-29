@@ -232,3 +232,206 @@ test('scan output never writes the handle into the DOM', async () => {
   for (const el of scan.elements) assert.equal(html.includes(el.handle), false);
   await p.close();
 });
+
+// ---- Redaction overlay (HIGHLIGHT_REDACTIONS) --------------------------------------------------
+// The overlay lives in a CLOSED shadow root, which page script cannot open; these tests read it
+// through the DevTools protocol (DOM.getDocument with pierce: true), which can.
+
+const VALUE = 'francis@example.com';
+const TOKENS = { 'EMAIL#1': VALUE };
+
+async function overlayTree(p) {
+  const cdp = await p.page.context().newCDPSession(p.page);
+  try {
+    const { root } = await cdp.send('DOM.getDocument', { depth: -1, pierce: true });
+    const attrs = (n) => {
+      const out = {};
+      for (let i = 0; i < (n.attributes || []).length; i += 2) out[n.attributes[i]] = n.attributes[i + 1];
+      return out;
+    };
+    let host = null;
+    const find = (n) => {
+      if (host) return;
+      if (n.nodeType === 1 && 'data-dhristi-redactions' in attrs(n)) { host = n; return; }
+      for (const c of [...(n.children || []), ...(n.shadowRoots || []), ...(n.contentDocument ? [n.contentDocument] : [])]) find(c);
+    };
+    find(root);
+    if (!host) { await cdp.detach(); return null; }
+    const boxes = [];
+    const texts = [];
+    const walk = (n) => {
+      if (n.nodeType === 3) texts.push(n.nodeValue);
+      const a = attrs(n);
+      if (n.nodeType === 1 && /\bbox\b/.test(a.class || '')) {
+        const chip = (n.children || []).find((c) => /\bchip\b/.test(attrs(c).class || ''));
+        const style = Object.fromEntries((a.style || '').split(';').map((d) => d.split(':').map((x) => x.trim())).filter((d) => d[0]));
+        boxes.push({ nodeId: n.nodeId, className: a.class, label: chip?.children?.[0]?.nodeValue ?? null, top: parseFloat(style.top), left: parseFloat(style.left), width: parseFloat(style.width), height: parseFloat(style.height) });
+      }
+      for (const c of [...(n.children || []), ...(n.shadowRoots || [])]) walk(c);
+    };
+    walk(host);
+    // The session stays open (and the node ids valid) until the caller detaches it.
+    return { host, boxes, texts, cdp };
+  } catch (error) {
+    await cdp.detach();
+    throw error;
+  }
+}
+
+const OVERLAY_PAGE = `<p id="t">Contact ${VALUE} today</p>
+  <input id="i" value="${VALUE}">
+  <button type="button" id="b" onclick="window.clicked = (window.clicked || 0) + 1">Mail ${VALUE}</button>
+  <p style="display:none">hidden ${VALUE}</p>`;
+
+test('overlay: boxes every visible occurrence, labelled with the token only, never the value', async () => {
+  const p = await h.open(OVERLAY_PAGE);
+  const reply = await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  assert.deepEqual(reply, { ok: true, boxes: 3 }, 'paragraph, button text and input value; not the hidden one');
+  assert.equal(JSON.stringify(reply).includes(VALUE), false);
+  const tree = await overlayTree(p);
+  assert.ok(tree, 'overlay host exists');
+  assert.equal(tree.boxes.length, 3);
+  for (const box of tree.boxes) assert.equal(box.label, 'EMAIL#1');
+  assert.equal(tree.texts.some((t) => t.includes(VALUE)), false, 'the value is nowhere in the overlay');
+  assert.equal(JSON.stringify(tree.host).includes(VALUE), false);
+  // The first box sits over the value in the paragraph (2px outset for the border).
+  const rect = await p.page.evaluate((value) => {
+    const node = document.getElementById('t').firstChild;
+    const at = node.nodeValue.indexOf(value);
+    const r = document.createRange();
+    r.setStart(node, at);
+    r.setEnd(node, at + value.length);
+    const b = r.getBoundingClientRect();
+    return { left: b.left, top: b.top, width: b.width };
+  }, VALUE);
+  const first = tree.boxes[0];
+  assert.ok(Math.abs(first.left - (rect.left - 2)) < 1.5 && Math.abs(first.top - (rect.top - 2)) < 1.5, JSON.stringify({ first, rect }));
+  assert.ok(Math.abs(first.width - (rect.width + 4)) < 1.5);
+  // Host styles the page cannot override, and the page cannot see into the shadow root.
+  const host = await p.page.evaluate(() => {
+    const el = document.querySelector('[data-dhristi-redactions]');
+    const cs = getComputedStyle(el);
+    return { pe: cs.pointerEvents, z: cs.zIndex, pos: cs.position, shadow: el.shadowRoot, light: el.innerHTML };
+  });
+  assert.deepEqual(host, { pe: 'none', z: '2147483647', pos: 'fixed', shadow: null, light: '' });
+  await tree.cdp.detach();
+  await p.close();
+});
+
+test('overlay: page CSS cannot hide or restyle the host', async () => {
+  const p = await h.open(`<style>div { display: none !important; opacity: 0 !important; pointer-events: auto !important; }
+    [data-dhristi-redactions] { position: static !important; z-index: 1 !important; }</style><p>${VALUE}</p>`);
+  await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  const cs = await p.page.evaluate(() => {
+    const s = getComputedStyle(document.querySelector('[data-dhristi-redactions]'));
+    return [s.display, s.opacity, s.pointerEvents, s.position, s.zIndex];
+  });
+  assert.deepEqual(cs, ['block', '1', 'none', 'fixed', '2147483647']);
+  await p.close();
+});
+
+test('overlay: elementFromPoint ignores it, so a boxed target is still clickable', async () => {
+  const p = await h.open(OVERLAY_PAGE);
+  const scan = await p.scan();
+  const button = scan.elements.find((el) => el.tag === 'button');
+  const boxes = await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  assert.equal(boxes.boxes, 3);
+  const hit = await p.page.evaluate(() => {
+    const b = document.getElementById('b').getBoundingClientRect();
+    const at = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+    return at && at.id;
+  });
+  assert.equal(hit, 'b', 'the overlay is not hit-tested');
+  const result = await p.execute({ action: 'click', handle: button.handle, plannedTier: button.tier });
+  assert.equal(result.error, undefined, result.error);
+  assert.equal(await p.page.evaluate(() => window.clicked), 1);
+  await p.close();
+});
+
+test('overlay: the next PAGE_SCAN removes it and never picks it up', async () => {
+  const p = await h.open(OVERLAY_PAGE);
+  const before = await p.scan();
+  await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  assert.equal(await p.page.evaluate(() => Boolean(document.querySelector('[data-dhristi-redactions]'))), true);
+  const after = await p.scan();
+  assert.equal(await p.page.evaluate(() => Boolean(document.querySelector('[data-dhristi-redactions]'))), false);
+  assert.deepEqual(after.elements.map((el) => el.selector), before.elements.map((el) => el.selector));
+  assert.deepEqual(after.piiFields.map((f) => f.kind), before.piiFields.map((f) => f.kind));
+  assert.equal(after.dom.includes('EMAIL#1'), false);
+  await p.close();
+});
+
+test('overlay: CLEAR_HIGHLIGHTS and END_TASK remove it; END_TASK also retires the scan handles', async () => {
+  const p = await h.open(OVERLAY_PAGE);
+  await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  await p.send({ type: 'CLEAR_HIGHLIGHTS' });
+  assert.equal(await p.page.evaluate(() => document.querySelectorAll('[data-dhristi-redactions]').length), 0);
+  const scan = await p.scan();
+  await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  await p.send({ type: 'END_TASK' });
+  assert.equal(await p.page.evaluate(() => document.querySelectorAll('[data-dhristi-redactions]').length), 0);
+  const button = scan.elements.find((el) => el.tag === 'button');
+  const result = await p.execute({ action: 'click', handle: button.handle, plannedTier: button.tier });
+  assert.match(result.error, /not from the current page scan/);
+  assert.equal(await p.page.evaluate(() => window.clicked), undefined);
+  await p.close();
+});
+
+test('overlay: redraws on scroll, following the text', async () => {
+  const p = await h.open(`<div style="height:300px"></div><p>${VALUE}</p><div style="height:2000px"></div>`);
+  await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  const initial = await overlayTree(p);
+  const first = initial.boxes[0];
+  await initial.cdp.detach();
+  await p.page.evaluate(() => window.scrollBy(0, 100));
+  await p.page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+  const tree = await overlayTree(p);
+  const moved = tree.boxes[0];
+  assert.ok(Math.abs((first.top - moved.top) - 100) < 1.5, JSON.stringify({ first, moved }));
+  assert.match(moved.className, /^box(?! enter)/, 'a redraw does not replay the entry animation');
+  await tree.cdp.detach();
+  await p.close();
+});
+
+async function firstBoxAnimation(p) {
+  const tree = await overlayTree(p);
+  try {
+    await tree.cdp.send('CSS.enable');
+    const style = await tree.cdp.send('CSS.getComputedStyleForNode', { nodeId: tree.boxes[0].nodeId });
+    return style.computedStyle.find((s) => s.name === 'animation-name')?.value;
+  } finally {
+    await tree.cdp.detach();
+  }
+}
+
+test('overlay: the entry animation runs only without prefers-reduced-motion', async () => {
+  const motion = await h.open(`<p>${VALUE}</p>`);
+  await motion.page.emulateMedia({ reducedMotion: 'no-preference' });
+  await motion.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  assert.equal(await firstBoxAnimation(motion), 'dhristi-in');
+  await motion.close();
+
+  const reduced = await h.open(`<p>${VALUE}</p>`);
+  await reduced.page.emulateMedia({ reducedMotion: 'reduce' });
+  await reduced.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: TOKENS });
+  assert.equal(await firstBoxAnimation(reduced), 'none');
+  await reduced.close();
+});
+
+test('overlay: ignores malformed tokens and one-character values', async () => {
+  const p = await h.open('<p>a b c toJSON</p>');
+  const reply = await p.send({ type: 'HIGHLIGHT_REDACTIONS', tokens: { 'X#1': 'a', toJSON: 'toJSON', 'lower#1': 'b c' } });
+  assert.deepEqual(reply, { ok: true, boxes: 0 });
+  assert.equal(await p.page.evaluate(() => document.querySelectorAll('[data-dhristi-redactions]').length), 0);
+  await p.close();
+});
+
+test('type into a target with no value setter is refused, not reported as done', async () => {
+  const p = await h.open('<div id="ed" contenteditable="true" role="button" aria-label="Notes">x</div>');
+  const scan = await p.scan();
+  const field = scan.elements.find((el) => el.label === 'Notes');
+  const result = await p.execute({ action: 'type', handle: field.handle, value: 'orbits', plannedTier: 'state-changing' });
+  assert.match(result.error || '', /does not take a typed value/);
+  assert.equal(await p.page.evaluate(() => document.getElementById('ed').textContent), 'x');
+  await p.close();
+});

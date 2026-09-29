@@ -1,6 +1,9 @@
-// warden.js: HTTP client for the local Warden service (GET /health, POST /strip,
-// POST /plan, POST /validate), exactly as Docs/specs/2026-09-13-dhristi-v4-warden.md
-// defines them, including its "Amendment, 13 September 2026" section.
+// warden.js: HTTP client for the local Warden service (GET /health, POST /strip, POST /plan),
+// as Docs/specs/2026-09-13-dhristi-v4-warden.md defines them, with the additive v5 changes in
+// Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md. There is no client for
+// POST /validate any more: v5 moved every plan check into the extension (utils/plan-check.js),
+// and nothing in extension/, scripts/ or Prototype/ called it but the old run loop. The endpoint
+// stays in the Warden for older harnesses only.
 //
 // Every call has its own timeout (AbortController-driven fetch): a wedged local process
 // must not hang the agent loop forever. A distinct error type, WardenUnreachableError, is
@@ -21,8 +24,7 @@ import { loopbackHttpUrl } from './loopback.js';
 const TIMEOUT_MS = {
   health: 3000,
   strip: 15000, // GLiNER inference; slower on a cold or busy machine than the regex layer alone
-  plan: 75000, // local Ollama planner, including a cold model load
-  validate: 15000, // includes an optional Ollama local-reasoning pass
+  plan: 75000, // cloud relay by default; local Ollama in offline mode, including a cold model load
 };
 
 export class WardenUnreachableError extends Error {
@@ -117,13 +119,5 @@ export async function plan({ tokenizedTask, sanitizedDom, elements, history }) {
     method: 'POST',
     body: { tokenizedTask, sanitizedDom, elements, history: history || [] },
     timeoutMs: TIMEOUT_MS.plan,
-  });
-}
-
-export async function validate({ plan: planBody, elements, tokenizedTask, attempt }) {
-  return request('/validate', {
-    method: 'POST',
-    body: { plan: planBody, elements, tokenizedTask, attempt },
-    timeoutMs: TIMEOUT_MS.validate,
   });
 }

@@ -12,17 +12,29 @@ import { EXTENSION_DIR } from './content-harness.mjs';
 let instance = 0;
 
 // scan:      the PAGE_SCAN reply (elements carry selector, handle, tier, label, ...)
-// warden:    { health, strip(body), plan(body, n), validate(body, n) } -> JSON or throw
+// warden:    { health, strip(body), plan(body, n), validate(body, n) } -> JSON or throw.
+//            A thrown object with `status` becomes an HTTP error reply with that status and body.
+//            v5 never calls /validate; a validate() here only exists to prove that.
 // choices:   answers for successive prompts ('proceed' | 'skip' | 'stop'); default 'stop'
 // execute:   optional (action, n) -> reply for EXECUTE_ACTION
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute } = {}) {
+// onPrompt:  optional async (prompt, { send }) called before a prompt is answered, while the run
+//            is parked on it (the vault is live then). `send(message, sender)` reaches the worker.
+export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhristi-test/sidepanel.html' };
+
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1 } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
+  const runtimeMessages = [];
   const prompts = [];
+  const hookResults = [];
   let listener = null;
   let planCalls = 0;
   let validateCalls = 0;
   let executeCalls = 0;
+  const send = (message, sender = PANEL_SENDER) => new Promise((resolve) => {
+    const keepOpen = listener(message, sender, resolve);
+    if (keepOpen === false) resolve(undefined);
+  });
 
   const noop = { addListener() {} };
   globalThis.chrome = {
@@ -33,10 +45,16 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
       onInstalled: noop,
       onStartup: noop,
       sendMessage: async (message) => {
+        runtimeMessages.push(message);
         if (message.type === 'PROMPT_REQUEST') {
           prompts.push(message.prompt);
           const choice = choices[prompts.length - 1] || 'stop';
-          queueMicrotask(() => listener({ type: 'PROMPT_RESPONSE', id: message.prompt.id, answers: { choice } }, { id: 'dhristi-test' }, () => {}));
+          const answer = () => listener({ type: 'PROMPT_RESPONSE', id: message.prompt.id, answers: { choice } }, PANEL_SENDER, () => {});
+          if (onPrompt) {
+            Promise.resolve(onPrompt(message.prompt, { send })).then((r) => { hookResults.push(r); answer(); });
+          } else {
+            queueMicrotask(answer);
+          }
         }
         return undefined;
       },
@@ -53,7 +71,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     },
     tabs: {
       query: async () => [{ id: 7, windowId: 3 }],
-      captureVisibleTab: async () => 'data:image/png;base64,iVBORw0KGgo=',
+      captureVisibleTab: async () => capture || 'data:image/png;base64,iVBORw0KGgo=',
       sendMessage: async (tabId, message) => {
         tabMessages.push(message);
         switch (message.type) {
@@ -74,21 +92,26 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     const body = init.body ? JSON.parse(init.body) : null;
     fetchBodies.push({ path, raw: init.body || '', body });
     const reply = (value) => ({ ok: true, status: 200, json: async () => value });
-    if (path === '/health') return reply(warden.health ? warden.health() : { ok: true, loaded: true, model: 'fake-gliner', planner: 'ollama' });
-    if (path === '/strip') return reply(warden.strip ? warden.strip(body) : defaultStrip(body));
-    if (path === '/plan') { planCalls += 1; return reply(warden.plan(body, planCalls)); }
-    if (path === '/validate') { validateCalls += 1; return reply(warden.validate(body, validateCalls)); }
+    const answer = (fn) => {
+      try {
+        return reply(fn());
+      } catch (error) {
+        if (error && typeof error.status === 'number') return { ok: false, status: error.status, json: async () => error.body ?? null };
+        throw error;
+      }
+    };
+    if (path === '/health') return answer(() => (warden.health ? warden.health() : DEFAULT_HEALTH));
+    if (path === '/strip') return answer(() => (warden.strip ? warden.strip(body) : defaultStrip(body)));
+    if (path === '/plan') { planCalls += 1; return answer(() => warden.plan(body, planCalls)); }
+    if (path === '/validate') { validateCalls += 1; return answer(() => (warden.validate ? warden.validate(body, validateCalls) : null)); }
     throw new TypeError(`unexpected fetch ${path}`);
   };
 
   instance += 1;
   await import(`${pathToFileURL(join(EXTENSION_DIR, 'background.js')).href}?instance=${instance}`);
-  const send = (message) => new Promise((resolve) => {
-    const keepOpen = listener(message, { id: 'dhristi-test' }, resolve);
-    if (keepOpen === false) resolve(undefined);
-  });
 
-  const start = await send({ type: 'START_TASK', task });
+  // `starts` > 1 sends START_TASK that many times without waiting, as a double-click would.
+  const [start, ...extraStarts] = await Promise.all(Array.from({ length: starts }, () => send({ type: 'START_TASK', task })));
   let entries = start?.entries || [];
   const deadline = Date.now() + 15000;
   while (start?.ok && !entries.some((e) => e.terminal === true)) {
@@ -97,18 +120,32 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     entries = (await send({ type: 'GET_SESSION' })).entries;
   }
   const trace = await send({ type: 'GET_G11_TRACE' });
+  const pipelineTrace = await send({ type: 'GET_TRACE' });
 
   return {
     start,
+    extraStarts,
     entries,
     prompts,
     trace,
+    pipelineTrace,
+    traceUpdates: runtimeMessages.filter((m) => m.type === 'TRACE_UPDATE').map((m) => m.trace),
+    healthUpdates: runtimeMessages.filter((m) => m.type === 'HEALTH_UPDATE'),
+    runtimeMessages,
+    tabMessages,
+    hookResults,
+    validateCalls,
+    send,
     fetchBodies,
     executed: tabMessages.filter((m) => m.type === 'EXECUTE_ACTION').map((m) => m.action),
     scans: tabMessages.filter((m) => m.type === 'PAGE_SCAN').length,
     terminal: entries.find((e) => e.terminal === true),
   };
 }
+
+export const DEFAULT_HEALTH = {
+  ok: true, loaded: true, model: 'fake-gliner', planner: 'groq', groqConfigured: true, destination: 'cloud', plannerModel: 'fake-cloud-planner',
+};
 
 export function defaultStrip(body) {
   return {
