@@ -14,3 +14,19 @@ grep -c "priya.r@example.com\|Raghunathan" /tmp/cloud-received.jsonl   # expect 
 The harness copy of the extension adds `<all_urls>` to `host_permissions` in place of the optional
 grant the Send click requests; the shipped manifest is unchanged. The side panel is opened as a tab,
 with the fixture tab brought to the front before each answer.
+
+## Real cloud planner (v02)
+
+To record what reaches a real planner, point the Warden at the loopback recording relay instead of
+the fake. It logs each body and forwards it unchanged to Groq; the key stays in the Warden's
+environment and is forwarded in the header, never logged. `NODE_USE_ENV_PROXY=1` is only needed
+behind an egress proxy.
+
+```sh
+node scripts/e2e-v5/recording-relay.mjs /tmp/cloud-received.jsonl 8799 https://api.groq.com/openai/v1 &
+cd warden && GROQ_BASE_URL=http://127.0.0.1:8799 python -m uvicorn app:app --host 127.0.0.1 --port 8756 &
+node scripts/e2e-v5/run.mjs
+grep -c "priya.r@example.com\|Raghunathan" /tmp/cloud-received.jsonl   # expect 0
+```
+
+Result: `Benchmarks/results/e2e-v5-boundary-v02.json`.

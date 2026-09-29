@@ -46,7 +46,7 @@ cases where a deterministic answer is better than a probabilistic one.
 | Requirement | Detail |
 |---|---|
 | Python | `~/.venvs/data/bin/python` (3.14.7). System Python is externally managed; do not use it. |
-| Packages | gliner, torch, transformers, fastapi, uvicorn, all already installed in that venv |
+| Packages | gliner, torch, transformers, protobuf, fastapi, uvicorn, all already installed in that venv. Without `protobuf` the mdeberta tokenizer could not load its SentencePiece model and the GLiNER load failed in a fresh Linux venv (29 September 2026), so `/health` reports `loaded:false` and the real-weight tests skip. With it, that CPU-only container with the CPU torch wheel plus these packages loaded the weights in 14.2 s. |
 | Model weights | `urchade/gliner_multi_pii-v1`, cached under `HF_HOME` |
 | Groq key | Required for `POST /plan` on the default path. Goes in `.env`, never in a tracked file, never in the browser. `GROQ_BASE_URL` (default `https://api.groq.com/openai/v1`) names the OpenAI-compatible endpoint; the key is sent there, so change it only deliberately (the test suite points it at a local fake server). |
 | Ollama | Required for `POST /plan` only when `WARDEN_PLANNER=ollama`. Also used for optional `/validate` reasoning. Host must be loopback (`http://127.0.0.1:11434` unless `OLLAMA_HOST` says otherwise). |
