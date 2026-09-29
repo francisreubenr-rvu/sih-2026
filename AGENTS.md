@@ -8,7 +8,8 @@ As of 2026-09-23 the primary path is the fundamentals restructure in `Docs/decis
 
 ## UI rules (Francis, binding)
 - No dark colours for backgrounds on any surface. Dark is for text and thin lines only.
-- Every colour interaction must follow colour-theory principles. See `DESIGN.md`, "Binding UI rules" and "Colour theory used here". `scripts/check-signal-tokens.mjs` enforces the token side.
+- Every colour interaction must follow colour-theory principles. See `DESIGN.md`, "Binding UI rules" and "Colour theory used here".
+- Follow `Docs/design/design-playbook.md` for every UI change (strategy → hierarchy → type → colour → verify); `DESIGN.md`, "Design playbook", records how it applies here. `scripts/check-signal-tokens.mjs` enforces the token side.
 
 ## Agent skills
 

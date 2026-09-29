@@ -14,9 +14,35 @@ Two palettes, one rule set. **Signal** is the product: the extension side panel,
 | One neutral family | Grounds, lines and ink are the primary's hue (~230°) at very low chroma, so neutrals and the primary read as one material. The Website instead uses a warm off-white (`#f3f4f1`) as a complementary ground for its cobalt; the two surfaces never share a screen. |
 | Temperature carries meaning | Cool means the system is acting or has verified: cobalt (act, 230°) and teal (detected or verified on this device, 188°), an analogous pair 45° apart. Warm means a person is needed: amber (waiting, 36°) and brick red (stop, destructive, personal data, 9°), also analogous. The two pairs sit across the wheel from each other, so "needs you" always contrasts with "working". |
 | Shade and tint per hue | Each hue has one text-safe shade (AA on every ground) and one tint used only as the fill behind that same shade. A hue never sits on another hue's tint, and two saturated hues never touch without a neutral between them. |
-| One accent at a time | A view has one primary (cobalt) action. Violet, analogous to cobalt, appears only inside a glow. Flame (`#ff5b2e`, the Website accent) is for large numerals and marks only: 3.1:1 on white, never body text. |
+| One accent at a time | Cobalt is the only accent: the one primary action per view, links and focus. Violet, analogous to cobalt, appears only inside a glow. Flame was retired from the Website on 29 September 2026 because a second accent competed with the call to action. |
 | Value before hue | Hierarchy comes from lightness steps (ink → text-2 → text-3, panel → panel-2), so the layout still reads in greyscale. Status is never colour alone: every chip also has a text label. |
 | Contrast | Text at least 4.5:1 on every ground and tint it can sit on. Control outlines and focus rings at least 3:1 (WCAG 1.4.11). CI checks every pair. |
+
+## Design playbook (binding)
+
+Francis, 29 September 2026: follow the design playbook (`Docs/design/design-playbook.md`) specifically. It sequences every UI decision: strategy, content, hierarchy, type, colour, imagery, build, verify. Its colour chapter is applied through the palette roles below, and its hierarchy chapter per section.
+
+**Strategy brief (landing page, playbook step 1)**
+
+| Item | Decision |
+|---|---|
+| Goal | Build trust: show the world what Dhristi does and that it works |
+| Category | Marketing / showcase, for SIH26171 judges and the public |
+| Primary action | Watch the 25-second demo. One filled button per view; everything else is outline or text |
+| Target emotion | Calm confidence: your details are safe, and you can see why |
+| Style | "Virgil Abloh": one unmistakable element, the Anton condensed headline, repeated in section heads and numerals |
+| Proof | Real, scoped measurements from the team's own runs, placed under the hero and after the demo. None invented |
+
+**Palette roles (playbook colour steps 4–8)**
+
+| Role | Share | Landing | Product (Signal) |
+|---|---|---|---|
+| Neutrals | ~60% | paper `#f3f4f1`, white | void, panel, panel-2, lines |
+| Secondary | ~30% | ink tiers, cobalt tint bands | ink tiers; teal = on this device, verified |
+| Accent | ~10% | cobalt: CTAs, links, focus, the one must-notice line | cobalt: the one primary action per view, links, focus |
+| Status | functional only | none | amber = waiting on you, brick = stop / destructive / personal data; always with a text label |
+
+The product carries two status hues beyond the playbook's five-colour cap. They mark state rather than brand, follow the red/amber convention people already know, and never appear as decoration. Emphasis inside a colour comes from ink tiers (full, text-2, text-3), not from more hues.
 
 ## Website landing
 
@@ -28,7 +54,6 @@ Two palettes, one rule set. **Signal** is the product: the extension side panel,
 | `--ink` / `--ink-2` / `--ink-3` | `#0d1014` / `#3f4550` / `#5a616d` | Text (lowest: ink-3 on the tint band, 5.1:1) |
 | `--line` | `#d6d9d2` | Hairlines |
 | `--cobalt` | `#1f36d6` | Links, primary buttons (white text 8.2:1) |
-| `--flame` | `#ff5b2e` | Large numerals on white cards (3.1:1) and decorative marks only, never body text |
 
 - **Type:** Anton (display headings, uppercase), Open Sans 600/700 (subheadings, labels, buttons), Glacial Indifference (paragraphs). All are OFL and self-hosted in `Website/assets/fonts/`.
 - **Content rule:** public key information only (what Dhristi is, the problem, how it works, the demo, the privacy boundary, SIH26171 context, the team). Engineering evidence (waves, gates, benchmarks) lives in the repository, not on the landing page.

@@ -1,4 +1,11 @@
 /* Dhristi landing page. Light palette with dark type for contrast; no dark surfaces.
+   Palette (design playbook, colour system): 4 colours, 60/30/10.
+     60  neutrals: paper and white grounds (warm off-white, complementary to cobalt)
+     30  ink for type, and the pale cobalt tint for alternate bands
+     10  cobalt, the ONE accent: calls to action, links, focus, and the one must-notice line
+   Flame was retired on 29 September 2026: a second accent competed with the CTA for
+   attention on every section. Emphasis inside a colour comes from ink tiers (ink, ink-2,
+   ink-3), not from more hues.
    Type: Anton for display headings, Open Sans for subheadings and UI labels,
    Glacial Indifference for paragraphs. All self-hosted, SIL OFL (assets/fonts/OFL.txt). */
 @font-face{font-family:"Anton";src:url("assets/fonts/anton-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
@@ -16,8 +23,8 @@
   --ink-2:#3f4550;      /* secondary text */
   --ink-3:#5a616d;      /* captions, notes */
   --line:#d6d9d2;       /* hairlines */
-  --cobalt:#1f36d6;     /* links, primary buttons */
-  --flame:#ff5b2e;      /* large numerals and marks only */
+  --cobalt:#1f36d6;     /* the one accent: CTAs, links, focus, must-notice */
+  --cobalt-deep:#172aa8;/* hover/pressed shade of the accent (10.9:1 on white) */
   --display:"Anton","Oswald","Impact","Arial Narrow",sans-serif;
   --head:"Open Sans","Segoe UI",system-ui,sans-serif;
   --body:"Glacial Indifference","Century Gothic","Avenir Next","Segoe UI",system-ui,sans-serif;
@@ -33,21 +40,23 @@ img,video{display:block;max-width:100%;height:auto}
 p{margin:0}
 h1,h2,h3{margin:0;text-wrap:balance}
 a{color:var(--cobalt);text-underline-offset:4px}
+a:hover{color:var(--cobalt-deep);text-decoration-thickness:2px}
 code{font:600 .88em ui-monospace,"SFMono-Regular",Menlo,monospace;background:var(--white);border:1px solid var(--line);border-radius:4px;padding:.05em .35em;color:var(--ink)}
 :focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
 .wrap{width:100%;max-width:calc(var(--max) + 2*var(--gutter));margin-inline:auto;padding-inline:var(--gutter)}
 .skip{position:absolute;left:var(--gutter);top:8px;z-index:20;transform:translateY(-200%);background:var(--cobalt);color:var(--white);padding:10px 14px;border-radius:var(--radius);font:700 15px/1 var(--head);text-decoration:none}
 .skip:focus{transform:none}
 
-.kicker{font:700 13px/1.3 var(--head);letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt)}
+.kicker{font:700 13px/1.3 var(--head);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
 h1,h2{font-family:var(--display);font-weight:400;text-transform:uppercase;letter-spacing:.005em;line-height:.98}
 h2{font-size:clamp(36px,5vw,64px)}
 h3{font:700 20px/1.3 var(--head);letter-spacing:-.005em}
 
 .button{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:var(--radius);border:2px solid var(--cobalt);background:var(--cobalt);color:var(--white);font:700 15px/1 var(--head);text-decoration:none;transition:background-color .2s,color .2s,box-shadow .2s}
-.button:hover{box-shadow:0 8px 24px -10px rgba(31,54,214,.7)}
+.button:hover{background:var(--cobalt-deep);border-color:var(--cobalt-deep);color:var(--white)}
+.button:active{transform:translateY(1px)}
 .button.ghost{background:transparent;color:var(--cobalt)}
-.button.ghost:hover{background:var(--white)}
+.button.ghost:hover{background:var(--tint);color:var(--cobalt-deep)}
 .button.small{min-height:40px;padding:0 16px;font-size:14px}
 .actions{display:flex;flex-wrap:wrap;gap:12px}
 
@@ -63,13 +72,20 @@ h3{font:700 20px/1.3 var(--head);letter-spacing:-.005em}
 .hero{padding-block:clamp(40px,7vw,96px) clamp(48px,7vw,88px)}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(32px,5vw,64px);align-items:center}
 .hero-copy{display:grid;gap:24px;min-width:0}
-.hero h1{font-size:clamp(52px,7.3vw,106px)}
-.hero h1 span{color:var(--cobalt)}
+.hero h1{font-size:clamp(46px,5.6vw,84px)}
+.hero h1 span{color:var(--ink-2)}
 .lead{font-size:clamp(19px,1.8vw,22px);line-height:1.55;color:var(--ink-2);max-width:36em}
 .hero-media{margin:0;display:grid;gap:10px;min-width:0;position:relative}
 .hero-media img{border-radius:var(--radius);aspect-ratio:4/5;object-fit:cover;width:100%;box-shadow:18px 18px 0 var(--tint)}
-.hero-media::before{content:"";position:absolute;left:-14px;top:-14px;width:72px;height:72px;border-left:4px solid var(--flame);border-top:4px solid var(--flame);border-top-left-radius:4px;z-index:1}
+.hero-media::before{content:"";position:absolute;left:-14px;top:-14px;width:72px;height:72px;border-left:4px solid var(--ink);border-top:4px solid var(--ink);border-top-left-radius:4px;z-index:1}
 figcaption{font:400 14px/1.45 var(--body);color:var(--ink-3)}
+
+/* proof: real, scoped measurements, placed right under the hero and again after the demo */
+.proof{list-style:none;margin:clamp(40px,6vw,64px) 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.proof li{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;display:grid;gap:4px;min-width:0}
+.proof b{font:400 34px/1 var(--display);color:var(--ink)}
+.proof span{font-size:15px;line-height:1.4;color:var(--ink-2)}
+.proof-note{margin-top:10px;font-size:14px;color:var(--ink-3)}
 
 /* bands */
 .band{padding-block:clamp(56px,8vw,96px)}
@@ -82,7 +98,7 @@ figcaption{font:400 14px/1.45 var(--body);color:var(--ink-3)}
 .section-head{display:grid;gap:12px;margin-bottom:clamp(32px,4vw,48px);max-width:40em}
 .steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .steps li{display:grid;gap:10px;align-content:start;padding:24px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);min-width:0}
-.step-no{font:400 48px/1 var(--display);color:var(--flame)}
+.step-no{font:400 48px/1 var(--display);color:var(--ink-3)}
 .steps p{color:var(--ink-2)}
 .compare{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:40px}
 .compare figure{margin:0;display:grid;gap:12px;min-width:0}
@@ -90,18 +106,19 @@ figcaption{font:400 14px/1.45 var(--body);color:var(--ink-3)}
 .compare figcaption b{display:block;font:700 16px/1.3 var(--head);color:var(--ink);margin-bottom:2px}
 .note{margin-top:20px;font-size:15px;color:var(--ink-3);max-width:44em}
 
+.demo{background:var(--white);border-block:1px solid var(--line)}
 .video-frame{margin:0;display:grid;gap:14px}
 .video-frame video{width:100%;border-radius:var(--radius);border:1px solid var(--line);background:var(--white);box-shadow:0 30px 60px -36px rgba(13,16,20,.45)}
 
 .boundary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .side{display:grid;gap:14px;align-content:start;padding:28px;border-radius:var(--radius);border:1px solid var(--line)}
-.side.stays{background:var(--white);border-top:5px solid var(--flame)}
-.side.leaves{background:var(--tint);border-top:5px solid var(--cobalt)}
+.side.stays{background:var(--white);border-top:5px solid var(--ink)}
+.side.leaves{background:var(--tint);border-top:5px solid var(--ink-3)}
 .side ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
 .side li{display:flex;gap:12px;align-items:baseline;color:var(--ink-2)}
 .side li::before{content:"";flex:none;width:10px;height:10px;border-radius:2px;transform:translateY(-1px)}
-.stays li::before{background:var(--flame)}
-.leaves li::before{background:var(--cobalt)}
+.stays li::before{background:var(--ink)}
+.leaves li::before{background:transparent;border:2px solid var(--ink-3)}
 
 .sih{background:var(--white);border-block:1px solid var(--line)}
 .sih-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:center}
@@ -109,11 +126,11 @@ figcaption{font:400 14px/1.45 var(--body);color:var(--ink-3)}
 .sih-grid p{color:var(--ink-2);max-width:32em}
 .sih-media{margin:0;display:grid;gap:10px;min-width:0}
 .sih-media img{border-radius:var(--radius);aspect-ratio:3/2;object-fit:cover;width:100%}
-.status{padding:12px 16px;border-left:4px solid var(--flame);background:var(--paper);color:var(--ink)!important;font-weight:700}
+.status{padding:12px 16px;border-left:4px solid var(--cobalt);background:var(--paper);color:var(--ink)!important;font-weight:700}
 
 .team{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .team li{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:16px;align-items:center;padding:20px;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);min-width:0}
-.initial{grid-row:span 2;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--tint);color:var(--cobalt);font:400 28px/1 var(--display)}
+.initial{grid-row:span 2;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--tint);color:var(--ink);font:400 28px/1 var(--display)}
 .team p{color:var(--ink-3);font-size:16px}
 
 .cta{background:var(--tint)}
@@ -134,7 +151,7 @@ figcaption{font:400 14px/1.45 var(--body);color:var(--ink-3)}
   .header-row .button{margin-left:auto}
 }
 @media (max-width:600px){
-  .steps,.compare,.boundary,.team{grid-template-columns:1fr}
+  .steps,.compare,.boundary,.team,.proof{grid-template-columns:1fr}
   .hero-media::before{left:-6px;top:-6px;width:48px;height:48px}
   .hero-media img{box-shadow:10px 10px 0 var(--tint)}
 }
