@@ -94,7 +94,7 @@
        the room; a pipeline node opens it on the matching tab. -->
   <section class="inspector-wrap" aria-label="Step inspector">
     <details id="inspector" class="inspector">
-      <summary><span class="inspector-summary-title">Inspect</span> <span id="inspector-summary" class="inspector-summary-meta">no step yet</span></summary>
+      <summary><span class="inspector-summary-title">Inspect step</span> <span id="inspector-summary" class="inspector-summary-meta">no step yet</span></summary>
 
       <div class="tabs" role="tablist" aria-label="Step details">
         <button type="button" role="tab" id="tab-sent" aria-controls="panel-sent" aria-selected="true" tabindex="0">Cloud saw</button>
@@ -109,7 +109,7 @@
         <p id="outbound-empty" class="note">Nothing has been sent for planning yet.</p>
         <div id="outbound-readable" class="outbound-readable"></div>
         <div class="raw-row">
-          <button id="outbound-raw-toggle" type="button" class="quiet-btn" aria-expanded="false" aria-controls="outbound-raw" hidden>Raw JSON</button>
+          <button id="outbound-raw-toggle" type="button" class="quiet-btn" aria-expanded="false" aria-controls="outbound-raw" hidden>Show raw JSON</button>
         </div>
         <div id="outbound-raw" class="body-wrap" hidden><pre id="outbound-body" class="diag-body"></pre></div>
       </div>
@@ -149,7 +149,7 @@
         <li><span>Only the tokens go to the planner. The real values never leave.</span></li>
         <li><span>Every action is checked here, and risky ones wait for you.</span></li>
       </ol>
-      <p class="empty-label" id="examples-label">Try</p>
+      <p class="empty-label" id="examples-label">Try an example (fills the task box)</p>
       <div class="examples" role="group" aria-labelledby="examples-label">
         <button type="button" class="example" data-example="Fill this form with my name, email and phone number">Fill this form with my name, email and phone number</button>
         <button type="button" class="example" data-example="Find the latest invoice on this page and open it">Find the latest invoice on this page and open it</button>
@@ -162,15 +162,15 @@
   </main>
 
   <form id="composer" class="composer" autocomplete="off" aria-label="Task">
-    <label for="task-input" class="field-label">Task</label>
+    <label for="task-input" class="field-label">Task for this page</label>
     <div class="composer-row">
-      <textarea id="task-input" name="task" rows="2" placeholder="Describe what the agent should do on this page"></textarea>
+      <textarea id="task-input" name="task" rows="2" placeholder="Describe the task"></textarea>
       <div class="composer-actions">
         <button id="send" type="submit">Send</button>
         <!-- Shown only while a run is in flight, derived from the transcript: a run is live when
              a user entry has no terminal marker after it. No other control is needed, because
              every internal step happens without asking. -->
-        <button id="stop" type="button" class="stop" hidden>Stop</button>
+        <button id="stop" type="button" class="stop" hidden>Stop run</button>
       </div>
     </div>
     <p class="note">Enter sends. Shift and Enter starts a new line.</p>
@@ -188,7 +188,7 @@
           <label for="warden-origin">Warden origin</label>
           <div class="key-row">
             <input id="warden-origin" type="text" autocomplete="off" placeholder="http://127.0.0.1:8756">
-            <button id="warden-origin-save" type="button" class="save-btn">Save</button>
+            <button id="warden-origin-save" type="button" class="save-btn">Save origin</button>
           </div>
           <p id="warden-origin-status" class="key-status">Default: http://127.0.0.1:8756.</p>
         </div>

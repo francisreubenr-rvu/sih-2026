@@ -382,12 +382,17 @@ function buildBlocked(entry) {
     li.append(pre);
   }
   if (!entry.resolved) {
+    // The view's one primary while this card is open (sidepanel.css de-emphasises Send). The
+    // label says what the click does: it re-checks the Warden, it does not resend the task.
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
     const retry = document.createElement('button');
     retry.type = 'button';
-    retry.textContent = 'Retry';
+    retry.textContent = 'Check the Warden again';
     retry.dataset.action = 'retry-health';
     retry.addEventListener('click', () => refreshHealth());
-    li.append(retry);
+    actions.append(retry);
+    li.append(actions);
   }
   return asGroup(li, titleId);
 }
@@ -420,11 +425,17 @@ function buildUncertain(entry) {
   li.append(error);
 
   if (entry.pending) {
+    // The card's primary action, and the view's while the card is pending (Send is hidden during
+    // a live run). The label names both halves of what happens: the choices apply, the run resumes.
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
     const apply = document.createElement('button');
     apply.type = 'button';
-    apply.textContent = 'Apply decisions';
+    apply.className = 'btn-primary';
+    apply.textContent = 'Apply and continue';
     apply.addEventListener('click', () => submitUncertain(li, entry, error));
-    li.append(apply);
+    actions.append(apply);
+    li.append(actions);
   }
   return asGroup(li, titleId);
 }
@@ -513,17 +524,20 @@ function buildQuestion(entry) {
   const titleId = `question-title-${entry.id}`;
   row.id = titleId;
 
+  li.append(row);
+
+  const text = document.createElement('p');
+  text.className = 'entry-text';
+  text.textContent = entry.text || '';
+  li.append(text);
+
+  // The attempt count is context for the question, one rank below it, so it follows the question.
   if (entry.attempt != null) {
     const attempt = document.createElement('p');
     attempt.className = 'diag-meta';
     attempt.textContent = `Attempt ${entry.attempt} of 3`;
     li.append(attempt);
   }
-  li.append(row);
-
-  const text = document.createElement('p');
-  text.textContent = entry.text || '';
-  li.append(text);
 
   const reasons = Array.isArray(entry.reasons) ? entry.reasons : [];
   if (reasons.length) {
@@ -539,12 +553,17 @@ function buildQuestion(entry) {
 
   if (entry.pending) {
     const stack = document.createElement('div');
-    stack.className = 'option-stack';
-    for (const option of entry.options || []) {
+    stack.className = 'option-stack card-actions';
+    const options = entry.options || [];
+    // One primary per card: going ahead when it is offered, else skipping (which keeps the run
+    // going). Stop stays a secondary in the stop hue; the choice ids and the order are unchanged.
+    const primaryId = options.some((o) => o.id === 'proceed') ? 'proceed' : options.some((o) => o.id === 'skip') ? 'skip' : null;
+    for (const option of options) {
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = option.label || option.id;
+      button.textContent = optionLabel(option.id, option.label);
       button.dataset.choice = option.id;
+      if (option.id === primaryId) button.classList.add('btn-primary');
       button.addEventListener('click', async () => {
         lockCard(li);
         await send({ type: 'PROMPT_RESPONSE', id: entry.promptId, answers: { choice: option.id } });
@@ -555,10 +574,17 @@ function buildQuestion(entry) {
   } else if (entry.choiceLabel || entry.choice) {
     const decided = document.createElement('p');
     decided.className = 'decision-line';
-    decided.textContent = `You chose ${entry.choiceLabel || entry.choice}.`;
+    decided.textContent = `You chose: ${optionLabel(entry.choice, entry.choiceLabel || entry.choice)}.`;
     li.append(decided);
   }
   return asGroup(li, titleId);
+}
+
+// Button text for a validation choice. The background's generic "Proceed" becomes the action it
+// takes; every other label is shown as sent. Display only: the answer is still the option id.
+function optionLabel(id, label) {
+  if (id === 'proceed' && (!label || label === 'Proceed')) return 'Run this step';
+  return label || id;
 }
 
 // A card that blocks the run is a labelled group. The group sits inside the list item rather than
@@ -747,7 +773,7 @@ function initBoundary() {
   els.outboundRawToggle.addEventListener('click', () => {
     const open = els.outboundRawToggle.getAttribute('aria-expanded') !== 'true';
     els.outboundRawToggle.setAttribute('aria-expanded', String(open));
-    els.outboundRawToggle.textContent = open ? 'Hide raw JSON' : 'Raw JSON';
+    els.outboundRawToggle.textContent = open ? 'Hide raw JSON' : 'Show raw JSON';
     els.outboundRaw.hidden = !open;
   });
   // Example tasks only fill the composer. Sending stays the user's own act.
@@ -913,7 +939,7 @@ function renderSent(t) {
     els.outboundRawToggle.hidden = true;
     els.outboundRaw.hidden = true;
     els.outboundRawToggle.setAttribute('aria-expanded', 'false');
-    els.outboundRawToggle.textContent = 'Raw JSON';
+    els.outboundRawToggle.textContent = 'Show raw JSON';
     return;
   }
   els.outboundEmpty.hidden = true;
@@ -1036,8 +1062,8 @@ function buildKeptRow(item, index) {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'quiet-btn reveal-btn';
-  button.textContent = 'Reveal';
-  button.setAttribute('aria-label', `Reveal ${item.token}`);
+  button.textContent = 'Show value';
+  button.setAttribute('aria-label', `Show value of ${item.token}`);
   button.setAttribute('aria-expanded', 'false');
   button.setAttribute('aria-controls', valueId);
   main.append(chip, meta, button);
@@ -1070,8 +1096,8 @@ function buildKeptRow(item, index) {
       text.textContent = String(response.value);
       box.append(text);
       value.append(box);
-      button.textContent = 'Hide';
-      button.setAttribute('aria-label', `Hide ${item.token}`);
+      button.textContent = 'Hide value';
+      button.setAttribute('aria-label', `Hide value of ${item.token}`);
       button.setAttribute('aria-expanded', 'true');
     } else {
       const err = document.createElement('p');
@@ -1086,8 +1112,8 @@ function buildKeptRow(item, index) {
 function hideValue(button, value, token) {
   value.replaceChildren();
   value.hidden = true;
-  button.textContent = 'Reveal';
-  button.setAttribute('aria-label', `Reveal ${token}`);
+  button.textContent = 'Show value';
+  button.setAttribute('aria-label', `Show value of ${token}`);
   button.setAttribute('aria-expanded', 'false');
 }
 

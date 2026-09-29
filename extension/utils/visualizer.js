@@ -5,11 +5,17 @@
   'use strict';
   if (window.__dhristiVisualizer) return;
 
-  // Signal light edition: the agent's cursor is cobalt (#1f36d6, "the system is acting"), as a
-  // light cobalt-tint disc with a cobalt ring and a white outer ring, so it separates from any
-  // page. The typing chip is a white card with ink text and a cobalt hairline, never a dark scrim.
-  const CURSOR_FILL = 'rgba(231, 234, 252, 0.55)';
-  const CURSOR_RING = '#1f36d6';
+  // Signal light edition: the agent's cursor is teal (#0a6b78, --sg-scan: acting on this device),
+  // as a light teal-tint disc with a teal ring and a white outer ring, so it separates from any
+  // page. Cobalt is the accent and is reserved for the side panel's one primary button and focus
+  // rings, so it is not used on the page. The typing chip is a white card with ink text and the
+  // neutral control outline (#7f87a3, --sg-line-strong), never a dark scrim.
+  const CURSOR_FILL = 'rgba(223, 241, 243, 0.55)';
+  const CURSOR_RING = '#0a6b78';
+  const CHIP_LINE = '#7f87a3';
+  // Motion is a micro-interaction only. With reduced motion the cursor jumps, does not pulse, and
+  // the typing caret does not blink.
+  const reducedMotion = () => typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const RADIUS = 20;
   const Z_INDEX = '2147483647';
   const PII_TOKEN = '<mask-pii/>';
@@ -42,7 +48,7 @@
   typing.style.cssText = [
     'position:absolute', 'display:none', 'max-width:280px',
     'padding:6px 8px', 'border-radius:2px',
-    'background:#ffffff', 'color:#12162b', 'border:1px solid #1f36d6',
+    'background:#ffffff', 'color:#12162b', 'border:1px solid ' + CHIP_LINE,
     'box-shadow:0 1px 2px rgba(18,22,43,0.06),0 8px 24px -12px rgba(18,22,43,0.18)',
     'font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',
     'white-space:pre-wrap', 'word-break:break-word', 'pointer-events:none'
@@ -81,6 +87,11 @@
     const ms = clamp(Number(duration) || 380, 300, 500);
     const start = performance.now();
     showMouse();
+    if (reducedMotion()) {
+      setMousePos(to.x, to.y);
+      mousePos = { x: to.x, y: to.y };
+      return Promise.resolve();
+    }
     return new Promise((resolve) => {
       const tick = (now) => {
         const t = Math.min((now - start) / ms, 1);
@@ -98,7 +109,7 @@
   }
 
   function pulse() {
-    if (!state.mouse || typeof mouse.animate !== 'function') return;
+    if (!state.mouse || typeof mouse.animate !== 'function' || reducedMotion()) return;
     mouse.animate(
       [{ transform: 'scale(1.5)' }, { transform: 'scale(1)' }],
       { duration: 200, easing: 'ease-out' }
@@ -147,9 +158,9 @@
     const textNode = document.createTextNode('');
     const cursor = document.createElement('span');
     cursor.textContent = '▏';
-    cursor.style.cssText = 'color:#1f36d6;';
+    cursor.style.cssText = 'color:' + CURSOR_RING + ';';
     typing.append(textNode, cursor);
-    if (typeof cursor.animate === 'function') {
+    if (typeof cursor.animate === 'function' && !reducedMotion()) {
       cursorAnim = cursor.animate(
         [{ opacity: 1 }, { opacity: 0 }],
         { duration: 530, iterations: Infinity, direction: 'alternate' }

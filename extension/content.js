@@ -588,7 +588,8 @@ function maskDisplay(rawValue, value) {
 // Colour (Signal light edition): Dhristi's teal (#0a6b78, "verified on this device") draws the box,
 // with a 1px white ring outside it so it separates from any page, light or dark; the wash inside
 // is the teal tint at low alpha, never a dark scrim. The label chip is teal with white text
-// (6.2:1) and the same white ring.
+// (6.2:1) at 11px, the type floor for every Dhristi surface, and the same white ring. Teal, not
+// cobalt: these are tokens, and cobalt is reserved for the panel's primary action.
 //
 // Scope: a value split across several text nodes (e.g. half inside a <b>) is not boxed, and text
 // inside shadow roots or iframes is not visited, matching collectPiiFields()'s documented limits.
@@ -606,7 +607,7 @@ const OVERLAY_CSS = `
     position: absolute; left: -2px; bottom: 100%; margin-bottom: 2px;
     padding: 1px 5px; border-radius: 2px; white-space: nowrap;
     background: #0a6b78; color: #ffffff; box-shadow: 0 0 0 1px #ffffff;
-    font: 600 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font: 600 11px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     letter-spacing: 0.04em; text-transform: uppercase;
   }
   .box.below .chip { bottom: auto; top: 100%; margin: 2px 0 0; }

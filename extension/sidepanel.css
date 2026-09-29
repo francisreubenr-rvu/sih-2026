@@ -3,9 +3,18 @@
  *
  * Consumes extension/pixel.css for tokens, the cell module, the semantic chips and the stepped
  * motion. This file holds layout and component structure for the chat surface only; it does not
- * redefine a palette value or a motion token. See DESIGN.md for the measured palette and the
- * semantic mapping (cream structure, red personal data, amber a decision waiting on the user,
- * blue validated).
+ * redefine a palette value or a motion token. See DESIGN.md for the palette and the semantic
+ * mapping (cream structure, red personal data or stop, amber a decision waiting on the user,
+ * teal on this device or verified).
+ *
+ * Colour roles (design playbook, Color system steps 5-8 and 12):
+ * - Neutrals (~60%): the void/panel/panel-2/line grounds and the ink family. Text runs on three
+ *   emphasis tiers: --sg-text high, --sg-text-2 medium, --sg-text-3 low. Never all at full ink.
+ * - Teal (~30%): on this device, verified, tokens.
+ * - Cobalt (~10%, the accent): ONLY the one primary button per view (.btn-primary, #send, the
+ *   Retry of an open blocked card), its hover, and focus rings. Nothing else is cobalt, so the
+ *   one thing to do next is the one saturated fill on the panel.
+ * - Amber and brick are status, never decoration, and always sit beside a text label.
  *
  * Light only (Francis, 29 September 2026: no dark colour for any background). Grounds are the
  * cobalt-tinted neutrals (void, panel, panel-2); a hue fills a ground only as its own tint, with
@@ -111,8 +120,8 @@ body {
 .entry--user {
   justify-self: end;
   max-width: 88%;
-  border-color: color-mix(in srgb, var(--sg-glow) 30%, var(--sg-glow-tint));
-  background: var(--sg-glow-tint);
+  border-color: var(--sg-line);
+  background: var(--sg-panel-2);
   font-size: var(--text-md);
 }
 .entry--user .entry-text { text-align: right; }
@@ -172,12 +181,12 @@ body {
 }
 .entry--error .entry-title { color: var(--red-text); }
 
-/* validated: a destructive-tier or reasoned action was accepted. Blue. */
+/* validated: a destructive-tier or reasoned action was accepted. Teal, "verified here". */
 .entry--validated {
-  border-color: var(--blue);
-  background: var(--sg-glow-tint);
+  border-color: var(--teal);
+  background: var(--sg-scan-tint);
 }
-.entry--validated .entry-title { color: var(--blue-text); }
+.entry--validated .entry-title { color: var(--teal); }
 
 /* ---- Blocking cards: uncertain-pii and question -------------------------------
  * Amber, because amber means a decision is waiting on the user. They render inline in the
@@ -198,7 +207,7 @@ body {
   color: var(--amber);
 }
 /* The waiting chip blinks its ring, not its text: fading the text would drop it below AA. */
-.entry[data-pending="true"] .entry-title .pixel-chip { animation: chip-ring var(--dur-pulse) var(--step-2) infinite; }
+.entry[data-pending="true"] .entry-title .pixel-chip { animation: chip-ring var(--dur-pulse) var(--step-2) 3; }
 @keyframes chip-ring {
   0%, 49% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--amber) 35%, var(--sg-ask-tint)); }
   50%, 100% { box-shadow: none; }
@@ -210,8 +219,8 @@ body {
   display: flex; justify-content: space-between; gap: var(--cell); align-items: baseline;
   margin-bottom: 4px;
 }
-.item-label { font: 650 var(--text-md) var(--font-sans); overflow-wrap: anywhere; }
-.item-score { font: var(--text-xs) var(--font-mono); color: var(--amber); white-space: nowrap; }
+.item-label { font: 600 var(--text-md) var(--font-sans); overflow-wrap: anywhere; }
+.item-score { font: var(--text-xs) var(--font-mono); color: var(--sg-text-2); white-space: nowrap; }
 
 /* One strip/keep choice per span. The radio pair is the labelled control; the label is the hit
    area, at 44px, and :has(input:focus-visible) gives the ring to the label rather than to the
@@ -232,10 +241,20 @@ body {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+/* A radio drawn as a cell: an outline square at rest, a filled square once chosen, so the choice
+   reads without colour. Strip turns the value into a token that stays here, so it takes teal;
+   Keep is a plain neutral choice (ink on the raised neutral), not a status. */
 .choice-row label { background: var(--sg-panel); color: var(--sg-text); }
-.choice-row label:hover { background: var(--sg-panel-2); }
-.choice-row label:has(input:checked)[data-choice="strip"] { background: var(--sg-stop-tint); border-color: var(--red); color: var(--red-text); }
-.choice-row label:has(input:checked)[data-choice="keep"] { background: var(--sg-glow-tint); border-color: var(--blue); color: var(--blue-text); }
+.choice-row label::before {
+  content: ""; flex: none; box-sizing: border-box;
+  width: var(--cell); height: var(--cell);
+  border: 1px solid currentColor;
+}
+.choice-row label:has(input:checked)::before { border-width: 4px; }
+.choice-row label:hover { background: var(--sg-panel-2); border-color: var(--sg-text-2); }
+.choice-row label:has(input:checked)[data-choice="strip"] { background: var(--sg-scan-tint); border-color: var(--teal); color: var(--teal); box-shadow: inset 0 0 0 1px var(--teal); }
+.choice-row label:has(input:checked)[data-choice="keep"] { background: var(--sg-panel-2); border-color: var(--sg-text); color: var(--sg-text); box-shadow: inset 0 0 0 1px var(--sg-text); }
+.choice-row label:has(input:checked):hover { box-shadow: inset 0 0 0 2px currentColor; }
 .choice-row label:has(input:focus-visible) { outline: 2px solid var(--sg-glow-text); outline-offset: 2px; }
 
 /* A decided item, after the run moved on: the decision stays visible, the controls do not. */
@@ -247,12 +266,25 @@ body {
 }
 
 .question-reasons { margin: 0 0 var(--cell-2); padding-left: var(--cell-2); font: var(--text-sm) / 1.5 var(--font-mono); color: var(--sg-text-2); }
-.option-stack { display: grid; gap: var(--cell); margin-top: var(--cell); }
-.option-stack button { width: 100%; background: var(--sg-panel); border-color: var(--sg-line-strong); color: var(--sg-text); }
-/* Secondary buttons in the light edition: white ground, the hue's shade as text and outline; hover
-   fills with that same hue's tint. Only #send is a solid cobalt fill. */
-.option-stack button[data-choice="proceed"] { border-color: var(--blue); background: var(--sg-panel); color: var(--blue-text); }
-.option-stack button[data-choice="proceed"]:hover:not(:disabled) { background: var(--sg-glow-tint); color: var(--blue-text); border-color: var(--blue); }
+/* The question itself is the card's top-ranked block: sans, one size up, full ink. The label row
+   above it and the reasons below it are quieter by size and by ink tier. */
+.entry--question .entry-text { font: 500 var(--text-md) / 1.45 var(--font-sans); color: var(--sg-text); }
+
+/* Card actions: a white footer strip across the foot of a card. The cobalt primary never sits
+   straight on another hue's tint (amber or brick): the neutral strip is the gap between them
+   (DESIGN.md, shade and tint per hue). The primary spans the row; the secondaries share one row
+   below it, one step quieter. */
+.card-actions {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--cell);
+  margin: var(--cell-2) calc(-1 * var(--cell-2)) calc(-1 * var(--cell-2));
+  padding: 12px var(--cell-2) var(--cell-2);
+  border-top: 1px solid var(--sg-line);
+  background: var(--sg-panel);
+}
+.card-actions > button { width: 100%; min-width: 0; padding-inline: 8px; white-space: normal; }
+.card-actions > .btn-primary,
+.card-actions > button:only-child { grid-column: 1 / -1; }
+.option-stack button { background: var(--sg-panel); border-color: var(--sg-line-strong); color: var(--sg-text); }
 .option-stack button[data-choice="stop"] { border-color: var(--red); background: var(--sg-panel); color: var(--red-text); }
 .option-stack button[data-choice="stop"]:hover:not(:disabled) { background: var(--sg-stop-tint); color: var(--red-text); border-color: var(--red); }
 
@@ -266,7 +298,7 @@ body {
 .command {
   margin: var(--cell) 0 0;
   padding: var(--cell);
-  border: 1px solid color-mix(in srgb, var(--amber) 45%, var(--sg-ask-tint));
+  border: 1px solid var(--sg-line-strong);
   background: var(--sg-panel);
   color: var(--cream);
   font: var(--text-xs) / 1.5 var(--font-mono);
@@ -284,11 +316,16 @@ body {
 }
 .field-label {
   display: block; margin-bottom: var(--cell);
-  color: var(--sg-text-2);
-  font: var(--text-xs) var(--font-mono); letter-spacing: .07em; text-transform: uppercase;
+  color: var(--sg-text);
+  font: 600 var(--text-base) / 1.3 var(--font-sans);
 }
 .composer-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--cell); align-items: start; }
 .composer-actions { display: grid; gap: var(--cell); }
+/* While a run is live (#send hidden, Stop in its place) the composer is not the view's job: the
+   run, and any decision card it raises, is. De-emphasise it by giving back its height, not by
+   hiding it: the box keeps its label and still takes a draft of the next task. */
+.composer:has(#send[hidden]) textarea { min-height: 44px; height: 44px; }
+.composer:has(#send[hidden]) > .note { display: none; }
 
 /* ---- Controls -----------------------------------------------------------------
  * Every control is at least 44px on its smallest dimension (DESIGN.md standing rule; finding
@@ -313,7 +350,7 @@ button {
   border-radius: var(--sg-radius);
   color: var(--cream);
   background: var(--ground);
-  font: 650 var(--text-base) var(--font-sans);
+  font: 600 var(--text-base) var(--font-sans);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--step-4), color var(--dur-fast) var(--step-4);
 }
@@ -368,7 +405,7 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
   border: 1px solid currentColor;
 }
 .diagnostics[open] > summary::before { border-width: 4px; } /* filled cell drawn as ink */
-.diagnostics > summary:hover { color: var(--sg-text); }
+.diagnostics > summary:hover { color: var(--sg-text); background: var(--sg-panel-2); }
 .diag-block { padding: var(--cell-2); border-top: 1px solid var(--sg-line); min-width: 0; }
 .diag-block h2 {
   margin: 0 0 6px;
@@ -376,7 +413,7 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
   font: var(--text-xs) var(--font-mono); letter-spacing: .07em; text-transform: uppercase;
 }
 .diag-block .note:first-of-type { margin-top: 0; }
-.diag-meta { margin: var(--cell) 0 0; color: var(--amber); font: var(--text-2xs) var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+.diag-meta { margin: var(--cell) 0 0; color: var(--sg-text-2); font: var(--text-2xs) var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
 .body-wrap { max-width: 100%; overflow-x: auto; margin-top: 6px; }
 .diag-body {
   margin: 0;
@@ -404,7 +441,7 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
 }
 .health-detail > div { display: flex; justify-content: space-between; gap: var(--cell); min-width: 0; }
 .health-detail dt { margin: 0; color: var(--sg-text-3); font: var(--text-xs) var(--font-mono); }
-.health-detail dd { margin: 0; color: var(--cream); font: 650 var(--text-xs) var(--font-mono); text-align: right; overflow-wrap: anywhere; }
+.health-detail dd { margin: 0; color: var(--cream); font: 600 var(--text-xs) var(--font-mono); text-align: right; overflow-wrap: anywhere; }
 
 /* ---- Narrow panel ---------------------------------------------------------------
  * Chrome can shrink a side panel to roughly 320px. The composer's action column stays at its
@@ -415,8 +452,11 @@ code { font: var(--text-xs) var(--font-mono); color: var(--cream); }
   .choice-row { flex-direction: column; }
 }
 
+/* Reduced motion: every animation and transition is removed outright, not shortened. A .01ms
+   duration on an iteration-counted loop still flickers through its frames. */
 @media (prefers-reduced-motion: reduce) {
-  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  button:active:not(:disabled) { transform: none; }
 }
 
 /* ==========================================================================
@@ -431,16 +471,15 @@ body { background: var(--sg-void); color: var(--sg-text); }
 .transcript-wrap,
 .composer,
 .diagnostics { background: var(--sg-panel); border-color: var(--sg-line); border-radius: var(--sg-radius); }
-/* The dark edition's cobalt bloom becomes a faint cobalt-tint halo behind the mark: same hue,
-   lifted to its tint, so it reads as light falling on paper rather than a glow in the dark. */
-.topbar {
-  background:
-    radial-gradient(90% 160% at 0% 0%, var(--sg-glow-tint), transparent 58%),
-    var(--sg-panel);
-}
+/* The topbar is plain white: the cobalt-tint halo that sat behind the mark was decoration in the
+   accent hue, and the accent is reserved for the primary action. */
+.topbar { background: var(--sg-panel); }
 .brand-mark { display: block; width: 22px; height: 22px; }
-.brand-title { font: 600 var(--text-md) var(--sg-font-sans); letter-spacing: -.01em; }
-.brand-sub { font: var(--text-2xs) var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--sg-text-3); }
+/* The one H1, and the one place the display serif appears: the heading font carries the brand's
+   character, Geist carries every sentence, Geist Mono every label (three families, playbook
+   Typography step 4). Sized as a mark, not a headline: the task input is the first read. */
+.brand-title { font: 400 22px / 1 var(--sg-font-serif); letter-spacing: 0; }
+.brand-sub { font: var(--text-2xs) var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--sg-text-3); }
 /* The dark edition's dot grid read as dust on a light ground, so the conversation sits on the
    plain void: the one recessed plane, with white cards raised from it by a hairline. */
 .transcript-wrap { background: var(--sg-void); }
@@ -451,41 +490,79 @@ body { background: var(--sg-void); color: var(--sg-text); }
 .entry--blocked { background: var(--sg-stop-tint); border-color: color-mix(in srgb, var(--sg-stop) 55%, var(--sg-stop-tint)); }
 .entry--blocked[data-resolved="true"] { background: var(--sg-panel); border-color: var(--sg-line); }
 .entry--error { background: var(--sg-panel); border-color: var(--sg-stop); }
-.entry--validated { background: var(--sg-glow-tint); border-color: color-mix(in srgb, var(--sg-glow) 45%, var(--sg-glow-tint)); }
+.entry--validated { background: var(--sg-scan-tint); border-color: color-mix(in srgb, var(--sg-scan) 55%, var(--sg-scan-tint)); }
 .entry[data-pending="true"] { outline: 2px solid color-mix(in srgb, var(--sg-ask) 40%, var(--sg-ask-tint)); outline-offset: 2px; }
 .entry--stage,
 .entry--activity { background: transparent; border-color: transparent; }
-.entry--stage { border-left-color: color-mix(in srgb, var(--sg-glow) 40%, var(--sg-panel)); }
-.entry--stage .entry-cell { border-color: var(--sg-glow-text); }
-.entry--stage .stage-name { color: var(--sg-glow-text); }
+.entry--stage { border-left-color: var(--sg-line-strong); }
+.entry--stage .entry-cell { border-color: var(--sg-text-3); }
+.entry--stage .stage-name { color: var(--sg-text-2); font-weight: 500; }
+.entry--stage .stage-value { color: var(--sg-text-3); }
 .entry--activity { border-left-color: var(--sg-line-strong); }
-.entry--user { background: var(--sg-glow-tint); border-color: color-mix(in srgb, var(--sg-glow) 30%, var(--sg-glow-tint)); }
+.entry--user { background: var(--sg-panel-2); border-color: var(--sg-line); }
 textarea,
 input[type="text"] { background: var(--sg-panel); border-color: var(--sg-line-strong); }
+textarea:hover,
+input[type="text"]:hover { border-color: var(--sg-text-2); }
+/* Focus on a text field is a focus indicator, so it may take the accent. */
 textarea:focus,
 input[type="text"]:focus { border-color: var(--sg-glow-text); }
-/* Secondary button: white, cobalt text, cobalt outline; hover lifts to the cobalt tint. */
-button { border-color: var(--sg-glow); background: var(--sg-panel); color: var(--sg-glow-text); font-weight: 500; }
-button:hover:not(:disabled) { background: var(--sg-glow-tint); color: var(--sg-glow-text); border-color: var(--sg-glow); }
+
+/* Secondary button: white, ink label, the 3:1 control outline, so it reads as a button with no
+   hover at all. Hover raises the ground one neutral step and darkens the outline to ink-2. */
+button { border-color: var(--sg-line-strong); background: var(--sg-panel); color: var(--sg-text); font-weight: 500; }
+button:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: var(--sg-text-2); }
 button.stop:hover:not(:disabled) { background: var(--sg-stop-tint); color: var(--red-text); border-color: var(--red); }
 button:disabled,
 button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-line); color: var(--sg-text-3); }
-/* Primary button: the one solid cobalt fill on the panel, white text (8.2:1). Hover deepens the
-   same hue a step instead of switching to a neutral. */
-#send { background: var(--sg-glow); border-color: var(--sg-glow); color: var(--sg-on-glow); }
-#send:hover:not(:disabled) { background: color-mix(in srgb, var(--sg-glow) 84%, var(--sg-text)); border-color: color-mix(in srgb, var(--sg-glow) 84%, var(--sg-text)); color: var(--sg-on-glow); }
-#send:disabled { background: var(--sg-panel-2); border-color: var(--sg-line); color: var(--sg-text-3); }
-.field-label { color: var(--sg-text-2); }
+
+/* Primary button: the one solid cobalt fill in a view, white label (8.2:1), weight 600. Hover
+   deepens the same hue a step instead of switching to a neutral. Exactly one is shown per view:
+   - no card open: #send (the composer is the view's job);
+   - a decision card pending: the card's own primary (.btn-primary); the run is live then, so
+     #send is hidden and Stop stands in its place;
+   - an open blocked card: its "Check the Warden again", and #send drops to a secondary. */
+#send,
+button.btn-primary,
+.entry--blocked button[data-action="retry-health"] {
+  background: var(--sg-glow); border-color: var(--sg-glow); color: var(--sg-on-glow); font-weight: 600;
+}
+#send:hover:not(:disabled),
+button.btn-primary:hover:not(:disabled),
+.entry--blocked button[data-action="retry-health"]:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--sg-glow) 84%, var(--sg-text));
+  border-color: color-mix(in srgb, var(--sg-glow) 84%, var(--sg-text));
+  color: var(--sg-on-glow);
+}
+/* The primary at rest before it can act (#send with an empty task box): the accent's own tint
+   with a hairline of the hue, so the place of the next action is visible, clearly not yet live.
+   Disabled controls are exempt from contrast minimums (WCAG 1.4.3); the label still reads at 3:1. */
+#send:disabled,
+button.btn-primary:disabled {
+  background: var(--sg-glow-tint);
+  border-color: color-mix(in srgb, var(--sg-glow) 30%, var(--sg-glow-tint));
+  color: color-mix(in srgb, var(--sg-glow) 62%, var(--sg-glow-tint));
+}
+/* De-emphasise before emphasising: while an open blocked card offers the retry, Send is a plain
+   secondary (and at rest a plain disabled control), so the view keeps one primary. */
+body:has(.entry--blocked [data-action="retry-health"]) #send:not(:hover),
+body:has(.entry--blocked [data-action="retry-health"]) #send:disabled {
+  background: var(--sg-panel); border-color: var(--sg-line-strong); color: var(--sg-text); font-weight: 500;
+}
+body:has(.entry--blocked [data-action="retry-health"]) #send:disabled { background: var(--sg-panel-2); border-color: var(--sg-line); color: var(--sg-text-3); }
+body:has(.entry--blocked [data-action="retry-health"]) #send:hover:not(:disabled) { background: var(--sg-panel-2); border-color: var(--sg-text-2); color: var(--sg-text); }
 .note,
 .key-status { color: var(--sg-text-3); opacity: 1; }
 #health-text { color: var(--sg-text-2); opacity: 1; }
-.diagnostics > summary { background: var(--sg-panel); }
+.diagnostics > summary { background: var(--sg-panel); color: var(--sg-text-2); }
+.diagnostics > summary:hover { background: var(--sg-panel-2); color: var(--sg-text); }
 
 /* ==========================================================================
    v5: the Boundary, the step inspector and the empty state
    (Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md)
-   Cyan is on-device and verified, indigo is work in progress, amber waits on a
-   person, red is personal data or a stop. Every state also carries text.
+   Teal is on-device, verified and tokens; ink marks the running stage; amber
+   waits on a person; brick is personal data, a stop or a failure. Every state
+   also carries text. Cobalt appears here only as a focus ring.
    ========================================================================== */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
@@ -547,12 +624,14 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   position: relative;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: 58px 18px 58px;
+  /* Lanes size to their content, from a 44px floor: an idle route (names and status only) stays
+     short and gives the room to the conversation; a measured step grows to two lines of detail. */
+  grid-template-rows: minmax(44px, auto) 18px minmax(44px, auto);
   column-gap: 5px;
   min-width: 0;
 }
 .lanes[data-destination="local"],
-.lanes[data-destination="unknown"] { grid-template-rows: 58px 18px 24px; }
+.lanes[data-destination="unknown"] { grid-template-rows: minmax(44px, auto) 18px 24px; }
 .lanes-decor,
 .nodes {
   grid-column: 1 / -1; grid-row: 1 / -1;
@@ -607,8 +686,8 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
 .lanes[data-destination="cloud"] .drop {
   display: block;
   grid-row: 1 / 4; grid-column: 3; justify-self: center;
-  width: 0; margin: 29px 0;
-  border-left: 1px dashed var(--sg-glow-text);
+  width: 0; margin: 22px 0;
+  border-left: 1px dashed var(--sg-scan); /* only tokens cross: the token hue */
 }
 .cross {
   grid-row: 1; grid-column: 3;
@@ -616,7 +695,7 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   justify-self: center;
   padding: 0 3px;
   background: var(--band-device);
-  color: var(--sg-glow-text);
+  color: var(--sg-scan);
   font: var(--text-2xs) / 1.3 var(--font-mono);
   letter-spacing: .02em;
   white-space: nowrap;
@@ -667,25 +746,26 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   overflow: hidden;
   border: 1px solid var(--sg-line-strong);
   border-radius: var(--sg-radius);
-  background: var(--sg-panel-2);
+  background: var(--sg-panel);
   color: var(--sg-text);
   text-align: left;
-  font: var(--text-2xs) / 1.35 var(--font-mono);
-  transition: border-color var(--dur-fast) var(--step-2);
+  font: var(--text-2xs) / 1.3 var(--font-sans);
+  font-weight: 400;
+  transition: border-color var(--dur-fast) var(--step-2), background-color var(--dur-fast) var(--step-2);
 }
-.node:hover:not(:disabled) { background: var(--sg-glow-tint); color: var(--sg-text); border-color: var(--sg-glow); }
+/* Hover is a neutral lift (never the accent): the node is a way in to the inspector, not the
+   view's primary action. */
+.node:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: var(--sg-text-2); }
 .node > span { display: block; max-width: 100%; min-width: 0; }
+/* Stage name in the sans at weight 600 (not mono caps): it fits a 52px column at the 11px floor. */
 .node-name {
-  font: 500 var(--text-xs) / 1.3 var(--font-mono);
-  letter-spacing: .04em;
-  text-transform: uppercase;
+  font: 600 var(--text-sm) / 1.3 var(--font-sans);
+  color: var(--sg-text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .node-status {
   display: flex !important; align-items: center; gap: 4px;
   color: var(--sg-text-3);
-  letter-spacing: .06em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 .node-glyph {
@@ -705,31 +785,23 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   -webkit-line-clamp: 2;
   width: 100%;
   overflow: hidden;
-  color: var(--sg-text-2);
-  font: var(--text-xs) / 1.3 var(--font-sans);
+  color: var(--sg-text-3);
+  font: var(--text-xs) / 1.25 var(--font-sans);
   overflow-wrap: anywhere;
 }
 .node-ms { color: var(--sg-text-2); font: var(--text-2xs) var(--font-mono); }
 .node-ms:not(:empty) + .node-detail:not(:empty)::before { content: " · "; color: var(--sg-text-3); }
+/* The running stage leads by value, not by hue: a full-ink outline doubled to 2px (an inset line,
+   so the grid does not shift) and full-ink status text, while idle stages sit at ink-3. The glyph
+   beats five times and then rests filled; "Active" in text carries the state from there. The
+   looping scan bar that used to run along the node's foot was decoration and is gone. */
 .node[data-status="active"] {
-  border-color: var(--sg-glow-text);
-  background: var(--sg-glow-tint);
+  border-color: var(--sg-text);
+  box-shadow: inset 0 0 0 1px var(--sg-text);
+  background: var(--sg-panel);
 }
-.node[data-status="active"] .node-status { color: var(--sg-glow-text); }
-.node[data-status="active"] .node-glyph { animation: pixel-pulse var(--dur-pulse) var(--step-2) infinite; }
-/* The stepped scan along the foot of the running node: four hard jumps, no easing. */
-.node[data-status="active"]::after {
-  content: "";
-  position: absolute; left: 0; bottom: 0;
-  height: 2px; width: 100%;
-  background: var(--sg-glow-text);
-  transform-origin: left;
-  animation: node-scan var(--dur-slow) var(--step-4) infinite;
-}
-@keyframes node-scan {
-  0% { transform: scaleX(.25); }
-  100% { transform: scaleX(1); }
-}
+.node[data-status="active"] .node-status { color: var(--sg-text); font-weight: 600; }
+.node[data-status="active"] .node-glyph { animation: pixel-pulse var(--dur-pulse) var(--step-2) 5; }
 .node[data-status="done"] { border-color: color-mix(in srgb, var(--sg-scan) 55%, var(--sg-line)); background: var(--sg-panel); }
 .node[data-status="done"] .node-status { color: var(--sg-scan); }
 /* Cyan means verified on this device. The cloud's Plan node finishing is not that, so it stays
@@ -740,10 +812,19 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   border-color: var(--sg-stop);
   background: var(--sg-stop-tint);
 }
-.node[data-status="error"] .node-status { color: var(--sg-stop); }
+.node[data-status="error"] .node-status { color: var(--sg-stop); font-weight: 600; }
 .node[data-status="error"] .node-glyph { transform: rotate(45deg); }
 .node[data-status="skipped"] { border-style: dashed; background: var(--sg-panel); }
 .node[data-status="skipped"] .node-glyph { border-style: dashed; }
+/* Hover on every node state, written at a specificity that outranks each state rule above: the
+   ground lifts one neutral step and the state's own outline is kept, so hovering never erases
+   what the node reports. A failed node lifts within its own brick tint. */
+/* While a decision card waits, the route drops to names and states: the timings and details are
+   one rank below the decision and stay one click away in the inspector. */
+body:has(.entry[data-pending="true"]) .node-meta { display: none !important; }
+.lanes .nodes .node-slot .node[data-status]:hover:not(:disabled) { background: var(--sg-panel-2); }
+.lanes .nodes .node-slot .node[data-status="idle"]:hover:not(:disabled) { border-color: var(--sg-text-2); }
+.lanes .nodes .node-slot .node[data-status="error"]:hover:not(:disabled) { background: color-mix(in srgb, var(--sg-stop-tint) 90%, var(--sg-stop)); }
 
 /* ---- Inspector ------------------------------------------------------------- */
 .inspector-wrap { min-width: 0; }
@@ -757,15 +838,15 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
 .inspector > summary {
   display: flex; align-items: center; gap: 8px;
   position: sticky; top: 0; z-index: 2;
-  min-height: 40px;
+  min-height: 44px;
   padding: 4px 12px;
   cursor: pointer;
   list-style: none;
   background: var(--sg-panel);
   font: var(--text-2xs) var(--font-mono);
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  letter-spacing: .06em;
 }
+.inspector > summary:hover { background: var(--sg-panel-2); }
 .inspector > summary::-webkit-details-marker { display: none; }
 .inspector > summary::before {
   content: "";
@@ -776,31 +857,35 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   border-bottom: 4px solid transparent;
 }
 .inspector[open] > summary::before { transform: rotate(90deg); }
-.inspector-summary-title { color: var(--sg-text); }
+.inspector-summary-title { flex: none; color: var(--sg-text); font: 600 var(--text-base) var(--font-sans); letter-spacing: 0; white-space: nowrap; }
 .inspector-summary-meta { color: var(--sg-text-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .inspector > summary:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: -2px; }
 
 .tabs {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  position: sticky; top: 40px; z-index: 2;
+  position: sticky; top: 44px; z-index: 2;
   border-top: 1px solid var(--sg-line);
   border-bottom: 1px solid var(--sg-line);
   background: var(--sg-panel);
 }
+/* Tabs read as tabs with no hover: unselected tabs sit on the raised neutral with a hairline
+   between them; the selected one opens onto the white panel with a 2px ink underline. */
 .tabs [role="tab"] {
   min-width: 0; min-height: 44px;
   padding: 4px 2px;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-left: 1px solid var(--sg-line);
+  border-bottom: 2px solid var(--sg-line);
   border-radius: 0;
-  background: transparent;
-  color: var(--sg-text-3);
-  font: 500 var(--text-xs) / 1.2 var(--font-mono);
-  letter-spacing: .04em;
-  text-transform: uppercase;
+  background: var(--sg-panel-2);
+  color: var(--sg-text-2);
+  font: 500 var(--text-xs) / 1.2 var(--font-sans);
+  letter-spacing: 0;
 }
-.tabs [role="tab"]:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: transparent; border-bottom-color: var(--sg-line-strong); }
-.tabs [role="tab"][aria-selected="true"] { color: var(--sg-text); border-bottom-color: var(--sg-glow-text); }
+.tabs [role="tab"]:first-child { border-left: 0; }
+.tabs [role="tab"]:hover:not(:disabled) { background: var(--sg-line); color: var(--sg-text); border-color: var(--sg-line); border-bottom-color: var(--sg-text-2); }
+.tabs [role="tab"][aria-selected="true"],
+.tabs [role="tab"][aria-selected="true"]:hover:not(:disabled) { background: var(--sg-panel); color: var(--sg-text); font-weight: 600; border-bottom-color: var(--sg-text); }
 .tabs [role="tab"]:focus-visible { outline-offset: -2px; }
 .tab-panel { padding: 10px 12px 12px; min-width: 0; }
 .tab-panel:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: -2px; }
@@ -814,7 +899,7 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
 .tab-panel .note { margin-top: 6px; }
 .mini-head {
   margin: 10px 0 4px;
-  color: var(--sg-scan);
+  color: var(--sg-text-2);
   font: 500 var(--text-2xs) var(--font-mono);
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -858,10 +943,8 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   padding: 4px 10px;
   border-color: var(--sg-line-strong);
   background: var(--sg-panel);
-  color: var(--sg-text-2);
-  font: 500 var(--text-xs) var(--font-mono);
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  color: var(--sg-text);
+  font: 500 var(--text-sm) var(--font-sans);
 }
 .tab-panel .body-wrap .diag-body { max-height: 260px; }
 
@@ -949,16 +1032,16 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
 .empty-state[hidden] { display: none; }
 .empty-label {
   margin: 0;
-  color: var(--sg-scan);
+  color: var(--sg-text-3);
   font: 500 var(--text-2xs) var(--font-mono);
-  letter-spacing: .12em;
+  letter-spacing: .1em;
   text-transform: uppercase;
 }
 .empty-steps { margin: 0 0 6px; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 6px; }
 .empty-steps li {
   counter-increment: step;
   display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px;
-  color: var(--sg-text);
+  color: var(--sg-text-2);
   font: var(--text-sm) / 1.5 var(--sg-font-sans);
 }
 .empty-steps li::before {
@@ -971,27 +1054,27 @@ button:disabled:hover { background: var(--sg-panel-2); border-color: var(--sg-li
   width: 100%;
   text-align: left;
   padding: 8px 12px;
-  border-color: var(--sg-line);
+  border-color: var(--sg-line-strong);
   background: var(--sg-panel);
   color: var(--sg-text);
   font: 400 var(--text-sm) / 1.4 var(--sg-font-sans);
 }
-.example::before { content: "↳ "; color: var(--sg-glow-text); }
-.example:hover:not(:disabled) { background: var(--sg-glow-tint); color: var(--sg-text); border-color: var(--sg-glow); }
+.example::before { content: "↳ "; color: var(--sg-text-3); }
+.example:hover:not(:disabled) { background: var(--sg-panel-2); color: var(--sg-text); border-color: var(--sg-text-2); }
 
 .diagnostics-wrap { min-width: 0; }
 
 @media (max-width: 360px) {
-  .lanes { column-gap: 3px; }
-  .node { padding: 4px 2px 3px 4px; }
-  .node-name { font-size: var(--text-2xs); letter-spacing: 0; }
-  .node-status { letter-spacing: 0; gap: 3px; }
+  .boundary { padding: 6px 4px; }
+  .lanes { column-gap: 2px; }
+  .node { padding: 4px 1px 3px 3px; }
+  .node-name { font-size: var(--text-2xs); }
+  .node-status { gap: 2px; }
   .node-glyph { width: 5px; height: 5px; }
   .brand-sub { display: none; }
   .tabs [role="tab"] { letter-spacing: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .node[data-status="active"] .node-glyph,
-  .node[data-status="active"]::after { animation: none !important; }
+  .node[data-status="active"] .node-glyph { animation: none !important; }
 }
