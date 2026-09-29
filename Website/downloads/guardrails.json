@@ -212,7 +212,15 @@
         "Benchmarks/results/demo-rehearsal.json"
       ],
       "status": "unknown",
-      "reason": "Docs/demo-rehearsal-checklist.md + demo-fallback.webm + demo-rehearsal.json exist. 3 consecutive live rehearsals from reset not logged \u2014 status stays unknown."
+      "reason": "Reset from a hand-set pass (7331778). The three consecutive box rehearsals (g14-box-05..07) ran on 996e40b, not on the current tree; the capture path has changed since, and Docs/demo-fallback.webm dates from 10 September and shows a different surface. Acceptance requires the tested version to match. Needs three consecutive rehearsals from reset and a fallback recorded on the current build before this can pass.",
+      "evidence_refs": [
+        "Benchmarks/results/demo-rehearsal.json",
+        "Benchmarks/results/g14-box-05/",
+        "Benchmarks/results/g14-box-06/",
+        "Benchmarks/results/g14-box-07/",
+        "Docs/demo-fallback.webm",
+        "Docs/decisions/brain-fix-ort-sandbox.md"
+      ]
     },
     {
       "id": "G15",
@@ -294,7 +302,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Docs/human-evaluation-protocol.md + Docs/human-evaluation-forms.md + human-evaluation.json publish templates with zero non-author participants \u2014 status stays unknown."
+      "reason": "Recruitment paused by Francis (2026-09-15). Docs/human-evaluation-protocol.md + forms + human-evaluation.json retain templates with zero non-author participants \u2014 status stays unknown; do not claim active recruiting or G20 pass."
     }
   ],
   "iteration_policy": {

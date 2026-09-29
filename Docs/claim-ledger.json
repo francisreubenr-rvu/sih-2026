@@ -112,10 +112,10 @@
     },
     {
       "id": "site-wave5-7-g14-promotion",
-      "claim": "GitHub Pages latest-evidence section promotes Wave 5\u20137 + G14 pass ahead of Wave 4 archive cards; Wave footer copy no longer claims G14 unknown against the live ledger.",
+      "claim": "GitHub Pages latest-evidence section promotes Wave 5\u20137 ahead of Wave 4 archive cards. Since 2026-09-29 the site shows G14 as unknown, matching the ledger.",
       "type": "site_copy",
       "source": "Website/index.html; Guardrails/guardrails.json",
-      "limit": "Pages deploy follows merge; treat guardrails.json as live gate board. The site copy still says G14 pass; G14 is unknown as of 2026-09-29 and the copy needs correcting."
+      "limit": "Pages deploy follows merge; treat guardrails.json as live gate board. Site copy and Website/downloads/guardrails.json corrected to G14 unknown on 2026-09-29."
     },
     {
       "id": "g20-recruitment-paused",
