@@ -1516,9 +1516,19 @@ def test_fast_path_options_cover_clicks_token_types_finish_and_escape():
     assert set(opts) == {"type #email EMAIL#1", "click #save", "finish", fastpath.ESCAPE}
 
 
+def test_compact_options_are_short_distinct_and_map_back_to_actions():
+    table = fastpath.option_table(_FP_BODY, compact=True)
+    assert [k for k, _, _ in table] == ["o1", "o2", "o3", "o4"]
+    assert {a for _, a, _ in table} == {"type #email EMAIL#1", "click #save", "finish", fastpath.ESCAPE}
+    descs = [d for _, _, d in table]
+    assert len(set(descs)) == len(descs)
+    assert descs[0].startswith('"Contact email"')  # the label comes first, so truncation keeps it
+
+
 @pytest.mark.parametrize("backend,destination", [("jev", "cloud"), ("laya", "local")])
 def test_fast_path_answer_replaces_the_llm_call(monkeypatch, backend, destination):
-    calls = _fp_env(monkeypatch, backend, _fp_answers("type #email EMAIL#1"))
+    keys = {action: key for key, action, _ in fastpath.option_table(_FP_BODY, compact=backend == "laya")}
+    calls = _fp_env(monkeypatch, backend, _fp_answers(keys["type #email EMAIL#1"]))
     result = warden_app.dispatch_plan(dict(_FP_BODY))
     assert calls["groq"] == 0 and calls["fast"] == 1
     assert result["plan"] == {"action": "type", "target_selector": "#email", "coordinates": {"x": 10, "y": 20},

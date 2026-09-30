@@ -45,12 +45,14 @@ def items_from(path, tok, cfg):
     for line in open(path):
         row = json.loads(line)
         body, gold = row["body"], row["gold"]
-        state, qs = fastpath.state_for(body), fastpath.questions(body)
+        # Compact keys, exactly as the Warden asks Laya at run time (fastpath.option_table).
+        state, qs = fastpath.state_for(body), fastpath.questions(body, compact=True)
+        to_action = {key: action for key, action, _ in fastpath.option_table(body, compact=True)}
         for qid, q in qs.items():
             t = q["type"]
             crit = q.get("criteria", {})
             if t == "choice":
-                target = [gold[qid][k] for k in crit]
+                target = [gold[qid][to_action[k]] for k in crit]
             else:
                 target = [gold[qid]["false"], gold[qid]["true"]]
             s = sum(target)

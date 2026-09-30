@@ -75,10 +75,17 @@ def task_tokens(tokenized_task: str) -> list:
     return sorted(set(_TOKEN_RE.findall(tokenized_task or "")))
 
 
-def options(body: dict) -> dict:
-    """Option key -> plain-language description, for every action the scene allows."""
+def option_table(body: dict, compact: bool = False) -> list:
+    """[(key, action, description)] for every action the scene allows.
+
+    `action` is the plan string ("click #save", "type #email EMAIL#1", "finish", ESCAPE). The
+    default key is the action itself, as Jev was measured with. compact=True (Laya) uses short
+    keys and puts the field label first: Laya gives each option only the first few tokens of
+    "key: description" (median 12 on these scenes), and long keys cut the label off, so several
+    options rendered identically (61 of 200 training steps on 30 September 2026).
+    """
     tokens = task_tokens(body.get("tokenizedTask") or "")
-    opts = {}
+    rows = []
     for el in body.get("elements") or []:
         sel = el.get("selector")
         if not isinstance(sel, str) or not sel:
@@ -86,14 +93,28 @@ def options(body: dict) -> dict:
         kind = str(el.get("fieldType") or "").lower()
         label = str(el.get("label") or "").strip()[:80]
         if kind in CLICKABLE:
-            opts[f"click {sel}"] = f'Click the {kind} "{label}"'
+            desc = f'click "{label}"' if compact else f'Click the {kind} "{label}"'
+            rows.append((f"click {sel}", desc))
         else:
             state = "already filled" if el.get("filled") else "empty"
             for tok in tokens:
-                opts[f"type {sel} {tok}"] = f'Type {tok} into the {kind or "text"} field "{label}" ({state})'
-    opts["finish"] = "The task is complete; nothing is left to do"
-    opts[ESCAPE] = "None of these: the next step needs something not listed here"
-    return opts
+                desc = (f'"{label}" gets {tok}' + (" (filled)" if el.get("filled") else "")) if compact \
+                    else f'Type {tok} into the {kind or "text"} field "{label}" ({state})'
+                rows.append((f"type {sel} {tok}", desc))
+    rows.append(("finish", "finish: the task is done" if compact else "The task is complete; nothing is left to do"))
+    rows.append((ESCAPE, "none of these" if compact else "None of these: the next step needs something not listed here"))
+    seen, table = set(), []
+    for i, (action, desc) in enumerate(rows):
+        if action in seen:
+            continue
+        seen.add(action)
+        table.append((f"o{len(table) + 1}" if compact else action, action, desc))
+    return table
+
+
+def options(body: dict, compact: bool = False) -> dict:
+    """Option key -> description, for every action the scene allows."""
+    return {key: desc for key, _, desc in option_table(body, compact)}
 
 
 def state_for(body: dict) -> dict:
@@ -112,9 +133,9 @@ def state_for(body: dict) -> dict:
     }
 
 
-def questions(body: dict) -> dict:
+def questions(body: dict, compact: bool = False) -> dict:
     return {
-        "next": {"type": "choice", "instructions": QUESTION_NEXT, "criteria": options(body)},
+        "next": {"type": "choice", "instructions": QUESTION_NEXT, "criteria": options(body, compact)},
         "free_text": {"type": "noul", "instructions": QUESTION_FREE_TEXT},
     }
 
@@ -182,17 +203,21 @@ def decide(body: dict, backend: Optional[str] = None) -> dict:
     if ask is None:
         raise FastPathError(f"unknown fast path backend {backend!r}")
     elements = body.get("elements") or []
-    qs = questions(body)
+    compact = backend == "laya"
+    table = option_table(body, compact)
+    to_action = {key: action for key, action, _ in table}
+    qs = questions(body, compact)
     t0 = time.monotonic()
     answers, model = ask(state_for(body), qs)
     latency = round((time.monotonic() - t0) * 1000.0, 1)
 
     nxt = answers.get("next") or {}
-    choice = nxt.get("choice")
+    key = nxt.get("choice")
     probs = nxt.get("probabilities") or {}
-    confidence = probs.get(choice)
+    confidence = probs.get(key)
     if not isinstance(confidence, (int, float)):
         confidence = nxt.get("answer_confidence", nxt.get("confidence"))
+    choice = to_action.get(key, key)
     free_p = (answers.get("free_text") or {}).get("noul")
     record = {
         "backend": backend,
@@ -204,7 +229,7 @@ def decide(body: dict, backend: Optional[str] = None) -> dict:
         "latencyMs": latency,
     }
 
-    if choice not in qs["next"]["criteria"]:
+    if key not in qs["next"]["criteria"]:
         return {**record, "used": False, "reason": "answer outside the offered options"}
     if choice == ESCAPE:
         return {**record, "used": False, "reason": "model chose none of these"}
