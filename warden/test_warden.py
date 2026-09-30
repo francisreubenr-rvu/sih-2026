@@ -1453,3 +1453,106 @@ def test_address_form_field_names_are_descriptors_not_values(value):
 @pytest.mark.parametrize("value", ["Priya Raghunathan", "Bengaluru", "560001"])
 def test_real_values_are_not_descriptors(value):
     assert not entities._is_structural_descriptor(value)
+
+
+# ---------------------------------------------------------------------------
+# Laya plan reviewer (laya_review.py, WARDEN_REVIEWER=laya, 30 September 2026).
+# A stub agent stands in for the model: these tests pin the contract (only
+# accept -> ask, never lower a tier, skipped on any failure), not model quality.
+# Model quality is Benchmarks/results/laya-plan-review-v01.json.
+# ---------------------------------------------------------------------------
+import laya_review  # noqa: E402
+
+
+class _StubLaya:
+    def __init__(self, p_destructive=0.0, p_off_task=0.0, raises=None):
+        self.p_destructive, self.p_off_task, self.raises = p_destructive, p_off_task, raises
+        self.calls = []
+
+    def predict(self, state, questions):
+        self.calls.append((state, sorted(questions)))
+        if self.raises:
+            raise self.raises
+        answers = {"serves_task": {"probabilities": {"A": 1 - self.p_off_task, "B": self.p_off_task}}}
+        if "tier" in questions:
+            rest = (1 - self.p_destructive) / 2
+            answers["tier"] = {"probabilities": {"navigational": rest, "state-changing": rest,
+                                                 "destructive": self.p_destructive}}
+        return {"answers": answers}
+
+
+_LAYA_ELEMENTS = [{"selector": "#go", "label": "Wipe all data", "fieldType": "button", "filled": False, "x": 1, "y": 2}]
+
+
+def _use_laya(monkeypatch, stub):
+    monkeypatch.setenv("WARDEN_REVIEWER", "laya")
+    monkeypatch.setattr(laya_review, "_load_agent", lambda: stub)
+
+
+def test_reviewer_default_is_ollama(monkeypatch):
+    monkeypatch.delenv("WARDEN_REVIEWER", raising=False)
+    assert config.reviewer_mode() == "ollama"
+    monkeypatch.setenv("WARDEN_REVIEWER", "something-else")
+    assert config.reviewer_mode() == "ollama"
+
+
+def test_laya_state_carries_only_tokenized_fields():
+    plan = {"action": "type", "target_selector": "#go", "value": "EMAIL#1", "reasoning_token": "free text"}
+    state = laya_review.build_state("Sign in with EMAIL#1", plan, _LAYA_ELEMENTS)
+    assert state == {"task": "Sign in with EMAIL#1", "action": "type", "control": "Wipe all data",
+                     "control_type": "button", "value": "EMAIL#1"}
+
+
+def test_laya_asks_when_it_sees_a_destructive_step_the_regex_missed(monkeypatch):
+    _use_laya(monkeypatch, _StubLaya(p_destructive=0.9))
+    out = validate_module.maybe_apply_local_reasoning("Download my statement", _base_plan(), "state-changing", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+    assert "destructive" in out["question"]["text"]
+
+
+def test_laya_asks_when_the_step_does_not_serve_the_task(monkeypatch):
+    _use_laya(monkeypatch, _StubLaya(p_off_task=0.8))
+    out = validate_module.maybe_apply_local_reasoning("Download my statement", _base_plan(), "navigational", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+
+
+def test_laya_off_task_is_ignored_for_reversible_steps(monkeypatch):
+    stub = _StubLaya(p_off_task=0.99)
+    _use_laya(monkeypatch, stub)
+    plan = {"action": "scroll", "target_selector": None, "coordinates": {"x": 0, "y": 0}, "value": None, "reasoning_token": "x"}
+    out = validate_module.maybe_apply_local_reasoning("Download my statement", plan, "reversible", [])
+    assert out["verdict"] == "accept"
+    assert stub.calls == []  # no question applies to a scroll
+
+
+def test_laya_cannot_let_a_destructive_tier_through(monkeypatch):
+    _use_laya(monkeypatch, _StubLaya(p_destructive=0.0, p_off_task=0.0))
+    out = validate_module.maybe_apply_local_reasoning("Delete my account", _base_plan(), "destructive", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+
+
+@pytest.mark.parametrize("stub", [_StubLaya(raises=RuntimeError("boom")), _StubLaya(p_destructive=float("nan"))])
+def test_laya_failure_is_a_skipped_check_and_the_tier_rule_still_speaks(monkeypatch, stub):
+    _use_laya(monkeypatch, stub)
+    out = validate_module.maybe_apply_local_reasoning("Delete my account", _base_plan(), "destructive", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+    assert out["reasoning_check"]["skipped"] is True
+
+
+def test_laya_unconfigured_is_skipped_not_an_error(monkeypatch):
+    monkeypatch.setenv("WARDEN_REVIEWER", "laya")
+    monkeypatch.delenv("WARDEN_LAYA_MODEL", raising=False)
+    monkeypatch.setattr(laya_review, "_agent", None)
+    monkeypatch.setattr(laya_review, "_agent_error", None)
+    out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), "navigational", _LAYA_ELEMENTS)
+    assert out["verdict"] == "accept"
+    assert out["reasoning_check"]["skipped"] is True
+    assert "WARDEN_LAYA_MODEL" in out["reasoning_check"]["reason"]
+
+
+def test_laya_verdict_is_never_reject(monkeypatch):
+    for p_d, p_o in ((0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)):
+        _use_laya(monkeypatch, _StubLaya(p_destructive=p_d, p_off_task=p_o))
+        for tier in tiers.TIERS:
+            out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), tier, _LAYA_ELEMENTS)
+            assert out["verdict"] in ("accept", "ask")

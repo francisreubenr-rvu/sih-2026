@@ -220,7 +220,7 @@ async def do_validate(request: Request):
 
     # All deterministic checks passed. Local reasoning may only downgrade
     # accept -> ask from here; see validate.maybe_apply_local_reasoning.
-    reasoning = validate_module.maybe_apply_local_reasoning(tokenized_task, det["overridden_plan"], tier)
+    reasoning = validate_module.maybe_apply_local_reasoning(tokenized_task, det["overridden_plan"], tier, elements)
     checks = checks + [reasoning["reasoning_check"]]
 
     return {

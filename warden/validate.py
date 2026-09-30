@@ -8,7 +8,9 @@ already-`accept` verdict and can only move it to `ask` (or leave it as
 
 import math
 
+import config
 import groq_client
+import laya_review
 import ollama_client
 import tiers
 
@@ -165,7 +167,19 @@ def _reasoning_absent(reason: str, tier: str, plan: dict) -> dict:
     return {"verdict": "accept", "question": None, "reasoning_check": check}
 
 
-def maybe_apply_local_reasoning(tokenized_task: str, plan: dict, tier: str) -> dict:
+# Either reviewer's "no usable answer" exception becomes a SKIPPED check.
+_REVIEW_SKIPPED = (ollama_client.OllamaSkipped, laya_review.LayaSkipped)
+
+
+def _run_reviewer(tokenized_task: str, plan: dict, tier: str, elements) -> dict:
+    """WARDEN_REVIEWER picks the reviewer (config.reviewer_mode). Both return
+    {"downgrade_to_ask", "question"} and raise their Skipped on no answer."""
+    if config.reviewer_mode() == "laya":
+        return laya_review.review(tokenized_task, plan, tier, elements or [])
+    return ollama_client.review(tokenized_task, plan, tier)
+
+
+def maybe_apply_local_reasoning(tokenized_task: str, plan: dict, tier: str, elements=None) -> dict:
     """Only ever called when the deterministic verdict is already `accept`.
     Returns {"verdict": "accept"|"ask", "question": dict|None,
     "reasoning_check": {"name": "local-reasoning", "pass": bool|None,
@@ -180,8 +194,8 @@ def maybe_apply_local_reasoning(tokenized_task: str, plan: dict, tier: str) -> d
     also mean the deterministic tier rule never got to speak.
     """
     try:
-        result = ollama_client.review(tokenized_task, plan, tier)
-    except ollama_client.OllamaSkipped as exc:
+        result = _run_reviewer(tokenized_task, plan, tier, elements)
+    except _REVIEW_SKIPPED as exc:
         return _reasoning_absent(str(exc), tier, plan)
     except Exception as exc:  # noqa: BLE001 -- see docstring: reasoning is optional, never load-bearing
         return _reasoning_absent(f"local reasoning raised {type(exc).__name__}: {exc}", tier, plan)
