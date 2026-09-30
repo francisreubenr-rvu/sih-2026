@@ -54,13 +54,20 @@ def main():
     ap.add_argument("--llm-reps", type=int, default=1)
     ap.add_argument("--sleep", type=float, default=2.5)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--llm-from", default=None, help="reuse the LLM rows of an earlier results file instead of calling Groq")
+    ap.add_argument("--laya-model", default=None, help="local Laya checkpoint dir (sets WARDEN_LAYA_MODEL)")
     args = ap.parse_args()
+    if args.laya_model:
+        os.environ["WARDEN_LAYA_MODEL"] = args.laya_model
 
     sets = [("design", c) for c in PLAN_CASES] + [("heldout", c) for c in HELDOUT]
     doc = {"backends": {}, "llm": {}}
 
-    # LLM fallback: the Warden's real Groq chain on each case.
-    for split, c in sets:
+    # LLM fallback: the Warden's real Groq chain on each case, or the rows of an earlier run.
+    if args.llm_from:
+        doc["llm"] = json.load(open(args.llm_from))["llm"]
+        doc["llm_from"] = args.llm_from
+    for split, c in ([] if args.llm_from else sets):
         rows = []
         for _ in range(args.llm_reps):
             t0 = time.monotonic()
@@ -92,8 +99,9 @@ def main():
                     time.sleep(0.2)
             per_case[c["id"]] = {"split": split, "needs_llm": bool(c.get("needs_llm")), "rows": rows}
             print(backend, c["id"], [(r.get("choice"), round(r.get("confidence") or 0, 2), round(r.get("freeTextProbability") or 0, 2)) for r in rows[:1]], flush=True)
-        doc["backends"][backend] = {"cases": per_case, "summary": summarize(per_case, doc["llm"])}
-        print(backend, json.dumps(doc["backends"][backend]["summary"]["heldout"]["0.9"]), flush=True)
+        name = f"laya:{os.path.basename(args.laya_model.rstrip('/'))}" if backend == "laya" and args.laya_model else backend
+        doc["backends"][name] = {"cases": per_case, "summary": summarize(per_case, doc["llm"])}
+        print(name, json.dumps(doc["backends"][name]["summary"]["heldout"]["0.9"]), flush=True)
 
     doc = {
         "id": Path(args.out).stem if args.out else "fastpath-bench",

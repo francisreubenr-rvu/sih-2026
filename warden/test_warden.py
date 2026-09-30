@@ -1565,3 +1565,34 @@ def test_egress_guard_runs_before_the_fast_path(monkeypatch):
     with pytest.raises(warden_app.PlanRouteError) as exc:
         warden_app.dispatch_plan(body)
     assert exc.value.status == 422 and calls["fast"] == 0 and calls["groq"] == 0
+
+
+def test_laya_backend_loads_a_local_checkpoint_when_named(monkeypatch):
+    import types
+
+    made = {}
+
+    class FakeAgent:
+        def __init__(self, path, device=None):
+            made["agent"] = (path, device)
+
+        def predict(self, state, qs):
+            return {"answers": {"next": {"choice": "finish", "probabilities": {"finish": 1.0}}}}
+
+    class FakeRouter:
+        def __init__(self):
+            made["router"] = True
+
+        def predict(self, state, qs):
+            return {"answers": {}, "routing": {"model": "english"}}
+
+    monkeypatch.setitem(sys.modules, "laya", types.SimpleNamespace(Agent=FakeAgent, Router=FakeRouter))
+    monkeypatch.setitem(fastpath._LAYA, "router", None)
+    monkeypatch.setenv("WARDEN_LAYA_MODEL", "/models/laya-dhristi/")
+    answers, name = fastpath._ask_laya({}, {})
+    assert made == {"agent": ("/models/laya-dhristi/", "cpu")} and name == "laya:laya-dhristi"
+    monkeypatch.setitem(fastpath._LAYA, "router", None)
+    monkeypatch.setitem(fastpath._LAYA, "name", None)
+    monkeypatch.delenv("WARDEN_LAYA_MODEL")
+    fastpath._ask_laya({}, {})
+    assert made.get("router") is True

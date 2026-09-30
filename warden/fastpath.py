@@ -142,17 +142,21 @@ _LAYA = {"router": None, "lock": threading.Lock()}
 
 
 def _laya_router():
+    """The stock Laya Router, or, when WARDEN_LAYA_MODEL names a local checkpoint directory (for
+    example one made by scripts/laya-finetune/train_cpu.py), a laya.Agent on that checkpoint."""
     with _LAYA["lock"]:
         if _LAYA["router"] is None:
-            from laya import Router  # optional dependency, imported only when selected
+            import laya  # optional dependency, imported only when selected
 
-            _LAYA["router"] = Router()
+            path = os.environ.get("WARDEN_LAYA_MODEL", "").strip()
+            _LAYA["router"] = laya.Agent(path, device="cpu") if path else laya.Router()
+            _LAYA["name"] = "laya:" + os.path.basename(path.rstrip("/")) if path else None
         return _LAYA["router"]
 
 
 def _ask_laya(state: dict, qs: dict) -> tuple:
     out = _laya_router().predict(state, qs)
-    return out["answers"], f"laya:{(out.get('routing') or {}).get('model', 'english')}"
+    return out["answers"], _LAYA.get("name") or f"laya:{(out.get('routing') or {}).get('model', 'english')}"
 
 
 BACKENDS = {"jev": _ask_jev, "laya": _ask_laya}
