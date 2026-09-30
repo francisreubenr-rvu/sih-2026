@@ -250,8 +250,18 @@ failure is a SKIPPED check. The default stays `ollama`.
 
 Needs `pip install laya` (pulls torch); it is not a test dependency. Dataset, trainer and evaluator:
 `../scripts/laya/`. Results and limits: `../Benchmarks/results/laya-plan-review-v01.json` and
-`../Docs/decisions/brain-laya-plan-review.md`. Since v5 the extension's run loop does not call
-`/validate`, so this reviewer does not yet act on live runs.
+`../Docs/decisions/brain-laya-plan-review.md`. The fine-tuned weights are in the private Hub repo
+`francisreubenr/dhristi-laya-plan-review`, so set `WARDEN_LAYA_MODEL` to that id with an `HF_TOKEN` that
+can read it. The model loads on first use (about 11 s on a 4-thread CPU), then scores a step in
+about 200–260 ms.
+
+With `WARDEN_REVIEWER=laya`, `/plan` also returns `review`: `model`, `fineTuned`, `action`,
+`targetSelector`, `pNavigational`, `pDestructive` and `pOffTask` for the returned click, or
+`{"skipped": reason}`, or `null` for anything but a click. The Warden scores; the extension
+decides. `extension/utils/plan-check.js` `layaRelease` may skip a local confirmation only for a click
+its own scan could not identify (`unproven`), under thresholds it holds itself. Since v5 the
+extension's run loop does not call `/validate`, so the escalation review above reaches only older
+harnesses.
 
 ### The reasoning stage, measured 13 September 2026
 

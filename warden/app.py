@@ -20,6 +20,7 @@ from fastapi.responses import JSONResponse
 import config
 import entities
 import groq_client
+import laya_review
 import ollama_client
 import redactor
 import strip as strip_module
@@ -153,6 +154,25 @@ def dispatch_plan(body: dict) -> dict:
             "WARDEN_PLANNER must be 'groq' (default) or 'ollama'. POST /plan did not call a model.",
         )
 
+    result = _dispatch_planner(mode, body)
+    if config.reviewer_mode() == "laya":
+        result["review"] = _laya_review(body, result.get("plan"))
+    return result
+
+
+def _laya_review(body: dict, plan) -> Optional[dict]:
+    """Laya scores for the returned plan (extension/utils/plan-check.js layaRelease decides).
+    Never fails /plan: any problem becomes {"skipped": reason}, which the extension treats as no
+    release."""
+    try:
+        return laya_review.release_scores(body.get("tokenizedTask") or "", plan or {}, body.get("elements") or [])
+    except laya_review.LayaSkipped as exc:
+        return {"skipped": str(exc)}
+    except Exception as exc:  # noqa: BLE001 -- optional component, never load-bearing
+        return {"skipped": f"laya review raised {type(exc).__name__}"}
+
+
+def _dispatch_planner(mode: str, body: dict) -> dict:
     if mode == "groq":
         if not config.groq_configured():
             raise PlanRouteError(

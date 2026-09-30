@@ -81,3 +81,23 @@ test('decideGate: only an exact accept with an agreeing unattended-safe tier run
   assert.equal(decideGate({ verdict: 'reject', wardenTier: 'navigational', localTier: 'navigational' }).path, 'reject');
   assert.equal(decideGate({ verdict: 'accept', wardenTier: 'navigational', localTier: null }).path, 'reject');
 });
+
+// ---- classifyClickTargetBasis --------------------------------------------------------------------
+import { classifyClickTarget as tierOf, classifyClickTargetBasis } from '../utils/op-tier.js';
+
+test('classifyClickTargetBasis names the rule that decided, and agrees with classifyClickTarget', () => {
+  const cases = [
+    [{ visibleText: 'Delete account' }, 'destructive', 'destructive-keyword'],
+    [{ visibleText: 'Pay now' }, 'state-changing', 'submit-keyword'],
+    [{ visibleText: 'Continue', submitsForm: true }, 'state-changing', 'submits-form'],
+    [{ visibleText: 'Delete my account', ariaLabel: 'Next' }, 'destructive', 'destructive-keyword'],
+    [{ visibleText: 'Orders', ariaLabel: 'Archive' }, 'state-changing', 'name-mismatch'],
+    [{ visibleText: 'View statement' }, 'navigational', 'navigation-label'],
+    [{ visibleText: 'Statements' }, 'state-changing', 'unproven'],
+    [{ visibleText: 'खाता हटाएं' }, 'state-changing', 'unproven'],
+  ];
+  for (const [desc, tier, basis] of cases) {
+    assert.deepEqual(classifyClickTargetBasis(desc), { tier, basis }, JSON.stringify(desc));
+    assert.equal(tierOf(desc), tier);
+  }
+});

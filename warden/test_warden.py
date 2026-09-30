@@ -1556,3 +1556,72 @@ def test_laya_verdict_is_never_reject(monkeypatch):
         for tier in tiers.TIERS:
             out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), tier, _LAYA_ELEMENTS)
             assert out["verdict"] in ("accept", "ask")
+
+
+# ---------------------------------------------------------------------------
+# tiers.py navigational match is label-only (ROAST round 22, 30 September 2026).
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("label", ["Wipe all data", "Kick from folder", "खाता बंद करें", "Statements"])
+def test_a_link_is_not_navigational_because_it_is_a_link(label):
+    elements = [{"selector": "#t", "label": label, "fieldType": "link", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
+
+
+@pytest.mark.parametrize("label,field_type", [("View statement", "link"), ("Go to settings", "button"), ("  Home", "link")])
+def test_navigation_labels_still_tier_navigational(label, field_type):
+    elements = [{"selector": "#t", "label": label, "fieldType": field_type, "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "navigational"
+
+
+# ---------------------------------------------------------------------------
+# /plan carries Laya release scores when WARDEN_REVIEWER=laya (30 September 2026).
+# The extension decides the release (extension/utils/plan-check.js layaRelease);
+# the Warden only scores, locally, after the planner answered.
+# ---------------------------------------------------------------------------
+class _StubLayaCfg(_StubLaya):
+    def __init__(self, cfg, **kw):
+        super().__init__(**kw)
+        self.cfg = cfg
+
+
+def _fake_planner(monkeypatch, plan):
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
+    monkeypatch.setattr(ollama_client, "plan_via_ollama", lambda body: {"plan": dict(plan), "model": "fake"})
+
+
+def test_plan_attaches_laya_scores_for_a_click(monkeypatch):
+    stub = _StubLayaCfg({"model_name": "laya-dhristi-plan-review", "fine_tuned": True}, p_destructive=0.02, p_off_task=0.1)
+    _use_laya(monkeypatch, stub)
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    result = warden_app.dispatch_plan(_plan_body())
+    review = result["review"]
+    assert review["model"] == "laya-dhristi-plan-review" and review["fineTuned"] is True
+    assert review["action"] == "click" and review["targetSelector"] == "#go"
+    assert review["pDestructive"] == pytest.approx(0.02) and review["pOffTask"] == pytest.approx(0.1)
+    assert review["pNavigational"] == pytest.approx(0.49)
+    # scored on the tokenized task and the element label, nothing else
+    assert stub.calls[0][0] == {"task": "Email EMAIL#1 the report", "action": "click", "control": "Go", "control_type": "button"}
+
+
+def test_plan_review_is_absent_by_default_and_null_for_non_clicks(monkeypatch):
+    monkeypatch.delenv("WARDEN_REVIEWER", raising=False)
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    assert "review" not in warden_app.dispatch_plan(_plan_body())
+    _use_laya(monkeypatch, _StubLayaCfg({"model_name": "laya-dhristi-plan-review", "fine_tuned": True}))
+    _fake_planner(monkeypatch, {"action": "scroll", "target_selector": None})
+    assert warden_app.dispatch_plan(_plan_body())["review"] is None
+
+
+def test_plan_review_failure_never_fails_plan(monkeypatch):
+    _use_laya(monkeypatch, _StubLayaCfg({}, raises=RuntimeError("boom")))
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    result = warden_app.dispatch_plan(_plan_body())
+    assert result["plan"]["action"] == "click"
+    assert "skipped" in result["review"]
+
+
+def test_plan_review_reports_a_zero_shot_checkpoint_as_not_fine_tuned(monkeypatch):
+    _use_laya(monkeypatch, _StubLayaCfg({"model_name": "rl-agent"}))
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    review = warden_app.dispatch_plan(_plan_body())["review"]
+    assert review["fineTuned"] is False and review["model"] == "rl-agent"

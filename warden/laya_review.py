@@ -188,3 +188,37 @@ def review(tokenized_task: str, plan: dict, tier: str, elements: list, agent=Non
             "scores": scores,
         }
     return {"downgrade_to_ask": False, "question": None, "scores": scores}
+
+
+def release_scores(tokenized_task: str, plan: dict, elements: list, agent=None):
+    """Scores for the extension's release rule (extension/utils/plan-check.js layaRelease),
+    attached to the /plan response as `review`. Computed here on already-tokenized input; nothing
+    here goes to the planner. Returns None for anything but a click. Raises LayaSkipped when there
+    is no usable answer. The extension, not this function, decides whether to release.
+    """
+    if not isinstance(plan, dict) or plan.get("action") != "click":
+        return None
+    if agent is None:
+        agent = _load_agent()
+    cfg = getattr(agent, "cfg", {}) or {}
+    state = build_state(tokenized_task, plan, elements)
+    try:
+        answers = agent.predict(state, questions_for("click"))["answers"]
+        tier_p = answers["tier"]["probabilities"]
+        scores = {
+            "pNavigational": float(tier_p["navigational"]),
+            "pDestructive": float(tier_p["destructive"]),
+            "pOffTask": float(answers["serves_task"]["probabilities"]["B"]),
+        }
+    except Exception as exc:  # noqa: BLE001
+        raise LayaSkipped(f"laya review failed: {type(exc).__name__}: {exc}") from exc
+    for name, value in scores.items():
+        if not (math.isfinite(value) and 0.0 <= value <= 1.0):
+            raise LayaSkipped(f"laya returned an unusable probability {name}={value!r}")
+    return {
+        "model": cfg.get("model_name"),
+        "fineTuned": cfg.get("fine_tuned") is True,
+        "action": "click",
+        "targetSelector": plan.get("target_selector"),
+        **scores,
+    }

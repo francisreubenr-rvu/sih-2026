@@ -2,7 +2,7 @@
 
 **Date:** 30 September 2026
 **Authority:** Francis, 30 September 2026: fine-tune `convaiinnovations/laya` for Dhristi, as the plan-review check, multilingual checkpoint, trained in the session container (option B).
-**Status:** Shipped as opt-in (`WARDEN_REVIEWER=laya`); the default reviewer stays Ollama. Two open questions need Francis (end of this file).
+**Status:** Shipped opt-in (`WARDEN_REVIEWER=laya`), the default reviewer stays Ollama. On 30 September Francis approved three follow-ups, all shipped in the same PR: release of confirmations under the constraint (section "Release"), private weights on Hugging Face, and the `tiers.py` fix.
 **Evidence:** `Benchmarks/results/laya-plan-review-v01.json`. Dataset: `Benchmarks/datasets/laya-plan-review-v01/`. Code: `warden/laya_review.py`, `scripts/laya/`.
 
 ## What Laya is
@@ -73,7 +73,7 @@ The plan was to add confirmations. The dataset showed that the live gate does no
 - **Hindi has not been reviewed by a native speaker.**
 - **The sample is small and correlated.** Tier rows reuse each held-out control about 6 times.
 - **The serves-task calibration temperature is high (7.1).** The model is over-confident on some calibration pairings. The false-ask rate of 0.246 would cost roughly one extra prompt in four on-task steps, if this reviewer acted on live runs.
-- **Laya does not act on live runs yet.** Since v5, the extension's run loop does not call `/validate`.
+- **Escalation only reaches `/validate`.** Since v5, the extension's run loop does not call `/validate`, so there Laya only adds questions for older harnesses. Release acts on live runs through `/plan` (section "Release").
 
 ## Not changed
 
@@ -81,7 +81,49 @@ The plan was to add confirmations. The dataset showed that the live gate does no
 - F17 stays mandatory.
 - No guardrail status moves on this evidence.
 
-## Open, needs Francis
+## Release (Francis, 30 September 2026: "Laya can skip confirmations given the constraint")
 
-1. **May Laya release a confirmation?** The live over-asking problem is only helped if the fine-tuned checkpoint may downgrade a confirm to unattended on p(navigational) ≥ 0.9, with the regex destructive rule and plan checks untouched. That weakens F17 as written today. It also conflicts with v5's "one model, one job" on the device.
-2. **Where do the weights live?** They are in session scratch only. Proposed: a private Hugging Face repo under Francis's account. Nothing has been uploaded.
+With `WARDEN_REVIEWER=laya`, the Warden attaches `review` scores to its `/plan` response. They are computed locally, after the planner has answered, on the same tokenized task and element label. Nothing new goes to the planner.
+
+The extension decides whether to release, in `extension/utils/plan-check.js` `layaRelease`. It holds its own thresholds and releases a local `confirm` to unattended only when **all** of these hold:
+
+| Condition | Why |
+|---|---|
+| The action is a click | typing always confirms |
+| The scan tiered the target state-changing by the `unproven` default | no destructive or submit keyword in any descriptor (text, aria, title, value, href, form action), no form submit, no label/name mismatch (`op-tier.js` `classifyClickTargetBasis`) |
+| The task does not express destructive intent | same regex as intent coherence |
+| The review names `laya-dhristi-plan-review` with `fineTuned: true`, for this exact action and target | zero-shot released destructive steps in the simulation |
+| p(navigational) ≥ 0.9, p(destructive) < 0.5, p(off task) < 0.5 | thresholds fixed before evaluation |
+
+Anything missing, malformed or out of range means no release.
+
+- **The tier does not change.** A released step still carries `state-changing`, so the execute-time live re-tier still applies.
+- **The release is re-checked at execute time.** The content script also requires that the live element still reads `unproven`. A "Statements" link relabelled "Pay now" after the scan keeps its tier, so without this check it would have run. Now it stops and asks, and a real-Chromium test covers it.
+- **Unchanged:** destructive always asks, a failed plan check still rejects, and every other `confirm` still confirms.
+
+**Residual risk accepted with this decision.** The extension does not authenticate the Warden; any process on `127.0.0.1:8756` is trusted as it.
+
+- Before this change, a spoofed or compromised Warden could propose plans, but it could not make a non-navigational click run unattended.
+- Now it can release an `unproven` click by sending a confident review. That includes a destructive label the English keyword rules do not recognise, such as "खाता हटाएं".
+- A model error has the same effect. The test split showed 0 wrong releases in 348 confirmations, but the sample is small, synthetic and correlated.
+- Mitigations not done here:
+  - Hindi (and other-language) destructive keywords in `op-tier.js`, which would move those labels out of `unproven`
+  - a pairing secret between the extension and the Warden
+
+Laya is also a second model on the device, an explicit exception to v5's "one model, one job".
+
+- Real-checkpoint smoke run (same CPU): cold model load about 10.8 s on the first `/plan`, then about 200–260 ms per scored step.
+- "सहायता केंद्र" (Help centre) during a pay-bill task scored p(navigational) 1.0 but p(off task) 0.97, so it was not released.
+
+## Weights
+
+Private Hugging Face repo `francisreubenr/dhristi-laya-plan-review`, revision `6d3e9c57bfbd438b94b69c3d20feeca6b7a5588d`. Its LFS sha256 matches `checkpoint.model_safetensors_sha256` in the results file. Load it with `WARDEN_LAYA_MODEL=francisreubenr/dhristi-laya-plan-review` and a token that can read it.
+
+## `tiers.py` fix
+
+The navigational rule now matches the label alone, as `op-tier.js` does. On the test split, destructive steps accepted as navigational went from 42/120 to 0/120 (`warden_regex_gate_after_fix` in the results file). The dataset's `regex_tier` column and the results file's `regex` block keep the pre-fix values, as generated at `2d7ad76`.
+
+## Still open
+
+1. Hindi and other-language destructive keywords in `op-tier.js`, and a pairing secret with the Warden. These close the residual risk above.
+2. A live run of the release on the real extension, Warden and Laya. So far: unit, fake-Warden and real-Chromium content tests, plus a real-checkpoint smoke run. There is no loaded-extension run.

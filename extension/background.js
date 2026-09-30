@@ -4,8 +4,8 @@ import * as wardenClient from './utils/warden.js';
 import { createG11Trace } from './utils/g11-stage-clock.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
 import { loopbackHttpUrl } from './utils/loopback.js';
-import { expressesDestructiveIntent, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
-import { decideLocalGate, questionForTier, runPlanChecks } from './utils/plan-check.js';
+import { expressesDestructiveIntent, findSceneElement, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
+import { decideLocalGate, layaRelease, questionForTier, runPlanChecks } from './utils/plan-check.js';
 import {
   createPipelineTrace, inboundFromPlan, isVaultToken, jsonByteLength, pngSize, replacedFromStrip, toValueToken, tokenizeWithVault,
 } from './utils/pipeline-trace.js';
@@ -1057,13 +1057,22 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
       destructiveIntent: expressesDestructiveIntent(task),
       hasDestructiveControl: hasDestructiveControl(localScene),
     });
-    const gate = decideLocalGate({ checksPassed: result.ok, localTier: result.tier });
+    let gate = decideLocalGate({ checksPassed: result.ok, localTier: result.tier });
+    // Laya release (plan-check.js layaRelease): only a local 'confirm' can become unattended, and
+    // the tier stays what the scan computed, so the execute-time live re-tier still applies.
+    let release = null;
+    if (gate.path === 'confirm') {
+      let sceneElement = null;
+      try { sceneElement = findSceneElement(plan.target_selector, localScene); } catch { sceneElement = null; }
+      release = layaRelease({ plan, sceneElement, review: planResp.review, destructiveIntent: expressesDestructiveIntent(task) });
+      if (release.released) gate = { path: 'unattended', finalTier: gate.finalTier, reasons: [], released: true };
+    }
     // Recorded under the harness's existing 'validate' key: this is the work /validate used to do.
     g11Trace.add('validate', performance.now() - checkT0);
 
     const passed = result.checks.filter((c) => c.pass).length;
     const summary = `${passed} of ${result.checks.length} checks passed`;
-    pipeline.set('check', { checks: result.checks, tier: result.tier, gate: gate.path, choice: null });
+    pipeline.set('check', { checks: result.checks, tier: result.tier, gate: gate.path, choice: null, release });
 
     if (gate.path === 'reject') {
       reasons = result.reasons.length ? result.reasons : gate.reasons;
@@ -1102,8 +1111,9 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
       recordF17({ localTier: result.tier, gatePath: gate.path, choice, tierError: null });
       return { planResp, plan, tier: gate.finalTier, verdict: gate.path === 'ask' ? 'ask' : 'accept', checks: result.checks, choice };
     }
+    if (gate.released) noteActivity(`${release.reason}. The step runs without a prompt.`, stepNumber);
     recordF17({ localTier: result.tier, gatePath: 'unattended', choice: null, tierError: null });
-    return { planResp, plan, tier: gate.finalTier, verdict: 'accept', checks: result.checks, choice: null };
+    return { planResp, plan, tier: gate.finalTier, verdict: 'accept', checks: result.checks, choice: null, released: gate.released === true };
   }
   // Unreachable: every branch inside the loop returns by attempt === WARDEN_VALIDATE_MAX_ATTEMPTS at the latest.
   throw new Error('check: retry loop exited without a decision');
@@ -1199,7 +1209,7 @@ async function runLoop(runId, secrets) {
       // The extension's own scene: handles and locally computed tiers. Stays in this worker.
       localScene = scan.elements;
       // What the Warden sees: the same elements without the handle or the local tier.
-      wireElements = scan.elements.map(({ handle, tier, ...rest }) => rest);
+      wireElements = scan.elements.map(({ handle, tier, tierBasis, ...rest }) => rest);
       pipeline.set('scene', { controls: scan.elements.length });
       noteStage('PERCEIVE', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'} found on the page`, stepNumber);
 
@@ -1372,7 +1382,7 @@ async function runLoop(runId, secrets) {
       //    a navigation tears the message port down mid-flight; that is an expected outcome,
       //    not a failure, so it is recorded as an ok step with navigated: true and the next
       //    iteration's pingContentScript() waits for the new document.
-      if (outcome.choice == null && outcome.verdict === 'accept' && tierPermitsUnattended(outcome.tier)) {
+      if (outcome.choice == null && outcome.verdict === 'accept' && (tierPermitsUnattended(outcome.tier) || outcome.released === true)) {
         g11Trace.patchLatestF17({ unattendedExecuteAllowed: true, gatePath: 'unattended_ok' });
       }
       pipeline.set('act', { action: action.action, target: action.target_selector ?? null, outcome: null, error: null });
@@ -1494,6 +1504,8 @@ async function runLoop(runId, secrets) {
 async function executeWithLiveTierCheck(runId, action, outcome, localScene, stepNumber) {
   const needsTarget = action.action === 'click' || action.action === 'type';
   const contentAction = { action: action.action, value: action.value ?? null, plannedTier: outcome.tier };
+  // A Laya-released click must still read as 'unproven' on the live element (content.js).
+  if (outcome.released === true) contentAction.requireUnprovenBasis = true;
   if (needsTarget) contentAction.handle = tierTargetHandle(action, localScene);
   for (let round = 0; round < 2; round += 1) {
     let result;
@@ -1508,13 +1520,16 @@ async function executeWithLiveTierCheck(runId, action, outcome, localScene, step
     if (!result || result.tierEscalated !== true) return { result, navigated: false, choice: null };
     if (aborted(runId)) return { result, navigated: false, choice: 'stop' };
     const choice = await requestValidationQuestion(
-      `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`,
+      result.releaseRevoked === true
+        ? `The page changed the target after Laya released it: it now matches a rule for tier '${result.liveTier}', so the release no longer holds. Nothing was clicked.`
+        : `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`,
       STANDARD_VALIDATION_OPTIONS, null, [], stepNumber,
     );
     if (choice !== 'proceed') {
       return { result: { skipped: choice === 'skip', error: choice === 'skip' ? null : 'stopped after a live tier change' }, navigated: false, choice };
     }
     contentAction.plannedTier = result.liveTier;
+    contentAction.requireUnprovenBasis = false; // a person has now approved it
   }
   return { result: { error: 'the target kept changing tier; nothing was clicked' }, navigated: false, choice: null };
 }

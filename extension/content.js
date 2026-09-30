@@ -117,7 +117,7 @@ async function scanPage() {
   // worker captures right after it sees the overlay. The worker redraws it after the next /strip.
   clearHighlights();
   const redactText = await getRedactText();
-  const { classifyClickTarget } = await getOpTier();
+  const { classifyClickTargetBasis } = await getOpTier();
   const handles = new Map();
   const elements = [];
   const candidates = document.querySelectorAll('button, input, select, textarea, a[href], [role="button"], [onclick], [jsaction], [data-action]');
@@ -126,6 +126,7 @@ async function scanPage() {
     if (!isRenderedVisible(element) || rect.width < 1 || rect.height < 1) continue;
     const label = labelFor(element);
     const handle = newHandle();
+    const tiered = classifyClickTargetBasis(tierDescriptor(element));
     handles.set(handle, new WeakRef(element));
     elements.push({
       tag: element.tagName.toLowerCase(),
@@ -134,7 +135,10 @@ async function scanPage() {
       handle,
       // Click tier computed here, from the live element, by the extension's own rules. The
       // background gate reads this, never a tier or element list the Warden returns.
-      tier: classifyClickTarget(tierDescriptor(element)),
+      tier: tiered.tier,
+      // Which rule decided the tier. Stays in the extension like `tier` (background.js strips both
+      // before /plan); only an 'unproven' click can be released by the Laya reviewer.
+      tierBasis: tiered.basis,
       label,
       x: Math.round(rect.left + rect.width / 2),
       y: Math.round(rect.top + rect.height / 2),
@@ -484,7 +488,7 @@ async function executeAction(action) {
   let target = null;
   if (needsTarget) {
     target = resolveHandle(action.handle);
-    const { classifyClickTarget, isKnownTier, stricterTier, tierRank } = await getOpTier();
+    const { classifyClickTargetBasis, isKnownTier, stricterTier, tierRank } = await getOpTier();
     // Cursor animation first: it awaits, so everything that decides whether to act runs after it,
     // synchronously, with no await between the checks and the action.
     if (target.isConnected) {
@@ -495,10 +499,17 @@ async function executeAction(action) {
     if (refusal) throw new Error(`Refused: ${refusal}`);
     // Re-derive the tier from the live element. If the page changed it into something stricter
     // than what was planned (and approved), do nothing and report it so the worker can prompt.
-    const clickTier = classifyClickTarget(tierDescriptor(target));
+    const live = classifyClickTargetBasis(tierDescriptor(target));
+    const clickTier = live.tier;
     const liveTier = action.action === 'type' ? stricterTier('state-changing', clickTier) : clickTier;
     if (!isKnownTier(action.plannedTier) || tierRank(liveTier) > tierRank(action.plannedTier)) {
       return { tierEscalated: true, liveTier, plannedTier: action.plannedTier ?? null };
+    }
+    // A click the Laya reviewer released was released because nothing identified it. If the live
+    // element now matches a rule (a "Statements" link relabelled "Pay now" keeps tier
+    // state-changing), the release no longer holds: do nothing and let the worker ask.
+    if (action.requireUnprovenBasis === true && live.basis !== 'unproven') {
+      return { tierEscalated: true, liveTier, plannedTier: action.plannedTier ?? null, releaseRevoked: true };
     }
   }
   if (action.action === 'click') {

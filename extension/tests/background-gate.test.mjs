@@ -290,3 +290,76 @@ test('two START_TASK sends at once start exactly one run (double-click on Send)'
   assert.equal(run.entries.filter((e) => e.terminal === true).length, 1);
   assert.equal(run.executed.length, 2);
 });
+
+// Laya release (plan-check.js layaRelease, 30 September 2026). The Warden attaches `review` to the
+// /plan response; only a click the scan tiered state-changing by the 'unproven' default may run
+// without a prompt, and only on the fine-tuned checkpoint's scores for this exact step.
+const H_ST = `h${'d'.repeat(32)}`;
+const H_PAY = `h${'e'.repeat(32)}`;
+const STATEMENTS_LINK = { tag: 'a', type: 'a', selector: 'a.st', handle: H_ST, tier: 'state-changing', tierBasis: 'unproven', label: 'Statements', x: 10, y: 100, filled: false, fieldType: 'a', pii: false };
+const PAY_BUTTON = { tag: 'button', type: 'button', selector: 'button.pay', handle: H_PAY, tier: 'state-changing', tierBasis: 'submit-keyword', label: 'Pay now', x: 10, y: 130, filled: false, fieldType: 'button', pii: false };
+const review = (selector, over = {}) => ({
+  model: 'laya-dhristi-plan-review', fineTuned: true, action: 'click', targetSelector: selector,
+  pNavigational: 0.97, pDestructive: 0.01, pOffTask: 0.03, ...over,
+});
+const planWithReview = (plan, rev) => (body, n) => (n === 1
+  ? { model: 'fake-planner', destination: 'cloud', plan, review: rev }
+  : { model: 'fake-planner', destination: 'cloud', plan: FINISH });
+
+test('Laya release: an unproven click with a confident fine-tuned review runs without a prompt', async () => {
+  const run = await runTask({ task: 'download my statement', scan: scanOf([STATEMENTS_LINK]), warden: { plan: planWithReview(click('a.st'), review('a.st')) } });
+  assertNoValidate(run);
+  assert.equal(run.prompts.length, 0);
+  assert.deepEqual(run.executed[0], { action: 'click', value: null, plannedTier: 'state-changing', handle: H_ST, requireUnprovenBasis: true });
+  const f17 = run.trace.f17Steps[0];
+  assert.equal(f17.gatePath, 'unattended_ok');
+  assert.equal(f17.unattendedExecuteAllowed, true);
+  assert.equal(run.terminal.status, 'finished');
+});
+
+for (const [name, scanEl, rev] of [
+  ['a submit-keyword control is never released', PAY_BUTTON, review('button.pay')],
+  ['a zero-shot (not fine-tuned) review does not release', STATEMENTS_LINK, review('a.st', { fineTuned: false })],
+  ['another model name does not release', STATEMENTS_LINK, review('a.st', { model: 'rl-agent' })],
+  ['a review for a different target does not release', STATEMENTS_LINK, review('a.other')],
+  ['p(navigational) below 0.9 does not release', STATEMENTS_LINK, review('a.st', { pNavigational: 0.89 })],
+  ['p(off task) at 0.5 does not release', STATEMENTS_LINK, review('a.st', { pOffTask: 0.5 })],
+  ['p(destructive) at 0.5 does not release', STATEMENTS_LINK, review('a.st', { pDestructive: 0.5, pNavigational: 0.95 })],
+  ['a non-finite probability does not release', STATEMENTS_LINK, review('a.st', { pNavigational: Number.NaN })],
+  ['a skipped review does not release', STATEMENTS_LINK, { skipped: 'WARDEN_LAYA_MODEL is not set' }],
+  ['no review does not release', STATEMENTS_LINK, undefined],
+]) {
+  test(`Laya release: ${name}`, async () => {
+    const run = await runTask({ task: 'download my statement', scan: scanOf([scanEl]), warden: { plan: planWithReview(click(scanEl.selector), rev) } });
+    assert.equal(run.prompts.length, 1);
+    assert.match(run.prompts[0].text, /tier 'state-changing' and requires local confirmation/);
+    assert.equal(run.executed.length, 0);
+  });
+}
+
+test('Laya release is revoked when the live element now matches a rule; proceed re-sends without the requirement', async () => {
+  const seen = []; // the harness keeps the (mutated) action object; record what each send carried
+  const run = await runTask({
+    task: 'download my statement',
+    scan: scanOf([STATEMENTS_LINK]),
+    choices: ['proceed'],
+    warden: { plan: planWithReview(click('a.st'), review('a.st')) },
+    execute: (action, n) => {
+      seen.push(action.requireUnprovenBasis);
+      return n === 1
+        ? { tierEscalated: true, releaseRevoked: true, liveTier: 'state-changing', plannedTier: action.plannedTier }
+        : { digest: 'd' };
+    },
+  });
+  assert.equal(run.prompts.length, 1);
+  assert.match(run.prompts[0].text, /after Laya released it/);
+  assert.deepEqual(seen.slice(0, 2), [true, false]);
+  assert.equal(run.executed[1].handle, H_ST);
+});
+
+test('egress: the local tier basis never reaches the Warden', async () => {
+  const run = await runTask({ scan: scanOf([STATEMENTS_LINK, PAY_BUTTON]), warden: { plan: planSeq(FINISH) } });
+  for (const { path, body } of run.fetchBodies) {
+    for (const el of body?.elements || []) assert.equal('tierBasis' in el, false, `${path} element carries a tier basis`);
+  }
+});

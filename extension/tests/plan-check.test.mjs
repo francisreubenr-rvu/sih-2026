@@ -195,3 +195,42 @@ test('pipeline trace: ms is measured between active and the next status, else nu
   p.set('scene', { controls: 9 });
   assert.equal(before.scene.controls, 0);
 });
+
+// ---- layaRelease ---------------------------------------------------------------------------------
+import { layaRelease, LAYA_RELEASE_MIN_NAVIGATIONAL } from '../utils/plan-check.js';
+
+const UNPROVEN = { selector: 'a.st', tier: 'state-changing', tierBasis: 'unproven' };
+const goodReview = (over = {}) => ({ model: 'laya-dhristi-plan-review', fineTuned: true, action: 'click', targetSelector: 'a.st', pNavigational: 0.95, pDestructive: 0.02, pOffTask: 0.1, ...over });
+const clickSt = { action: 'click', target_selector: 'a.st' };
+
+test('layaRelease releases only the unproven state-changing click with a confident fine-tuned review', () => {
+  assert.equal(layaRelease({ plan: clickSt, sceneElement: UNPROVEN, review: goodReview(), destructiveIntent: false }).released, true);
+  assert.equal(LAYA_RELEASE_MIN_NAVIGATIONAL, 0.9);
+});
+
+test('layaRelease refuses everything else', () => {
+  const cases = [
+    { plan: { ...clickSt, action: 'type' } },
+    { sceneElement: { ...UNPROVEN, tierBasis: 'submit-keyword' } },
+    { sceneElement: { ...UNPROVEN, tierBasis: 'name-mismatch' } },
+    { sceneElement: { ...UNPROVEN, tier: 'destructive', tierBasis: 'destructive-keyword' } },
+    { sceneElement: { ...UNPROVEN, tierBasis: undefined } },
+    { sceneElement: null },
+    { destructiveIntent: true },
+    { review: null },
+    { review: [] },
+    { review: goodReview({ fineTuned: 'true' }) },
+    { review: goodReview({ targetSelector: 'a.other' }) },
+    { review: goodReview({ action: 'type' }) },
+    { review: goodReview({ pNavigational: 0.899 }) },
+    { review: goodReview({ pNavigational: 1.2 }) },
+    { review: goodReview({ pDestructive: 0.5 }) },
+    { review: goodReview({ pOffTask: '0.1' }) },
+  ];
+  for (const over of cases) {
+    const args = { plan: clickSt, sceneElement: UNPROVEN, review: goodReview(), destructiveIntent: false, ...over };
+    const r = layaRelease(args);
+    assert.equal(r.released, false, JSON.stringify(over));
+    assert.equal(typeof r.reason, 'string');
+  }
+});
