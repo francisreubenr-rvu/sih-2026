@@ -1,5 +1,42 @@
 # Dhristi — SIH26171
 
+## Session handoff — start here (updated 30 September 2026, 07:30 UTC)
+
+**Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), last code commit `99c3e30` (CI green), no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details of every item below: `Docs/decisions/brain-cloud-models-jev.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 24.
+
+**Done in PR #41.**
+- Real-Groq end-to-end run found the planner never chose finish; fixed (`STATUS` lines in `extension/content.js`, vault token in `buildHistory`, finish rule in `warden/groq_client.py`). 48 real cloud requests, 0 personal values (`Benchmarks/results/e2e-v5-boundary-v02.json`).
+- Groq chain `qwen/qwen3.8-27b, openai/gpt-oss-20b, openai/gpt-oss-120b` at temperature 0.
+- Opt-in fast path `warden/fastpath.py` (`WARDEN_FAST_PATH=jev|laya`, off by default). Jev: 39/39 correct on held-out steps it answered, never a free-text step; real loop median about 236 ms (`fastpath-bench-v01.json`, `e2e-v5-boundary-v03.json`).
+- Laya (`convaiinnovations/laya`): zero-shot defers everything. Two CPU fine-tunes underfit (v2 fits 29/120 of its own training steps, base 24/120) and v2 lost the free-text gate, so it is less safe below the 0.9 threshold. Not deployed. Pipeline in `scripts/laya-finetune/`.
+- Claims corrected on Website and README; `feat/dhristi-wave8` a11y ported; `cursor/website-pixel-redesign-pr1-ac89` not merged (superseded by Signal, dark tokens).
+
+**Open decisions (Francis).**
+1. Jev fast path for demos: held back, open.
+2. Run `scripts/laya-finetune/kaggle_train.ipynb` on Kaggle (GPU, internet on). It trains the whole encoder, 4 epochs, 3,000 steps, then runs `diagnose.py` and the benchmark. Check its free-text answers before any use.
+3. Where the Laya weights live (about 0.8 GB; no Git LFS here, GitHub 100 MB limit). A Hugging Face repo needs `HF_TOKEN` in the environment.
+4. Mark PR #41 ready and merge, or ask for changes.
+
+**Next actions for Claude.**
+- If Francis brings Kaggle results: commit `fastpath-bench-laya-gpu.json` to `Benchmarks/results/`, compare with Jev in the decision note, and only recommend Laya if it answers held-out steps at 0.9 with no wrong answer and no free-text step.
+- Re-run `scripts/cloud-models/llm_settings_bench.py` on a fresh Groq quota (the Qwen vs gpt-oss comparison at temperature 0 is inconclusive).
+- Keep G11 **fail**, G20 **paused**, `submission_ready` **false**; do not lower `WARDEN_FAST_PATH_MIN_CONFIDENCE` for Laya without re-benchmarking.
+
+**Environment facts (cloud container).**
+- Keys in env: `GROQ_API_KEY`, `JEV_API_KEY` (TypeSafe direct API), `OPENROUTER_API_KEY` (the 30 September session still saw an extra two words before the key; fixed by Francis for new sessions). No OpenCode or Hugging Face key. Never print key values.
+- Warden with GLiNER needs a venv with CPU torch, `gliner`, `protobuf`, `fastapi`, `uvicorn`, `httpx`, plus `laya` for the Laya backend. Container-local artefacts (`/home/user/.venv-warden`, `/home/user/laya-dhristi-v1`, `-v2`) do not survive a new session.
+- Groq free tier returns 429s under back-to-back runs; space calls (`--sleep`) and do not overlap benchmarks with end-to-end runs.
+- Node's fetch needs `NODE_USE_ENV_PROXY=1` behind the proxy (used by `scripts/e2e-v5/recording-relay.mjs`).
+
+**Checks to run first.**
+```sh
+cd Prototype && npm ci && npm run test:ci                        # 141
+node --test scripts/g11-warden-option-c-harness.test.mjs          # 13
+node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs   # 104
+cd warden && python -m pytest -q test_warden.py                   # 114 passed, 6 skipped
+python3 scripts/check_release.py --dry-run                        # 14 pass / 1 fail / 5 unknown
+```
+
 ## Fundamentals restructure (2026-09-23)
 
 Wrap/polish is not the primary path. Target architecture is Warden / v4 (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE), recorded in `Docs/decisions/brain-fundamentals-restructure.md` and `Docs/grokbot-briefing.md`. `warden/` and root `extension/` are on master via PR #31 (archive `2afd215`) and PR #32 (Ollama `/plan` default). G11 stays fail, G20 stays paused, `submission_ready` stays false. Since 29 September the product surfaces (side panel, Prototype pages and popup) use the Signal design system and the public Website is a light landing page with key information only (`DESIGN.md`, `Docs/decisions/brain-signal-redesign.md`); that resolves the earlier ARCH-002 vs side-panel palette conflict. Since 29 September (v5) redaction runs on the device and planning in the cloud: the Warden's GLiNER scores the page line by line (it previously lost names past its window), `/plan` defaults to Groq behind an egress guard, and the extension does every plan check itself and shows the boundary live (`Docs/decisions/brain-v5-local-redaction-cloud-planner.md`). Waves below are history of the master prototype. On 29 September the first real-Groq end-to-end run (`Benchmarks/results/e2e-v5-boundary-v02.json`) replaced the fake-planner evidence, and `Docs/decisions/brain-cloud-models-jev.md` records which local models can move to cloud or Jev (GLiNER and UltraFace cannot). On 30 September the Groq chain put `qwen/qwen3.8-27b` first at temperature 0, and an opt-in decision-model fast path (`WARDEN_FAST_PATH=jev|laya`) was built and measured in the same note.
