@@ -170,7 +170,8 @@ def _laya_router():
             import laya  # optional dependency, imported only when selected
 
             path = os.environ.get("WARDEN_LAYA_MODEL", "").strip()
-            _LAYA["router"] = laya.Agent(path, device="cpu") if path else laya.Router()
+            device = os.environ.get("WARDEN_LAYA_DEVICE", "cpu")
+            _LAYA["router"] = laya.Agent(path, device=device) if path else laya.Router()
             _LAYA["name"] = "laya:" + os.path.basename(path.rstrip("/")) if path else None
         return _LAYA["router"]
 

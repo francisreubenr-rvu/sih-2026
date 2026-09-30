@@ -1,4 +1,4 @@
-"""Fine-tune Laya on Dhristi's fast-path decisions, on CPU.
+"""Fine-tune Laya on Dhristi's fast-path decisions (CPU by default; uses CUDA when present).
 
 A single-process port of the authors' DDP notebook
 (github.com/NandhaKishorM/laya, notebooks/laya_finetune_typed_decisions_2xT4_kaggle.ipynb):
@@ -8,6 +8,11 @@ CPU with no GPU: fp32 instead of fp16 autocast, no DDP, and only the top TRAIN_T
 layers plus the decision head are trained (the lower layers stay frozen).
 
     python scripts/laya-finetune/train_cpu.py <base_model_dir> scripts/laya-finetune/train.jsonl <out_dir>
+
+Environment: EPOCHS (2), TRAIN_TOP_LAYERS (6; 28 or more trains the whole encoder, as the
+authors' recipe does), MAX_LEN / HEAD_MAX_LEN (default: the checkpoint's; the authors trained at
+1024 / 256). On CUDA it uses fp16 autocast and gradient checkpointing, as the notebook does.
+The lengths used are written into the output config, so inference reads the same ones.
 """
 
 import json
@@ -114,8 +119,13 @@ def main():
     base, data, out_dir = sys.argv[1], sys.argv[2], sys.argv[3]
     torch.manual_seed(SEED)
     torch.set_num_threads(os.cpu_count() or 4)
+    device = torch.device("cuda" if torch.cuda.is_available() and not os.environ.get("FORCE_CPU") else "cpu")
+    use_amp = device.type == "cuda"
     _fix_tokenizer_config(base)
     cfg = json.load(open(os.path.join(base, "rl_agent_config.json")))
+    for key, env in (("max_len", "MAX_LEN"), ("head_max_len", "HEAD_MAX_LEN")):
+        if os.environ.get(env):
+            cfg[key] = int(os.environ[env])
     tok = AutoTokenizer.from_pretrained(os.path.join(base, "tokenizer"))
     model = build_model(cfg, encoder_dir=os.path.join(base, "encoder"))
     model.load_state_dict(load_file(os.path.join(base, "model.safetensors")), strict=True)
@@ -123,7 +133,11 @@ def main():
     keep = {f"layers.{k}." for k in range(n_layers - TRAIN_TOP_LAYERS, n_layers)}
     for name, p in model.named_parameters():
         p.requires_grad = (not name.startswith("encoder.")) or any(k in name for k in keep) or "final_norm" in name
+    if use_amp:
+        model.encoder.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+    model.to(device)
     model.train()
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp)
 
     all_items = items_from(data, tok, cfg)
     order = list(range(len(all_items)))
@@ -139,7 +153,8 @@ def main():
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=max(1, steps_per_epoch * EPOCHS // GRAD_ACCUM), eta_min=1e-6)
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"items {len(all_items)} (train {len(train)}, calibration {len(calib)}) | trainable {trainable / 1e6:.0f}M "
-          f"of {sum(p.numel() for p in model.parameters()) / 1e6:.0f}M | epochs {EPOCHS}", flush=True)
+          f"of {sum(p.numel() for p in model.parameters()) / 1e6:.0f}M | epochs {EPOCHS} | {device} | "
+          f"max_len {cfg['max_len']} head_max_len {cfg['head_max_len']}", flush=True)
 
     rng = random.Random(SEED)
     t0 = time.time()
@@ -149,13 +164,14 @@ def main():
         tot, n = 0.0, 0
         opt.zero_grad(set_to_none=True)
         for step, chunk in enumerate(batches(train, rng), 1):
-            b = collate(chunk, tok.pad_token_id)
-            logits, act = model(b["input_ids"], b["attention_mask"], b["marker_pos"], b["marker_mask"], b["qtype"])
+            b = {k: v.to(device) for k, v in collate(chunk, tok.pad_token_id).items()}
+            with torch.autocast(device.type, dtype=torch.float16, enabled=use_amp):
+                logits, act = model(b["input_ids"], b["attention_mask"], b["marker_pos"], b["marker_mask"], b["qtype"])
             logits = logits.float()
             mask = b["marker_mask"]
             k = mask.sum(-1, keepdim=True).float()
             target = b["target"]
-            eps = torch.randn((GROUP_SIZE,) + logits.shape) * sigma * mask
+            eps = torch.randn((GROUP_SIZE,) + logits.shape, device=device) * sigma * mask
             eps = (eps - eps.sum(-1, keepdim=True) / k) * mask
             z = logits.detach().unsqueeze(0) + eps
             q = torch.softmax(z.masked_fill(~mask, -1e4), -1)
@@ -166,10 +182,12 @@ def main():
             loss_rl = -(adv * logp).mean()
             loss_ce = -(target * torch.log_softmax(logits.masked_fill(~mask, -1e4), -1)).sum(-1).mean()
             loss = (loss_rl + loss_ce) / GRAD_ACCUM + 0.0 * act.sum()
-            loss.backward()
+            scaler.scale(loss).backward()
             if step % GRAD_ACCUM == 0 or step == steps_per_epoch:
+                scaler.unscale_(opt)
                 torch.nn.utils.clip_grad_norm_([p for p in model.parameters() if p.requires_grad], 1.0)
-                opt.step()
+                scaler.step(opt)
+                scaler.update()
                 sched.step()
                 opt.zero_grad(set_to_none=True)
             tot += loss_ce.item()
@@ -185,8 +203,9 @@ def main():
     with torch.no_grad():
         for i in range(0, len(calib), 8):
             chunk = calib[i : i + 8]
-            b = collate(chunk, tok.pad_token_id)
-            lg, _ = model(b["input_ids"], b["attention_mask"], b["marker_pos"], b["marker_mask"], b["qtype"])
+            b = {k: v.to(device) for k, v in collate(chunk, tok.pad_token_id).items()}
+            with torch.autocast(device.type, dtype=torch.float16, enabled=use_amp):
+                lg, _ = model(b["input_ids"], b["attention_mask"], b["marker_pos"], b["marker_mask"], b["qtype"])
             for j, it in enumerate(chunk):
                 preds.append((it["qtype"], lg[j, : len(it["markers"])].float().tolist(), it["target"]))
     temps = list(cfg.get("temperature", [1.2, 1.2, 1.2]))
@@ -197,13 +216,14 @@ def main():
     print("calibration temperatures (choice, score, noul):", [round(t, 3) for t in temps], flush=True)
 
     os.makedirs(out_dir, exist_ok=True)
-    save_file({k: v.half().contiguous() for k, v in model.state_dict().items()}, os.path.join(out_dir, "model.safetensors"))
+    save_file({k: v.half().contiguous().cpu() for k, v in model.state_dict().items()}, os.path.join(out_dir, "model.safetensors"))
     model.encoder.config.save_pretrained(os.path.join(out_dir, "encoder"))
     tok.save_pretrained(os.path.join(out_dir, "tokenizer"))
     cfg.update({"fine_tuned": True, "model_name": "laya-dhristi-fastpath", "temperature": temps})
     cfg.pop("temperature_by_options", None)
     json.dump(cfg, open(os.path.join(out_dir, "rl_agent_config.json"), "w"), indent=2)
-    json.dump({"seed": SEED, "epochs": EPOCHS, "train_top_layers": TRAIN_TOP_LAYERS, "items": len(all_items),
+    json.dump({"seed": SEED, "epochs": EPOCHS, "train_top_layers": TRAIN_TOP_LAYERS, "device": device.type,
+               "max_len": cfg["max_len"], "head_max_len": cfg["head_max_len"], "items": len(all_items),
                "train_items": len(train), "calibration_items": len(calib), "trainable_params": trainable,
                "epochs_log": log, "temperatures": temps, "data": os.path.basename(data)},
               open(os.path.join(out_dir, "training_meta.json"), "w"), indent=2)

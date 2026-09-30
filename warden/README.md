@@ -237,8 +237,10 @@ through to the planner. It runs after the egress guard, on the same sanitized bo
 Measured 30 September 2026 (`../Docs/decisions/brain-cloud-models-jev.md`): Jev answered 39 of 89
 held-out steps at 0.9 and was right on all 39, never on a free-text step; in the real extension loop
 it answered every step of the fixture task at a median of about 236 ms. Laya, zero-shot on CPU,
-deferred every step and only added its own time (585 to 847 ms p50); leave it off until it is
-fine-tuned on these action choices.
+deferred every step and only added its own time (585 to 847 ms p50). `WARDEN_LAYA_MODEL=<dir>` loads a
+fine-tuned checkpoint (`../scripts/laya-finetune/`) and `WARDEN_LAYA_DEVICE` (default `cpu`) picks the device.
+The two CPU fine-tunes of 30 September underfit, and the second lost the free-text gate, so leave Laya
+off and never run a Laya checkpoint below the 0.9 threshold without re-running the benchmark.
 
 ## Validation
 

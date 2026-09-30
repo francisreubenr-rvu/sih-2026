@@ -1,3 +1,10 @@
+## Round 24 — Laya fine-tuning (30 September 2026)
+
+- [x] v1 option truncation found and fixed: long option keys left about 12 tokens per option and cut off the field label (61 of 200 training steps collapsed); Laya now gets compact keys.
+- [ ] Both CPU fine-tunes underfit (v2: 29/120 on its own training steps, base 24/120). The authors' recipe (whole encoder, 4 epochs, ~6,000 decisions) needs a GPU; `kaggle_train.ipynb` is ready but not run.
+- [ ] v2's free-text answer collapsed to "no" everywhere (training set 12% free-text steps), removing the gate that kept zero-shot Laya safe; below 0.9 it acts wrongly on free-text steps. Not deployed; the threshold must not be lowered for Laya without re-benchmarking. Rebalance the generator if the GPU run shows the same collapse.
+- [ ] Fine-tuned weights (0.8 GB) cannot go in Git here (no LFS, 100 MB limit); needs a Hugging Face repo or release asset chosen by Francis.
+
 ## Round 23 — Qwen first, fast path, Laya (30 September 2026)
 
 - [x] Warden's Groq call had no temperature, so the same scene got different plans between runs; now temperature 0 (test asserts it). The 29 September Qwen ranking was measured under different settings than the Warden used; recorded as a correction in `Docs/decisions/brain-cloud-models-jev.md`.

@@ -97,10 +97,26 @@ Laya is an open-weight (Apache-2.0) decision model with the same interface as Je
 - Zero-shot it is not usable as a planner here. Its top choice was right on 33% (held-out) to 55% (design) of steps, and it answered "free text is needed" on every one of 123 steps, so the fast path deferred all of them and Laya only added its own time. That gate is what kept it safe: with the gate removed, at 0.9 it would have acted on 6 held-out steps and been wrong on all 6. Its confidence is not calibrated for this task zero-shot.
 - Its value is that it would keep the fast path **on the device**. Its card reports that fine-tuning on domain decisions (their `laya-typed-decisions` checkpoint) roughly doubled accuracy on their benchmark (0.362 to 0.766); that is their number, not ours. Fine-tuning it on Dhristi's action choices is the step that would make a local fast path real.
 
+### Fine-tuning Laya (30 September, Francis: "go forward on training Laya")
+
+Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from the authors' notebook, `diagnose.py`, `kaggle_train.ipynb`). Training data is 900 synthetic steps from domains and labels disjoint from both evaluation sets (the generator reports the overlap; it is empty).
+
+| Run | What changed | Fit on its own training steps (choice) | Held-out top choice | Used at 0.9 |
+|---|---|---|---|---|
+| zero-shot | none | base model 24/120 | 33% | 0/90 |
+| zero-shot, compact keys | option format only | n/a | 37% | 0/30 |
+| v1 (CPU, top 6 layers, 2 epochs) | trained on verbose keys | 6/60 via `laya.Agent` | 33% | 0/90 |
+| v2 (CPU, top 6 layers, 2 epochs) | compact keys | 29/120 via training path | 33% | 0/90 |
+
+- v1 failed on my setup: Laya keeps about 12 tokens of each option, the long keys cut off the field label, and in 61 of 200 training steps several options rendered identically. `fastpath.option_table(compact=True)` fixes that for Laya (0 of 200 collapse); Jev keeps the format it was measured with.
+- v2 underfit too (29/120 on its own training steps against 24/120 before training). Training only the top 6 of 28 layers for about 200 optimizer updates on a 4-core CPU is not enough; the authors' recipe trains the whole encoder for 4 epochs on about 6,000 decisions, which is roughly 27 hours on this CPU and minutes on a GPU.
+- **v2 is less safe than zero-shot.** Its free-text answer collapsed to "no" on every step (the training set is 12% free-text steps), so the gate that kept zero-shot Laya from acting on free-text steps no longer fires. At the default 0.9 it acts on nothing (highest confidence 0.79); at 0.5 it would act on 9 held-out steps and be wrong on 6, including a free-text rename. Do not deploy v2, and do not lower the threshold for any Laya checkpoint without re-running `fastpath_bench.py`.
+- Next: `scripts/laya-finetune/kaggle_train.ipynb` runs the authors' recipe (whole encoder, 4 epochs, 1024/256 lengths, 3,000 generated steps) on a free Kaggle GPU, then `diagnose.py` and the benchmark. It needs Francis's Kaggle account. A GPU result should also be checked for the free-text collapse before any use; if it appears, rebalance the generator toward free-text steps.
+
 ### Recommendation (30 September)
 
 1. **Jev fast path: ready to switch on for demos** (`WARDEN_FAST_PATH=jev`). On these synthetic cases it never answered wrongly or on a free-text step, it answered about half the steps, and in the real loop it answered every step of the fixture task at a median of about 236 ms. It is another cloud recipient of the sanitized body, so it stays opt-in.
-2. **Laya: leave off** until it is fine-tuned on Dhristi's action choices; zero-shot it only adds latency.
+2. **Laya: leave off.** Zero-shot it only adds latency; the two CPU fine-tunes underfit, and v2 lost the free-text safety gate. The GPU notebook is the next attempt.
 3. **Re-run `llm_settings_bench.py` on a fresh quota** before calling Qwen better than gpt-oss-20b at temperature 0.
 4. None of this passes G11 (200 ms for the full flow); one planner call alone is near or over that budget.
 
@@ -112,6 +128,7 @@ Laya is an open-weight (Apache-2.0) decision model with the same interface as Je
 - `Benchmarks/results/fastpath-bench-v01.json`: fast path, Jev and Laya, design and held-out cases, with the Groq chain's answer on each case.
 - `Benchmarks/results/groq-settings-bench-v01.json`: Groq models at default temperature vs 0, Warden request shape (rate-limited; inconclusive).
 - `Benchmarks/results/e2e-v5-boundary-v03.json`: real extension + Warden with the fast path, 5 runs, 0 personal values.
+- `Benchmarks/results/fastpath-bench-laya-ft-v01.json`, `-ft-v02.json`, `-zeroshot-compact-v01.json`: the fine-tuning runs above, each with its caveat.
 - Harness: `scripts/cloud-models/bench.py`, `fastpath_bench.py`, `llm_settings_bench.py`, `cases.py`, `cases_heldout.py`, `scripts/e2e-v5/recording-relay.mjs`.
 
 ## Not changed

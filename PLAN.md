@@ -1,3 +1,10 @@
+## Laya fine-tuning — 30 September 2026
+
+- Francis: Jev for demos stays an open decision; go forward on training Laya.
+- Built `scripts/laya-finetune/` (generator with zero overlap against the evaluation sets, trainer ported from the authors' notebook, `diagnose.py`, `kaggle_train.ipynb`) and `WARDEN_LAYA_MODEL` / `WARDEN_LAYA_DEVICE` in the Warden.
+- v1 failed on option truncation (fixed with compact keys for Laya); v2 underfit on CPU (29/120 on its own training steps, base 24/120) and its free-text answer collapsed to "no", so it must not be used or run below the 0.9 threshold. Neither CPU run answered a single held-out step at 0.9.
+- Next: run `kaggle_train.ipynb` (needs Francis's Kaggle account) and decide where the weights live (about 0.8 GB; no Git LFS, no Hugging Face token here).
+
 ## Qwen first, Jev fast path, Laya — 30 September 2026
 
 - Francis: Qwen first in the Groq chain; build the Jev fast path and benchmark it; test Laya (`convaiinnovations/laya`, the "Layla" of 29 September).
