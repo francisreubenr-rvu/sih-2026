@@ -1,0 +1,256 @@
+"""fastpath.py: optional decision-model fast path in front of the /plan LLM.
+
+A decision model (TypeSafe Jev in the cloud, or Laya on this machine) cannot
+write text. It can pick one option from a list with a calibrated probability.
+Most browser steps are exactly that: click one of the controls on the page,
+type one of the task's vault tokens into one of its fields, or finish. So the
+fast path lists those actions, asks the decision model to pick one, and hands
+the step to the LLM planner when it cannot be trusted to:
+
+  * the model picks the explicit "none of these" option,
+  * the model says the task needs typed text that is not a vault token
+    (a search phrase, a message body: something only an LLM can write), or
+  * the chosen option's probability is under WARDEN_FAST_PATH_MIN_CONFIDENCE.
+
+Measured on 29 September 2026 (Docs/decisions/brain-cloud-models-jev.md), Jev
+alone answered a free-text step wrongly at confidence 1.0, so the confidence
+threshold is not enough by itself; the other two exits exist for that case.
+
+Input is the same sanitized material the LLM planner gets, after the same
+egress guard in app.dispatch_plan. For Jev that material leaves the machine;
+for Laya it does not. The plan it returns passes groq_client.validate_action
+like any other.
+
+Selected by WARDEN_FAST_PATH=jev|laya. Unset (the default) means off.
+"""
+
+import os
+import re
+import threading
+import time
+from typing import Optional
+
+import httpx
+
+import groq_client
+
+ESCAPE = "none of these"
+CLICKABLE = {"button", "link", "a", "submit", "checkbox", "radio", "select", "option", "summary", "menuitem", "tab"}
+_TOKEN_RE = re.compile(r"\b[A-Z][A-Z0-9]*#\d+\b")
+
+QUESTION_NEXT = (
+    "Which single browser action should happen next to move the task forward? "
+    "Do not repeat an action that is already done."
+)
+QUESTION_FREE_TEXT = (
+    "To finish the task, must someone type words or numbers that are not one of the listed placeholder tokens?"
+)
+
+
+class FastPathError(Exception):
+    pass
+
+
+def mode() -> str:
+    raw = os.environ.get("WARDEN_FAST_PATH", "").strip().lower()
+    if raw in ("", "off", "0", "false", "none"):
+        return "off"
+    if raw in ("jev", "laya"):
+        return raw
+    return "invalid"
+
+
+def min_confidence() -> float:
+    try:
+        return float(os.environ.get("WARDEN_FAST_PATH_MIN_CONFIDENCE", "0.9"))
+    except ValueError:
+        return 0.9
+
+
+def destination(backend: str) -> Optional[str]:
+    return {"jev": "cloud", "laya": "local"}.get(backend)
+
+
+def task_tokens(tokenized_task: str) -> list:
+    return sorted(set(_TOKEN_RE.findall(tokenized_task or "")))
+
+
+def options(body: dict) -> dict:
+    """Option key -> plain-language description, for every action the scene allows."""
+    tokens = task_tokens(body.get("tokenizedTask") or "")
+    opts = {}
+    for el in body.get("elements") or []:
+        sel = el.get("selector")
+        if not isinstance(sel, str) or not sel:
+            continue
+        kind = str(el.get("fieldType") or "").lower()
+        label = str(el.get("label") or "").strip()[:80]
+        if kind in CLICKABLE:
+            opts[f"click {sel}"] = f'Click the {kind} "{label}"'
+        else:
+            state = "already filled" if el.get("filled") else "empty"
+            for tok in tokens:
+                opts[f"type {sel} {tok}"] = f'Type {tok} into the {kind or "text"} field "{label}" ({state})'
+    opts["finish"] = "The task is complete; nothing is left to do"
+    opts[ESCAPE] = "None of these: the next step needs something not listed here"
+    return opts
+
+
+def state_for(body: dict) -> dict:
+    history = []
+    for h in body.get("history") or []:
+        if isinstance(h, dict):
+            parts = [str(h.get("action") or ""), str(h.get("target") or ""), str(h.get("value") or "")]
+            history.append(" ".join(p for p in parts if p).strip() + f" ({h.get('status', 'ok')})")
+        else:
+            history.append(str(h))
+    return {
+        "task": body.get("tokenizedTask") or "",
+        "placeholder_tokens": task_tokens(body.get("tokenizedTask") or "") or ["none"],
+        "page": (body.get("sanitizedDom") or "")[:4000],
+        "done_so_far": history or ["nothing yet"],
+    }
+
+
+def questions(body: dict) -> dict:
+    return {
+        "next": {"type": "choice", "instructions": QUESTION_NEXT, "criteria": options(body)},
+        "free_text": {"type": "noul", "instructions": QUESTION_FREE_TEXT},
+    }
+
+
+# ---- backends -----------------------------------------------------------------------------------
+
+def _ask_jev(state: dict, qs: dict) -> tuple:
+    key = (os.environ.get("JEV_API_KEY") or "").strip()
+    if not key:
+        raise FastPathError("JEV_API_KEY is not configured")
+    base = os.environ.get("JEV_BASE_URL", "https://api.typesafe.ai/v1").rstrip("/")
+    resp = httpx.post(
+        f"{base}/systemone",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        json={"model": os.environ.get("JEV_MODEL", "jev-latest"), "state": state, "questions": qs},
+        timeout=float(os.environ.get("WARDEN_JEV_TIMEOUT_S", "5")),
+    )
+    if resp.status_code != 200:
+        raise FastPathError(f"Jev HTTP {resp.status_code}")
+    data = resp.json()
+    return data["answers"], data.get("model") or "jev"
+
+
+_LAYA = {"router": None, "lock": threading.Lock()}
+
+
+def _laya_router():
+    with _LAYA["lock"]:
+        if _LAYA["router"] is None:
+            from laya import Router  # optional dependency, imported only when selected
+
+            _LAYA["router"] = Router()
+        return _LAYA["router"]
+
+
+def _ask_laya(state: dict, qs: dict) -> tuple:
+    out = _laya_router().predict(state, qs)
+    return out["answers"], f"laya:{(out.get('routing') or {}).get('model', 'english')}"
+
+
+BACKENDS = {"jev": _ask_jev, "laya": _ask_laya}
+
+
+def warm() -> None:
+    """Load Laya ahead of the first step, off the request path. No-op for Jev."""
+    if mode() == "laya":
+        try:
+            _laya_router().predict({"task": "warm up"}, {"q": {"type": "noul", "instructions": "Is this a test?"}})
+        except Exception:  # noqa: BLE001 -- warming is best effort; the request path reports errors
+            pass
+
+
+# ---- decision -----------------------------------------------------------------------------------
+
+def decide(body: dict, backend: Optional[str] = None) -> dict:
+    """Ask the decision model. Returns {"used": bool, "reason", "choice", "confidence",
+    "freeTextProbability", "model", "latencyMs", "plan"?}. Never raises for a model answer
+    it does not trust; raises FastPathError only when the backend itself fails."""
+    backend = backend or mode()
+    ask = BACKENDS.get(backend)
+    if ask is None:
+        raise FastPathError(f"unknown fast path backend {backend!r}")
+    elements = body.get("elements") or []
+    qs = questions(body)
+    t0 = time.monotonic()
+    answers, model = ask(state_for(body), qs)
+    latency = round((time.monotonic() - t0) * 1000.0, 1)
+
+    nxt = answers.get("next") or {}
+    choice = nxt.get("choice")
+    probs = nxt.get("probabilities") or {}
+    confidence = probs.get(choice)
+    if not isinstance(confidence, (int, float)):
+        confidence = nxt.get("answer_confidence", nxt.get("confidence"))
+    free_p = (answers.get("free_text") or {}).get("noul")
+    record = {
+        "backend": backend,
+        "destination": destination(backend),
+        "model": model,
+        "choice": choice,
+        "confidence": confidence,
+        "freeTextProbability": free_p,
+        "latencyMs": latency,
+    }
+
+    if choice not in qs["next"]["criteria"]:
+        return {**record, "used": False, "reason": "answer outside the offered options"}
+    if choice == ESCAPE:
+        return {**record, "used": False, "reason": "model chose none of these"}
+    if isinstance(free_p, (int, float)) and free_p >= 0.5:
+        return {**record, "used": False, "reason": "task needs typed text that is not a token"}
+    if not isinstance(confidence, (int, float)) or confidence < min_confidence():
+        return {**record, "used": False, "reason": f"confidence under {min_confidence()}"}
+
+    plan = _plan_from_choice(choice, elements)
+    try:
+        plan = groq_client.validate_action(plan, elements)
+    except groq_client.GroqError as exc:
+        return {**record, "used": False, "reason": f"plan failed validation: {exc}"}
+    return {**record, "used": True, "reason": "accepted", "plan": plan}
+
+
+def _plan_from_choice(choice: str, elements: list) -> dict:
+    if choice == "finish":
+        return {"action": "finish", "target_selector": None, "coordinates": {"x": 0, "y": 0},
+                "value": None, "reasoning_token": "fast path: task complete"}
+    verb, _, rest = choice.partition(" ")
+    selector, _, value = rest.partition(" ")
+    el = next((e for e in elements if e.get("selector") == selector), {})
+    coords = {"x": el.get("x", 0) or 0, "y": el.get("y", 0) or 0}
+    return {"action": verb, "target_selector": selector, "coordinates": coords,
+            "value": value or None, "reasoning_token": f"fast path: {verb} {selector}"}
+
+
+def plan_or_none(body: dict) -> tuple:
+    """(result or None, fastPath record or None) for app.dispatch_plan. A backend failure is
+    recorded and returns None, so the LLM planner still answers: the fast path can only ever
+    remove a planner call, never block one."""
+    backend = mode()
+    if backend == "off":
+        return None, None
+    if backend == "invalid":
+        return None, {"used": False, "reason": "WARDEN_FAST_PATH must be jev, laya or unset"}
+    try:
+        rec = decide(body, backend)
+    except Exception as exc:  # noqa: BLE001 -- see docstring
+        return None, {"backend": backend, "used": False, "reason": f"backend error: {type(exc).__name__}: {str(exc)[:120]}"}
+    if not rec.get("used"):
+        return None, {k: v for k, v in rec.items() if k != "plan"}
+    result = {
+        "plan": rec["plan"],
+        "model": rec["model"],
+        "attempts": 1,
+        "switched": [],
+        "latencyMs": rec["latencyMs"],
+        "planner": backend,
+        "destination": rec["destination"],
+    }
+    return result, {k: v for k, v in rec.items() if k != "plan"}

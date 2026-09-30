@@ -1376,6 +1376,7 @@ def test_groq_base_url_points_the_real_client_at_a_local_server(monkeypatch):
     assert seen["path"] == "/openai/v1/chat/completions"
     assert seen["auth"] == "Bearer test-fake-key-not-real"
     assert seen["body"]["model"] == "fake-model"
+    assert seen["body"]["temperature"] == 0
     assert result["model"] == "fake-model"
     assert result["planner"] == "groq" and result["destination"] == "cloud"
 
@@ -1453,3 +1454,114 @@ def test_address_form_field_names_are_descriptors_not_values(value):
 @pytest.mark.parametrize("value", ["Priya Raghunathan", "Bengaluru", "560001"])
 def test_real_values_are_not_descriptors(value):
     assert not entities._is_structural_descriptor(value)
+
+
+# ---------------------------------------------------------------------------
+# Decision-model fast path (fastpath.py): WARDEN_FAST_PATH=jev|laya
+# ---------------------------------------------------------------------------
+import fastpath  # noqa: E402
+
+_FP_BODY = {
+    "tokenizedTask": "Update my contact email to EMAIL#1 and save",
+    "sanitizedDom": "1. INPUT selector=#email label=\"email\"\n2. BUTTON selector=#save label=\"Save\"",
+    "elements": [
+        {"selector": "#email", "label": "Contact email", "fieldType": "email", "filled": False, "x": 10, "y": 20},
+        {"selector": "#save", "label": "Save", "fieldType": "button", "filled": False, "x": 30, "y": 40},
+    ],
+    "history": [],
+}
+
+
+def _fp_answers(choice, p=0.97, free=0.05):
+    return {"next": {"type": "choice", "choice": choice, "probabilities": {choice: p}},
+            "free_text": {"type": "noul", "noul": free}}
+
+
+def _fp_env(monkeypatch, backend, answers=None, raises=None):
+    calls = {"fast": 0, "groq": 0}
+
+    def fake_backend(state, qs):
+        calls["fast"] += 1
+        calls["qs"] = qs
+        calls["state"] = state
+        if raises:
+            raise raises
+        return answers, f"{backend}-test"
+
+    def fake_groq(body):
+        calls["groq"] += 1
+        return {"plan": {"action": "finish", "target_selector": None, "coordinates": {"x": 0, "y": 0},
+                         "value": None, "reasoning_token": "llm"}, "model": "llm-test", "attempts": 1,
+                "switched": [], "latencyMs": 1.0}
+
+    monkeypatch.setitem(fastpath.BACKENDS, backend, fake_backend)
+    monkeypatch.setattr(groq_client, "plan_via_groq", fake_groq)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.setenv("WARDEN_FAST_PATH", backend)
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    monkeypatch.delenv("WARDEN_FAST_PATH_MIN_CONFIDENCE", raising=False)
+    return calls
+
+
+def test_fast_path_is_off_by_default(monkeypatch):
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
+    monkeypatch.delenv("WARDEN_FAST_PATH")
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 0 and calls["groq"] == 1
+    assert "fastPath" not in result
+
+
+def test_fast_path_options_cover_clicks_token_types_finish_and_escape():
+    opts = fastpath.options(_FP_BODY)
+    assert set(opts) == {"type #email EMAIL#1", "click #save", "finish", fastpath.ESCAPE}
+
+
+@pytest.mark.parametrize("backend,destination", [("jev", "cloud"), ("laya", "local")])
+def test_fast_path_answer_replaces_the_llm_call(monkeypatch, backend, destination):
+    calls = _fp_env(monkeypatch, backend, _fp_answers("type #email EMAIL#1"))
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["groq"] == 0 and calls["fast"] == 1
+    assert result["plan"] == {"action": "type", "target_selector": "#email", "coordinates": {"x": 10, "y": 20},
+                              "value": "EMAIL#1", "reasoning_token": "fast path: type #email"}
+    assert result["planner"] == backend and result["destination"] == destination
+    assert result["fastPath"]["used"] is True
+    # The decision model sees the same sanitized material the LLM would, and no token map.
+    assert "tokens" not in calls["state"]
+
+
+@pytest.mark.parametrize("answers,reason", [
+    (_fp_answers(fastpath.ESCAPE), "none of these"),
+    (_fp_answers("click #save", free=0.8), "typed text"),
+    (_fp_answers("click #save", p=0.6), "confidence under"),
+    (_fp_answers("click #elsewhere"), "outside the offered options"),
+])
+def test_fast_path_defers_to_the_llm(monkeypatch, answers, reason):
+    calls = _fp_env(monkeypatch, "jev", answers)
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 1 and calls["groq"] == 1
+    assert result["model"] == "llm-test" and result["planner"] == "groq"
+    assert result["fastPath"]["used"] is False and reason in result["fastPath"]["reason"]
+
+
+def test_fast_path_backend_failure_never_blocks_planning(monkeypatch):
+    calls = _fp_env(monkeypatch, "jev", raises=fastpath.FastPathError("Jev HTTP 503"))
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["groq"] == 1 and result["model"] == "llm-test"
+    assert "backend error" in result["fastPath"]["reason"]
+
+
+def test_cloud_fast_path_never_runs_in_offline_mode(monkeypatch):
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
+    monkeypatch.setattr(ollama_client, "plan_via_ollama", lambda body: {"plan": {"action": "finish"}, "model": "local"})
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 0
+    assert result["destination"] == "local" and "offline" in result["fastPath"]["reason"]
+
+
+def test_egress_guard_runs_before_the_fast_path(monkeypatch):
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
+    body = dict(_FP_BODY, tokenizedTask="Update my contact email to priya.r@example.com")
+    with pytest.raises(warden_app.PlanRouteError) as exc:
+        warden_app.dispatch_plan(body)
+    assert exc.value.status == 422 and calls["fast"] == 0 and calls["groq"] == 0

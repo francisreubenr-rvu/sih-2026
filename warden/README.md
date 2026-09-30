@@ -203,24 +203,42 @@ blanked before the scan, so they never trip it. A body carrying `tokens` is stil
 
 ### Model fallback
 
-`/plan` tries the chain in order, moving on immediately on HTTP 5xx, 429, a timeout, or an
+`/plan` tries the chain in order at temperature 0, moving on immediately on HTTP 5xx, 429, a timeout, or an
 unparseable body. The response lists every model that failed in `switched`, so a fallback is visible
 in the extension's step log instead of silent.
 
 Default chain, overridable with `GROQ_MODEL_CHAIN`:
 
-1. `openai/gpt-oss-20b`
-2. `openai/gpt-oss-120b`
+1. `qwen/qwen3.8-27b` (first since 30 September 2026: 36/36 correct at p50 342 ms on the Warden's prompt, `Benchmarks/results/cloud-model-bench-groq-v02.json`)
+2. `openai/gpt-oss-20b`
+3. `openai/gpt-oss-120b`
 
 The chain names models the ACCOUNT can actually reach, not models that exist in some catalogue. It
 originally listed `llama-3.3-70b-versatile` and `llama-3.1-8b-instant`, and probing this key on
 13 September 2026 showed both return "does not exist or you do not have access", so every request
 paid a failed round trip before succeeding and the third fallback did not exist at all. Probed
-across the reachable catalogue, these two are the only usable models on this account. Re-probe before
+across the reachable catalogue on 30 September 2026, these three answer on this account. Re-probe before
 editing: a dead entry costs a wasted request on every call.
 
 Only the sanitised material crosses the boundary: `tokenizedTask`, `sanitizedDom`, `elements` and
 `history`. Never the token map, never a raw value.
+
+### Decision-model fast path (optional)
+
+`WARDEN_FAST_PATH=jev` (TypeSafe Jev, cloud, `JEV_API_KEY`) or `WARDEN_FAST_PATH=laya` (Laya on this
+machine, `pip install laya`) puts a decision model in front of the planner (`fastpath.py`). It lists
+the actions the scene allows (click a control, type a task token into a field, finish, or "none of
+these") and asks, in the same call, whether the task needs typed text that is not a token. The step
+goes to the planner as usual when the model picks "none of these", says free text is needed, or its
+chosen action is under `WARDEN_FAST_PATH_MIN_CONFIDENCE` (default 0.9). A backend error also falls
+through to the planner. It runs after the egress guard, on the same sanitized body. Jev is skipped when
+`WARDEN_PLANNER=ollama`, since the offline mode sends nothing off the machine. Off by default.
+
+Measured 30 September 2026 (`../Docs/decisions/brain-cloud-models-jev.md`): Jev answered 39 of 89
+held-out steps at 0.9 and was right on all 39, never on a free-text step; in the real extension loop
+it answered every step of the fixture task at a median of about 236 ms. Laya, zero-shot on CPU,
+deferred every step and only added its own time (585 to 847 ms p50); leave it off until it is
+fine-tuned on these action choices.
 
 ## Validation
 

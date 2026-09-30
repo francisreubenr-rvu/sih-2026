@@ -153,6 +153,11 @@ def _call_groq_model(model: str, prompt: str) -> str:
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "response_format": {"type": "json_object"},
+            # Deterministic plans. Without it Groq samples at its default temperature and the same
+            # model answered the same scene differently between runs (30 September 2026:
+            # account-type-email wrong in fastpath-bench-v01, right in groq-settings-bench-v01).
+            # The model ranking in cloud-model-bench-groq-v02 was measured at temperature 0.
+            "temperature": 0,
         },
         timeout=config.GROQ_TIMEOUT_S,
     )
