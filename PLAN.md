@@ -1,3 +1,11 @@
+## Qwen first, Jev fast path, Laya — 30 September 2026
+
+- Francis: Qwen first in the Groq chain; build the Jev fast path and benchmark it; test Laya (`convaiinnovations/laya`, the "Layla" of 29 September).
+- Groq chain now `qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b`, called at **temperature 0**. Correction: the 29 September Qwen ranking was measured at temperature 0 while the Warden sent none, and the same model answered the same scene differently between runs. The settings re-measure (`groq-settings-bench-v01.json`) was rate-limited (61 of 168 calls 429) and is inconclusive.
+- Fast path built (`warden/fastpath.py`, `WARDEN_FAST_PATH=jev|laya`, off by default, 11 tests). Held-out accuracy (`fastpath-bench-v01.json`): Jev answered 39/89 steps at 0.9, 39 correct, none on a free-text step. Real extension loop (`e2e-v5-boundary-v03.json`): 5 of 5 runs finished, 0 personal values; with Jev every step was answered by Jev (median about 236 ms) and Groq was never called.
+- Laya zero-shot on CPU: top choice right on 33 to 55% of steps, said "free text needed" on all 123, so it deferred everything and added 585 to 847 ms per step; without that gate it would have been wrong on all 6 held-out steps it was confident about. Leave off until fine-tuned.
+- Tests: Warden 112 + 6 skips. G11 **fail**, G20 **paused**, `submission_ready` **false**.
+
 ## Real cloud planner, cloud-model bench, branch merge — 29 September 2026
 
 - First end-to-end run with the **real** Groq planner (earlier v5 evidence used a scripted fake): 48 cloud requests over five runs, **0 personal values** (`Benchmarks/results/e2e-v5-boundary-v02.json`). The first run never finished: the planner could not see the page's "Saved" status and history had no value, so it retyped and resaved to the 25-step limit. Fixed (`extension/content.js` STATUS lines, `buildHistory` vault token, finish rule in `groq_client`); 3 of 3 runs then finished in 3 to 4 steps, planner round trip 325 to 1219 ms. Tests: extension 104/104 (two new, each failing on the old code).

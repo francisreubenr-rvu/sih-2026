@@ -1,0 +1,1330 @@
+{
+ "id": "groq-settings-bench-v01",
+ "date": "2026-09-30",
+ "harness": "scripts/cloud-models/llm_settings_bench.py",
+ "scope": "Warden request shape (response_format json_object) with Groq's default temperature vs temperature 0; one call per case; design (cases.py) + heldout (cases_heldout.py). Latency from a cloud container (location not verified).",
+ "results": {
+  "qwen/qwen3.8-27b temperature=default": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 0,
+     "correct": 12
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 2,
+     "correct": 24
+    },
+    "p50_ms": 702.6,
+    "wrong": [
+     "login-user: click #user",
+     "login-no-forgot: finish",
+     "notif-sms: click",
+     "notif-save: finish",
+     "notif-done: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "aadhaar-type: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model "
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 717.9
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 583.3
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 782.2
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 778.1
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 677.4
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 769.0
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 598.9
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 736.4
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 591.3
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #accept",
+     "correct": true,
+     "ms": 868.8
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 783.0
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2",
+     "correct": true,
+     "ms": 618.4
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 692.5
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 587.1
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "key": "click #cont",
+     "correct": true,
+     "ms": 904.3
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "type #acct BANKACCOUNT#1",
+     "correct": true,
+     "ms": 681.0
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 983.8
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 831.2
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "type #to EMAIL#1",
+     "correct": true,
+     "ms": 658.2
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "key": "type #body The meeting has moved to Friday.",
+     "correct": true,
+     "ms": 728.6
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "click #send",
+     "correct": true,
+     "ms": 631.3
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "key": "click #user",
+     "correct": false,
+     "ms": 1742.4
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "key": "finish",
+     "correct": false,
+     "ms": 679.4
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "key": "click #t-security",
+     "correct": true,
+     "ms": 685.9
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 701.3
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "key": "click",
+     "correct": false,
+     "ms": 723.9
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "key": "finish",
+     "correct": false,
+     "ms": 629.4
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 546.6
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "key": "type #q USB-C charger under 1000 rupees",
+     "correct": true,
+     "ms": 701.5
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "key": "click #go",
+     "correct": true,
+     "ms": 744.1
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "key": "click #cart",
+     "correct": true,
+     "ms": 702.6
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "click #topic",
+     "correct": true,
+     "ms": 578.3
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "key": "type #desc My payment did not go through. Please investigate the failed transaction.",
+     "correct": true,
+     "ms": 734.9
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 864.0
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "key": "type #ph PHONE#1",
+     "correct": true,
+     "ms": 618.9
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "key": "click #upd",
+     "correct": true,
+     "ms": 879.7
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "key": "click #sep",
+     "correct": true,
+     "ms": 675.1
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 1161.2
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "key": "click #pricing",
+     "correct": true,
+     "ms": 649.9
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "key": "type #wsname Orbit Ops",
+     "correct": true,
+     "ms": 601.2
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 499.3
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "key": "click #verify",
+     "correct": true,
+     "ms": 737.9
+    }
+   ]
+  },
+  "qwen/qwen3.8-27b temperature=0": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 5,
+     "correct": 7
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 13,
+     "correct": 16
+    },
+    "p50_ms": 695.8,
+    "wrong": [
+     "account-type-email: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "account-finish: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "save-not-delete: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "login-user: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "already-done: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "ship-addr: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "ship-continue: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "bank-done: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "mail-body-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "login-user: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "settings-security: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "notif-sms: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "search-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "search-go: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "support-desc-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "profile-phone-update: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "download-statement: HTTP 429: {\"error\":{\"message\":\"Request too large for model `",
+     "rename-free: click #rename",
+     "aadhaar-type: HTTP 429: {\"error\":{\"message\":\"Request too large for model `"
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 446.6
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 655.8
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 513.4
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 467.5
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 594.3
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 666.7
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 676.5
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 674.3
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 510.0
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #accept",
+     "correct": true,
+     "ms": 693.0
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 476.7
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2 imagery",
+     "correct": true,
+     "ms": 696.0
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 925.3
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 530.9
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 495.9
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "type #acct BANKACCOUNT#1",
+     "correct": true,
+     "ms": 1204.6
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 730.7
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 465.9
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "type #to EMAIL#1",
+     "correct": true,
+     "ms": 705.8
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 497.3
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "click #send",
+     "correct": true,
+     "ms": 1225.0
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 497.8
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "key": "click #signin",
+     "correct": true,
+     "ms": 747.7
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 418.8
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 616.6
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 475.8
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "key": "click #save-n",
+     "correct": true,
+     "ms": 679.7
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 723.5
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 511.1
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 461.5
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "key": "click #cart",
+     "correct": true,
+     "ms": 899.9
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "click #topic",
+     "correct": true,
+     "ms": 716.9
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 409.4
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 596.7
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "key": "type #ph PHONE#1",
+     "correct": true,
+     "ms": 686.2
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on input tokens p",
+     "correct": false,
+     "ms": 470.5
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 489.6
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 770.7
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "key": "click #pricing",
+     "correct": true,
+     "ms": 695.8
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "key": "click #rename",
+     "correct": false,
+     "ms": 675.6
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on output tokens p",
+     "correct": false,
+     "ms": 501.6
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "key": "click #verify",
+     "correct": true,
+     "ms": 646.1
+    }
+   ]
+  },
+  "openai/gpt-oss-20b temperature=default": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 0,
+     "correct": 12
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 16,
+     "correct": 12
+    },
+    "p50_ms": 992.3,
+    "wrong": [
+     "bank-done: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "mail-body-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "login-user: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "login-no-forgot: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "settings-notif: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "notif-save: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "notif-done: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "search-go: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "cart-open: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "support-email: type #topic Failed Payment",
+     "support-desc-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "support-submit: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "profile-phone: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "profile-phone-update: finish",
+     "download-statement: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "cookie-then-link: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "rename-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "aadhaar-verify: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model "
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1095.9
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 1140.0
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 676.0
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 1120.2
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 1133.4
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 767.2
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 992.3
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1073.4
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 1242.7
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #monthly",
+     "correct": true,
+     "ms": 798.6
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 750.9
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2",
+     "correct": true,
+     "ms": 877.7
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 1179.3
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 1011.9
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "key": "click #cont",
+     "correct": true,
+     "ms": 898.5
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "type #acct BANKACCOUNT#1",
+     "correct": true,
+     "ms": 987.2
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 1143.5
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 504.2
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "type #to EMAIL#1",
+     "correct": true,
+     "ms": 1149.7
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 484.3
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "click #send",
+     "correct": true,
+     "ms": 894.8
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 484.3
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 474.1
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "key": "click #t-security",
+     "correct": true,
+     "ms": 924.6
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 513.4
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "key": "click #sms-alerts",
+     "correct": true,
+     "ms": 1234.4
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 460.6
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 477.4
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "key": "type #q USB-C charger under 1000 rupees",
+     "correct": true,
+     "ms": 780.6
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 506.6
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 439.3
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "type #topic Failed Payment",
+     "correct": false,
+     "ms": 1139.6
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 490.3
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 485.0
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 464.9
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "key": "finish",
+     "correct": false,
+     "ms": 1072.2
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 354.9
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 848.1
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 473.5
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 466.4
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "key": "type #aad AADHAAR#1",
+     "correct": true,
+     "ms": 851.7
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 511.1
+    }
+   ]
+  },
+  "openai/gpt-oss-20b temperature=0": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 7,
+     "correct": 5
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 19,
+     "correct": 10
+    },
+    "p50_ms": 904.0,
+    "wrong": [
+     "account-type-email: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "save-not-delete: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "nav-downloads: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "two-fields-first: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "login-user: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "already-done: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "search-free-text: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "ship-name: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "ship-continue: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "bank-acct: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "bank-done: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "mail-to: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "mail-send: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "login-no-forgot: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "settings-security: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "notif-sms: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "notif-save: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "search-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "search-go: type #q USB-C charger under 1000 rupees",
+     "cart-open: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "support-email: HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Plea",
+     "support-desc-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "profile-phone: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "profile-phone-update: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "cookie-then-link: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "rename-free: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model ",
+     "aadhaar-verify: HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model "
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 362.8
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 890.6
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 754.7
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 492.6
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 885.2
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 453.1
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 488.4
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1126.5
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 1182.1
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #monthly",
+     "correct": true,
+     "ms": 1129.1
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 517.8
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 461.5
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 488.1
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 841.5
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 516.7
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 544.6
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 1142.5
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 508.2
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 498.5
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "key": "type #subj Meeting moved to Friday",
+     "correct": true,
+     "ms": 774.8
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 496.7
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 1037.1
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 505.4
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 439.9
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 850.2
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 482.0
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 483.0
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 1524.1
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 479.7
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "key": "type #q USB-C charger under 1000 rupees",
+     "correct": false,
+     "ms": 1039.6
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 510.7
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "error": "HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"co",
+     "correct": false,
+     "ms": 3071.8
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 526.9
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 723.8
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 504.1
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 476.6
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "key": "click #sep",
+     "correct": true,
+     "ms": 861.2
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 904.0
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 476.3
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 345.1
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "key": "type #aad AADHAAR#1",
+     "correct": true,
+     "ms": 991.9
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on tokens per m",
+     "correct": false,
+     "ms": 528.9
+    }
+   ]
+  }
+ }
+}

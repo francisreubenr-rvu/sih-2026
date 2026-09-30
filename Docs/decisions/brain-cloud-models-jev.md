@@ -1,8 +1,8 @@
 # Cloud models and Jev: what can replace a local model, measured
 
-**Date:** 29 September 2026
+**Date:** 29 September 2026; fast path and Laya added 30 September 2026
 **Asked by:** Francis, 29 September 2026: use the Groq, OpenCode and Jev keys, and test whether they (and "Layla") can replace our local models or be used somewhere.
-**Status:** measurements and a recommendation. No planner default, gate or ledger status was changed by this note.
+**Status:** 29 September: measurements and recommendations only. 30 September (Francis): Qwen first in the Groq chain, and the Jev fast path built and measured, in "30 September" below. No gate or ledger status changed.
 
 ## Keys, as found in this container
 
@@ -12,7 +12,7 @@
 | `JEV_API_KEY` | Works against TypeSafe's direct API (`https://api.typesafe.ai/v1/systemone`), served model `jev-1.13.0`. Not an OpenRouter key. |
 | `OPENROUTER_API_KEY` | The variable holds three whitespace-separated words; only the last is a valid OpenRouter key. Fix the variable to hold just the key. `scripts/cloud-models/bench.py` tolerates the extra words. |
 | OpenCode | No key present. None of the three words in `OPENROUTER_API_KEY` authenticates against OpenCode Zen. |
-| "Layla" | No model or provider of that name on OpenRouter's or OpenCode Zen's model lists, and none in TypeSafe's public docs. Not tested. Needs a link or an ID. |
+| "Layla" | Not found under that name on 29 September. Francis meant **Laya**, `convaiinnovations/laya` on Hugging Face: tested 30 September, below. |
 
 Jev is not an LLM. It is TypeSafe's "System One" decision model: it takes state plus typed questions (`choice`, yes/no `noul`, `score`) and returns an answer with probabilities. It cannot generate or extract text.
 
@@ -58,18 +58,62 @@ Twelve planner cases and six reviewer cases, run through the Warden's own prompt
 ## Recommendation
 
 1. **Keep GLiNER and UltraFace local.** Not a latency question; it is the privacy boundary.
-2. **Planner model: try `qwen/qwen3.8-27b` first in the Groq chain.** It was correct on every valid answer and about 1.8× faster at p50 than gpt-oss-20b. Set `GROQ_MODEL_CHAIN=qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b` in `warden/.env` to try it; the default stays until Francis picks. Bench v01 also recorded a "Request too large" 429 for qwen on this free tier under load.
-3. **Jev as a fast path, not a replacement.** A hybrid planner could ask Jev first when every value the task needs is a vault token, and ask the LLM otherwise. At about 190 ms that is the only candidate near the 200 ms G11 budget for the planner alone, and G11 covers the full flow, so this alone does not pass G11. It needs its own end-to-end measurement before any claim. Not built in this change.
+2. **(Done 30 September.) Planner model: try `qwen/qwen3.8-27b` first in the Groq chain.** It was correct on every valid answer and about 1.8× faster at p50 than gpt-oss-20b. Set `GROQ_MODEL_CHAIN=qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b` in `warden/.env` to try it; the default stays until Francis picks. Bench v01 also recorded a "Request too large" 429 for qwen on this free tier under load.
+3. **(Built 30 September; see below.) Jev as a fast path, not a replacement.** A hybrid planner could ask Jev first when every value the task needs is a vault token, and ask the LLM otherwise. At about 190 ms that is the only candidate near the 200 ms G11 budget for the planner alone, and G11 covers the full flow, so this alone does not pass G11. It needs its own end-to-end measurement before any claim. Not built in this change.
 4. **OpenRouter as a third-provider fallback only.** Always valid in these runs, but 2 to 4 s at p50 with a 37 s tail. Useful when Groq is rate-limited, not as the default.
 5. **If `/validate` review returns to the loop, use Jev**, not Ollama: same verdicts on these cases in under 1% of Ollama's cold-start time, and it sees only tokenized text.
+
+## 30 September: Qwen first, temperature 0, fast path built, Laya tested
+
+### Groq chain and temperature
+
+- The default chain is now `qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b` (re-probed; all three answer on this account).
+- **Correction to 29 September.** The Qwen-over-gpt-oss ranking above came from calls at temperature 0 with no `response_format`. The Warden sent `response_format: json_object` and no temperature, so Groq sampled at its default temperature. Under the Warden's real settings the same model answered the same scene differently between runs: Qwen chose `click #email` instead of `type #email EMAIL#1` on `account-type-email` in one run (fastpath-bench-v01) and the right answer in the next (groq-settings-bench-v01). The Warden now sends `temperature: 0`, which is the setting the ranking was measured under and what the Ollama path already used.
+- The settings comparison itself (`groq-settings-bench-v01.json`) is **inconclusive**: this free-tier key hit its rate limit: 61 of 168 calls came back 429 ("Rate limit reached" and "Request too large") and one 400. On the answers that did come back: Qwen default 36/40, Qwen temperature 0 23/24, gpt-oss-20b default 24/26, gpt-oss-20b temperature 0 15/16. Re-run it when the quota resets before claiming either model is better.
+
+### Fast path (`warden/fastpath.py`, `WARDEN_FAST_PATH=jev|laya`)
+
+For each step it lists the actions the scene allows (click each control, type each task token into each field, finish, or "none of these") and asks one yes/no question in the same call: does the task need typed text that is not a token? It hands the step to the LLM when the model picks "none of these", says free text is needed, or gives the chosen action a probability under `WARDEN_FAST_PATH_MIN_CONFIDENCE` (default 0.9). It runs after the egress guard on the same sanitized body; a backend error falls through to the LLM; a cloud fast path (Jev) is skipped when `WARDEN_PLANNER=ollama`. `/health` and every `/plan` response carry a `fastPath` record. Eleven Warden tests cover it.
+
+Accuracy, `Benchmarks/results/fastpath-bench-v01.json`, 3 reps per case. "Held-out" is 30 cases written after the fast path was designed (`scripts/cloud-models/cases_heldout.py`), 4 of them needing free text; "design" is the 12 cases above.
+
+| Backend | Split | Steps it answered at 0.9 | Correct when it answered | Free-text steps it answered | p50 ms |
+|---|---|---|---|---|---|
+| Jev (cloud) | held-out | 39 / 89 (44%) | 39 / 39 | 0 | 590 |
+| Jev (cloud) | design | 19 / 33 (58%) | 19 / 19 | 0 | 604 |
+| Laya (local CPU) | held-out | 0 / 90 | n/a | 0 | 847 |
+| Laya (local CPU) | design | 0 / 33 | n/a | 0 | 585 |
+
+- Jev stayed 100% precise at every threshold from 0.5 to 0.99 on both splits; lowering it to 0.5 raises held-out coverage to 45/89 with no wrong answer. One Jev call timed out at the 5 s client limit; the LLM would have answered that step.
+- Jev's p50 in this bench (about 600 ms) is higher than on 29 September (191 ms) because each call now carries two questions and the page text. In the real extension loop (`e2e-v5-boundary-v03.json`) Jev answered 12 of 12 steps in 173 to 752 ms, median about 236 ms, and Groq was never called. Groq's median in the same loop on 29 September was 732 ms.
+- Where Jev answered, it was never wrong. Overall accuracy with the fast path was 0.933 on held-out (the same as the LLM chain alone) and 0.818 on design against 0.727 for the LLM alone, because in that run the LLM clicked fields it should have typed into (`account-type-email`, `phone-type`, `two-fields-first`) and Jev answered some of those steps correctly first (2 of 3 reps and 1 of 3 reps; on `phone-type` it deferred every time).
+- What limits coverage is the free-text question, not the choice: on token-only steps Jev's "free text needed" probability sat near the 0.5 cut (0.45 to 0.58 on those three cases), so similar steps went either way. Rewording that question, or asking it once per task instead of per step, is the next thing to try; it was not tuned here to keep the held-out set honest.
+
+### Laya (`convaiinnovations/laya`)
+
+Laya is an open-weight (Apache-2.0) decision model with the same interface as Jev (state plus typed questions, calibrated probabilities), run on this machine: ModernBERT-large, 421M parameters, a 0.8 GB English checkpoint, `pip install laya`.
+
+- On this container's CPU (4 cores, no GPU) it answered a short question in about 170 ms after loading, and the planner questions in 585 to 847 ms p50. The model card's 33 ms is for a GPU.
+- Zero-shot it is not usable as a planner here. Its top choice was right on 33% (held-out) to 55% (design) of steps, and it answered "free text is needed" on every one of 123 steps, so the fast path deferred all of them and Laya only added its own time. That gate is what kept it safe: with the gate removed, at 0.9 it would have acted on 6 held-out steps and been wrong on all 6. Its confidence is not calibrated for this task zero-shot.
+- Its value is that it would keep the fast path **on the device**. Its card reports that fine-tuning on domain decisions (their `laya-typed-decisions` checkpoint) roughly doubled accuracy on their benchmark (0.362 to 0.766); that is their number, not ours. Fine-tuning it on Dhristi's action choices is the step that would make a local fast path real.
+
+### Recommendation (30 September)
+
+1. **Jev fast path: ready to switch on for demos** (`WARDEN_FAST_PATH=jev`). On these synthetic cases it never answered wrongly or on a free-text step, it answered about half the steps, and in the real loop it answered every step of the fixture task at a median of about 236 ms. It is another cloud recipient of the sanitized body, so it stays opt-in.
+2. **Laya: leave off** until it is fine-tuned on Dhristi's action choices; zero-shot it only adds latency.
+3. **Re-run `llm_settings_bench.py` on a fresh quota** before calling Qwen better than gpt-oss-20b at temperature 0.
+4. None of this passes G11 (200 ms for the full flow); one planner call alone is near or over that budget.
 
 ## Evidence
 
 - `Benchmarks/results/cloud-model-bench-v01.json`: all providers, 5 reps (pre-fix prompt; see its `caveats`).
 - `Benchmarks/results/cloud-model-bench-groq-v02.json`: Groq only, 3 reps, fixed prompt, sequential.
 - `Benchmarks/results/e2e-v5-boundary-v02.json`: real extension + Warden + real Groq, 48 cloud requests, 0 personal values.
-- Harness: `scripts/cloud-models/bench.py`, `scripts/cloud-models/cases.py`, `scripts/e2e-v5/recording-relay.mjs`.
+- `Benchmarks/results/fastpath-bench-v01.json`: fast path, Jev and Laya, design and held-out cases, with the Groq chain's answer on each case.
+- `Benchmarks/results/groq-settings-bench-v01.json`: Groq models at default temperature vs 0, Warden request shape (rate-limited; inconclusive).
+- `Benchmarks/results/e2e-v5-boundary-v03.json`: real extension + Warden with the fast path, 5 runs, 0 personal values.
+- Harness: `scripts/cloud-models/bench.py`, `fastpath_bench.py`, `llm_settings_bench.py`, `cases.py`, `cases_heldout.py`, `scripts/e2e-v5/recording-relay.mjs`.
 
 ## Not changed
 
-G11 **fail**, G20 **paused**, `submission_ready` **false**. The planner default is still `openai/gpt-oss-20b` first. No Jev or OpenRouter code path was added to the Warden.
+G11 **fail**, G20 **paused**, `submission_ready` **false**. As of 30 September the Groq chain starts with `qwen/qwen3.8-27b` and the Warden calls Groq at temperature 0. The fast path is built and **off by default** (`WARDEN_FAST_PATH` unset). No OpenRouter code path was added to the Warden.

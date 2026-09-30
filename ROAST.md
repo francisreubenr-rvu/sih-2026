@@ -1,3 +1,12 @@
+## Round 23 — Qwen first, fast path, Laya (30 September 2026)
+
+- [x] Warden's Groq call had no temperature, so the same scene got different plans between runs; now temperature 0 (test asserts it). The 29 September Qwen ranking was measured under different settings than the Warden used; recorded as a correction in `Docs/decisions/brain-cloud-models-jev.md`.
+- [x] Decision-model fast path built and measured; off by default; cannot block planning (defers on backend error), runs after the egress guard, never sends to the cloud in offline mode.
+- [ ] Jev's "free text needed" answer sits near 0.5 on token-only steps, which caps coverage at about half the steps. Question wording not tuned (kept the held-out set clean).
+- [ ] Laya zero-shot is unsafe without the free-text gate (0 of 6 confident held-out steps right). Needs fine-tuning on action choices before any use.
+- [ ] Groq free-tier rate limits made the model/temperature comparison inconclusive; re-run on a fresh quota.
+- [ ] `OPENROUTER_API_KEY` in this session's environment still holds three words; the fix Francis made applies to new sessions.
+
 ## Round 22 — real cloud planner + cloud-model bench (29 September 2026)
 
 - [x] HIGH, found by the first real-Groq end-to-end run: the planner never chose finish on a completed task and looped to the 25-step limit (it could not see the page's status message, and history carried no value). The fake planner in e2e v01 was scripted to finish, so it hid this. Fixed in `extension/content.js` (STATUS lines), `extension/background.js` (vault token in history), `warden/groq_client.py` (finish rule). Two new tests, each failing on the old code. Evidence: `Benchmarks/results/e2e-v5-boundary-v02.json`.
