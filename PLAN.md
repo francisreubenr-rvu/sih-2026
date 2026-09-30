@@ -1,3 +1,12 @@
+## Laya plan reviewer — 30 September 2026
+
+- Francis: fine-tune `convaiinnovations/laya` (multilingual) as the plan-review check, trained in the session container. Decision: `Docs/decisions/brain-laya-plan-review.md`.
+- Shipped opt-in: `WARDEN_REVIEWER=laya` (`warden/laya_review.py`), accept → ask only; default reviewer stays Ollama. Dataset `Benchmarks/datasets/laya-plan-review-v01` (synthetic, EN/HI), `scripts/laya/` generator, trainer and evaluator.
+- Evidence: `Benchmarks/results/laya-plan-review-v01.json`. Held-out synthetic test: tier accuracy 0.921 (regex 0.506, zero-shot 0.465), destructive recall 0.983; serves-task AUROC 0.927 with false-ask 0.246; CPU p50 171 ms per step. Not a field estimate.
+- Found: the live extension F17 gate forces a confirmation on 126/144 navigational test clicks (0/120 destructive missed); Warden `tiers.py` lets 42/120 destructive through because fieldType `link` matches `\blink\b` (ROAST round 22).
+- Open for Francis: may Laya release confirmations (touches F17 and "one model, one job"); where the weights live (session scratch only, not uploaded).
+- Not changed: G11 **fail**, G14 **unknown**, G20 **paused**, `submission_ready` **false**. Laya does not act on live runs (v5 loop does not call `/validate`).
+
 ## v5: device redaction, cloud planning — 29 September 2026
 
 - Francis: redaction stays local so a bigger model can do that one job; planning runs online. This supersedes the 23 September "planner default is Ollama" lock; `WARDEN_PLANNER=ollama` stays as the offline mode. Decision: `Docs/decisions/brain-v5-local-redaction-cloud-planner.md`.

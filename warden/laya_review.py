@@ -53,8 +53,9 @@ QUESTIONS = {
     },
 }
 
-# Thresholds fitted on the calibration split of
-# Benchmarks/datasets/laya-plan-review-v01 (see the decision for the numbers).
+# Fixed at 0.5 before evaluation, not tuned on the test split. The checkpoint's
+# temperatures are fitted on the calibration split, so 0.5 is close to the
+# argmax. Results: Benchmarks/results/laya-plan-review-v01.json.
 # Env overrides exist for measurement, not for loosening in production.
 DEFAULT_DESTRUCTIVE_MIN = 0.5
 DEFAULT_OFF_TASK_MIN = 0.5

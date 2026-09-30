@@ -1,3 +1,11 @@
+## Round 22 — Laya plan reviewer (30 September 2026)
+
+- [x] Optional Laya reviewer behind `WARDEN_REVIEWER=laya`; stub tests pin accept → ask only, no tier lowering, SKIPPED on any failure. Warden suite 111 passed / 6 skipped (real-model tests).
+- [x] Zero-shot Laya is not usable here: it rated "Close account permanently" as serving a "download my statement" task at 0.92, and at a 0.9 release threshold it would have released 5 destructive steps. Only the fine-tuned checkpoint was evaluated for release.
+- [ ] MEDIUM, `warden/tiers.py` (legacy `/validate`, not in the v5 loop): `NAV_LABEL_RE` runs over label + fieldType, so fieldType `link` satisfies `\blink\b` and any link without a destructive/submit keyword tiers navigational. 42/120 destructive test steps (e.g. "Kick from folder", "खाता बंद करें") would accept. The extension's `op-tier.js` matches nav on the name only and is not affected. Not fixed in this PR.
+- [ ] The live F17 gate over-asks: 126/144 genuinely navigational test clicks are forced to confirm; every Hindi label and any label without an English nav prefix confirms. Laya fine-tuned would release 97 of those with 0 wrong releases at p ≥ 0.9 (simulation only). Needs Francis's decision; F17 unchanged.
+- [ ] Evidence scope: synthetic hand-authored dataset, author labels, Hindi not native-reviewed, one control per state, correlated tier rows (61 distinct held-out controls). CPU only. Laya does not act on live runs.
+
 ## Round 21 — Signal redesign (29 September 2026)
 
 - [x] One design system (Signal) across Website, side panel, Prototype operator pages and popup; canonical tokens in `design/signal-tokens.css`, CI check for drift and WCAG AA contrast. Decision: `Docs/decisions/brain-signal-redesign.md`. Resolves the ARCH-002 vs side-panel palette conflict.
