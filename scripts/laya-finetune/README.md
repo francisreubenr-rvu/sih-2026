@@ -10,9 +10,10 @@ questions.
 | `gen_data.py` | Synthetic training steps, rendered exactly as `warden/fastpath.py` renders them at run time. Domains and labels are kept disjoint from the evaluation sets; it prints the overlap, which must be empty. |
 | `train.jsonl` | The v1/v2 training set (`--n 900 --seed 20260930`, made by `gen_data.py` at commit `99c3e30`). Its targets were too flat to train a confident model; see below. |
 | `train_v3.jsonl` | The current training set: `--n 900 --seed 20261001`, one right answer per step and 2% total mass on wrong options. |
-| `train_cpu.py` | Single-process port of the authors' fine-tuning notebook (same objective, calibration slice and temperature fit). CPU by default, CUDA with fp16 when present. `TRAIN_TOP_LAYERS` (6; 28 = whole encoder), `EPOCHS`, `MAX_LEN`, `HEAD_MAX_LEN`. |
+| `train_cpu.py` | Single-process port of the authors' fine-tuning notebook (same objective, calibration slice and temperature fit). CPU by default, CUDA with fp16 when present. `TRAIN_TOP_LAYERS` (6; 28 = whole encoder), `EPOCHS`, `MAX_LEN`, `HEAD_MAX_LEN`; for a large GPU also `MICRO_BATCH`, `AMP_DTYPE=bf16`, `GRAD_CKPT=0`, `SEED`, `SAVE_EPOCHS` (extra calibrated checkpoints at those epochs). Logs the choice and free-text losses separately each epoch. |
 | `diagnose.py` | Does a checkpoint fit its own training steps? Scores the choice question through the training input path. |
-| `kaggle_train.ipynb` | The authors' full recipe on a free Kaggle GPU: 3,000 steps, whole encoder, 4 epochs, then `diagnose.py` and the benchmark. |
+| `validate.py` | Scores a checkpoint through `warden/fastpath.decide` (the Warden's own path) on generated validation steps, after dropping any identical to a training step: precision, coverage and free-text steps acted on at each threshold, plus free-text AUROC. Used to choose between checkpoints so the benchmark is not. |
+| `colab_train.ipynb` | Colab on an A100/H100 (replaces the Kaggle notebook, 1 October): 20,000 training steps, 4 whole-encoder runs x 6 epochs (checkpoints at 2/4/6, so 12 candidates), each scored with `validate.py`; one is chosen by a rule fixed in the notebook, and only that one runs `fastpath_bench.py`. Results go to Google Drive; weights go to a private Hugging Face repo only if the benchmark meets Jev's bar. |
 
 Reproduce (about 80 minutes on 4 CPU cores; the output is about 0.8 GB and is not committed):
 

@@ -1,3 +1,10 @@
+## Laya on Colab (1 October 2026)
+
+- Francis: run the Laya fine-tune on his Colab Pro (GPUs up to 80 GB, 160 GB RAM) instead of Kaggle, and go big.
+- `scripts/laya-finetune/colab_train.ipynb` replaces `kaggle_train.ipynb`: 20,000 steps, 4 whole-encoder runs x 6 epochs, 12 checkpoints scored by the new `validate.py` on unseen generated steps, one chosen by a fixed rule, only that one benchmarked. `train_cpu.py` gains `MICRO_BATCH`, `AMP_DTYPE=bf16`, `GRAD_CKPT=0`, `SEED`, `SAVE_EPOCHS` and per-question losses; the CPU defaults are unchanged.
+- Ruled out: state truncation as the cause of the free-text failure (no free-text question loses state on `train_v4.jsonl`, even at 512/192).
+- Checked here on CPU only: a tiny 2-epoch run with an epoch-1 checkpoint, and `validate.py` on it. No GPU result yet. Not deployed; the fast path stays off by default.
+
 ## Laya fine-tuning, CPU — 1 October 2026
 
 - Found why v1/v2 underfit: `gen_data.py` gave each wrong option 2% of the target and split the right answer over several options, so no calibrated model could pass 0.9. Fixed (one right answer per step, 2% total on wrong options); a 64-step overfit test then fit 63/64.

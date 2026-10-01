@@ -1,3 +1,10 @@
+## Round 26: Laya on Colab (1 October 2026)
+
+- [x] Free-text hypothesis checked and ruled out: Laya drops the end of the JSON state (`done_so_far`) when it runs out of room, but no free-text question on `train_v4.jsonl` loses any state at 512/192 or 1024/256.
+- [x] Selection leak avoided: the Colab sweep makes 12 candidates, chosen on unseen generated steps (`validate.py`) by a rule fixed before the run; only the chosen one sees the 30 held-out benchmark cases.
+- [ ] The GPU run itself (Francis's Colab). Judge by Jev's bar; upload weights only if met.
+- [ ] Validation steps come from the same generator as training; they measure fit and calibration, not generalization to new wording. Only the benchmark measures that.
+
 ## Round 25 — Laya on CPU, and the Groq re-run (1 October 2026)
 
 - [x] Root cause of the v1/v2 underfit: flat targets (2% per wrong option, right answer split up to five ways) capped a calibrated model near 0.8. Fixed in `gen_data.py`; overfit test 63/64.

@@ -107,7 +107,7 @@ Laya is an open-weight (Apache-2.0) decision model with the same interface as Je
 
 ### Fine-tuning Laya (30 September, Francis: "go forward on training Laya")
 
-Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from the authors' notebook, `diagnose.py`, `kaggle_train.ipynb`). Training data is 900 synthetic steps from domains and labels disjoint from both evaluation sets (the generator reports the overlap; it is empty).
+Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from the authors' notebook, `diagnose.py`; `kaggle_train.ipynb` at the time, replaced by `colab_train.ipynb` on 1 October). Training data is 900 synthetic steps from domains and labels disjoint from both evaluation sets (the generator reports the overlap; it is empty).
 
 | Run | What changed | Fit on its own training steps (choice) | Held-out top choice | Used at 0.9 |
 |---|---|---|---|---|
@@ -157,6 +157,7 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
   v4 is the first fine-tune that acts at the default threshold, and it acts wrongly, including on a free-text step. At 0.95 it is still wrong on `already-logged-in`. **Not deployed.**
 - **What the CPU runs show.** The choice head learns once the targets are sharp (top choice 17 → 19 → 28 of 41). The free-text answer never learned the cue in any run: it settles near the share of free-text steps in its training data (14% → about 0.1; 25% → about 0.3) on every step. Rebalancing moved the number, not the separation. Training only the top 6 of 28 layers on a CPU is not enough for that question; CPU training stops here.
 - **Next:** the GPU notebook (whole encoder, 3,000 steps, 4 epochs, now on the v4 generator settings). Accept a checkpoint only if, at the threshold used, it acts on no free-text step and its precision on held-out steps is 100%, as Jev's was.
+- **Colab instead of Kaggle (1 October, Francis).** Francis has Colab Pro with GPUs up to 80 GB, so `colab_train.ipynb` replaces the Kaggle notebook and runs a sweep instead of one run: 20,000 generated steps (17.7k distinct in a dry run), 4 whole-encoder runs (the authors' rates at two seeds, plus 2x and 0.4x) of 6 epochs with checkpoints at 2, 4 and 6. `validate.py` scores the 12 candidates on about 1,700 generated steps that are not in the training set, through `fastpath.decide`, and a rule fixed in the notebook picks one. Only that one is benchmarked, so the 30 held-out cases are not used for selection. The bar is unchanged. Before this, one hypothesis was checked and ruled out: Laya cuts the JSON state from the right, so `done_so_far` (the only sign that the free-text field is filled) goes first. On `train_v4.jsonl`, though, no free-text question loses state even at the checkpoint's 512/192, and none at 1024/256, so truncation does not explain the CPU free-text failure. Not run yet.
 
 ### Recommendation (30 September)
 
