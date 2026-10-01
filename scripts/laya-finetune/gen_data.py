@@ -39,10 +39,17 @@ FIELD_BANK = {
     "BANKACCOUNT": ("text", ["Account number", "Bank account no.", "Savings account"]),
 }
 FREE_BANK = {
-    "message": ("textarea", ["Your message", "Your query", "Comments", "Tell us more"], ["about the delayed refund", "that I will join late"]),
-    "title": ("text", ["Post title", "Subject line", "Heading"], ["asking about the exam timetable", "titled Lab schedule change"]),
-    "amount": ("number", ["Amount (INR)", "Top-up amount", "Donation amount"], ["of 750 rupees", "for 1200 rupees"]),
-    "query": ("search", ["Search the catalogue", "Search courses", "Find a train"], ["for Chandrayaan papers", "for Bengaluru to Mysuru trains"]),
+    "message": ("textarea", ["Your message", "Your query", "Comments", "Tell us more"],
+                ["about the delayed refund", "that I will join late", "saying the parcel arrived damaged",
+                 "asking for a copy of the receipt", "that the hostel tap is leaking", "to thank the doctor"]),
+    "title": ("text", ["Post title", "Subject line", "Heading"],
+              ["asking about the exam timetable", "titled Lab schedule change", "titled Robotics club recruitment",
+               "called Notes for week 3", "named Monsoon trek plan"]),
+    "amount": ("number", ["Amount (INR)", "Top-up amount", "Donation amount"],
+               ["of 750 rupees", "for 1200 rupees", "of 300 rupees", "worth 2500 rupees", "for 95 rupees"]),
+    "query": ("search", ["Search the catalogue", "Search courses", "Find a train"],
+              ["for Chandrayaan papers", "for Bengaluru to Mysuru trains", "for evening yoga classes",
+               "for second-hand cycles", "for Kannada novels", "for flights to Kochi"]),
 }
 
 FORMS = [
@@ -99,7 +106,7 @@ def form_trajectory(rng):
     domain, verb, submits, distractors, successes, heading = rng.choice(FORMS)
     n_tok = rng.randint(1, 4)
     tok_types = rng.sample(sorted(FIELD_BANK), n_tok)
-    free_kind = rng.choice(sorted(FREE_BANK)) if rng.random() < 0.3 else None
+    free_kind = rng.choice(sorted(FREE_BANK)) if rng.random() < FREE_IN_FORM else None
     fields = []
     for i, t in enumerate(tok_types):
         kind, labels = FIELD_BANK[t]
@@ -196,6 +203,9 @@ def free_only_trajectory(rng):
 
 
 WRONG_MASS = 0.02
+# Share of forms that also need free text. v3 used 0.3 (and free_only weight 0.15): 14% of steps
+# needed free text, and both CPU fine-tunes answered that base rate on every step.
+FREE_IN_FORM = 0.5
 
 
 def targets(example):
@@ -230,7 +240,7 @@ def main():
     a = ap.parse_args()
     rng = random.Random(a.seed)
     rows = []
-    makers = [(form_trajectory, 0.5), (nav_trajectory, 0.2), (toggle_trajectory, 0.15), (free_only_trajectory, 0.15)]
+    makers = [(form_trajectory, 0.5), (nav_trajectory, 0.15), (toggle_trajectory, 0.1), (free_only_trajectory, 0.25)]
     while len(rows) < a.n:
         r = rng.random()
         acc = 0

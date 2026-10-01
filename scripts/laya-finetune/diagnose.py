@@ -2,7 +2,9 @@
 model's logits, through exactly the input path train_cpu.py trains on, so a low score here means
 the model did not learn (underfit), not that inference builds its input differently.
 
-    python scripts/laya-finetune/diagnose.py <checkpoint_dir> [<checkpoint_dir> ...]
+    DATA=scripts/laya-finetune/train_v3.jsonl python scripts/laya-finetune/diagnose.py <checkpoint_dir> [<checkpoint_dir> ...]
+
+DATA defaults to train.jsonl (the v1/v2 set).
 """
 
 import json
@@ -22,7 +24,7 @@ from laya.common import build_model  # noqa: E402
 
 import train_cpu  # noqa: E402
 
-DATA = str(Path(__file__).resolve().parent / "train.jsonl")
+DATA = os.environ.get("DATA") or str(Path(__file__).resolve().parent / "train.jsonl")
 
 
 def fit(model_dir, n=120):

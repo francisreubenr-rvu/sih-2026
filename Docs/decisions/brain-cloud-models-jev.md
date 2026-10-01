@@ -134,7 +134,18 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
 
   So the model can learn this task on CPU; the earlier runs could not show it.
 - **Fix** (`a97fd1d`): one right answer per step ("none of these" while a free-text field is empty, otherwise the topmost empty token field), wrong options share 2% in total. `train_v3.jsonl`, seed 20261001: mean entropy 0.14, right answer 0.98, no tasks or labels shared with the evaluation sets.
-- v3 is training with those targets (3 epochs, top 6 layers, 1e-4 / 5e-4, one update per micro-batch, about 1,200 updates). Fitting 64 training steps says nothing about held-out steps; `fastpath_bench.py` decides.
+- **v3** (those targets; 3 epochs, top 6 layers, 1e-4 / 5e-4, one update per micro-batch, about 1,200 updates, 84 minutes): 60 of 120 of its own training steps (base 23). On the 41 design and held-out scenes (`fastpath-bench-laya-ft-v03.json`):
+
+  | | Zero-shot | v2 | v3 |
+  |---|---|---|---|
+  | Top choice correct | 17/41 | 16/41 | 19/41 |
+  | Highest confidence | 0.96 | 0.79 | 0.98 |
+  | Free-text probability on the 4 steps that need it | 0.69-0.88 | 0.16-0.18 | 0.08-0.14 |
+  | Acts at 0.9 | 0 | 0 | 0 |
+  | At 0.8: acts / wrong / wrong on a free-text step | 0 | 0 | 7 / 1 / 1 (`rename-free`) |
+
+  The choice head improved and can now be confident, but the free-text answer collapsed again, to about the share of free-text steps in training (14%). Not safe; not deployed.
+- **v4** (training): warm-started from v3, 3 more epochs on `train_v4.jsonl` (seed 20261002): 25% of steps need free text (`FREE_IN_FORM` 0.5, free-only weight 0.25) and more free-text phrasings, still disjoint from the evaluation sets.
 
 ### Recommendation (30 September)
 
