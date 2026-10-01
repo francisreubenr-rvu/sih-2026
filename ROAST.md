@@ -1,3 +1,9 @@
+## Round 25 — Laya on CPU, and the Groq re-run (1 October 2026)
+
+- [x] Root cause of the v1/v2 underfit: flat targets (2% per wrong option, right answer split up to five ways) capped a calibrated model near 0.8. Fixed in `gen_data.py`; overfit test 63/64.
+- [ ] The free-text question never learned its cue on CPU (v3 about 0.1, v4 about 0.3 on every step, tracking the training share). v4 acts wrongly at 0.9 on `rename-free`, a free-text step, and at 0.95 on `already-logged-in`. Not deployed. Needs the GPU run, judged by Jev's bar.
+- [x] Groq settings re-run with 429 retries: at temperature 0 Qwen 41/42, gpt-oss-20b 35/42 (3 of its misses are JSON Groq rejected).
+
 ## Round 24 — Laya fine-tuning (30 September 2026)
 
 - [x] v1 option truncation found and fixed: long option keys left about 12 tokens per option and cut off the field label (61 of 200 training steps collapsed); Laya now gets compact keys.

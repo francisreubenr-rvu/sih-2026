@@ -26,9 +26,25 @@ python scripts/cloud-models/fastpath_bench.py --backends laya --laya-model ./lay
 
 Use it in the Warden with `WARDEN_FAST_PATH=laya WARDEN_LAYA_MODEL=./laya-dhristi`.
 
-## Results so far (30 September 2026)
+## Results so far (1 October 2026)
 
-Two CPU runs (top 6 layers, 2 epochs) underfit: v2 chose right on 29 of 120 of its own training steps (untrained: 24). v2 also lost the free-text gate (it answers "no free text" everywhere), so it is less safe than the untrained model below the default 0.9 threshold. Details: `Docs/decisions/brain-cloud-models-jev.md`. The GPU notebook is the next attempt.
+| Run | Data | Training | Own training steps right | Top choice, 41 scenes | Acts at 0.9 | Free-text answer |
+|---|---|---|---|---|---|---|
+| zero-shot | | | 23-24/120 | 17/41 | none | high everywhere (0.69-1.0) |
+| v2 | `train.jsonl` (flat targets) | top 6 layers, 2 epochs | 29/120 | 16/41 | none (max 0.79) | about 0.17 everywhere |
+| v3 | `train_v3.jsonl` (sharp targets) | top 6, 3 epochs, 1e-4 / 5e-4, update every 4 steps | 60/120 | 19/41 | none | about 0.1 everywhere |
+| v4 | `train_v4.jsonl` (25% free text) | v3 + 3 epochs | 80/120 | 28/41 | 27 of 90 held-out decisions, 21 right; wrong on a free-text step | 0.24-0.44 everywhere |
+
+v1/v2 underfit because each wrong option got 2% of the target (a calibrated model could not pass 0.9) and too few updates were made. The choice question trains once the targets are sharp. The free-text question did not train in any CPU run: it settles near the share of free-text steps in the data. None of these checkpoints is safe for the Warden; details and the acceptance bar for the GPU run are in `Docs/decisions/brain-cloud-models-jev.md`.
+
+Reproduce v3 and v4 (each about 1.5-2 hours on 4 CPU cores):
+
+```sh
+EPOCHS=3 TRAIN_TOP_LAYERS=6 LR_ENCODER=1e-4 LR_HEAD=5e-4 GRAD_ACCUM=1 \
+  python scripts/laya-finetune/train_cpu.py <laya snapshot dir> scripts/laya-finetune/train_v3.jsonl ./laya-dhristi-v3
+EPOCHS=3 TRAIN_TOP_LAYERS=6 LR_ENCODER=1e-4 LR_HEAD=5e-4 GRAD_ACCUM=1 \
+  python scripts/laya-finetune/train_cpu.py ./laya-dhristi-v3 scripts/laya-finetune/train_v4.jsonl ./laya-dhristi-v4
+```
 
 The training data is synthetic and written by us, like the evaluation cases. A good score here
 shows the model learned this task's format on synthetic pages; it is not evidence about real sites.

@@ -1,30 +1,31 @@
 # Dhristi — SIH26171
 
-## Session handoff — start here (updated 30 September 2026, 07:30 UTC)
+## Session handoff — start here (updated 1 October 2026, 06:00 UTC)
 
-**Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), last code commit `99c3e30` (CI green), no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details of every item below: `Docs/decisions/brain-cloud-models-jev.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 24.
+**Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), CI green through `c0ab49e`, no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details of every item below: `Docs/decisions/brain-cloud-models-jev.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 24.
 
 **Done in PR #41.**
 - Real-Groq end-to-end run found the planner never chose finish; fixed (`STATUS` lines in `extension/content.js`, vault token in `buildHistory`, finish rule in `warden/groq_client.py`). 48 real cloud requests, 0 personal values (`Benchmarks/results/e2e-v5-boundary-v02.json`).
 - Groq chain `qwen/qwen3.8-27b, openai/gpt-oss-20b, openai/gpt-oss-120b` at temperature 0.
 - Opt-in fast path `warden/fastpath.py` (`WARDEN_FAST_PATH=jev|laya`, off by default). Jev: 39/39 correct on held-out steps it answered, never a free-text step; real loop median about 236 ms (`fastpath-bench-v01.json`, `e2e-v5-boundary-v03.json`).
-- Laya (`convaiinnovations/laya`): zero-shot defers everything. Two CPU fine-tunes underfit (v2 fits 29/120 of its own training steps, base 24/120) and v2 lost the free-text gate, so it is less safe below the 0.9 threshold. Not deployed. Pipeline in `scripts/laya-finetune/`.
+- Laya (`convaiinnovations/laya`): zero-shot defers everything. 1 October: v1/v2 underfit because the generator's targets were too flat (fixed: one right answer per step, 2% total on wrong options). CPU v3 and v4 then trained the choice question (top choice 17 → 28 of 41 scenes), but the free-text question never learned its cue; it sits near the share of free-text steps in training. v4 acts at 0.9 on 27 of 90 held-out decisions, 21 right, wrong on `rename-free` (needs free text) and `already-logged-in`. None deployed; CPU training stopped. Pipeline and results table in `scripts/laya-finetune/README.md`.
+- Groq settings re-run on a fresh quota (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42 (711 ms), gpt-oss-20b 35/42 (974 ms); Qwen stays first.
 - Claims corrected on Website and README; `feat/dhristi-wave8` a11y ported; `cursor/website-pixel-redesign-pr1-ac89` not merged (superseded by Signal, dark tokens).
 
 **Open decisions (Francis).**
 1. Jev fast path for demos: held back, open.
-2. Run `scripts/laya-finetune/kaggle_train.ipynb` on Kaggle (GPU, internet on). It trains the whole encoder, 4 epochs, 3,000 steps, then runs `diagnose.py` and the benchmark. Check its free-text answers before any use.
-3. Where the Laya weights live (about 0.8 GB; no Git LFS here, GitHub 100 MB limit). A Hugging Face repo needs `HF_TOKEN` in the environment.
+2. Run `scripts/laya-finetune/kaggle_train.ipynb` on Kaggle (GPU, internet on). It now generates 3,000 steps with the v4 settings, trains the whole encoder for 4 epochs, then runs `diagnose.py` and the benchmark. This container has no GPU and no Kaggle credentials.
+3. Where the Laya weights live (about 0.8 GB; no Git LFS, GitHub 100 MB limit). `HF_TOKEN` (write, account `francisreubenr`) is now in the environment, so a private Hugging Face repo works; nothing uploaded yet, because no checkpoint has passed the benchmark.
 4. Mark PR #41 ready and merge, or ask for changes.
 
 **Next actions for Claude.**
-- If Francis brings Kaggle results: commit `fastpath-bench-laya-gpu.json` to `Benchmarks/results/`, compare with Jev in the decision note, and only recommend Laya if it answers held-out steps at 0.9 with no wrong answer and no free-text step.
+- If Francis brings Kaggle results: commit `fastpath-bench-laya-gpu.json` to `Benchmarks/results/`, compare with Jev in the decision note, and only recommend Laya if, at the threshold used, it acts on no free-text step and is right on every held-out step it answers (Jev's bar). Then upload that checkpoint to a private Hugging Face repo.
 - ~~Re-run `llm_settings_bench.py` on a fresh Groq quota~~ done 1 October (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42, gpt-oss-20b 35/42; Qwen stays first.
 - Keep G11 **fail**, G20 **paused**, `submission_ready` **false**; do not lower `WARDEN_FAST_PATH_MIN_CONFIDENCE` for Laya without re-benchmarking.
 
 **Environment facts (cloud container).**
-- Keys in env: `GROQ_API_KEY`, `JEV_API_KEY` (TypeSafe direct API), `OPENROUTER_API_KEY` (the 30 September session still saw an extra two words before the key; fixed by Francis for new sessions). No OpenCode or Hugging Face key. Never print key values.
-- Warden with GLiNER needs a venv with CPU torch, `gliner`, `protobuf`, `fastapi`, `uvicorn`, `httpx`, plus `laya` for the Laya backend. Container-local artefacts (`/home/user/.venv-warden`, `/home/user/laya-dhristi-v1`, `-v2`) do not survive a new session.
+- Keys in env: `GROQ_API_KEY`, `JEV_API_KEY` (TypeSafe direct API), `OPENROUTER_API_KEY` (the 30 September session still saw an extra two words before the key; fixed by Francis for new sessions). `HF_TOKEN` (write). No OpenCode key. Never print key values.
+- Warden with GLiNER needs a venv with CPU torch, `gliner`, `protobuf`, `fastapi`, `uvicorn`, `httpx`, plus `laya` for the Laya backend. Container-local artefacts (`/home/user/.venv-warden`, `/home/user/laya-dhristi-v1` to `-v4`) do not survive a new session.
 - Groq free tier returns 429s under back-to-back runs; space calls (`--sleep`) and do not overlap benchmarks with end-to-end runs.
 - Node's fetch needs `NODE_USE_ENV_PROXY=1` behind the proxy (used by `scripts/e2e-v5/recording-relay.mjs`).
 

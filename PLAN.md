@@ -1,3 +1,9 @@
+## Laya fine-tuning, CPU — 1 October 2026
+
+- Found why v1/v2 underfit: `gen_data.py` gave each wrong option 2% of the target and split the right answer over several options, so no calibrated model could pass 0.9. Fixed (one right answer per step, 2% total on wrong options); a 64-step overfit test then fit 63/64.
+- v3 (sharp targets) and v4 (+25% free-text steps, warm from v3), top 6 of 28 layers on CPU: top choice 17 → 19 → 28 of 41 scenes. The free-text question never learned its cue in any run. v4 acts at 0.9 and is wrong on a free-text step. None deployed; CPU training stopped; the GPU notebook (now on the v4 generator) is the next attempt.
+- Groq settings re-run on a fresh quota: Qwen 41/42 at temperature 0, gpt-oss-20b 35/42; Qwen stays first.
+
 ## Laya fine-tuning — 30 September 2026
 
 - Francis: Jev for demos stays an open decision; go forward on training Laya.

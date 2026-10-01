@@ -145,12 +145,23 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
   | At 0.8: acts / wrong / wrong on a free-text step | 0 | 0 | 7 / 1 / 1 (`rename-free`) |
 
   The choice head improved and can now be confident, but the free-text answer collapsed again, to about the share of free-text steps in training (14%). Not safe; not deployed.
-- **v4** (training): warm-started from v3, 3 more epochs on `train_v4.jsonl` (seed 20261002): 25% of steps need free text (`FREE_IN_FORM` 0.5, free-only weight 0.25) and more free-text phrasings, still disjoint from the evaluation sets.
+- **v4**: v3 plus 3 epochs on `train_v4.jsonl` (seed 20261002: 25% of steps need free text, more free-text phrasings, still disjoint from the evaluation sets), 1 h 51 min on CPU. 80 of 120 of its own training steps. On the 41 scenes (`fastpath-bench-laya-ft-v04.json`):
+
+  | | v3 | v4 | Jev (30 September) |
+  |---|---|---|---|
+  | Top choice correct | 19/41 | 28/41 | |
+  | Acts at 0.9 (held-out decisions) | 0 | 27/90, 21 right | 39/89, 39 right |
+  | Wrong at 0.9 | | `already-logged-in`, `rename-free` (needs free text); design: `two-fields-second` | none |
+  | Free-text probability, steps that need it / others | 0.08-0.14 / up to 0.20 | 0.24-0.35 / up to 0.44 | |
+
+  v4 is the first fine-tune that acts at the default threshold, and it acts wrongly, including on a free-text step. At 0.95 it is still wrong on `already-logged-in`. **Not deployed.**
+- **What the CPU runs show.** The choice head learns once the targets are sharp (top choice 17 → 19 → 28 of 41). The free-text answer never learned the cue in any run: it settles near the share of free-text steps in its training data (14% → about 0.1; 25% → about 0.3) on every step. Rebalancing moved the number, not the separation. Training only the top 6 of 28 layers on a CPU is not enough for that question; CPU training stops here.
+- **Next:** the GPU notebook (whole encoder, 3,000 steps, 4 epochs, now on the v4 generator settings). Accept a checkpoint only if, at the threshold used, it acts on no free-text step and its precision on held-out steps is 100%, as Jev's was.
 
 ### Recommendation (30 September)
 
 1. **Jev fast path: technically ready for demos** (`WARDEN_FAST_PATH=jev`); whether to use it is an open decision for Francis, and it stays off until then. On these synthetic cases it never answered wrongly or on a free-text step, it answered about half the steps, and in the real loop it answered every step of the fixture task at a median of about 236 ms. It is another cloud recipient of the sanitized body, so it stays opt-in.
-2. **Laya: leave off.** Zero-shot it only adds latency; the two CPU fine-tunes underfit, and v2 lost the free-text safety gate. The GPU notebook is the next attempt.
+2. **Laya: leave off.** Zero-shot it only adds latency. Four CPU fine-tunes (1 October: v3, v4) improved its top choice from 17 to 28 of 41 scenes, but none learned the free-text question, and v4 acts wrongly at 0.9, including on a free-text step. The GPU notebook is the next attempt.
 3. **Done 1 October:** at temperature 0 Qwen answered 41/42 and gpt-oss-20b 35/42 (`groq-settings-bench-v02.json`); keep Qwen first.
 4. None of this passes G11 (200 ms for the full flow); one planner call alone is near or over that budget.
 
