@@ -19,7 +19,7 @@
 
 **Next actions for Claude.**
 - If Francis brings Kaggle results: commit `fastpath-bench-laya-gpu.json` to `Benchmarks/results/`, compare with Jev in the decision note, and only recommend Laya if it answers held-out steps at 0.9 with no wrong answer and no free-text step.
-- Re-run `scripts/cloud-models/llm_settings_bench.py` on a fresh Groq quota (the Qwen vs gpt-oss comparison at temperature 0 is inconclusive).
+- ~~Re-run `llm_settings_bench.py` on a fresh Groq quota~~ done 1 October (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42, gpt-oss-20b 35/42; Qwen stays first.
 - Keep G11 **fail**, G20 **paused**, `submission_ready` **false**; do not lower `WARDEN_FAST_PATH_MIN_CONFIDENCE` for Laya without re-benchmarking.
 
 **Environment facts (cloud container).**

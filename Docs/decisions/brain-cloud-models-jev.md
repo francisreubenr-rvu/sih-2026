@@ -36,7 +36,7 @@ Twelve planner cases and six reviewer cases, run through the Warden's own prompt
 |---|---|---|---|---|
 | Jev `jev-latest` (choice over allowed actions) | 55 / 60 | 191 | 234 | bench v01 |
 | Groq `qwen/qwen3.8-27b` | 36 / 36 | 342 | 757 | groq v02 |
-| Groq `openai/gpt-oss-20b` (current default) | 31 / 31 | 615 | 1119 | groq v02 |
+| Groq `openai/gpt-oss-20b` (default until 30 September) | 31 / 31 | 615 | 1119 | groq v02 |
 | Groq `openai/gpt-oss-120b` | 36 / 36 | 760 | 1331 | groq v02 |
 | OpenRouter `deepseek/deepseek-v4.1-flash` | 60 / 60 | 2093 | 37194 | bench v01 |
 | OpenRouter `google/gemini-3.8-flash` | 60 / 60 | 2716 | 5061 | bench v01 |
@@ -70,6 +70,14 @@ Twelve planner cases and six reviewer cases, run through the Warden's own prompt
 - The default chain is now `qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b` (re-probed; all three answer on this account).
 - **Correction to 29 September.** The Qwen-over-gpt-oss ranking above came from calls at temperature 0 with no `response_format`. The Warden sent `response_format: json_object` and no temperature, so Groq sampled at its default temperature. Under the Warden's real settings the same model answered the same scene differently between runs: Qwen chose `click #email` instead of `type #email EMAIL#1` on `account-type-email` in one run (fastpath-bench-v01) and the right answer in the next (groq-settings-bench-v01). The Warden now sends `temperature: 0`, which is the setting the ranking was measured under and what the Ollama path already used.
 - The settings comparison itself (`groq-settings-bench-v01.json`) is **inconclusive**: this free-tier key hit its rate limit: 61 of 168 calls came back 429 ("Rate limit reached" and "Request too large") and one 400. On the answers that did come back: Qwen default 36/40, Qwen temperature 0 23/24, gpt-oss-20b default 24/26, gpt-oss-20b temperature 0 15/16. Re-run it when the quota resets before claiming either model is better.
+- **Re-run on a fresh quota, 1 October** (`groq-settings-bench-v02.json`, 429s retried, none left): correct of 42 (12 design + 30 held-out), median latency of the answered call:
+
+  | Model | Groq default temperature | Temperature 0 (the Warden's setting) |
+  |---|---|---|
+  | `qwen/qwen3.8-27b` | 36/42, 770 ms | **41/42, 711 ms** |
+  | `openai/gpt-oss-20b` | 41/42, 972 ms | 35/42, 974 ms (3 of the 7 misses are Groq rejecting its JSON) |
+
+  At the Warden's real setting Qwen is ahead and faster, so Qwen first at temperature 0 stands. The two models move in opposite directions with temperature, and each cell is one call per case, so this supports the chain order, not a general claim that Qwen is the better model.
 
 ### Fast path (`warden/fastpath.py`, `WARDEN_FAST_PATH=jev|laya`)
 
@@ -115,9 +123,9 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
 
 ### Recommendation (30 September)
 
-1. **Jev fast path: ready to switch on for demos** (`WARDEN_FAST_PATH=jev`). On these synthetic cases it never answered wrongly or on a free-text step, it answered about half the steps, and in the real loop it answered every step of the fixture task at a median of about 236 ms. It is another cloud recipient of the sanitized body, so it stays opt-in.
+1. **Jev fast path: technically ready for demos** (`WARDEN_FAST_PATH=jev`); whether to use it is an open decision for Francis, and it stays off until then. On these synthetic cases it never answered wrongly or on a free-text step, it answered about half the steps, and in the real loop it answered every step of the fixture task at a median of about 236 ms. It is another cloud recipient of the sanitized body, so it stays opt-in.
 2. **Laya: leave off.** Zero-shot it only adds latency; the two CPU fine-tunes underfit, and v2 lost the free-text safety gate. The GPU notebook is the next attempt.
-3. **Re-run `llm_settings_bench.py` on a fresh quota** before calling Qwen better than gpt-oss-20b at temperature 0.
+3. **Done 1 October:** at temperature 0 Qwen answered 41/42 and gpt-oss-20b 35/42 (`groq-settings-bench-v02.json`); keep Qwen first.
 4. None of this passes G11 (200 ms for the full flow); one planner call alone is near or over that budget.
 
 ## Evidence
@@ -127,6 +135,7 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
 - `Benchmarks/results/e2e-v5-boundary-v02.json`: real extension + Warden + real Groq, 48 cloud requests, 0 personal values.
 - `Benchmarks/results/fastpath-bench-v01.json`: fast path, Jev and Laya, design and held-out cases, with the Groq chain's answer on each case.
 - `Benchmarks/results/groq-settings-bench-v01.json`: Groq models at default temperature vs 0, Warden request shape (rate-limited; inconclusive).
+- `Benchmarks/results/groq-settings-bench-v02.json`: the same on a fresh quota with 429s retried (1 October).
 - `Benchmarks/results/e2e-v5-boundary-v03.json`: real extension + Warden with the fast path, 5 runs, 0 personal values.
 - `Benchmarks/results/fastpath-bench-laya-ft-v01.json`, `-ft-v02.json`, `-zeroshot-compact-v01.json`: the fine-tuning runs above, each with its caveat.
 - Harness: `scripts/cloud-models/bench.py`, `fastpath_bench.py`, `llm_settings_bench.py`, `cases.py`, `cases_heldout.py`, `scripts/e2e-v5/recording-relay.mjs`.
