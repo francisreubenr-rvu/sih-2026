@@ -1,33 +1,59 @@
 # Dhristi — SIH26171
 
-## Session handoff — start here (updated 1 October 2026, 06:00 UTC)
+## Session handoff — start here (updated 1 October 2026, 07:00 UTC)
 
-**Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), CI green through `c0ab49e`, no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details of every item below: `Docs/decisions/brain-cloud-models-jev.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 24.
+**Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), head `ba36a0b` or later, CI green, no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details: `Docs/decisions/brain-cloud-models-jev.md`, `scripts/laya-finetune/README.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 25.
+
+**Why the new session.** Francis added a Kaggle API key to the environment on 1 October so the Laya GPU fine-tune can run from the container. The first job of the next session is that run (below).
+
+### Task 1 — run the Laya GPU fine-tune on Kaggle (start here)
+
+1. **Check credentials without printing them.** `for k in KAGGLE_USERNAME KAGGLE_KEY KAGGLE_API_TOKEN; do [ -n "${!k}" ] && echo "$k set"; done`. The Kaggle CLI reads `KAGGLE_USERNAME` + `KAGGLE_KEY` (classic) or `KAGGLE_API_TOKEN` (newer CLI), or `~/.kaggle/kaggle.json`. If only one name is set, find out which form it is from its name, never from its value. Then `pip install -q kaggle` and `kaggle kernels list --mine -p 1`; that call is the auth test. If `kaggle.com` is blocked by the network policy, read the environment docs (`read_documentation`, topic `environment.network`) and tell Francis.
+2. **Push the notebook as a private GPU kernel.** In a scratch folder, copy `scripts/laya-finetune/kaggle_train.ipynb` and write `kernel-metadata.json`: `{"id": "<username>/dhristi-laya-finetune", "title": "dhristi-laya-finetune", "code_file": "kaggle_train.ipynb", "language": "python", "kernel_type": "notebook", "is_private": true, "enable_gpu": true, "enable_internet": true}`. Check `kaggle kernels push --help` for an accelerator option and pick a T4 or P100 if it has one. Then `kaggle kernels push -p <folder>`. Internet in a kernel needs a phone-verified Kaggle account; if the push says it is off, tell Francis.
+3. **What the notebook does.** It clones this branch (`BRANCH` in cell 2; switch to `master` once PR #41 is merged). It generates 3,000 steps with the v4 generator (seed 20261002), trains the whole encoder for 4 epochs at 1024/256 with the notebook's rates (2.5e-5 / 1e-4, `GRAD_ACCUM` 4), runs `DATA=... diagnose.py`, runs `fastpath_bench.py` with the LLM rows reused (no Groq key needed), and zips the weights. Expect roughly 1-2 hours on a T4. This is not measured yet.
+4. **Wait without polling in a tight loop.** Run `kaggle kernels status <username>/dhristi-laya-finetune` every 10-15 minutes (Monitor with an until-loop, or `send_later`). When it completes, run `kaggle kernels output <username>/dhristi-laya-finetune -p <dir>` and copy `fastpath-bench-laya-gpu.json` into `Benchmarks/results/`. Add `model_training` and `caveats` fields like those in `fastpath-bench-laya-ft-v04.json`.
+5. **Judge it by Jev's bar.** At the threshold used it must act on no free-text step (`wrong_on_needs_llm` empty) and be right on every held-out step it answers (precision 1.0). Jev at 0.9 answered 39/89 held-out steps, all right. Also check the free-text answer separates the steps: high on `mail-body-free`, `search-free`, `support-desc-free`, `rename-free` and low elsewhere, not one value everywhere (the CPU failure mode).
+6. **If it passes:** upload the checkpoint to a **private** Hugging Face repo with `HF_TOKEN` (write, account `francisreubenr`), for example `francisreubenr/laya-dhristi-fastpath`, and record the link in `scripts/laya-finetune/README.md`. Run the real extension loop with `WARDEN_FAST_PATH=laya WARDEN_LAYA_MODEL=<dir>`, as in `e2e-v5-boundary-v03.json`. Then update the decision note, PR #41's description and this handoff. The fast path stays **off by default**; turning it on is Francis's call.
+7. **If it fails:** record it the same way (results file, decision note, README table, ROAST). Do not lower the threshold. Likely next levers: more free-text variety in `gen_data.py` (the free-text question is the blocker), more steps, or more epochs.
+
+### Task 2 — keep PR #41 moving
+- The PR is a draft. Merging it, or asking for changes, is Francis's call. Keep CI green on every push. Use `subscribe_pr_activity` and hourly `send_later` check-ins; the 1 October session's check-ins end with it.
+
+### State at handoff (1 October)
 
 **Done in PR #41.**
-- Real-Groq end-to-end run found the planner never chose finish; fixed (`STATUS` lines in `extension/content.js`, vault token in `buildHistory`, finish rule in `warden/groq_client.py`). 48 real cloud requests, 0 personal values (`Benchmarks/results/e2e-v5-boundary-v02.json`).
-- Groq chain `qwen/qwen3.8-27b, openai/gpt-oss-20b, openai/gpt-oss-120b` at temperature 0.
-- Opt-in fast path `warden/fastpath.py` (`WARDEN_FAST_PATH=jev|laya`, off by default). Jev: 39/39 correct on held-out steps it answered, never a free-text step; real loop median about 236 ms (`fastpath-bench-v01.json`, `e2e-v5-boundary-v03.json`).
-- Laya (`convaiinnovations/laya`): zero-shot defers everything. 1 October: v1/v2 underfit because the generator's targets were too flat (fixed: one right answer per step, 2% total on wrong options). CPU v3 and v4 then trained the choice question (top choice 17 → 28 of 41 scenes), but the free-text question never learned its cue; it sits near the share of free-text steps in training. v4 acts at 0.9 on 27 of 90 held-out decisions, 21 right, wrong on `rename-free` (needs free text) and `already-logged-in`. None deployed; CPU training stopped. Pipeline and results table in `scripts/laya-finetune/README.md`.
-- Groq settings re-run on a fresh quota (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42 (711 ms), gpt-oss-20b 35/42 (974 ms); Qwen stays first.
-- Claims corrected on Website and README; `feat/dhristi-wave8` a11y ported; `cursor/website-pixel-redesign-pr1-ac89` not merged (superseded by Signal, dark tokens).
+- Real-Groq end-to-end run found the planner never chose finish; fixed (`STATUS` lines in `extension/content.js`, vault token in `buildHistory`, finish rule in `warden/groq_client.py`). 48 real cloud requests, 0 personal values (`e2e-v5-boundary-v02.json`).
+- Groq chain `qwen/qwen3.8-27b, openai/gpt-oss-20b, openai/gpt-oss-120b` at temperature 0. Re-run on a fresh quota (`groq-settings-bench-v02.json`, 429s retried): at temperature 0 Qwen 41/42 (711 ms), gpt-oss-20b 35/42 (974 ms). Qwen stays first.
+- Opt-in fast path `warden/fastpath.py` (`WARDEN_FAST_PATH=jev|laya`, off by default). Jev answered 39/89 held-out steps at 0.9, all right, never a free-text step; real loop median about 236 ms (`fastpath-bench-v01.json`, `e2e-v5-boundary-v03.json`).
+- Laya (`convaiinnovations/laya`, 421M, ModernBERT-large):
+
+  | Run | Own training steps right | Top choice, 41 scenes | At 0.9 | Free-text answer |
+  |---|---|---|---|---|
+  | zero-shot | 23-24/120 | 17/41 | acts on none | high everywhere |
+  | v2 (flat targets) | 29/120 | 16/41 | acts on none | ~0.17 everywhere |
+  | v3 (sharp targets, CPU) | 60/120 | 19/41 | acts on none | ~0.1 everywhere |
+  | v4 (+25% free text, CPU) | 80/120 | 28/41 | 27/90 held-out, 21 right; wrong on `rename-free`, `already-logged-in` | 0.24-0.44 everywhere |
+
+  The v1/v2 underfit was the generator's flat targets (fixed in `a97fd1d`) plus too few updates. The choice question trains; on CPU the free-text question never learned its cue. None deployed. CPU training stopped; the GPU run is next.
+- Claims corrected on Website and README; `feat/dhristi-wave8` a11y ported; `cursor/website-pixel-redesign-pr1-ac89` not merged (superseded by Signal).
 
 **Open decisions (Francis).**
 1. Jev fast path for demos: held back, open.
-2. Run `scripts/laya-finetune/kaggle_train.ipynb` on Kaggle (GPU, internet on). It now generates 3,000 steps with the v4 settings, trains the whole encoder for 4 epochs, then runs `diagnose.py` and the benchmark. This container has no GPU and no Kaggle credentials.
-3. Where the Laya weights live (about 0.8 GB; no Git LFS, GitHub 100 MB limit). `HF_TOKEN` (write, account `francisreubenr`) is now in the environment, so a private Hugging Face repo works; nothing uploaded yet, because no checkpoint has passed the benchmark.
-4. Mark PR #41 ready and merge, or ask for changes.
+2. Merge PR #41, or ask for changes.
+3. Whether a passing Laya checkpoint becomes the fast path's default backend (it stays opt-in until Francis says so).
 
-**Next actions for Claude.**
-- If Francis brings Kaggle results: commit `fastpath-bench-laya-gpu.json` to `Benchmarks/results/`, compare with Jev in the decision note, and only recommend Laya if, at the threshold used, it acts on no free-text step and is right on every held-out step it answers (Jev's bar). Then upload that checkpoint to a private Hugging Face repo.
-- ~~Re-run `llm_settings_bench.py` on a fresh Groq quota~~ done 1 October (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42, gpt-oss-20b 35/42; Qwen stays first.
-- Keep G11 **fail**, G20 **paused**, `submission_ready` **false**; do not lower `WARDEN_FAST_PATH_MIN_CONFIDENCE` for Laya without re-benchmarking.
+**Rules that hold.** G11 **fail**, G20 **paused**, `submission_ready` **false**. Do not lower `WARDEN_FAST_PATH_MIN_CONFIDENCE` for Laya without re-benchmarking. Never print key values; keys live in the environment or `warden/.env`, never in tracked files. Test only the synthetic fixtures. Never weaken a failed guardrail to get a pass. Do not put model identifiers in commits or PR text.
 
 **Environment facts (cloud container).**
-- Keys in env: `GROQ_API_KEY`, `JEV_API_KEY` (TypeSafe direct API), `OPENROUTER_API_KEY` (the 30 September session still saw an extra two words before the key; fixed by Francis for new sessions). `HF_TOKEN` (write). No OpenCode key. Never print key values.
-- Warden with GLiNER needs a venv with CPU torch, `gliner`, `protobuf`, `fastapi`, `uvicorn`, `httpx`, plus `laya` for the Laya backend. Container-local artefacts (`/home/user/.venv-warden`, `/home/user/laya-dhristi-v1` to `-v4`) do not survive a new session.
-- Groq free tier returns 429s under back-to-back runs; space calls (`--sleep`) and do not overlap benchmarks with end-to-end runs.
-- Node's fetch needs `NODE_USE_ENV_PROXY=1` behind the proxy (used by `scripts/e2e-v5/recording-relay.mjs`).
+- Keys in env: `GROQ_API_KEY`, `JEV_API_KEY` (TypeSafe direct API), `OPENROUTER_API_KEY`, `HF_TOKEN` (write, `francisreubenr`), and from 1 October a Kaggle key (name to be checked, see Task 1). No OpenCode key.
+- No GPU: 4 CPU cores, 15 GB RAM. A CPU Laya epoch (about 1,800-2,000 questions, top 6 layers) takes 28-35 minutes.
+- `pip install laya==0.3.22 protobuf` (not preinstalled). The base checkpoint is downloaded to `~/.hf/hub/models--convaiinnovations--laya/...` on first use (about 0.8 GB). Container-local artefacts (`/home/user/laya-dhristi-v1` to `-v4`, venvs) do not survive a new session; v2-v4 can be rebuilt with the README commands.
+- Warden with GLiNER needs CPU torch, `gliner`, `protobuf`, `fastapi`, `uvicorn`, `httpx`.
+- Groq's free tier returns 429s under back-to-back runs; `llm_settings_bench.py` now retries them, and `bench.py` has `--sleep`.
+- Node's fetch needs `NODE_USE_ENV_PROXY=1` behind the proxy (`scripts/e2e-v5/recording-relay.mjs`).
+- `pkill -f <pattern>` can kill the calling shell when the pattern appears in its own command line; kill by PID instead.
+
+**Laya tools.** `scripts/laya-finetune/`: `gen_data.py` (v4 settings), `train_cpu.py` (CPU or CUDA; `EPOCHS`, `TRAIN_TOP_LAYERS`, `MAX_LEN`, `HEAD_MAX_LEN`, `LR_ENCODER`, `LR_HEAD`, `GRAD_ACCUM`), `diagnose.py` (`DATA=`), `overfit_check.py` (can it fit 64 steps at all), `kaggle_train.ipynb`. Benchmark: `scripts/cloud-models/fastpath_bench.py --backends laya --laya-model <dir> --llm-from Benchmarks/results/fastpath-bench-v01.json`.
 
 **Checks to run first.**
 ```sh
