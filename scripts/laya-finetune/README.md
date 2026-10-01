@@ -7,7 +7,7 @@ questions.
 
 | File | What it is |
 |---|---|
-| `gen_data.py` | Synthetic training steps, rendered exactly as `warden/fastpath.py` renders them at run time. Domains and labels are kept disjoint from the evaluation sets; it prints the overlap, which must be empty. |
+| `gen_data.py` | Synthetic training steps, rendered exactly as `warden/fastpath.py` renders them at run time. Domains and labels are kept disjoint from the evaluation sets; it prints the overlap, which must be empty. v5 (1 October) adds overwrite, click-then-type and optional-field situations, free-text requests composed from framings x topics, and `--split train|val`, which gives validation wording that training never sees. The v3/v4 data and the Colab v01 run come from the generator at commit `e9cd7ab`. |
 | `train.jsonl` | The v1/v2 training set (`--n 900 --seed 20260930`, made by `gen_data.py` at commit `99c3e30`). Its targets were too flat to train a confident model; see below. |
 | `train_v3.jsonl` | The current training set: `--n 900 --seed 20261001`, one right answer per step and 2% total mass on wrong options. |
 | `train_cpu.py` | Single-process port of the authors' fine-tuning notebook (same objective, calibration slice and temperature fit). CPU by default, CUDA with fp16 when present. `TRAIN_TOP_LAYERS` (6; 28 = whole encoder), `EPOCHS`, `MAX_LEN`, `HEAD_MAX_LEN`; for a large GPU also `MICRO_BATCH`, `AMP_DTYPE=bf16`, `GRAD_CKPT=0`, `SEED`, `SAVE_EPOCHS` (extra calibrated checkpoints at those epochs). Logs the choice and free-text losses separately each epoch. |

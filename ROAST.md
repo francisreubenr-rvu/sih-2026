@@ -4,9 +4,10 @@
 - [x] Selection leak avoided: the Colab sweep makes 12 candidates, chosen on unseen generated steps (`validate.py`) by a rule fixed before the run; only the chosen one sees the 30 held-out benchmark cases.
 - [x] GPU run done (A100 80 GB). Free-text question learned (AUROC 1.0 on generated steps), unlike every CPU run.
 - [ ] Fails Jev's bar on held-out: wrong on `support-desc-free` (free text, 0.05) and `profile-phone` (pre-filled field to overwrite). Not deployed. Generator lacks both situations.
-- [ ] Same-generator validation saturated (1,619/1,619) and could not rank candidates; validation needs held-out template families.
+- [x] Generator v5 holds wording out for validation (`--split val`): in a dry run, no tasks or labels were shared with training. Untested on GPU until run v02.
 - [ ] Confidence is pinned to the training targets (0.98; 0.05/0.95), so the 0.9 threshold barely filters.
-- [ ] Colab saved the run notebook to `master` (`fbcda5c`, under `determined-babbage-mhi2zj/`), outside any PR. Francis to decide whether to remove it.
+- [x] Colab saved the run notebook to `master` (`fbcda5c`); Francis asked for removal, which is PR #43.
+- [ ] The v5 situations were picked after seeing held-out failures: the 30 held-out cases are no longer blind to them. A v02 pass on those cases is weaker evidence than v01's fail.
 - [ ] Validation steps come from the same generator as training; they measure fit and calibration, not generalization to new wording. Only the benchmark measures that.
 
 ## Round 25 — Laya on CPU, and the Groq re-run (1 October 2026)

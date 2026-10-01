@@ -1,4 +1,6 @@
 ## Laya on Colab (1 October 2026)
+- Generator v5 built (Francis approved): overwrite, click-then-type and optional-field situations, composed free-text requests, and `--split train|val` so validation uses held-out wording. Notebook set to run v02 (`colab-v02` on Drive). Disclosure recorded: the held-out cases are no longer blind to the new categories. Waiting on Francis's Colab run.
+- PR #43 removes the run notebook Colab saved to `master`.
 
 - Francis: run the Laya fine-tune on his Colab Pro (GPUs up to 80 GB, 160 GB RAM) instead of Kaggle, and go big.
 - `scripts/laya-finetune/colab_train.ipynb` replaces `kaggle_train.ipynb`: 20,000 steps, 4 whole-encoder runs x 6 epochs, 12 checkpoints scored by the new `validate.py` on unseen generated steps, one chosen by a fixed rule, only that one benchmarked. `train_cpu.py` gains `MICRO_BATCH`, `AMP_DTYPE=bf16`, `GRAD_CKPT=0`, `SEED`, `SAVE_EPOCHS` and per-question losses; the CPU defaults are unchanged.

@@ -49,6 +49,20 @@ def acts(row, t):
             and isinstance(row["confidence"], (int, float)) and row["confidence"] >= t)
 
 
+def by_family(rows):
+    """Steps, acted, wrong and free-text steps acted on at the Warden's threshold, per generator family
+    (v5 data; v4 rows have no family)."""
+    out = {}
+    for r in rows:
+        f = out.setdefault(r.get("family") or "unknown", {"steps": 0, "acted": 0, "wrong": 0, "acted_on_free_text": 0})
+        f["steps"] += 1
+        if acts(r, GATE):
+            f["acted"] += 1
+            f["wrong"] += not r["correct"]
+            f["acted_on_free_text"] += r["free_text"]
+    return out
+
+
 def summarize(rows):
     by_t = {}
     for t in THRESHOLDS:
@@ -77,6 +91,7 @@ def summarize(rows):
         },
         "by_threshold": by_t,
         "passes_at_0.9": g["acted"] > 0 and g["wrong"] == 0 and g["acted_on_free_text"] == 0,
+        "by_family_at_0.9": by_family(rows),
     }
 
 
@@ -103,7 +118,8 @@ def main():
     for i, r in enumerate(kept, 1):
         rec = fastpath.decide(r["body"], "laya")
         rows.append({"choice": rec["choice"], "confidence": rec["confidence"], "free_p": rec["freeTextProbability"],
-                     "free_text": bool(r["free_text"]), "correct": rec["choice"] in r["accept"]})
+                     "free_text": bool(r["free_text"]), "correct": rec["choice"] in r["accept"],
+                     "family": r.get("family")})
         if i % 250 == 0:
             print(f"  {i}/{len(kept)} {time.time() - t0:.0f}s", flush=True)
 
