@@ -131,11 +131,12 @@ def form_trajectory(rng):
     for f in order:
         remaining = [g for g in fields if g["sel"] not in filled]
         free_left = any(g["token"] is None for g in remaining)
-        # Any remaining token field may be typed next. While a free-text field is still empty,
-        # "none of these" is also right, and the free_text answer is true (the fast path defers).
-        accept = [f"type {g['sel']} {g['token']}" for g in remaining if g["token"]]
-        if free_left:
-            accept.append(fastpath.ESCAPE)
+        # One right answer per step, so a calibrated model can be confident: while a free-text
+        # field is still empty the step needs the LLM ("none of these", and free_text is true);
+        # otherwise type the topmost empty token field. (v1/v2 accepted every remaining field and
+        # the escape at once, which split the target over up to five options.)
+        top = None if free_left else next(g for g in fields if g["sel"] not in filled and g["token"])
+        accept = [fastpath.ESCAPE] if free_left else [f"type {top['sel']} {top['token']}"]
         out.append(step_example(task, scene(), list(history), None, accept, free_left, heading))
         filled.add(f["sel"])
         history.append({"action": "type", "target": f["sel"], **({"value": f["token"]} if f["token"] else {}), "status": "ok"})
@@ -194,13 +195,18 @@ def free_only_trajectory(rng):
     ]
 
 
+WRONG_MASS = 0.02
+
+
 def targets(example):
     body = example["body"]
     opts = list(fastpath.options(body))
     acc = [a for a in example["accept"] if a in opts]
     assert acc, (example["accept"], opts)
-    eps = 0.02
-    choice = {k: (1 - eps * (len(opts) - len(acc))) / len(acc) if k in acc else eps for k in opts}
+    # 2% of the mass spread over the wrong options in total. v1/v2 gave each wrong option 2%, about
+    # a third of the mass on a typical 15-option step, which capped a calibrated model near 0.8.
+    eps = WRONG_MASS / max(1, len(opts) - len(acc))
+    choice = {k: (1 - WRONG_MASS) / len(acc) if k in acc else eps for k in opts}
     free = {"false": 0.05, "true": 0.95} if example["free_text"] else {"false": 0.95, "true": 0.05}
     return {"next": choice, "free_text": free}
 

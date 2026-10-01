@@ -8,7 +8,8 @@ questions.
 | File | What it is |
 |---|---|
 | `gen_data.py` | Synthetic training steps, rendered exactly as `warden/fastpath.py` renders them at run time. Domains and labels are kept disjoint from the evaluation sets; it prints the overlap, which must be empty. |
-| `train.jsonl` | The committed training set: `--n 900 --seed 20260930`. |
+| `train.jsonl` | The v1/v2 training set (`--n 900 --seed 20260930`, made by `gen_data.py` at commit `99c3e30`). Its targets were too flat to train a confident model; see below. |
+| `train_v3.jsonl` | The current training set: `--n 900 --seed 20261001`, one right answer per step and 2% total mass on wrong options. |
 | `train_cpu.py` | Single-process port of the authors' fine-tuning notebook (same objective, calibration slice and temperature fit). CPU by default, CUDA with fp16 when present. `TRAIN_TOP_LAYERS` (6; 28 = whole encoder), `EPOCHS`, `MAX_LEN`, `HEAD_MAX_LEN`. |
 | `diagnose.py` | Does a checkpoint fit its own training steps? Scores the choice question through the training input path. |
 | `kaggle_train.ipynb` | The authors' full recipe on a free Kaggle GPU: 3,000 steps, whole encoder, 4 epochs, then `diagnose.py` and the benchmark. |
