@@ -121,6 +121,21 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
 - **v2 is less safe than zero-shot.** Its free-text answer collapsed to "no" on every step (the training set is 12% free-text steps), so the gate that kept zero-shot Laya from acting on free-text steps no longer fires. At the default 0.9 it acts on nothing (highest confidence 0.79); at 0.5 it would act on 9 held-out steps and be wrong on 6, including a free-text rename. Do not deploy v2, and do not lower the threshold for any Laya checkpoint without re-running `fastpath_bench.py`.
 - Next: `scripts/laya-finetune/kaggle_train.ipynb` runs the authors' recipe (whole encoder, 4 epochs, 1024/256 lengths, 3,000 generated steps) on a free Kaggle GPU, then `diagnose.py` and the benchmark. It needs Francis's Kaggle account. A GPU result should also be checked for the free-text collapse before any use; if it appears, rebalance the generator toward free-text steps.
 
+### 1 October: why the CPU fine-tunes underfit
+
+- **The targets, not the pipeline.** `gen_data.py` gave every wrong option 2% (about a third of the mass on a typical 15-option step) and split the right answer over every remaining field plus "none of these". Mean target entropy was 1.30 nats against 2.43 for uniform, so even a perfectly trained, calibrated model could not pass the 0.9 threshold; v2's highest confidence was 0.79.
+- **Too few updates.** v2 made about 200 optimizer updates at the notebook's rates with only the top 6 layers trainable.
+- **Test.** Training on 64 of its own steps (CE only, top 6 layers, 1e-4 encoder / 5e-4 head, one update per 4 steps):
+
+  | Targets | Before | Epoch 2 | Epoch 4 | Epoch 6 |
+  |---|---|---|---|---|
+  | v1/v2 (flat) | 9/64 | 16/64 | 26/64 | (stopped) |
+  | v3 (one answer, 2% total wrong) | 11/64 | 22/64 | 43/64 | 63/64 |
+
+  So the model can learn this task on CPU; the earlier runs could not show it.
+- **Fix** (`a97fd1d`): one right answer per step ("none of these" while a free-text field is empty, otherwise the topmost empty token field), wrong options share 2% in total. `train_v3.jsonl`, seed 20261001: mean entropy 0.14, right answer 0.98, no tasks or labels shared with the evaluation sets.
+- v3 is training with those targets (3 epochs, top 6 layers, 1e-4 / 5e-4, one update per micro-batch, about 1,200 updates). Fitting 64 training steps says nothing about held-out steps; `fastpath_bench.py` decides.
+
 ### Recommendation (30 September)
 
 1. **Jev fast path: technically ready for demos** (`WARDEN_FAST_PATH=jev`); whether to use it is an open decision for Francis, and it stays off until then. On these synthetic cases it never answered wrongly or on a free-text step, it answered about half the steps, and in the real loop it answered every step of the fixture task at a median of about 236 ms. It is another cloud recipient of the sanitized body, so it stays opt-in.
