@@ -6,14 +6,11 @@
 
 **Why the new session.** On 1 October Francis moved the Laya GPU fine-tune from Kaggle to his Colab Pro (GPUs up to 80 GB, 160 GB RAM). Colab runs in his browser, not from this container, so the run is his. This session's job is to bring the results into the repo.
 
-### Task 1: bring in the Laya Colab results (start here)
+### Task 1: Laya after the Colab run (start here)
 
-1. **What Francis runs.** `scripts/laya-finetune/colab_train.ipynb` (open it from GitHub in Colab; A100 or H100, High-RAM). It clones this branch, generates 20,000 training and 2,000 validation steps, trains 4 whole-encoder runs x 6 epochs (12 checkpoints), scores each with `validate.py`, selects one by the rule written in the notebook, benchmarks only that one, and uploads it to the private Hugging Face repo `francisreubenr/laya-dhristi-fastpath` only if it meets Jev's bar. Time is estimated (not measured) at 2-3 hours on an 80 GB A100.
-2. **Where results land.** Google Drive `MyDrive/dhristi-laya/colab-v01/`: `selection.json`, `validation/*.json`, `fastpath-bench-laya-colab-v01.json`, `logs/`, `selected-checkpoint/`. Read them with the Google Drive connector, or ask Francis to paste them. Do not guess results.
-3. **Commit.** `fastpath-bench-laya-colab-v01.json` into `Benchmarks/results/` (it already carries `model_training` and `accepted_at_0.9`; add a `caveats` field like `fastpath-bench-laya-ft-v04.json`). Put `selection.json` and the 12 validation summaries in `Benchmarks/results/laya-colab-sweep-v01.json`. Do not commit weights.
-4. **Judge by Jev's bar** (unchanged): at 0.9, no free-text step acted on and precision 1.0 on held-out. Also check that the free-text probability is high only on `mail-body-free`, `search-free`, `support-desc-free` and `rename-free`. The notebook prints this.
-5. **If accepted:** run the real extension loop with `WARDEN_FAST_PATH=laya WARDEN_LAYA_MODEL=<dir>` as in `e2e-v5-boundary-v03.json` (download from the private HF repo with `HF_TOKEN`). Update the decision note, the README table, PR #41's description and this handoff. The fast path stays **off by default**; that is Francis's call.
-6. **If it fails:** record it the same way. Do not lower the threshold. Next lever: more free-text variety in `gen_data.py`.
+- **Result (1 October):** `Benchmarks/results/laya-colab-sweep-v01.json` (transcribed from the notebook outputs; the full JSON files are on Francis's Drive, `MyDrive/dhristi-laya/colab-v01`, under a Google account this container's Drive connector does not see). The selected `a-s2-e6` fails Jev's bar on held-out: wrong on `support-desc-free` (needs free text) and `profile-phone`. Not deployed, nothing uploaded.
+- **Proposed next step (waiting on Francis):** widen `gen_data.py` (pre-filled fields that must be overwritten, free-text needs stated as "about <topic>", clicks on other controls before typing, more task phrasings), validate on template families held out of training, then one more Colab run. The held-out benchmark stays untouched and the bar stays as it is.
+- **Stray file on master:** Colab saved the run notebook to `master` (`fbcda5c`, path `determined-babbage-mhi2zj/scripts/laya-finetune/colab_train.ipynb`). Removing it needs Francis's say-so.
 
 ### Task 2 — keep PR #41 moving
 - The PR is a draft. Merging it, or asking for changes, is Francis's call. Keep CI green on every push. Use `subscribe_pr_activity` and hourly `send_later` check-ins; the 1 October session's check-ins end with it.

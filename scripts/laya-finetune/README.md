@@ -35,6 +35,7 @@ Use it in the Warden with `WARDEN_FAST_PATH=laya WARDEN_LAYA_MODEL=./laya-dhrist
 | v2 | `train.jsonl` (flat targets) | top 6 layers, 2 epochs | 29/120 | 16/41 | none (max 0.79) | about 0.17 everywhere |
 | v3 | `train_v3.jsonl` (sharp targets) | top 6, 3 epochs, 1e-4 / 5e-4, update every 4 steps | 60/120 | 19/41 | none | about 0.1 everywhere |
 | v4 | `train_v4.jsonl` (25% free text) | v3 + 3 epochs | 80/120 | 28/41 | 27 of 90 held-out decisions, 21 right; wrong on a free-text step | 0.24-0.44 everywhere |
+| Colab `a-s2-e6` | 20,000 steps (v4 settings) | whole encoder, 6 epochs, A100 (sweep of 12, chosen on validation) | validation 1,619/1,619 | held-out 21/30 (design not printed) | 21 of 30 held-out, 19 right; wrong on `support-desc-free` (free text) and `profile-phone` | 0.05 or 0.95; AUROC 1.0 on generated steps; wrong side on 6 of 30 held-out cases |
 
 v1/v2 underfit because each wrong option got 2% of the target (a calibrated model could not pass 0.9) and too few updates were made. The choice question trains once the targets are sharp. The free-text question did not train in any CPU run: it settles near the share of free-text steps in the data. None of these checkpoints is safe for the Warden; details and the acceptance bar for the GPU run are in `Docs/decisions/brain-cloud-models-jev.md`.
 
