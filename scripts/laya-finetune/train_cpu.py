@@ -11,7 +11,9 @@ layers plus the decision head are trained (the lower layers stay frozen).
 
 Environment: EPOCHS (2), TRAIN_TOP_LAYERS (6; 28 or more trains the whole encoder, as the
 authors' recipe does), MAX_LEN / HEAD_MAX_LEN (default: the checkpoint's; the authors trained at
-1024 / 256). On CUDA it uses fp16 autocast and gradient checkpointing, as the notebook does.
+1024 / 256), LR_ENCODER (2.5e-5) and LR_HEAD (1e-4) as in the notebook, GRAD_ACCUM (4). v3 on CPU
+used LR_ENCODER=1e-4 LR_HEAD=5e-4 GRAD_ACCUM=1: with only the top layers trainable, the notebook's
+rates and about 200 updates did not fit (v2). On CUDA it uses fp16 autocast and gradient checkpointing, as the notebook does.
 The lengths used are written into the output config, so inference reads the same ones.
 """
 
@@ -34,10 +36,10 @@ SEED = 20260930
 EPOCHS = int(os.environ.get("EPOCHS", "2"))
 TRAIN_TOP_LAYERS = int(os.environ.get("TRAIN_TOP_LAYERS", "6"))
 MICRO_BATCH = 4
-GRAD_ACCUM = 4
+GRAD_ACCUM = int(os.environ.get("GRAD_ACCUM", "4"))
 GROUP_SIZE = 4
-LR_ENCODER = 2.5e-5
-LR_HEAD = 1.0e-4
+LR_ENCODER = float(os.environ.get("LR_ENCODER", "2.5e-5"))
+LR_HEAD = float(os.environ.get("LR_HEAD", "1.0e-4"))
 SIGMA_START, SIGMA_END = 0.4, 0.1
 CALIB_FRACTION = 0.1
 
@@ -223,7 +225,8 @@ def main():
     cfg.pop("temperature_by_options", None)
     json.dump(cfg, open(os.path.join(out_dir, "rl_agent_config.json"), "w"), indent=2)
     json.dump({"seed": SEED, "epochs": EPOCHS, "train_top_layers": TRAIN_TOP_LAYERS, "device": device.type,
-               "max_len": cfg["max_len"], "head_max_len": cfg["head_max_len"], "items": len(all_items),
+               "max_len": cfg["max_len"], "head_max_len": cfg["head_max_len"], "lr_encoder": LR_ENCODER, "lr_head": LR_HEAD,
+               "grad_accum": GRAD_ACCUM, "micro_batch": MICRO_BATCH, "items": len(all_items),
                "train_items": len(train), "calibration_items": len(calib), "trainable_params": trainable,
                "epochs_log": log, "temperatures": temps, "data": os.path.basename(data)},
               open(os.path.join(out_dir, "training_meta.json"), "w"), indent=2)
