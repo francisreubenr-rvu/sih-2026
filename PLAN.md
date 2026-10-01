@@ -1,3 +1,8 @@
+## Laya Colab run v02 (2 October 2026)
+
+- Run v02 on generator v5: not accepted (`laya-colab-sweep-v02.json`). On held-out cases at 0.9 it acted on 24 and was wrong on 1, `support-desc-free`, a free-text step. Design cases regressed on two finish steps whose success message is prose, not a `STATUS` line. Validation on held-out wording now ranks candidates (1 of 12 passed).
+- Proposed next step (Francis decides): before any generator v6, write a fresh held-out set the model and generator have not been tuned against, and judge v03 on both sets. Otherwise each round fits these 30 cases more closely. v6 changes, if approved: shuffle element order, use SELECT as well as radio choice controls, state success in prose as well as STATUS lines, and add requests to set a field to a literal value.
+
 ## Laya on Colab (1 October 2026)
 - Generator v5 built (Francis approved): overwrite, click-then-type and optional-field situations, composed free-text requests, and `--split train|val` so validation uses held-out wording. Notebook set to run v02 (`colab-v02` on Drive). Disclosure recorded: the held-out cases are no longer blind to the new categories. Waiting on Francis's Colab run.
 - PR #43 removes the run notebook Colab saved to `master`.

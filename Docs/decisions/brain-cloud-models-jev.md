@@ -165,6 +165,15 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
   - `click_then_type`: a category to click before the text area, with free text asked for as "about <topic>" (and other framings) in the middle of the task.
   - Optional fields the task never mentions, which are skipped and are not free text.
   Free-text requests are now composed from 8 framings x 30 topics (plus titles, amounts and searches) instead of about 20 fixed phrases. Every wording bank is split: `--split val` uses domains, labels, task templates, topics and framings that `--split train` never sees. In a dry run, validation shared no tasks and no labels with training, and neither shared any with the benchmark cases. No state was truncated and every option stayed distinct at 1024/256. `validate.py` reports each family separately. The benchmark cases and the bar are unchanged. **Disclosure:** the new situations were chosen after seeing the v01 held-out failures, so the 30 held-out cases are no longer blind to those categories; a clean test of them would need new held-out cases written before the next result is seen.
+- **Colab run v02 (2 October, RTX PRO 6000 Blackwell 95 GB, about 21 minutes per run, `Benchmarks/results/laya-colab-sweep-v02.json`): not accepted.**
+  - **Validation now ranks candidates.** On held-out wording, 1 of 12 candidates passed (`b-s1-e4`). The others were wrong on 2 to 16 steps, and some acted on free-text steps. On v01 data every candidate scored near-perfectly.
+  - **Held-out benchmark at 0.9:** 24 of 30 acted, 23 right.
+    - Fixed since v01: `profile-phone`, and the free-text over-flagging on four steps.
+    - Still wrong: `support-desc-free`, a free-text step (free-text probability 0.05, clicked Submit at 0.98). That alone fails the bar.
+  - **Design cases at 0.9:** 9 of 11 acted, 7 right. `account-finish` and `already-done` regressed: both pages state success in prose, while every v5 finish step uses a `STATUS` line.
+  - **Why `support-desc-free` still fails:** its text area comes before the email field, its choice control is a SELECT, and its task does not name the topic. v5's click-then-type pages always put contact, then radio buttons, then the text area.
+  - **`rename-free`:** the free-text gate missed it (0.05). The step is only deferred because the model's confidence was below 0.9.
+  - **Not deployed.** Each further generator round built on these same 30 cases makes them less of a test; see the next-step note in PLAN.md.
 
 ### Recommendation (30 September)
 

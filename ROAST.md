@@ -1,3 +1,11 @@
+## Round 27: Laya Colab run v02 (2 October 2026)
+
+- [x] Held-out-wording validation ranks candidates (1 of 12 pass); same-generator validation could not.
+- [x] `profile-phone` and four over-flagged free-text steps fixed on held-out.
+- [ ] Still wrong on `support-desc-free` (free text, 0.05; clicked Submit at 0.98). Not accepted.
+- [ ] Design regressions: `account-finish`, `already-done`; success shown as prose, not a STATUS line, which v5 never generates.
+- [ ] The held-out set is being fitted round by round. A fresh, untouched held-out set is needed before another generator round counts as evidence.
+
 ## Round 26: Laya on Colab (1 October 2026)
 
 - [x] Free-text hypothesis checked and ruled out: Laya drops the end of the JSON state (`done_so_far`) when it runs out of room, but no free-text question on `train_v4.jsonl` loses any state at 512/192 or 1024/256.
