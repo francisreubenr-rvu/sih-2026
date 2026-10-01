@@ -23,11 +23,18 @@ def call(model, prompt, temperature):
     body = {"model": model, "messages": [{"role": "user", "content": prompt}], "response_format": {"type": "json_object"}}
     if temperature is not None:
         body["temperature"] = temperature
-    r = httpx.post(f"{config.GROQ_BASE_URL}/chat/completions", json=body, timeout=30,
-                   headers={"Authorization": f"Bearer {config.GROQ_API_KEY}", "Content-Type": "application/json"})
+    for attempt in range(5):
+        t0 = time.monotonic()
+        r = httpx.post(f"{config.GROQ_BASE_URL}/chat/completions", json=body, timeout=30,
+                       headers={"Authorization": f"Bearer {config.GROQ_API_KEY}", "Content-Type": "application/json"})
+        if r.status_code != 429 or attempt == 4:
+            break
+        # Free-tier rate limit: wait as asked (capped) and retry, so a 429 is not scored as a wrong answer.
+        time.sleep(min(60.0, float(r.headers.get("retry-after") or 10)))
     if r.status_code != 200:
         raise RuntimeError(_scrub(f"HTTP {r.status_code}: {r.text[:160]}"))
-    return r.json()["choices"][0]["message"]["content"]
+    # Latency of the answered call only; rate-limit waits are excluded.
+    return r.json()["choices"][0]["message"]["content"], round((time.monotonic() - t0) * 1000, 1)
 
 
 def main():
@@ -45,10 +52,10 @@ def main():
                 prompt = groq_client.build_prompt(c["tokenizedTask"], c["sanitizedDom"], c["elements"], c["history"])
                 t0 = time.monotonic()
                 try:
-                    plan = groq_client.validate_action(groq_client._parse_action_json(call(model, prompt, temp)), c["elements"])
+                    content, ms = call(model, prompt, temp)
+                    plan = groq_client.validate_action(groq_client._parse_action_json(content), c["elements"])
                     key = plan_key(plan)
-                    rows.append({"case": c["id"], "split": split, "key": key, "correct": is_correct(key, c["accept"]),
-                                 "ms": round((time.monotonic() - t0) * 1000, 1)})
+                    rows.append({"case": c["id"], "split": split, "key": key, "correct": is_correct(key, c["accept"]), "ms": ms})
                 except Exception as exc:  # noqa: BLE001
                     rows.append({"case": c["id"], "split": split, "error": _scrub(str(exc))[:160], "correct": False,
                                  "ms": round((time.monotonic() - t0) * 1000, 1)})
@@ -63,7 +70,7 @@ def main():
             print(name, json.dumps(summ), flush=True)
     doc = {"id": Path(a.out).stem if a.out else "groq-settings-bench", "date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
            "harness": "scripts/cloud-models/llm_settings_bench.py",
-           "scope": "Warden request shape (response_format json_object) with Groq's default temperature vs temperature 0; one call per case; design (cases.py) + heldout (cases_heldout.py). Latency from a cloud container (location not verified).",
+           "scope": "Warden request shape (response_format json_object) with Groq's default temperature vs temperature 0; one answered call per case (HTTP 429 is retried after Retry-After, up to 4 times, and the wait is excluded from latency); design (cases.py) + heldout (cases_heldout.py). Latency from a cloud container (location not verified).",
            "results": res}
     if a.out:
         Path(a.out).write_text(json.dumps(doc, indent=1) + "\n")
