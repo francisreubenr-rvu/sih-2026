@@ -139,8 +139,11 @@ async function oneRun(index, buildSha) {
         }
       }
       const transcript = await panel.evaluate(() => [...document.querySelectorAll('.entry')].map((e) => e.textContent).join('\n'));
-      const boundary = await panel.evaluate(() => document.getElementById('boundary')?.innerText || '');
-      if (!redactSeen && /Redact\s+\S*\s*Done/.test(boundary)) { redactSeen = true; mark(3, 'Redaction ran on the device: the email became a token before planning'); }
+      const redactNode = await panel.evaluate(() => {
+        const n = [...document.querySelectorAll('#lanes .node')].find((e) => (e.querySelector('.node-name')?.textContent || '').startsWith('Redact'));
+        return n ? n.textContent : '';
+      });
+      if (!redactSeen && /\bDone\b/.test(redactNode)) { redactSeen = true; mark(3, 'Redaction ran on the device: the email became a token before planning'); }
       if (!steps[4] && /(type|click)\b/i.test(transcript) && /plan|step/i.test(transcript)) { steps[4] = true; mark(4, 'Cloud planner (Groq) returned a step that names only tokens and selectors'); }
       if (/Run (finished|stopped|error)/.test(transcript)) break;
     }
@@ -152,7 +155,9 @@ async function oneRun(index, buildSha) {
     const finished = transcript.some((t) => /Run finished/.test(t));
     steps[6] = finished && /^Saved /.test(status || '') && status !== 'DELETED';
     mark(6, `Page shows "${status}" and the run finished: ${steps[6] ? 'yes' : 'no'}`);
-    await panel.click('#boundary .node[data-tab="sent"]', { timeout: 2000 }).catch(() => {});
+    // Show what was sent, so the recording ends on the outbound body.
+    await panel.click('#inspector-summary', { timeout: 2000 }).catch(() => {});
+    await panel.click('#tab-sent', { timeout: 2000 }).catch(() => {});
     await sleep(1500);
     const cloud = existsSync(stack.relayLog) ? readFileSync(stack.relayLog, 'utf8') : '';
     const requests = cloud.split('\n').filter(Boolean).length;
