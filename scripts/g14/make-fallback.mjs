@@ -30,9 +30,9 @@ const draw = [
   ...caps.map((c) => `drawtext=fontfile=${FONT}:text='${esc(c.text.slice(0, 120))}':x=12:y=h-46:fontsize=19:fontcolor=0x1a1a1a:enable='between(t,${c.t.toFixed(2)},${c.end.toFixed(2)})'`),
 ].join(',');
 
-// panel video: trim its late start by padding the front with its first frame; crop to the panel width
+// panel video: line up its slightly later start by repeating its first frame
 const filter = [
-  `[1:v]tpad=start_duration=${lag.toFixed(3)}:start_mode=clone,crop=420:720:0:0[p]`,
+  `[1:v]tpad=start_duration=${lag.toFixed(3)}:start_mode=clone[p]`,
   `[0:v][p]hstack=inputs=2,pad=iw:ih+104:0:40:white[s]`,
   `[s]${draw}[v]`,
 ].join(';');

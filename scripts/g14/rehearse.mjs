@@ -30,8 +30,8 @@ const ROOT = new URL('../..', import.meta.url).pathname;
 const CHROME = process.env.CHROME_PATH || '/opt/pw-browsers/chromium';
 const TASK = 'Update my contact email to priya.r@example.com and save the profile';
 const PERSONAL = ['priya.r@example.com', 'Raghunathan', 'Priya', '98765 43210', '9876543210'];
-const VIEW = { width: 760, height: 720 };
-const PANEL = { width: 420, height: 720 };
+// One viewport for both tabs: in headless=new they share a window, so resizing one resizes both.
+const VIEW = { width: 640, height: 720 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -98,7 +98,6 @@ async function oneRun(index, buildSha) {
     const pageVideoStart = Date.now();
     panel = await ctx.newPage();
     const panelVideoStart = Date.now();
-    await panel.setViewportSize(PANEL);
     panel.on('pageerror', (e) => errors.push(`panel: ${e.message}`));
     page.on('pageerror', (e) => errors.push(`page: ${e.message}`));
     await page.goto('http://127.0.0.1:8800/');
@@ -114,6 +113,7 @@ async function oneRun(index, buildSha) {
 
     const answered = new Set();
     let stripped = false;
+    let redactSeen = false;
     const tRun = Date.now();
     while (Date.now() - tRun < 240000) {
       await sleep(400);
@@ -139,7 +139,8 @@ async function oneRun(index, buildSha) {
         }
       }
       const transcript = await panel.evaluate(() => [...document.querySelectorAll('.entry')].map((e) => e.textContent).join('\n'));
-      if (!steps[3] && /EMAIL#\d/.test(transcript)) { steps[3] = true; mark(3, 'On the device the email became a token (EMAIL#1) before planning'); }
+      const boundary = await panel.evaluate(() => document.getElementById('boundary')?.innerText || '');
+      if (!redactSeen && /Redact\s+\S*\s*Done/.test(boundary)) { redactSeen = true; mark(3, 'Redaction ran on the device: the email became a token before planning'); }
       if (!steps[4] && /(type|click)\b/i.test(transcript) && /plan|step/i.test(transcript)) { steps[4] = true; mark(4, 'Cloud planner (Groq) returned a step that names only tokens and selectors'); }
       if (/Run (finished|stopped|error)/.test(transcript)) break;
     }
@@ -151,11 +152,16 @@ async function oneRun(index, buildSha) {
     const finished = transcript.some((t) => /Run finished/.test(t));
     steps[6] = finished && /^Saved /.test(status || '') && status !== 'DELETED';
     mark(6, `Page shows "${status}" and the run finished: ${steps[6] ? 'yes' : 'no'}`);
-    await panel.click('#boundary .node[data-tab="sent"]').catch(() => {});
+    await panel.click('#boundary .node[data-tab="sent"]', { timeout: 2000 }).catch(() => {});
     await sleep(1500);
     const cloud = existsSync(stack.relayLog) ? readFileSync(stack.relayLog, 'utf8') : '';
     const requests = cloud.split('\n').filter(Boolean).length;
     const leaks = PERSONAL.filter((v) => cloud.includes(v));
+    // Step 3 is confirmed from what actually left: the task in the first planner request carries a
+    // token where the address was, and the address itself is absent.
+    const firstTask = (cloud.split('\n').find(Boolean) || '').match(/USER TASK:([^\\]*)/);
+    const taskSent = firstTask ? firstTask[1].trim() : '';
+    steps[3] = redactSeen && /EMAIL#\d+/.test(taskSent) && !taskSent.includes('priya.r@example.com');
     steps[7] = requests > 0 && leaks.length === 0;
     mark(7, `What left the machine: ${requests} cloud requests, ${leaks.length} personal values`);
     await panel.screenshot({ path: `${dir}/panel-final.png`, fullPage: true });
@@ -178,7 +184,7 @@ async function oneRun(index, buildSha) {
       journey_steps_passed: [1, 2, 3, 4, 5, 6, 7].filter((k) => steps[k]),
       fallback_opened: false, fallback_used_in_live_path: false,
       cloud_requests: requests, personal_values_in_cloud_requests: leaks.length, planner_models: [...new Set(models)],
-      relay_round_trip_ms: timing.map((x) => x.ms), page_status: status, uncertain_pii_stripped: stripped,
+      relay_round_trip_ms: timing.map((x) => x.ms), page_status: status, uncertain_pii_stripped: stripped, task_as_sent: taskSent,
       panel_errors: errors, warden_health: { loaded: true, version: health.version || health.warden || null },
       events, video_offsets_s: { page: (pageVideoStart - t0) / 1000, panel: (panelVideoStart - t0) / 1000 },
       harness_differences: ['<all_urls> added to the harness copy of the manifest (stands in for the optional grant)',
