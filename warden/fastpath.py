@@ -22,6 +22,11 @@ for Laya it does not. The plan it returns passes groq_client.validate_action
 like any other.
 
 Selected by WARDEN_FAST_PATH=jev|laya. Unset (the default) means off.
+
+Jev is disabled (Francis, 2 October 2026: "disabled, but not deleted"). The code
+stays and its tests still run, but WARDEN_FAST_PATH=jev resolves to off and no
+body is sent to Jev. Re-enabling it is a code change to JEV_ENABLED, recorded
+with a decision, not an environment variable.
 """
 
 import os
@@ -51,9 +56,24 @@ class FastPathError(Exception):
     pass
 
 
+# See the module docstring. Only a code change flips this; tests set it to keep coverage.
+JEV_ENABLED = False
+
+
+def requested() -> str:
+    return os.environ.get("WARDEN_FAST_PATH", "").strip().lower()
+
+
+def jev_disabled_request() -> bool:
+    """WARDEN_FAST_PATH=jev was set while Jev is disabled (reported by /health)."""
+    return requested() == "jev" and not JEV_ENABLED
+
+
 def mode() -> str:
-    raw = os.environ.get("WARDEN_FAST_PATH", "").strip().lower()
+    raw = requested()
     if raw in ("", "off", "0", "false", "none"):
+        return "off"
+    if raw == "jev" and not JEV_ENABLED:
         return "off"
     if raw in ("jev", "laya"):
         return raw

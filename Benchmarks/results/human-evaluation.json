@@ -1,51 +1,105 @@
 {
-  "name": "wave6-human-evaluation",
-  "schema_version": 2,
-  "generatedAt": "2026-09-15T01:21:40.805Z",
-  "status": "unknown",
-  "protocol": "Docs/human-evaluation-protocol.md",
-  "forms": "Docs/human-evaluation-forms.md",
-  "decision_note": "Docs/decisions/brain-72h-g14-g20.md",
-  "acceptance": {
-    "required_participants": 5,
-    "required_narrative_reviewers": 3,
-    "non_author": true
+ "name": "wave6-human-evaluation",
+ "schema_version": 3,
+ "generatedAt": "2026-09-15T01:21:40.805Z",
+ "status": "unknown",
+ "protocol": "Docs/human-evaluation-protocol.md",
+ "forms": "Docs/human-evaluation-forms.md",
+ "decision_note": "Docs/decisions/brain-72h-g14-g20.md",
+ "acceptance": {
+  "required_participants": 5,
+  "required_narrative_reviewers": 3,
+  "non_author": true
+ },
+ "participant_entry_template": {
+  "id": "P1",
+  "date_utc": "",
+  "role_context": "",
+  "tasks_completed": [],
+  "task_success": "unaided|with_help|fail",
+  "time_to_first_protect_mmss": "",
+  "likert": {
+   "pixels_on_device": null,
+   "trust_chip_clarity": null,
+   "preview_useful": null,
+   "limits_honest": null
   },
-  "participant_entry_template": {
-    "id": "P1",
-    "date_utc": "",
-    "role_context": "",
-    "tasks_completed": [],
-    "task_success": "unaided|with_help|fail",
-    "time_to_first_protect_mmss": "",
-    "likert": {
-      "pixels_on_device": null,
-      "trust_chip_clarity": null,
-      "preview_useful": null,
-      "limits_honest": null
-    },
-    "confusion_notes": ""
+  "confusion_notes": ""
+ },
+ "narrative_reviewer_entry_template": {
+  "id": "R1",
+  "date_utc": "",
+  "deck_or_site_version": "",
+  "rubric_score": null,
+  "strengths": "",
+  "risks_or_overclaims": "",
+  "recommend_demo_as_is": null
+ },
+ "participants": [],
+ "narrative_reviewers": [],
+ "team_rehearsal": {
+  "note": "Team-only rehearsals must not be counted toward G20.",
+  "sessions": []
+ },
+ "g20_reason": "Recruitment resumed by Francis (2026-10-02); sessions planned 5 to 10 October on the v5 side panel. Zero non-author participants logged, so G20 stays unknown. Do not mark G20 pass or invent participants.",
+ "recruitment": {
+  "status": "resumed",
+  "resumedAt": "2026-10-02",
+  "resumedBy": "Francis",
+  "pausedAt": "2026-09-15",
+  "window": "2026-10-05 to 2026-10-10",
+  "note": "Invites may be sent. Names stay in the facilitator's private notes."
+ },
+ "participant_entry_template_v5": {
+  "id": "P1",
+  "date_utc": "",
+  "non_author": true,
+  "mode": "in_person|remote_facilitator_drives",
+  "extension_commit": "",
+  "warden_commit": "",
+  "tasks": {
+   "T1_pair": {
+    "result": "unaided|with_help|fail",
+    "time_mmss": ""
+   },
+   "T2_profile_email": {
+    "result": "unaided|with_help|fail",
+    "time_mmss": ""
+   },
+   "T3_uncertain_decisions": {
+    "result": "unaided|with_help|fail",
+    "time_mmss": ""
+   },
+   "T4_sent_view": {
+    "result": "unaided|with_help|fail",
+    "time_mmss": ""
+   },
+   "T5_statements_no_prompt": {
+    "result": "unaided|with_help|fail",
+    "time_mmss": ""
+   },
+   "T6_delete_prompt": {
+    "result": "unaided|with_help|fail",
+    "time_mmss": ""
+   }
   },
-  "narrative_reviewer_entry_template": {
-    "id": "R1",
-    "date_utc": "",
-    "deck_or_site_version": "",
-    "rubric_score": null,
-    "strengths": "",
-    "risks_or_overclaims": "",
-    "recommend_demo_as_is": null
+  "comprehension": {
+   "what_left": {
+    "answer": "",
+    "correct": null
+   },
+   "why_some_prompts": {
+    "answer": "",
+    "correct": null
+   }
   },
-  "participants": [],
-  "narrative_reviewers": [],
-  "team_rehearsal": {
-    "note": "Team-only rehearsals must not be counted toward G20.",
-    "sessions": []
+  "likert": {
+   "boundary_clear": null,
+   "prompt_made_sense": null,
+   "prompt_burden": null,
+   "limits_honest": null
   },
-  "g20_reason": "G20 recruitment paused by Francis (2026-09-15). Templates remain; zero non-author participants. Do not mark G20 pass; do not present protocol as active recruiting.",
-  "recruitment": {
-    "status": "paused",
-    "pausedAt": "2026-09-15",
-    "pausedBy": "Francis",
-    "note": "Invites halted; resume only on explicit owner decision."
-  }
+  "confusion_notes": ""
+ },
+ "participant_entry_template_v1_note": "participant_entry_template is the 15 September Prototype-popup shape; new sessions use participant_entry_template_v5."
 }

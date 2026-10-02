@@ -30,12 +30,31 @@ Francis asked for a review of the current state and a plan. Facts first, then th
 7. **G14.** Re-record the fallback video on the current side panel, after #44 and step 2.
 8. **Small and cheap:** Hindi submit keywords (भुगतान, भेजें, जमा), so Hindi pay/send labels are never `unproven`.
 
-**Decisions for Francis.**
+**Decided by Francis (2 October).**
 
-- The actual submission or demo date (it decides how much of 3 to 7 fits).
-- Unpause G20 (human validation).
-- Jev fast path for demos (open since 30 September).
-- Approve installing GLiNER, torch and Laya in this container for step 2.
+- **Deadline:** 16 October 2026, two weeks; a working date, not a verified SIH date.
+- **G20:** unpaused. Its status stays `unknown` until real sessions are logged.
+- **Jev fast path:** disabled in code but kept (`warden/fastpath.py` `JEV_ENABLED = False`).
+- **Installs:** packages and models this work needs are approved, provided nothing destructive happens in the container.
+
+**Schedule, 2 to 16 October.** "Claude" is this agent; "team" is Francis and the RVU team. Each line names the evidence it must produce.
+
+| Dates | Owner | Work | Evidence |
+|---|---|---|---|
+| 2 to 3 Oct | Claude | **Done 2 Oct.** Real end-to-end run: loaded extension, real Warden (GLiNER), pairing, Laya release, real Groq. 9 runs, 21 cloud requests, 0 personal values; release 3 of 3 where it should; wrong code sent nothing | `Benchmarks/results/e2e-v5-boundary-v04.json` |
+| 3 Oct | Francis | Merge PR #44 | merged PR |
+| 3 to 4 Oct | team, Claude | Blind test set: one teammate who has not seen the data writes ~150 EN/HI controls and tasks with labels. Claude supplies the template and scorer | `Benchmarks/datasets/laya-blind-v01/`, then a results file |
+| 4 to 6 Oct | Claude | G11 measured honestly on the current tree. Laya runs only where it can change the outcome. Budget stays 200 ms | `core-latency-*.json`; G11 status from evidence |
+| 5 to 10 Oct | team | G20 sessions: 5+ non-author participants, 3+ narrative reviewers (protocol and forms refreshed for v5) | `human-evaluation.json`; `scripts/g20_summarize.py` |
+| 6 to 7 Oct | Claude | Refresh stale passes at the current head (G05, G06/G07, G08), then `check_release.py --max-behind` | regenerated evidence files |
+| 7 to 8 Oct | Claude | G09/G10: fix the three side-panel axe findings; axe on the pairing field | `accessibility*.json` |
+| 8 to 9 Oct | Claude | G03: setup from a clean container, end to end, scripted | a run record |
+| 9 Oct | Claude | GLiNER false positives on control labels (finding below): measure them and propose a fix; decide with Francis | results file and decision |
+| 12 to 13 Oct | team, Claude | G14: rehearse live, re-record the fallback video on the current side panel | `demo-rehearsal.json`, video |
+| 14 Oct | Claude, Francis | Freeze; regenerate the ledger; Francis decides each gate from the evidence | `release-status.json` |
+| 15 to 16 Oct | all | Buffer for whatever slipped | |
+
+**Will not fit in the two weeks:** Laya as a fast-path planner (parked), a live Firefox run, OCR redraw, and anything needing real (non-synthetic) pages.
 
 ## Laya Colab run v02 (2 October 2026)
 

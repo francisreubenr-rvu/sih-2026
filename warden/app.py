@@ -111,7 +111,8 @@ def health():
         "plannerModel": config.planner_model(config.planner_mode()),
         "groqConfigured": config.groq_configured(),
         "fastPath": {"mode": fastpath.mode(), "destination": fastpath.destination(fastpath.mode()),
-                     "minConfidence": fastpath.min_confidence()},
+                     "minConfidence": fastpath.min_confidence(),
+                     "jevDisabled": fastpath.jev_disabled_request()},
         "pairing": config.pairing_state(),
         "warden": config.WARDEN_VERSION,
     }

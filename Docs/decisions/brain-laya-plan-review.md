@@ -195,6 +195,6 @@ Residual, unchanged from 30 September:
 
 ## Still open
 
-1. A live run of release and pairing on the loaded extension, real Warden and Laya (`scripts/e2e-v5` with `WARDEN_PAIRING_SECRET` and `WARDEN_REVIEWER=laya`). So far: unit, fake-Warden, real-Chromium content tests, a real-checkpoint smoke run and the cross-language pairing check.
+1. ~~A live run of release and pairing~~ done on 2 October (`Benchmarks/results/e2e-v5-boundary-v04.json`): 9 runs, 21 cloud requests, 0 personal values. Release held in 3 of 3 kept-label runs; it was correctly withheld for an off-task click and for a stripped (tokenized) label. A wrong pairing code sent nothing. Still open from that run: GLiNER flags "account" UI text as an account number (ROAST round 29).
 2. A blind test set for the reviewer and the keyword rules, written by a teammate rather than the author. Every number above is on author-written phrases, and the 2 October verbs were fitted to this split.
 3. Hindi submit keywords (भुगतान, भेजें, जमा). Hindi pay/send labels stay `unproven`, so a verified review could release one if Laya misjudged it as navigational.

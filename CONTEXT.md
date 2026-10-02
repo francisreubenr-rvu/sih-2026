@@ -4,6 +4,15 @@
 
 **Where the work is.** PR #42 (Laya plan reviewer and release) and PR #41 (fast path, Groq settings, Laya fast-path training, now parked) are merged into `master` (`3314513`). Open: PR #44 on `claude/lucid-fermat-6dkxla`. It adds Hindi and missing-verb destructive rules, and makes extension-Warden pairing required (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). Current review and ordered plan: `PLAN.md`, "Review and next steps (2 October 2026)". Findings: `ROAST.md` rounds 28 and 29. Decision: `Docs/decisions/brain-laya-plan-review.md`.
 
+**Decided by Francis (2 October):**
+
+- Working deadline 16 October 2026.
+- G20 unpaused, with the protocol and forms refreshed for the v5 side panel; still `unknown`, zero sessions.
+- Jev fast path disabled in code but kept.
+- Installs approved, provided nothing destructive happens in the container.
+
+The two-week schedule is in `PLAN.md`.
+
 **Since pairing is required:**
 
 - A Warden with no secret refuses every POST, and an unpaired extension starts no run.

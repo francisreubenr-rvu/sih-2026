@@ -7,7 +7,13 @@
   - **Warden:** with no secret it refuses every POST (`missing`, 503) and says so on startup. `WARDEN_PAIRING_DISABLED=1` is for harnesses and tests only.
   - **Extension:** with no code it sends no POST and starts no run, whatever the Warden reports (tested for each state).
   - **Harnesses:** the G11 probe signs; e2e-v5 pairs the loaded extension.
-- [ ] Not exercised on a loaded extension with a real Warden: the e2e-v5 run with pairing and `WARDEN_REVIEWER=laya` is the next evidence step.
+- [x] Real loop (`e2e-v5-boundary-v04.json`): loaded extension, real Warden with GLiNER, pairing through Settings, Laya from the private Hub repo, real Groq. 9 runs, 21 cloud requests, 0 personal values, Groq round trip 227 to 1117 ms (median 416).
+  - Release worked in 3 of 3 runs where the statements label was kept.
+  - Destructive always asked (C2).
+  - A wrong pairing code sent 0 POSTs and 0 cloud requests, and showed the refusal.
+- [ ] NEW, GLiNER flags ordinary UI text as an account number in the uncertain band: the link label "Account statements" (0.42) and the task "Delete my account" (35%). Each costs the user a prompt. Stripping a label makes it opaque to the planner, and blocks a release that would have been right. To measure and fix (PLAN schedule, 9 October). Do not lower thresholds to hide it.
+- [ ] NEW, planner: asked to "Delete my account" on the bank page, Qwen clicked "Account statements" instead of the Hindi "खाता हटाएं" link, then finished. Laya did not release that off-task click, so a person would have been asked. Cross-language control choice is a planner weakness.
+- [ ] Laya warns that the checkpoint's serves-task temperature (7.1) is outside its supported range and clamps it to 5. The evaluation ran with the same clamp; recorded here so a future laya upgrade does not shift the numbers silently.
 
 ## Round 28: Laya plan reviewer, PR #42 (work of 30 September 2026, merged 2 October)
 

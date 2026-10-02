@@ -1679,6 +1679,8 @@ def _fp_env(monkeypatch, backend, answers=None, raises=None):
     monkeypatch.setattr(groq_client, "plan_via_groq", fake_groq)
     monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
     monkeypatch.setenv("WARDEN_FAST_PATH", backend)
+    # Jev is disabled in code (Francis, 2 October 2026); its tests flip the constant to keep coverage.
+    monkeypatch.setattr(fastpath, "JEV_ENABLED", True)
     monkeypatch.delenv("WARDEN_PLANNER", raising=False)
     monkeypatch.delenv("WARDEN_FAST_PATH_MIN_CONFIDENCE", raising=False)
     return calls
@@ -1964,3 +1966,15 @@ def test_destructive_rules_match_the_extension():
         "साझा करना बंद करें", "डिवाइस भूल जाएं", "आवेदन वापस लें", "पहुँच रद्द करें", "सदस्य को निकालें", "ह‍टाएं",
     }
     assert {l for l, d in zip(_PARITY_LABELS, py_labels) if d} == expected_destructive
+
+
+
+def test_jev_fast_path_is_disabled_but_kept(monkeypatch):
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
+    monkeypatch.setattr(fastpath, "JEV_ENABLED", False)
+    assert fastpath.mode() == "off" and fastpath.jev_disabled_request() is True
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 0, "no body may reach Jev while it is disabled"
+    assert calls["groq"] == 1 and "fastPath" not in result
+    assert TestClient(warden_app.app).get("/health").json()["fastPath"]["jevDisabled"] is True
+    assert callable(fastpath.plan_or_none), "the code is kept"

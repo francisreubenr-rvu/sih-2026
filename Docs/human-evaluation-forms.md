@@ -1,77 +1,59 @@
-# Human evaluation forms (G20): print / copy per session
+# Human evaluation forms (G20), v5 side panel
 
-**Status:** Forms retained; **G20 recruitment paused** by Francis (2026-09-15). **Zero** non-author results in repo until real sessions are logged. Do **not** mark G20 pass. Do not treat the recruit checklist as an active invite campaign.
-
-Use with `Docs/human-evaluation-protocol.md`. After each session, append anonymized rows to `Benchmarks/results/human-evaluation.json` only.
-
----
+Print or copy one participant sheet per session. Protocol: `Docs/human-evaluation-protocol.md`. The 15 September forms (Prototype popup) are in git history.
 
 ## Session header (facilitator)
 
-- Session date (UTC): ________  
-- Build SHA: ________  
-- Fixture URL: ________  
-- Facilitator (not counted as participant): ________  
-- Mode: ☐ in-person ☐ remote (facilitator drives browser)
+- Session ID: `S__`, date (UTC):
+- Participant ID: `P__` (never a name)
+- Non-author confirmed (did not write Dhristi code, claims or copy): yes / no. If no, log the session under `team_rehearsal` only.
+- Mode: in person / remote with the facilitator driving
+- Extension commit, Warden commit:
 
----
+## Participant task sheet
 
-## Participant task sheet (copy per P1…P5+)
+| Task | Result (unaided / with help / fail) | Time (mm:ss) | Notes (behaviour, not opinions) |
+|---|---|---|---|
+| T1 pair the extension | | | |
+| T2 profile email update | | | |
+| T3 uncertain-data decisions | | | |
+| T4 Sent view: did the email leave? | | | |
+| T5 open statements (no prompt) | | | |
+| T6 delete account (prompt) | | | |
 
-- ID (anonymized): ________  Date: ________
-- Role/context (optional, no employer secrets): ________
-- Non-author confirmation: ☐ did not author Dhristi code/claims for this entry
-- Tasks completed (synthetic fixture only):
-  - ☐ open fixture
-  - ☐ toolbar capture
-  - ☐ protect
-  - ☐ inspect egress
-  - ☐ trust chip
-- Task success (operator observation): ☐ unaided ☐ with help ☐ fail
-- Time to first successful protect (mm:ss): ________
-- Free-text confusion points: ________________________________
+## Comprehension (record the answer verbatim, then mark correct / incorrect)
 
-## Participant Likert (1–5)
+1. "Which parts of your data left this computer during the email task?" Correct means it names tokens or placeholders, not the email itself.
+2. "Why did it ask you before some steps and not others?" Correct means it connects asking with the risk of the step.
 
-| Prompt | Score |
-|--------|------:|
-| I understand raw pixels stay on this device | |
-| Trust chip wording is clear (EN and/or HI) | |
-| Protected preview is useful without exposing PII | |
-| Limits (latency / WebPII OCR) were communicated honestly | |
+## Likert (1 = strongly disagree, 5 = strongly agree)
 
----
+| Item | Score |
+|---|---|
+| I could tell what stayed on my computer and what left it | |
+| When it asked me to confirm, the question made sense | |
+| It asked me too often (higher = more burden) | |
+| It was honest about what it cannot do | |
 
-## Narrative reviewer sheet (≥3 non-authors)
+Free text: the one moment that confused you most.
 
-- Reviewer ID: ________  Date: ________
-- Deck/site version (URL or commit): ________
-- Non-author confirmation: ☐
-- Materials reviewed: ☐ public site ☐ pitch/speaker notes ☐ live narrated demo
-- Anchored rubric score (1–5): ________
-- Strengths: ________________________________
-- Risks / overclaims spotted: ________________________________
-- Recommend demo-as-is? ☐ yes ☐ no ☐ with fixes
+## Narrative reviewer sheet (at least 3 non-authors)
 
----
-
-## Recruit checklist (facilitator private; do not commit PII): **paused**
-
-| Invite # | Channel | Invited (private) | Accepted? | Scheduled | Completed as | Notes |
-|----------|---------|-------------------|:---------:|-----------|--------------|-------|
-| 1 | | | ☐ | | P__ / R__ / n/a | |
-| 2 | | | ☐ | | | |
-| 3 | | | ☐ | | | |
-| 4 | | | ☐ | | | |
-| 5 | | | ☐ | | | |
-| 6 | | | ☐ | | | |
-| 7 | | | ☐ | | | |
-| 8 | | | ☐ | | | |
-
-Target: ≥5 completed **participants** + ≥3 **narrative reviewers** (can overlap only if both task + rubric are done; prefer distinct people when possible).
-
----
+- Reviewer ID: `R__`, date (UTC):
+- Read: README at commit `____`, public site at revision `____`
+- Rubric score (1 to 5, anchors in the protocol):
+- Strengths:
+- Overclaims or risks:
+- Would you demo it as it stands? yes / no
 
 ## Logging
 
-Append anonymized rows to `Benchmarks/results/human-evaluation.json` only. Never commit real names, emails, phone numbers, or production screens. Keep `status: unknown` until thresholds are actually met.
+Append one object per real session to `Benchmarks/results/human-evaluation.json`, in the shapes given by `participant_entry_template_v5` and `narrative_reviewer_entry_template`. Then run `python3 scripts/g20_summarize.py`.
+
+## Invite (copy and edit; send from your own account, never commit names)
+
+> Subject: 25 minutes to try a student privacy prototype (synthetic data only)
+>
+> Hi ____, I'm Francis from RV University. Our Smart India Hackathon prototype, Dhristi, is a browser assistant that strips personal data on your computer before anything goes to the cloud planner. I need feedback from people who did not build it. You would try six short tasks on made-up web pages (no real accounts or personal data) and answer a few questions, about 25 minutes, in person or on a call where I drive the browser. Would a slot between 5 and 10 October work for you?
+>
+> Separately, would you be willing to spend 15 minutes reading our README and website and scoring how clearly they explain the privacy limits? That can be done in your own time.
