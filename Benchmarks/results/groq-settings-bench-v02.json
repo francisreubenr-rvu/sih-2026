@@ -1,0 +1,1281 @@
+{
+ "id": "groq-settings-bench-v02",
+ "date": "2026-10-01",
+ "harness": "scripts/cloud-models/llm_settings_bench.py",
+ "scope": "Warden request shape (response_format json_object) with Groq's default temperature vs temperature 0; one answered call per case (HTTP 429 is retried after Retry-After, up to 4 times, and the wait is excluded from latency); design (cases.py) + heldout (cases_heldout.py). Latency from a cloud container (location not verified).",
+ "results": {
+  "qwen/qwen3.8-27b temperature=default": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 0,
+     "correct": 11
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 0,
+     "correct": 25
+    },
+    "p50_ms": 769.8,
+    "wrong": [
+     "phone-type: click #mobile",
+     "bank-acct: click #acct",
+     "mail-to: click #to",
+     "login-user: click #user",
+     "search-go: type #q USB-C charger",
+     "rename-free: click #rename"
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 702.3
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 723.4
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 761.6
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 884.9
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "click #mobile",
+     "correct": false,
+     "ms": 716.1
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 647.4
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 707.5
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1433.3
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 2098.4
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #accept",
+     "correct": true,
+     "ms": 2057.3
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 2335.5
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2 imagery",
+     "correct": true,
+     "ms": 1950.0
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 1977.2
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 2162.1
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "key": "click #cont",
+     "correct": true,
+     "ms": 1486.5
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "click #acct",
+     "correct": false,
+     "ms": 2342.4
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 1603.2
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 1595.7
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "click #to",
+     "correct": false,
+     "ms": 2014.9
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "key": "type #subj Meeting moved to Friday",
+     "correct": true,
+     "ms": 886.1
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "click #send",
+     "correct": true,
+     "ms": 716.4
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "key": "click #user",
+     "correct": false,
+     "ms": 1077.8
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "key": "click #signin",
+     "correct": true,
+     "ms": 737.2
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "key": "click #t-security",
+     "correct": true,
+     "ms": 682.8
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 728.6
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "key": "click #sms-alerts",
+     "correct": true,
+     "ms": 804.9
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "key": "click #save-n",
+     "correct": true,
+     "ms": 731.6
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 718.0
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "key": "type #q USB-C charger",
+     "correct": true,
+     "ms": 765.0
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "key": "type #q USB-C charger",
+     "correct": false,
+     "ms": 1657.5
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "key": "click #cart",
+     "correct": true,
+     "ms": 828.6
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "click #topic",
+     "correct": true,
+     "ms": 684.9
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "key": "type #desc Failed payment - I attempted to make a purchase but the transaction did not go through. Please investigate.",
+     "correct": true,
+     "ms": 679.1
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 1040.9
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "key": "type #ph PHONE#1",
+     "correct": true,
+     "ms": 681.2
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "key": "click #upd",
+     "correct": true,
+     "ms": 802.6
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "key": "click #sep",
+     "correct": true,
+     "ms": 634.6
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 588.5
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "key": "click #pricing",
+     "correct": true,
+     "ms": 682.2
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "key": "click #rename",
+     "correct": false,
+     "ms": 757.9
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "key": "type #aad AADHAAR#1",
+     "correct": true,
+     "ms": 1022.0
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "key": "click #verify",
+     "correct": true,
+     "ms": 769.8
+    }
+   ]
+  },
+  "qwen/qwen3.8-27b temperature=0": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 0,
+     "correct": 12
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 0,
+     "correct": 29
+    },
+    "p50_ms": 711.1,
+    "wrong": [
+     "rename-free: click #rename"
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1751.7
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 681.9
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 656.1
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 583.9
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 668.9
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 704.8
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 724.1
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 726.7
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 636.6
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #accept",
+     "correct": true,
+     "ms": 639.1
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 690.8
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2 imagery",
+     "correct": true,
+     "ms": 622.2
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 827.7
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 777.0
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "key": "click #cont",
+     "correct": true,
+     "ms": 980.2
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "type #acct BANKACCOUNT#1",
+     "correct": true,
+     "ms": 764.5
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 824.3
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 696.4
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "type #to EMAIL#1",
+     "correct": true,
+     "ms": 711.7
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "key": "type #subj Meeting moved to Friday",
+     "correct": true,
+     "ms": 812.5
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "click #send",
+     "correct": true,
+     "ms": 991.3
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 1138.9
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "key": "click #signin",
+     "correct": true,
+     "ms": 742.9
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "key": "click #t-security",
+     "correct": true,
+     "ms": 784.7
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 648.6
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "key": "click #sms-alerts",
+     "correct": true,
+     "ms": 610.6
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "key": "click #save-n",
+     "correct": true,
+     "ms": 729.8
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 633.2
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "key": "type #q USB-C charger",
+     "correct": true,
+     "ms": 640.0
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "key": "click #go",
+     "correct": true,
+     "ms": 690.1
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "key": "click #cart",
+     "correct": true,
+     "ms": 745.1
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "click #topic",
+     "correct": true,
+     "ms": 670.7
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "key": "type #desc I am experiencing a failed payment issue and need assistance resolving it.",
+     "correct": true,
+     "ms": 794.8
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 690.0
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "key": "type #ph PHONE#1",
+     "correct": true,
+     "ms": 675.3
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "key": "click #upd",
+     "correct": true,
+     "ms": 764.9
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "key": "click #sep",
+     "correct": true,
+     "ms": 859.4
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 683.6
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "key": "click #pricing",
+     "correct": true,
+     "ms": 854.6
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "key": "click #rename",
+     "correct": false,
+     "ms": 629.8
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "key": "type #aad AADHAAR#1",
+     "correct": true,
+     "ms": 711.1
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "key": "click #verify",
+     "correct": true,
+     "ms": 819.9
+    }
+   ]
+  },
+  "openai/gpt-oss-20b temperature=default": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 0,
+     "correct": 12
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 0,
+     "correct": 29
+    },
+    "p50_ms": 971.7,
+    "wrong": [
+     "support-email: type #topic Payment failed"
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 981.8
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 949.6
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 1123.6
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 971.7
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 771.9
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 825.0
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 892.9
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1312.3
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 1029.1
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #accept",
+     "correct": true,
+     "ms": 927.3
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 913.6
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2",
+     "correct": true,
+     "ms": 1163.2
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 896.3
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 1262.6
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "key": "click #cont",
+     "correct": true,
+     "ms": 909.5
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "type #acct BANKACCOUNT#1",
+     "correct": true,
+     "ms": 880.2
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 1048.6
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 1662.6
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "type #to EMAIL#1",
+     "correct": true,
+     "ms": 1058.4
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "key": "type #subj Meeting moved to Friday",
+     "correct": true,
+     "ms": 1022.9
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "click #send",
+     "correct": true,
+     "ms": 841.6
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 881.0
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "key": "click #signin",
+     "correct": true,
+     "ms": 946.5
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "key": "click #t-security",
+     "correct": true,
+     "ms": 1023.1
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 1259.6
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "key": "click #sms-alerts",
+     "correct": true,
+     "ms": 1240.1
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "key": "click #save-n",
+     "correct": true,
+     "ms": 1095.2
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 942.3
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "key": "type #q USB-C charger under 1000 rupees",
+     "correct": true,
+     "ms": 942.3
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "key": "click #go",
+     "correct": true,
+     "ms": 945.5
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "key": "click #cart",
+     "correct": true,
+     "ms": 858.9
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "type #topic Payment failed",
+     "correct": false,
+     "ms": 955.5
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "key": "type #desc I made a payment that failed.",
+     "correct": true,
+     "ms": 1110.8
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 1008.1
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "key": "type #ph PHONE#1",
+     "correct": true,
+     "ms": 1041.1
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "key": "click #upd",
+     "correct": true,
+     "ms": 1136.7
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "key": "click #sep",
+     "correct": true,
+     "ms": 793.0
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 655.4
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "key": "click #pricing",
+     "correct": true,
+     "ms": 1037.4
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "key": "type #wsname Orbit Ops",
+     "correct": true,
+     "ms": 1549.5
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "key": "type #aad AADHAAR#1",
+     "correct": true,
+     "ms": 1013.6
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "key": "click #verify",
+     "correct": true,
+     "ms": 739.4
+    }
+   ]
+  },
+  "openai/gpt-oss-20b temperature=0": {
+   "summary": {
+    "design": {
+     "calls": 12,
+     "errors": 0,
+     "correct": 12
+    },
+    "heldout": {
+     "calls": 30,
+     "errors": 3,
+     "correct": 23
+    },
+    "p50_ms": 973.6,
+    "wrong": [
+     "ship-continue: HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Plea",
+     "mail-send: type #subj Meeting moved to Friday",
+     "notif-save: HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Plea",
+     "search-go: type #q USB-C charger under 1000 rupees",
+     "cart-open: HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Plea",
+     "support-email: type #topic Failed payment",
+     "profile-phone-update: finish"
+    ]
+   },
+   "rows": [
+    {
+     "case": "account-type-email",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1151.5
+    },
+    {
+     "case": "account-save",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 1039.5
+    },
+    {
+     "case": "account-finish",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 717.8
+    },
+    {
+     "case": "save-not-delete",
+     "split": "design",
+     "key": "click #save",
+     "correct": true,
+     "ms": 1196.3
+    },
+    {
+     "case": "phone-type",
+     "split": "design",
+     "key": "type #mobile PHONE#1",
+     "correct": true,
+     "ms": 879.5
+    },
+    {
+     "case": "nav-downloads",
+     "split": "design",
+     "key": "click #downloads",
+     "correct": true,
+     "ms": 700.9
+    },
+    {
+     "case": "two-fields-first",
+     "split": "design",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 1177.2
+    },
+    {
+     "case": "two-fields-second",
+     "split": "design",
+     "key": "type #email EMAIL#1",
+     "correct": true,
+     "ms": 1040.6
+    },
+    {
+     "case": "login-user",
+     "split": "design",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 856.3
+    },
+    {
+     "case": "report-link",
+     "split": "design",
+     "key": "click #accept",
+     "correct": true,
+     "ms": 1087.0
+    },
+    {
+     "case": "already-done",
+     "split": "design",
+     "key": "finish",
+     "correct": true,
+     "ms": 860.7
+    },
+    {
+     "case": "search-free-text",
+     "split": "design",
+     "key": "type #q Sentinel-2",
+     "correct": true,
+     "ms": 1328.2
+    },
+    {
+     "case": "ship-name",
+     "split": "heldout",
+     "key": "type #name PERSONNAME#1",
+     "correct": true,
+     "ms": 973.2
+    },
+    {
+     "case": "ship-addr",
+     "split": "heldout",
+     "key": "type #addr ADDRESS#1",
+     "correct": true,
+     "ms": 645.9
+    },
+    {
+     "case": "ship-continue",
+     "split": "heldout",
+     "error": "HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"co",
+     "correct": false,
+     "ms": 6658.4
+    },
+    {
+     "case": "bank-acct",
+     "split": "heldout",
+     "key": "type #acct BANKACCOUNT#1",
+     "correct": true,
+     "ms": 1067.8
+    },
+    {
+     "case": "bank-add-not-cancel",
+     "split": "heldout",
+     "key": "click #add",
+     "correct": true,
+     "ms": 891.2
+    },
+    {
+     "case": "bank-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 895.6
+    },
+    {
+     "case": "mail-to",
+     "split": "heldout",
+     "key": "type #to EMAIL#1",
+     "correct": true,
+     "ms": 922.0
+    },
+    {
+     "case": "mail-body-free",
+     "split": "heldout",
+     "key": "type #subj Meeting Rescheduled",
+     "correct": true,
+     "ms": 1126.2
+    },
+    {
+     "case": "mail-send",
+     "split": "heldout",
+     "key": "type #subj Meeting moved to Friday",
+     "correct": false,
+     "ms": 1133.7
+    },
+    {
+     "case": "login-user",
+     "split": "heldout",
+     "key": "type #user EMAIL#1",
+     "correct": true,
+     "ms": 1449.3
+    },
+    {
+     "case": "login-no-forgot",
+     "split": "heldout",
+     "key": "click #signin",
+     "correct": true,
+     "ms": 877.4
+    },
+    {
+     "case": "settings-security",
+     "split": "heldout",
+     "key": "click #t-security",
+     "correct": true,
+     "ms": 795.3
+    },
+    {
+     "case": "settings-notif",
+     "split": "heldout",
+     "key": "click #t-notif",
+     "correct": true,
+     "ms": 876.5
+    },
+    {
+     "case": "notif-sms",
+     "split": "heldout",
+     "key": "click #sms-alerts",
+     "correct": true,
+     "ms": 847.8
+    },
+    {
+     "case": "notif-save",
+     "split": "heldout",
+     "error": "HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"co",
+     "correct": false,
+     "ms": 5860.4
+    },
+    {
+     "case": "notif-done",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 1070.9
+    },
+    {
+     "case": "search-free",
+     "split": "heldout",
+     "key": "type #q USB-C charger under 1000 rupees",
+     "correct": true,
+     "ms": 1149.8
+    },
+    {
+     "case": "search-go",
+     "split": "heldout",
+     "key": "type #q USB-C charger under 1000 rupees",
+     "correct": false,
+     "ms": 1074.6
+    },
+    {
+     "case": "cart-open",
+     "split": "heldout",
+     "error": "HTTP 400: {\"error\":{\"message\":\"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"co",
+     "correct": false,
+     "ms": 5290.1
+    },
+    {
+     "case": "support-email",
+     "split": "heldout",
+     "key": "type #topic Failed payment",
+     "correct": false,
+     "ms": 1331.7
+    },
+    {
+     "case": "support-desc-free",
+     "split": "heldout",
+     "key": "type #desc Payment failed",
+     "correct": true,
+     "ms": 973.6
+    },
+    {
+     "case": "support-submit",
+     "split": "heldout",
+     "key": "click #submit",
+     "correct": true,
+     "ms": 1151.9
+    },
+    {
+     "case": "profile-phone",
+     "split": "heldout",
+     "key": "type #ph PHONE#1",
+     "correct": true,
+     "ms": 1016.7
+    },
+    {
+     "case": "profile-phone-update",
+     "split": "heldout",
+     "key": "finish",
+     "correct": false,
+     "ms": 812.4
+    },
+    {
+     "case": "download-statement",
+     "split": "heldout",
+     "key": "click #sep",
+     "correct": true,
+     "ms": 1081.5
+    },
+    {
+     "case": "already-logged-in",
+     "split": "heldout",
+     "key": "finish",
+     "correct": true,
+     "ms": 913.5
+    },
+    {
+     "case": "cookie-then-link",
+     "split": "heldout",
+     "key": "click #pricing",
+     "correct": true,
+     "ms": 857.6
+    },
+    {
+     "case": "rename-free",
+     "split": "heldout",
+     "key": "type #wsname Orbit Ops",
+     "correct": true,
+     "ms": 1057.2
+    },
+    {
+     "case": "aadhaar-type",
+     "split": "heldout",
+     "key": "type #aad AADHAAR#1",
+     "correct": true,
+     "ms": 849.1
+    },
+    {
+     "case": "aadhaar-verify",
+     "split": "heldout",
+     "key": "click #verify",
+     "correct": true,
+     "ms": 870.0
+    }
+   ]
+  }
+ },
+ "caveats": [
+  "One answered call per case per setting (42 cases: 12 design, 30 held-out); a difference of a few cases is within run-to-run variation and is not a ranking on its own.",
+  "Fresh free-tier quota on 1 October 2026; HTTP 429 was retried after Retry-After (v01 scored 61 of 168 rate-limited calls as errors). No call ended in 429.",
+  "The 3 errors for gpt-oss-20b at temperature 0 are HTTP 400 'Failed to validate JSON': Groq's json_object mode rejected the model's output. They are counted as wrong because the Warden would get no plan from that call (it would move to the next model in the chain).",
+  "Synthetic cases written by us; not evidence about real sites."
+ ]
+}

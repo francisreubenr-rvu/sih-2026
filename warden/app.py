@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse
 
 import config
 import entities
+import fastpath
 import groq_client
 import ollama_client
 import redactor
@@ -41,6 +42,7 @@ def _start_model_load() -> None:
     # (with loaded: false) while the ~76s cold load runs, rather than
     # blocking the socket from accepting connections until it finishes.
     threading.Thread(target=entities.load_model, daemon=True).start()
+    threading.Thread(target=fastpath.warm, daemon=True).start()
 
 
 @app.get("/health")
@@ -54,6 +56,8 @@ def health():
         "destination": config.planner_destination(config.planner_mode()),
         "plannerModel": config.planner_model(config.planner_mode()),
         "groqConfigured": config.groq_configured(),
+        "fastPath": {"mode": fastpath.mode(), "destination": fastpath.destination(fastpath.mode()),
+                     "minConfidence": fastpath.min_confidence()},
         "warden": config.WARDEN_VERSION,
     }
 
@@ -153,6 +157,20 @@ def dispatch_plan(body: dict) -> dict:
             "WARDEN_PLANNER must be 'groq' (default) or 'ollama'. POST /plan did not call a model.",
         )
 
+    # Optional decision-model fast path (fastpath.py). It can only remove an LLM call: when it
+    # defers or fails, the configured planner answers as before. Offline mode never sends a body
+    # off the machine, so a cloud fast path (Jev) is skipped there; Laya runs locally and is allowed.
+    fast_record = None
+    if fastpath.mode() != "off":
+        if mode == "ollama" and fastpath.destination(fastpath.mode()) == "cloud":
+            fast_record = {"backend": fastpath.mode(), "used": False,
+                           "reason": "cloud fast path skipped: WARDEN_PLANNER=ollama is offline"}
+        else:
+            fast, fast_record = fastpath.plan_or_none(body)
+            if fast is not None:
+                fast["fastPath"] = fast_record
+                return fast
+
     if mode == "groq":
         if not config.groq_configured():
             raise PlanRouteError(
@@ -165,6 +183,8 @@ def dispatch_plan(body: dict) -> dict:
             raise PlanRouteError(502, str(exc), switched=exc.switched) from exc
         result["planner"] = "groq"
         result["destination"] = config.planner_destination("groq")
+        if fast_record is not None:
+            result["fastPath"] = fast_record
         return result
 
     try:
@@ -172,6 +192,8 @@ def dispatch_plan(body: dict) -> dict:
     except ollama_client.OllamaPlanError as exc:
         raise PlanRouteError(503, str(exc)) from exc
     result["destination"] = config.planner_destination("ollama")
+    if fast_record is not None:
+        result["fastPath"] = fast_record
     return result
 
 

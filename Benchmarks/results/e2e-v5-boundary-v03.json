@@ -1,0 +1,150 @@
+{
+ "id": "e2e-v5-boundary-v03",
+ "date": "2026-09-30",
+ "harness": "scripts/e2e-v5/run.mjs; Groq and Jev each behind scripts/e2e-v5/recording-relay.mjs",
+ "surface": "root extension/ (unpacked, Chromium headless=new) + warden/ with GLiNER on CPU, WARDEN_FAST_PATH=jev or laya (warden/fastpath.py), Groq chain qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b as the fallback. Laya ran in the Warden process on this container's CPU (4 cores).",
+ "scope": "Synthetic fixture only (scripts/e2e-v5/fixture.html), same task as v01/v02. Linux cloud container (location not verified) behind an egress proxy. The harness answers every prompt with proceed.",
+ "task": "Update my contact email to priya.r@example.com and save the profile",
+ "values_checked": [
+  "priya.r@example.com",
+  "Priya",
+  "Raghunathan",
+  "98765",
+  "43210"
+ ],
+ "runs": {
+  "fp-jev-1": {
+   "fast_path": "jev",
+   "groq_temperature": "default",
+   "result": "Run finished after 3 steps.",
+   "plans": [
+    "jev-1.13.0 (cloud) proposed type on #email",
+    "jev-1.13.0 (cloud) proposed click on #save",
+    "jev-1.13.0 (cloud) proposed finish"
+   ],
+   "page_outcome": "page status: Saved priya.r@example.com | email field: priya.r@example.com",
+   "raw_pii_hits": 0,
+   "groq": {
+    "requests": 0,
+    "status": {}
+   },
+   "jev": {
+    "requests": 3,
+    "status": {
+     "200": 3
+    },
+    "ms_min": 209,
+    "ms_p50": 232,
+    "ms_max": 613
+   }
+  },
+  "fp-jev-2": {
+   "fast_path": "jev",
+   "groq_temperature": "default",
+   "result": "Run finished after 3 steps.",
+   "plans": [
+    "jev-1.13.0 (cloud) proposed type on #email",
+    "jev-1.13.0 (cloud) proposed click on #save",
+    "jev-1.13.0 (cloud) proposed finish"
+   ],
+   "page_outcome": "page status: Saved priya.r@example.com | email field: priya.r@example.com",
+   "raw_pii_hits": 0,
+   "groq": {
+    "requests": 0,
+    "status": {}
+   },
+   "jev": {
+    "requests": 3,
+    "status": {
+     "200": 3
+    },
+    "ms_min": 240,
+    "ms_p50": 534,
+    "ms_max": 752
+   }
+  },
+  "fp-jev-3": {
+   "fast_path": "jev",
+   "groq_temperature": "default",
+   "result": "Run finished after 3 steps.",
+   "plans": [
+    "jev-1.13.0 (cloud) proposed type on #email",
+    "jev-1.13.0 (cloud) proposed click on #save",
+    "jev-1.13.0 (cloud) proposed finish"
+   ],
+   "page_outcome": "page status: Saved priya.r@example.com | email field: priya.r@example.com",
+   "raw_pii_hits": 0,
+   "groq": {
+    "requests": 0,
+    "status": {}
+   },
+   "jev": {
+    "requests": 3,
+    "status": {
+     "200": 3
+    },
+    "ms_min": 180,
+    "ms_p50": 207,
+    "ms_max": 605
+   }
+  },
+  "fp-jev-t0-1": {
+   "fast_path": "jev",
+   "groq_temperature": "0",
+   "result": "Run finished after 3 steps.",
+   "plans": [
+    "jev-1.13.0 (cloud) proposed type on #email",
+    "jev-1.13.0 (cloud) proposed click on #save",
+    "jev-1.13.0 (cloud) proposed finish"
+   ],
+   "page_outcome": "page status: Saved priya.r@example.com | email field: priya.r@example.com",
+   "raw_pii_hits": 0,
+   "groq": {
+    "requests": 0,
+    "status": {}
+   },
+   "jev": {
+    "requests": 3,
+    "status": {
+     "200": 3
+    },
+    "ms_min": 173,
+    "ms_p50": 204,
+    "ms_max": 619
+   }
+  },
+  "fp-laya-1": {
+   "fast_path": "laya",
+   "groq_temperature": "0",
+   "result": "Run finished after 3 steps.",
+   "plans": [
+    "openai/gpt-oss-20b (cloud) proposed type on #email",
+    "qwen/qwen3.8-27b (cloud) proposed click on #save",
+    "qwen/qwen3.8-27b (cloud) proposed finish"
+   ],
+   "page_outcome": "page status: Saved priya.r@example.com | email field: priya.r@example.com",
+   "raw_pii_hits": 0,
+   "groq": {
+    "requests": 4,
+    "status": {
+     "200": 3,
+     "429": 1
+    },
+    "ms_min": 256,
+    "ms_p50": 614,
+    "ms_max": 719
+   },
+   "jev": {
+    "requests": 0,
+    "status": {}
+   }
+  }
+ },
+ "totals": {
+  "runs_finished": "5 of 5",
+  "raw_pii_hits": 0,
+  "jev_answered_every_step_in_jev_runs": true
+ },
+ "not_measured": "Laya's per-step time inside this run (the extension does not log the fastPath record; fastpath-bench-v01 has Laya p50 585-847 ms on CPU); toolbar-opened side panel; Firefox; any real site.",
+ "guardrails": "No guardrail status changed. G11 stays fail; submission_ready stays false."
+}

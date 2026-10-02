@@ -1,0 +1,954 @@
+{
+ "id": "cloud-model-bench-groq-v02",
+ "date": "2026-09-29",
+ "harness": "scripts/cloud-models/bench.py",
+ "scope": "Synthetic, already-tokenized scenes only (scripts/cloud-models/cases.py): the material that may pass the Warden egress guard. Planner prompt and validator are the Warden's own (groq_client). Latency is wall-clock from a cloud container (location not verified) through an egress proxy, not from the team's machine in India, and includes TLS and network time. This is not the G11 full-flow measurement.",
+ "caveats": "Groq only, sequential with 2.5 s between calls, on the fixed prompt (commit dd5d6fd). Groq free-tier rate limits still returned 4 HTTP 429s for gpt-oss-20b.",
+ "reps_per_case": 3,
+ "providers_run": "groq",
+ "sleep_between_calls_s": 2.5,
+ "plan_cases": 12,
+ "review_cases": 6,
+ "jev_note": "Jev is a choice model: it picks from options the harness enumerates (click each control, type each task token into each input, finish). It cannot produce a free-text value, so search-free-text is unanswerable for it by construction.",
+ "plan": {
+  "groq:openai/gpt-oss-20b": {
+   "summary": {
+    "calls": 36,
+    "errors": 4,
+    "valid": 31,
+    "correct": 31,
+    "p50_ms": 615.4,
+    "p95_ms": 1119.1,
+    "min_ms": 315.8,
+    "error_samples": [
+     "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organi"
+    ]
+   },
+   "rows": [
+    {
+     "ms": 869.5998950000003,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 685.5561449999996,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 856.4946890000016,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 627.1714029999985,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 472.3785509999985,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 451.60535300000504,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 406.51912500000265,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 576.995569999994,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 499.8826030000032,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 413.455294000002,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 315.82498299999884,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 614.8640039999975,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 619.0676970000055,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 1119.1468680000014,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 541.7578690000084,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 855.416302000009,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 347.13548700000274,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 560.3968980000076,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 592.650761999991,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 1270.762325000007,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 591.2549300000052,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 682.9125860000005,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 644.3817800000033,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 653.8852379999867,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2359.2577830000037,
+     "key": null,
+     "valid": false,
+     "error": "no JSON object found in model response",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "ms": 737.1436319999987,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "ms": 413.42677299999764,
+     "key": "click #accept",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 453.36266600000386,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 363.15643900002215,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "ms": 615.3776740000012,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 626.8656190000002,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 771.4490209999951,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  },
+  "groq:openai/gpt-oss-120b": {
+   "summary": {
+    "calls": 36,
+    "errors": 0,
+    "valid": 36,
+    "correct": 36,
+    "p50_ms": 760.4,
+    "p95_ms": 1331.1,
+    "min_ms": 557.9,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 739.3944279999971,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 593.5791290000054,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 601.699568000015,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 893.0551249999894,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 778.5583839999788,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 742.1252059999972,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 938.7941239999975,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 640.1208640000107,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 624.9571090000074,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 859.5250909999947,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 681.9010700000092,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 1470.1899899999944,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 1331.1214599999914,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 719.3544300000099,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 1017.0151959999885,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 767.6093890000004,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 760.3616270000089,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 809.1550249999955,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 706.0953529999949,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 715.0949319999995,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 900.505389000017,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 681.5245029999915,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 585.0081129999865,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 737.974840999982,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 861.5205769999932,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 719.0077709999798,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 810.1426689999869,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 755.7164629999988,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 753.3320009999898,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 953.9350229999854,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 557.8539010000156,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 732.204256999978,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 831.3600719999954,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 1228.4098519999702,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 1469.9491060000014,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 761.0720080000419,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  },
+  "groq:qwen/qwen3.8-27b": {
+   "summary": {
+    "calls": 36,
+    "errors": 0,
+    "valid": 36,
+    "correct": 36,
+    "p50_ms": 341.7,
+    "p95_ms": 756.9,
+    "min_ms": 216.0,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 405.8701380000116,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 280.21071900002426,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 756.8763790000048,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 341.74019400001043,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 697.9584669999781,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 524.2021239999985,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1306.5546020000056,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 441.01868199999217,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 279.77681700002677,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 262.4499069999615,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 427.10667099999,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 271.5420750000135,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 609.3745200000171,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 470.71968800003106,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 457.62164899997515,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 215.96293599998262,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 296.2010339999779,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 645.0737719999893,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 304.83093599997346,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 277.3995009999908,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 306.7287949999695,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 266.83069099999557,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 323.5626830000342,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 781.3955959999817,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 495.05742699994926,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 292.2571949999906,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 308.59002300002203,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 288.7492809999799,
+     "key": "click #accept",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 451.23599800001557,
+     "key": "click #accept",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 438.72311800004127,
+     "key": "click #accept",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 358.29468700001144,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 311.14190600004576,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 263.21201400003247,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 277.5106280000159,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 528.169709999986,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 268.0388009999888,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  }
+ },
+ "review": {
+  "groq:openai/gpt-oss-20b": {
+   "summary": {
+    "calls": 18,
+    "errors": 0,
+    "valid": 18,
+    "correct": 18,
+    "p50_ms": 452.9,
+    "p95_ms": 715.0,
+    "min_ms": 208.2,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 561.4133130000027,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 432.43987399995376,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 714.99178199997,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 814.4909799999596,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 693.4884940000074,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 695.0411759999611,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 583.0439060000003,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 452.93913400001884,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 333.44305399998575,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 474.47675500001196,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 304.0538589999642,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 651.319333999993,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 321.58018400002675,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 208.16099699999313,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 301.9992939999838,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 307.39486599998145,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 309.36572199999546,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 467.9514200000199,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    }
+   ]
+  }
+ }
+}

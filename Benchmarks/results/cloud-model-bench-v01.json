@@ -1,0 +1,3752 @@
+{
+ "id": "cloud-model-bench-v01",
+ "date": "2026-09-29",
+ "harness": "scripts/cloud-models/bench.py",
+ "scope": "Synthetic, already-tokenized scenes only (scripts/cloud-models/cases.py): the material that may pass the Warden egress guard. Planner prompt and validator are the Warden's own (groq_client). Latency is wall-clock from a cloud container (location not verified) through an egress proxy, not from the team's machine in India, and includes TLS and network time. This is not the G11 full-flow measurement.",
+ "caveats": "Planner prompt was the pre-fix groq_client.build_prompt (no STATUS/finish rule): the module was imported before commit dd5d6fd. Groq calls overlapped the e2e-v5-boundary-v02 runs on the same key, so most Groq rows are HTTP 429 rate-limit errors, not model failures. Clean Groq numbers on the fixed prompt: cloud-model-bench-groq-v02.json.",
+ "reps_per_case": 5,
+ "plan_cases": 12,
+ "review_cases": 6,
+ "jev_note": "Jev is a choice model: it picks from options the harness enumerates (click each control, type each task token into each input, finish). It cannot produce a free-text value, so search-free-text is unanswerable for it by construction.",
+ "plan": {
+  "groq:openai/gpt-oss-20b": {
+   "summary": {
+    "calls": 60,
+    "errors": 45,
+    "valid": 15,
+    "correct": 11,
+    "p50_ms": 622.0,
+    "p95_ms": 995.0,
+    "min_ms": 345.7,
+    "error_samples": [
+     "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organi"
+    ]
+   },
+   "rows": [
+    {
+     "ms": 822.1017650000704,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 345.7215930000075,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 351.1754699999301,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 902.7735240000538,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 994.9947709999378,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1153.01776900003,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 621.9662660000722,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 625.2343169999222,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 355.8480739999368,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 585.4802960000143,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 513.0083889999923,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-finish",
+     "correct": false
+    },
+    {
+     "ms": 537.6509070000566,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-finish",
+     "correct": false
+    },
+    {
+     "ms": 674.607624000032,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-finish",
+     "correct": false
+    },
+    {
+     "ms": 541.4549280000074,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-finish",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "account-finish",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "ms": 711.6447429999653,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "search-free-text",
+     "correct": false
+    }
+   ]
+  },
+  "groq:openai/gpt-oss-120b": {
+   "summary": {
+    "calls": 60,
+    "errors": 41,
+    "valid": 19,
+    "correct": 19,
+    "p50_ms": 747.8,
+    "p95_ms": 1742.7,
+    "min_ms": 447.9,
+    "error_samples": [
+     "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organ"
+    ]
+   },
+   "rows": [
+    {
+     "ms": 1742.6587260000588,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1048.8526240000056,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1814.6155700000008,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 720.8780610000076,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 825.1396620000833,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 747.8350399999272,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 758.8531239999838,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1148.4248419999403,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 666.8815640000503,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 603.384556999913,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 873.349730999962,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 755.5752459999212,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 601.2632819999908,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 677.8013350000265,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 773.9511540000876,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 724.2743589999918,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 447.90184999999383,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "ms": 730.3910790000145,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "ms": 595.538433999991,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-120b` in organization `org_[redacted]` service tier `on_demand` on t",
+     "case": "search-free-text",
+     "correct": false
+    }
+   ]
+  },
+  "groq:qwen/qwen3.8-27b": {
+   "summary": {
+    "calls": 60,
+    "errors": 37,
+    "valid": 23,
+    "correct": 23,
+    "p50_ms": 278.7,
+    "p95_ms": 825.2,
+    "min_ms": 214.5,
+    "error_samples": [
+     "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organiza",
+     "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organizat"
+    ]
+   },
+   "rows": [
+    {
+     "ms": 347.93975200000204,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 233.54106700003285,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 240.09247500009678,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "account-type-email",
+     "correct": false
+    },
+    {
+     "ms": 222.9833220000046,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 549.2420919999859,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1143.8577739999118,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "account-save",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "account-save",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "account-save",
+     "correct": false
+    },
+    {
+     "ms": 357.7407420000327,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 241.7528339999535,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 278.6615460000803,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 249.93876200005616,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 247.9183099999318,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 428.7119209999446,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 214.54137299997456,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "save-not-delete",
+     "correct": false
+    },
+    {
+     "ms": 238.02617000001192,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 266.99385599999914,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 344.46865200004595,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outpu",
+     "case": "phone-type",
+     "correct": false
+    },
+    {
+     "ms": 420.0341969999499,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 414.9504409999736,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "ms": 383.3047489999899,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "nav-downloads",
+     "correct": false
+    },
+    {
+     "ms": 255.7261220000555,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 595.9308490000694,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "two-fields-first",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "two-fields-second",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "ms": 825.1723949999814,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "login-user",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "report-link",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on inpu",
+     "case": "already-done",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_[redacted]` service tier `on_demand` on outp",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "ms": 269.15088800001286,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  },
+  "openrouter:google/gemini-3.8-flash": {
+   "summary": {
+    "calls": 60,
+    "errors": 0,
+    "valid": 60,
+    "correct": 60,
+    "p50_ms": 2715.5,
+    "p95_ms": 5061.3,
+    "min_ms": 1893.3,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 5061.312856999962,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 5326.119634000065,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 2328.5686530000476,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 5379.288331999987,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 3974.4248649999463,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 2342.581758999927,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 2170.5051850000245,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 2145.9691139999677,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 2453.451184000073,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 4320.0929920000135,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 2025.2725640000335,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 3615.9718229999953,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 2260.271966999994,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 2767.4998539999933,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 2319.1625139999132,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 3469.4807589999073,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 2062.98963800009,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 2267.273748000207,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 2247.0163390000835,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 2745.429252000122,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 3059.7250910000184,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 3492.2184109998398,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 3543.4225890001017,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 3279.8276760001954,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 3241.9520720000037,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 1989.5292270000482,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2784.6404059998804,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2252.428946000009,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 1933.881263000103,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2508.4445570000753,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2957.972312000038,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 3439.8996360000638,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2715.458925999883,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2283.3796029999576,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2317.6199050001287,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2223.496852000153,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2666.8635339999582,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 3028.9676590000454,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 3601.6644310000174,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2049.8283260001244,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 3180.2024260000508,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 3451.162672999999,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 3394.356135999942,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 3004.336710999951,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 3378.747601999976,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 2632.548793999831,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 2679.556109000032,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 3323.393231999944,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 2769.6807760000866,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 3123.7389469999925,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 1893.3288960001846,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 2136.957321999944,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 2423.0897939999068,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 12116.020699000046,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 2114.8905479999485,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 2399.572351000188,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 2454.6392659999583,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 3104.974261000052,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 2156.0382469999695,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 2403.8243649999913,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  },
+  "openrouter:deepseek/deepseek-v4.1-flash": {
+   "summary": {
+    "calls": 60,
+    "errors": 0,
+    "valid": 60,
+    "correct": 60,
+    "p50_ms": 2093.4,
+    "p95_ms": 37193.9,
+    "min_ms": 818.9,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 1798.835998999948,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 949.1893340000388,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1071.2943499997891,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1110.384569999951,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1300.1674639999692,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 1762.4641620000148,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1454.8664779999854,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1428.0185319998964,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1517.7691750000122,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 2957.300309999937,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 1845.6807150000714,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 1180.0727279999137,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 1189.9394810000103,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 990.1284499999292,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 1235.9189119999883,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 38279.91602099996,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 37193.928967999906,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 37434.685218000144,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 3374.353360999976,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 38498.99967399983,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 2374.7181230000933,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 2340.2317320001202,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 1895.3994999999395,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 2387.3545660001128,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 1786.1333119999472,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 1510.4468610002186,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 1190.1572220001526,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 1470.8607009999923,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2661.3068179999573,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 818.9218679999613,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2090.0229110000055,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2899.077027999965,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2168.351005999966,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2046.6367500000615,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2704.5184280000285,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 1768.2602820000284,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2194.592430000057,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2120.3035309999905,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2173.7520189999486,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2160.2544429999853,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 2227.127780000046,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 2093.3744040000875,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 2292.648280999856,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 1822.414285999912,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 2567.332743999941,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 2399.3384000000333,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 1889.0295470000638,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 2647.877765999965,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 5213.511604999894,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 2087.388416000067,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 2204.3058099998234,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 1828.6425549999876,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 910.25433599998,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 2718.1372029999693,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 2069.135576000008,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 1958.8119449999795,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 3015.584977999879,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 2501.578182000003,
+     "key": "type #q Sentinel-2",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 2289.3945870000607,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 2151.078147999897,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  },
+  "openrouter:qwen/qwen3.8-flash": {
+   "summary": {
+    "calls": 60,
+    "errors": 0,
+    "valid": 60,
+    "correct": 59,
+    "p50_ms": 4276.0,
+    "p95_ms": 6953.1,
+    "min_ms": 2878.3,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 4161.039981000158,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 6953.1098170000405,
+     "key": "click #email",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": false
+    },
+    {
+     "ms": 6271.871615000009,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 6172.939981999889,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 4913.189203000002,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 3941.150595999943,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 4168.408495999984,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 4490.693183000076,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 4275.984607000055,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 3552.478729000086,
+     "key": "click #save",
+     "valid": true,
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 3875.556672999892,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 3824.727103999976,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 3639.7719470000993,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 4076.0489270001017,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 4903.136359999962,
+     "key": "finish",
+     "valid": true,
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 3874.7325740000633,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 3390.009885999916,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 6103.883046999954,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 3610.2761199999804,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 4052.8380190000917,
+     "key": "click #save",
+     "valid": true,
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 4051.3922689999617,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 3606.058800000028,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 4788.951671999939,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 6616.459435000024,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 5886.3064399999985,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 2950.8782059999703,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2878.296029000012,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 4989.282341000035,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 3141.360844000019,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2880.1395170000887,
+     "key": "click #downloads",
+     "valid": true,
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 5910.847634999982,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 4344.958791000181,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 7867.186171999947,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 2961.9189749998895,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 4093.8938049998796,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 3913.3152569997947,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 5470.2205609999055,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 4350.99751100006,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 4713.128589000007,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 3570.404730000064,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 4652.384184999846,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 3651.8029499998192,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 3919.431798000005,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 5198.37029700011,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 4010.792027999969,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 23931.080027000007,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 4862.830149999809,
+     "key": "click #accept",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 21977.927615999986,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 6375.154580000071,
+     "key": "click #monthly",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 6781.928317000165,
+     "key": "click #accept",
+     "valid": true,
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 4044.7963920000802,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 5518.6896120001165,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 3669.606642999952,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 4903.716344000031,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 3725.8768330000294,
+     "key": "finish",
+     "valid": true,
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 3217.7984560000823,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 4436.803384000086,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 5529.8036169999705,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 3711.046656999997,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    },
+    {
+     "ms": 5058.373689000064,
+     "key": "type #q Sentinel-2 imagery",
+     "valid": true,
+     "case": "search-free-text",
+     "correct": true
+    }
+   ]
+  },
+  "jev:jev-latest": {
+   "summary": {
+    "calls": 60,
+    "errors": 0,
+    "valid": 60,
+    "correct": 55,
+    "p50_ms": 191.2,
+    "p95_ms": 234.3,
+    "min_ms": 157.3,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 540.6886180001038,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 0.84,
+     "served": "jev-1.13.0",
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 214.46939399993425,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 0.85,
+     "served": "jev-1.13.0",
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 206.60089099988,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 0.82,
+     "served": "jev-1.13.0",
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 173.8523050000822,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 0.86,
+     "served": "jev-1.13.0",
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 216.91121999992902,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 0.82,
+     "served": "jev-1.13.0",
+     "case": "account-type-email",
+     "correct": true
+    },
+    {
+     "ms": 172.13731699985146,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 223.26880100013113,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 176.33228599993345,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 216.24645900010364,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 157.30393800004094,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-save",
+     "correct": true
+    },
+    {
+     "ms": 189.49989599991568,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 177.79927099991255,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 259.83464499995534,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 226.1533010000676,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 297.7145339998515,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "account-finish",
+     "correct": true
+    },
+    {
+     "ms": 213.87223700003233,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 172.12641099990833,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 0.99,
+     "served": "jev-1.13.0",
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 232.76767899983497,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 218.7858810000307,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 206.9650509999974,
+     "key": "click #save",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "save-not-delete",
+     "correct": true
+    },
+    {
+     "ms": 234.33968299991648,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 206.5371099999993,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 191.0035019998304,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 182.00378599999567,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 177.63418300000922,
+     "key": "type #mobile PHONE#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "phone-type",
+     "correct": true
+    },
+    {
+     "ms": 175.67938100000902,
+     "key": "click #downloads",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 166.9630890000917,
+     "key": "click #downloads",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 191.4576419999321,
+     "key": "click #downloads",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 195.2575790000992,
+     "key": "click #downloads",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 192.9245279998213,
+     "key": "click #downloads",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "nav-downloads",
+     "correct": true
+    },
+    {
+     "ms": 198.75905899993995,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 184.2579389999628,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 188.13346800016006,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 174.96585399999276,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 164.65505399992253,
+     "key": "type #name PERSONNAME#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-first",
+     "correct": true
+    },
+    {
+     "ms": 204.73394300006476,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 191.2213509999674,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 208.95577800001774,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 167.29003000000375,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 197.73700800010374,
+     "key": "type #email EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "two-fields-second",
+     "correct": true
+    },
+    {
+     "ms": 204.66719599994576,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 168.05496699998912,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 181.85664200018437,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 182.37885400003506,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 216.87713900018935,
+     "key": "type #user EMAIL#1",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "login-user",
+     "correct": true
+    },
+    {
+     "ms": 197.84584899980473,
+     "key": "click #monthly",
+     "valid": true,
+     "confidence": 0.8,
+     "served": "jev-1.13.0",
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 189.1265439999188,
+     "key": "click #monthly",
+     "valid": true,
+     "confidence": 0.75,
+     "served": "jev-1.13.0",
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 222.39002299988897,
+     "key": "click #monthly",
+     "valid": true,
+     "confidence": 0.78,
+     "served": "jev-1.13.0",
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 233.66191900004196,
+     "key": "click #monthly",
+     "valid": true,
+     "confidence": 0.79,
+     "served": "jev-1.13.0",
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 182.50439899998128,
+     "key": "click #monthly",
+     "valid": true,
+     "confidence": 0.78,
+     "served": "jev-1.13.0",
+     "case": "report-link",
+     "correct": true
+    },
+    {
+     "ms": 182.92155399990406,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 182.927454999799,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 172.26140000002488,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 174.28012400000625,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 168.7182609998672,
+     "key": "finish",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "already-done",
+     "correct": true
+    },
+    {
+     "ms": 189.22281300001487,
+     "key": "click #go",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "ms": 187.67625899999985,
+     "key": "click #go",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "ms": 192.42536299998392,
+     "key": "click #go",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "ms": 228.86255299999902,
+     "key": "click #go",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "search-free-text",
+     "correct": false
+    },
+    {
+     "ms": 169.43497700003718,
+     "key": "click #go",
+     "valid": true,
+     "confidence": 1.0,
+     "served": "jev-1.13.0",
+     "case": "search-free-text",
+     "correct": false
+    }
+   ]
+  }
+ },
+ "review": {
+  "groq:openai/gpt-oss-20b": {
+   "summary": {
+    "calls": 30,
+    "errors": 9,
+    "valid": 21,
+    "correct": 21,
+    "p50_ms": 458.7,
+    "p95_ms": 791.9,
+    "min_ms": 241.6,
+    "error_samples": [
+     "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organi"
+    ]
+   },
+   "rows": [
+    {
+     "ms": 791.861598999958,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 304.8980920000304,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 458.69101199991746,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 309.9334030000591,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 380.3984290000244,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 588.669100000061,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 711.130859999912,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 493.8143009999294,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 562.4904670000888,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 2016.948457999888,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 262.1767790001286,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 748.7019049999617,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 281.70340700012275,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 503.6950040000647,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 333.87473699986003,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 314.3104630000835,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 244.87208100003954,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 532.5650679999399,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 544.6313019999707,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 241.55797799994616,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "view-details",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "view-details",
+     "correct": false
+    },
+    {
+     "ms": 246.53124599990406,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "view-details",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "view-details",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "open-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "open-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "open-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "open-downloads",
+     "correct": false
+    },
+    {
+     "valid": false,
+     "transport_error": "HTTP 429: {\"error\":{\"message\":\"Rate limit reached for model `openai/gpt-oss-20b` in organization `org_[redacted]` service tier `on_demand` on to",
+     "case": "open-downloads",
+     "correct": false
+    }
+   ]
+  },
+  "openrouter:google/gemini-3.8-flash": {
+   "summary": {
+    "calls": 30,
+    "errors": 0,
+    "valid": 30,
+    "correct": 30,
+    "p50_ms": 2367.0,
+    "p95_ms": 4022.7,
+    "min_ms": 1808.0,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 3033.26580199996,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 2534.2206210000313,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 2166.183445999877,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 2863.4638179999,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 4000.007018000133,
+     "verdict": true,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 2366.9687879998946,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 2354.0032939999946,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 2639.4227329999467,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 2898.8600189998124,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 2516.6658829998596,
+     "verdict": true,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 2625.825936000183,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 2370.623069999965,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 7885.573553000086,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 2442.8715250001005,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 2328.7864750000153,
+     "verdict": false,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 2100.9192770000027,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 2284.962462000067,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 2219.9694880000607,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 2367.4710440000126,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 2264.433659000133,
+     "verdict": false,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 2397.5023240000155,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 3194.731977999936,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 2095.10757299995,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 2210.776322000129,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 2110.001900999805,
+     "verdict": false,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 2078.605590999814,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 4022.7123580000352,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2282.6038270000026,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 1807.9862140000387,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 2171.4200009998876,
+     "verdict": false,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    }
+   ]
+  },
+  "jev:jev-latest": {
+   "summary": {
+    "calls": 30,
+    "errors": 0,
+    "valid": 30,
+    "correct": 30,
+    "p50_ms": 194.1,
+    "p95_ms": 323.2,
+    "min_ms": 165.9,
+    "error_samples": []
+   },
+   "rows": [
+    {
+     "ms": 613.7365980000595,
+     "verdict": true,
+     "p": 0.98,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 173.7335869997878,
+     "verdict": true,
+     "p": 0.97,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 171.2439400000676,
+     "verdict": true,
+     "p": 0.98,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 195.3983830001107,
+     "verdict": true,
+     "p": 0.98,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 195.91628900002434,
+     "verdict": true,
+     "p": 0.98,
+     "valid": true,
+     "case": "email-then-delete",
+     "correct": true
+    },
+    {
+     "ms": 187.53891200003636,
+     "verdict": true,
+     "p": 0.96,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 180.20612600003005,
+     "verdict": true,
+     "p": 0.96,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 174.06610900002306,
+     "verdict": true,
+     "p": 0.96,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 303.7909730001047,
+     "verdict": true,
+     "p": 0.96,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 165.90845099995022,
+     "verdict": true,
+     "p": 0.96,
+     "valid": true,
+     "case": "status-then-cancel",
+     "correct": true
+    },
+    {
+     "ms": 198.94024099994567,
+     "verdict": false,
+     "p": 0.06,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 172.1932159998687,
+     "verdict": false,
+     "p": 0.06,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 177.11320500006877,
+     "verdict": false,
+     "p": 0.06,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 190.8983260000241,
+     "verdict": false,
+     "p": 0.06,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 173.99765799996203,
+     "verdict": false,
+     "p": 0.05,
+     "valid": true,
+     "case": "email-type",
+     "correct": true
+    },
+    {
+     "ms": 167.28519599996616,
+     "verdict": false,
+     "p": 0.27,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 223.84028900000885,
+     "verdict": false,
+     "p": 0.26,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 231.01482900005976,
+     "verdict": false,
+     "p": 0.3,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 204.17520199998762,
+     "verdict": false,
+     "p": 0.26,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 201.19777000013528,
+     "verdict": false,
+     "p": 0.31,
+     "valid": true,
+     "case": "email-save",
+     "correct": true
+    },
+    {
+     "ms": 194.05554099989786,
+     "verdict": false,
+     "p": 0.05,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 323.2372209999994,
+     "verdict": false,
+     "p": 0.05,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 198.15805799998998,
+     "verdict": false,
+     "p": 0.05,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 201.6684749999058,
+     "verdict": false,
+     "p": 0.06,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 232.85044999988713,
+     "verdict": false,
+     "p": 0.05,
+     "valid": true,
+     "case": "view-details",
+     "correct": true
+    },
+    {
+     "ms": 225.186881999889,
+     "verdict": false,
+     "p": 0.04,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 176.22015100005228,
+     "verdict": false,
+     "p": 0.04,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 187.63167100019018,
+     "verdict": false,
+     "p": 0.04,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 206.9996979998905,
+     "verdict": false,
+     "p": 0.04,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    },
+    {
+     "ms": 171.87849900005858,
+     "verdict": false,
+     "p": 0.04,
+     "valid": true,
+     "case": "open-downloads",
+     "correct": true
+    }
+   ]
+  }
+ }
+}
