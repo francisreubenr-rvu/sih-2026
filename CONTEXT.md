@@ -1,22 +1,28 @@
 # Dhristi: SIH26171
 
-## Session handoff: start here (updated 1 October 2026, 07:00 UTC)
+## Session handoff: start here (updated 2 October 2026)
 
-**Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), head `ba36a0b` or later, CI green, no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details: `Docs/decisions/brain-cloud-models-jev.md`, `scripts/laya-finetune/README.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 25.
+**Where the work is.** `master` at `3314513` or later. PRs #40, #41, #42 and #43 were merged on 2 October; no PR was open after that. Use `sih-2026`, not the older `sih26171-dhristi` copy.
 
-**Why the new session.** On 1 October Francis moved the Laya GPU fine-tune from Kaggle to his Colab Pro (GPUs up to 80 GB, 160 GB RAM). Colab runs in his browser, not from this container, so the run is his. This session's job is to bring the results into the repo.
+**What changed on 2 October.**
+- **Laya fast-path training is parked** (Francis). Two Colab sweeps (`laya-colab-sweep-v01.json`, `-v02.json`) failed Jev's bar; the fast path stays off by default and no guardrail depends on it. To resume: a fresh held-out set first, then generator v6 (`PLAN.md`).
+- **PR #41** (real-Groq fixes, Qwen first, opt-in fast path) is on master, so the live demo with the real planner finishes instead of looping.
+- **PR #42** (Laya plan reviewer, opt-in `WARDEN_REVIEWER=laya`) is on master. ROAST Round 28 records its accepted residual risk: the extension does not authenticate the Warden.
+- **PR #40** (no em dashes, CI guard `scripts/check-no-em-dash.mjs`) is on master; new text must pass it.
+- The merged `/plan` runs the fast path first, then the planner, and adds Laya review scores to whichever plan comes back (test `test_plan_review_also_scores_a_fast_path_answer`).
 
-### Task 1: Laya after the Colab run (start here)
+### Task 1: G14, live demo and recorded fallback (start here)
+- Acceptance: the critical journey succeeds in 3 consecutive rehearsals from reset on one build, and a labelled fallback recorded on that same build opens on its own. Evidence: `Docs/demo-runbook.md`, `Docs/demo-fallback.webm`, `Benchmarks/results/demo-rehearsal.json`.
+- The old rows (g14-box-05..07) are for the Prototype popup on `996e40b`; the fallback dates from 10 September. Both are history, not current evidence.
+- Current journey: root `extension/` side panel + Warden (GLiNER) + real Groq, synthetic fixture, task "Update my contact email to ... and save the profile". Work is on branch `claude/g14-v5-rehearsal`.
+- Do not set G14 to pass without Francis's explicit confirmation. A human dress rehearsal by Francis is still worth doing before judging.
 
-- **Result (1 October):** `Benchmarks/results/laya-colab-sweep-v01.json` (transcribed from the notebook outputs; the full JSON files are on Francis's Drive, `MyDrive/dhristi-laya/colab-v01`, under a Google account this container's Drive connector does not see). The selected `a-s2-e6` fails Jev's bar on held-out: wrong on `support-desc-free` (needs free text) and `profile-phone`. Not deployed, nothing uploaded.
-- **Run v02 done (2 October): not accepted** (`laya-colab-sweep-v02.json`; held-out 24 acted / 1 wrong on `support-desc-free`; design regressions on prose success messages). Francis parked Laya training on 2 October; resuming needs a fresh held-out set first. Colab saved v02 under `determined-babbage-mhi2zj/` on this branch again; removed.
-- (Earlier) **Generator v5 was built and the notebook set for run v02** (Francis approved): overwrite, click-then-type, optional fields and composed free-text requests, with `--split train|val` held-out wording for validation. Francis runs it in Colab, then saves to this branch (the save dialog defaulted to `master` last time). Results land in `MyDrive/dhristi-laya/colab-v02/`. Judge by the same bar, and record the disclosure that the held-out cases are no longer blind to the new categories.
-- **Stray file on master:** PR #43 removes `determined-babbage-mhi2zj/` (Francis asked).
+### Task 2: the rest of readiness (from the 1 October review)
+- G20 (real users) is paused and needs people; ask Francis about the deadline before planning it.
+- G03 (toolbar workflow), G09 (WCAG), G10 (responsive and motion): audits that can run in this container.
+- G11 stays an honest fail; the cloud planner alone takes about 711 ms against a 200 ms full-flow budget. Do not weaken it.
 
-### Task 2: keep PR #41 moving
-- The PR is a draft. Merging it, or asking for changes, is Francis's call. Keep CI green on every push. Use `subscribe_pr_activity` and hourly `send_later` check-ins; the 1 October session's check-ins end with it.
-
-### State at handoff (1 October)
+### State at the 1 October handoff (history)
 
 **Done in PR #41.**
 - Real-Groq end-to-end run found the planner never chose finish; fixed (`STATUS` lines in `extension/content.js`, vault token in `buildHistory`, finish rule in `warden/groq_client.py`). 48 real cloud requests, 0 personal values (`e2e-v5-boundary-v02.json`).
