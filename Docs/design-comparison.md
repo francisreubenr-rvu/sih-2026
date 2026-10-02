@@ -1,4 +1,4 @@
-# Design comparison — first rendered review
+# Design comparison: first rendered review
 
 9 September2026. User asked for an actual Stitch generation and a comparison with current pages before choosing the best design.
 

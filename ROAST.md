@@ -19,20 +19,20 @@
 - [ ] The v5 situations were picked after seeing held-out failures: the 30 held-out cases are no longer blind to them. A v02 pass on those cases is weaker evidence than v01's fail.
 - [ ] Validation steps come from the same generator as training; they measure fit and calibration, not generalization to new wording. Only the benchmark measures that.
 
-## Round 25 — Laya on CPU, and the Groq re-run (1 October 2026)
+## Round 25: Laya on CPU, and the Groq re-run (1 October 2026)
 
 - [x] Root cause of the v1/v2 underfit: flat targets (2% per wrong option, right answer split up to five ways) capped a calibrated model near 0.8. Fixed in `gen_data.py`; overfit test 63/64.
 - [ ] The free-text question never learned its cue on CPU (v3 about 0.1, v4 about 0.3 on every step, tracking the training share). v4 acts wrongly at 0.9 on `rename-free`, a free-text step, and at 0.95 on `already-logged-in`. Not deployed. Needs the GPU run, judged by Jev's bar.
 - [x] Groq settings re-run with 429 retries: at temperature 0 Qwen 41/42, gpt-oss-20b 35/42 (3 of its misses are JSON Groq rejected).
 
-## Round 24 — Laya fine-tuning (30 September 2026)
+## Round 24: Laya fine-tuning (30 September 2026)
 
 - [x] v1 option truncation found and fixed: long option keys left about 12 tokens per option and cut off the field label (61 of 200 training steps collapsed); Laya now gets compact keys.
 - [ ] Both CPU fine-tunes underfit (v2: 29/120 on its own training steps, base 24/120). The authors' recipe (whole encoder, 4 epochs, ~6,000 decisions) needs a GPU; `kaggle_train.ipynb` is ready but not run.
 - [ ] v2's free-text answer collapsed to "no" everywhere (training set 12% free-text steps), removing the gate that kept zero-shot Laya safe; below 0.9 it acts wrongly on free-text steps. Not deployed; the threshold must not be lowered for Laya without re-benchmarking. Rebalance the generator if the GPU run shows the same collapse.
 - [ ] Fine-tuned weights (0.8 GB) cannot go in Git here (no LFS, 100 MB limit); needs a Hugging Face repo or release asset chosen by Francis.
 
-## Round 23 — Qwen first, fast path, Laya (30 September 2026)
+## Round 23: Qwen first, fast path, Laya (30 September 2026)
 
 - [x] Warden's Groq call had no temperature, so the same scene got different plans between runs; now temperature 0 (test asserts it). The 29 September Qwen ranking was measured under different settings than the Warden used; recorded as a correction in `Docs/decisions/brain-cloud-models-jev.md`.
 - [x] Decision-model fast path built and measured; off by default; cannot block planning (defers on backend error), runs after the egress guard, never sends to the cloud in offline mode.
@@ -41,7 +41,7 @@
 - [x] Groq free-tier rate limits made the model/temperature comparison inconclusive; re-run on a fresh quota on 1 October with 429s retried (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42, gpt-oss-20b 35/42.
 - [ ] `OPENROUTER_API_KEY` in this session's environment still holds three words; the fix Francis made applies to new sessions.
 
-## Round 22 — real cloud planner + cloud-model bench (29 September 2026)
+## Round 22: real cloud planner + cloud-model bench (29 September 2026)
 
 - [x] HIGH, found by the first real-Groq end-to-end run: the planner never chose finish on a completed task and looped to the 25-step limit (it could not see the page's status message, and history carried no value). The fake planner in e2e v01 was scripted to finish, so it hid this. Fixed in `extension/content.js` (STATUS lines), `extension/background.js` (vault token in history), `warden/groq_client.py` (finish rule). Two new tests, each failing on the old code. Evidence: `Benchmarks/results/e2e-v5-boundary-v02.json`.
 - [x] Privacy boundary against a real cloud planner: 48 requests, 0 personal values, recorded at a loopback relay.
@@ -50,7 +50,7 @@
 - [ ] Jev hybrid fast path and a Groq chain reorder are recommendations only (`Docs/decisions/brain-cloud-models-jev.md`). No end-to-end G11 measurement with either. G11 stays fail.
 - [ ] Groq free-tier 429s under back-to-back runs are a live-demo risk.
 
-## Round 21 — Signal redesign (29 September 2026)
+## Round 21: Signal redesign (29 September 2026)
 
 - [x] One design system (Signal) across Website, side panel, Prototype operator pages and popup; canonical tokens in `design/signal-tokens.css`, CI check for drift and WCAG AA contrast. Decision: `Docs/decisions/brain-signal-redesign.md`. Resolves the ARCH-002 vs side-panel palette conflict.
 - [x] axe-core: 0 violations on Website, Prototype pages and popup. Behaviour, IDs and harness selectors unchanged; tests 141/58/13 pass.
@@ -59,19 +59,19 @@
 - [x] Website redirected by Francis the same day: light landing page, key information only, Anton / Open Sans / Glacial Indifference, real prototype footage replacing the explain video, NASA public-domain imagery. No Pinterest images (copyright).
 - [ ] Committed extension zips still package the earlier interface. Demo footage shows the dark Signal Prototype.
 
-## Round 20 — F17 target identity (29 September 2026)
+## Round 20: F17 target identity (29 September 2026)
 
 - [x] HIGH, reproduced on master `84fd497` in real Chromium: the scan recorded only a selector string, execute ran `document.querySelector` on it (first match, hidden or not), then synthetic pointer events and `click()`. A hidden `<button id=next>` in a `/account/delete` form ahead of a visible `<a id=next>Next page</a>` tiered navigational and posted the delete. Same for `aria-label="Next"` on a "Delete my account" button.
 - [x] Fixed in root `extension/`: per-scan opaque handles held in the content script (execute resolves only a handle; selectors are display keys, made unique); execute-time refusal of stale/detached/hidden (incl. opacity:0 ancestor)/offscreen/covered/`pointer-events:none`/inert targets; tier re-derived from the live element and escalated to a prompt when stricter than planned; tiering on visible text, accessible name, title, value, form action, formaction, href and type (`extension/utils/op-tier.js`); local tier from the extension's own scan only; final tier is the stricter of Warden and local, and anything but an exact `accept` with an agreeing unattended-safe tier prompts. Synthetic pointer sequence removed.
 - [x] Pre-existing master bug found while testing: since `562ae03`, `redacted`/`omni` were block-scoped inside the PERCEIVE timing `try`, so every side-panel run threw `redacted is not defined` after STRIP and never reached PLAN. Hoisted.
 - [ ] Evidence scope: unit tests, the real `background.js` against a fake Warden, and `content.js` in real Chromium (main world, not an extension isolated world). No live Warden/Ollama run, no loaded-extension run. Iframes and shadow DOM out of scope. No consent-enforcement claim beyond these tests; no guardrail status changed.
 
-## Round 19 — G11 Option C harness (23 September 2026)
+## Round 19: G11 Option C harness (23 September 2026)
 
 - [x] Measurement harness for root `extension/` + Warden `:8756` only. Privacy-only and Prototype `:9041` cannot set `mayFlipG11`.
 - [ ] Live L2 n≥100 was not collected here (Warden 8756 and Ollama 11434 were down). G11 stays fail. Do not weaken the 200 ms budget.
 
-## Round 18 — Warden planner default + host allowlist (23 September 2026)
+## Round 18: Warden planner default + host allowlist (23 September 2026)
 
 - [x] `POST /plan` default is local Ollama. Groq is explicit (`WARDEN_PLANNER=groq`) and is not used when Ollama is down.
 - [x] `wardenOrigin` and `omniparserUrl` refuse non-loopback. Install-time `<all_urls>` host permission removed. Optional `<all_urls>` is requested on send. Residual recorded in `Docs/decisions/brain-warden-ollama-plan-harden.md`.
@@ -79,7 +79,7 @@
 - [ ] Full-flow <200ms gate remains failed. Do not weaken. G11 stays fail.
 - [ ] Human/domain validation (G20) participants not yet collected. `submission_ready` stays false.
 
-## Round 17 — wave 7 a11y + load soak (14 September 2026)
+## Round 17: wave 7 a11y + load soak (14 September 2026)
 
 - [x] G09/G10 enriched evidence (axe 0 violations, keyboard, text-spacing, EN/HI); remain unknown (no fake WCAG pass).
 - [x] G05 5-minute local soak with heap snapshots → pass on declared local scope.
@@ -93,7 +93,7 @@
 - [ ] Human/domain validation (G20) participants not yet collected.
 - [ ] G14 3 consecutive live rehearsals not logged.
 
-## Round 16 — wave 6 hardening + a11y + latency (14 September 2026)
+## Round 16: wave 6 hardening + a11y + latency (14 September 2026)
 
 - [x] Node/API hardening evidence harness (headers, origin, size, rate limit, error hygiene); G08 pass on declared scope.
 - [x] axe on Website + extension popup; contrast/reveal fixes; G09/G10 remain unknown (no fake WCAG pass).
@@ -108,7 +108,7 @@
 - [ ] Human/domain validation (G20) participants not yet collected.
 - [ ] G05 full 5-minute capacity floor still open.
 
-## Round 15 — wave 5 e2e + saturation + gate evidence (14 September 2026)
+## Round 15: wave 5 e2e + saturation + gate evidence (14 September 2026)
 
 - [x] E2E harness maximizes automation + screenshotable synthetic flow; activeTab gate retained; toolbar glyph not faked.
 - [x] Expanded held-out fixtures to 18; classifySensitive/mergeRegions/password kind; honest scores; official null.
@@ -122,7 +122,7 @@
 - [ ] Human/domain validation (G20) participants not yet collected.
 - [ ] G05 capacity floor, G08 production hardening, G09 full WCAG, G10 200% zoom still open.
 
-## Round 14 — wave 4 latency + rubric diagnostics (14 September 2026)
+## Round 14: wave 4 latency + rubric diagnostics (14 September 2026)
 
 - [x] Privacy-only skip-LLM path + detector cache + wireframe preview implemented; G11 remains fail with core-latency evidence.
 - [x] Expanded held-out synthetic fixture scoring (12 cases); official score null.
@@ -135,7 +135,7 @@
 - [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
 - [ ] Human/domain validation (G20) and several presentation/ops unknowns remain.
 
-## Round 13 — wave 3 loop + packaging (14 September 2026)
+## Round 13: wave 3 loop + packaging (14 September 2026)
 
 - [x] Production popup capture→filter→sanitize→review reliability: stages, reinject, tab fallback, toolbar guidance.
 - [x] Loop harness proves UI path under overlay; shipped activeTab gate retained.
@@ -147,7 +147,7 @@
 - [ ] Ollama planner E2E not run (unreachable); do not fake.
 - [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
 
-## Round 12 — wave 2 capture path + held-out fixtures (14 September 2026)
+## Round 12: wave 2 capture path + held-out fixtures (14 September 2026)
 
 - [x] Chromium production injection path (`chrome.scripting.executeScript`) + `tabs.sendMessage` collect proven on host-permission fixture.
 - [x] Production `captureVisibleTab` permission gate recorded: refuses without toolbar `activeTab` / `<all_urls>` (honest).
@@ -160,7 +160,7 @@
 - [ ] External WebPII OCR retention failure (58/100) unchanged; OCR local-only.
 - [ ] Ollama planner E2E not run (service unreachable); do not fake.
 
-## Round 11 — wave 1 selective redaction + extension UI (14 September 2026)
+## Round 11: wave 1 selective redaction + extension UI (14 September 2026)
 
 - [x] Selective local preview preserves non-sensitive pixels while pixelating face/private/field/media regions; unit coverage and preservation scores exist. Egress unchanged (semantics-only).
 - [x] Extension popup: DigiLocker-credible styling, trust chip, EN/HI strings, `browser ?? chrome`, sanitize assert before fetch.
@@ -171,9 +171,9 @@
 - [ ] Full-flow <200ms gate remains failed. Do not weaken.
 - [ ] External WebPII OCR retention failure (58/100) unchanged; keep OCR local-only.
 
-# Roast Loop — 9 September 2026
+# Roast Loop (9 September 2026)
 
-## Round 10 — integrated operations simulation
+## Round 10: integrated operations simulation
 
 - [x] Bounded loop plus protected capture plus expiring reference now run a complete synthetic domain task end-to-end in the browser; completion requires the fixture's exact-match postcondition, not a model `done`.
 - [x] Expiry and user-stop cases verified with no write and no further actions. Serialized requests contain no private values.
@@ -181,14 +181,14 @@
 - [ ] UltraFace detects zero faces at 80px fixture scale. Same portrait at 96px previously detected. Evaluate face scale/thresholds before the demo narrative claims detection on this page.
 - [ ] Scoped network capture excludes worker/other contexts; do not claim full egress proof.
 
-## Round 9 — external OCR/PII evaluation
+## Round 9: external OCR/PII evaluation
 
 - [ ] Current OCR/PII policy retains exact annotated sensitive text on 58/100 external synthetic screens. Contextual content such as gift messages and address components defeats the current entity/token policy. Keep local-only; no arbitrary-text export.
 - [ ] OCR/NER processing p95 is 2,888.4 ms on this slice. This excludes server planning and does not approach the existing full-task performance target.
 - [x] Scorer must not count missing OCR as successful detection or blank output as useful privacy. Frozen protocol separates recognition, marking, intended retention and product-text utility; failed/missing rows retain denominators. Twelve new tests pass.
 - [ ] Browser network event buffer reports truncation; retained subset shows no external/planner request, but complete egress isolation remains unproven.
 
-## Round 8 — browser experiments, 11 September
+## Round 8: browser experiments, 11 September
 
 - [x] Original local preview opens using updated supported browser connection. Synthetic runner and local reference now have browser execution evidence; prior blocked records are historical. This does not close the native-extension gate.
 - [x] NER missed street words after detecting an address number. Preserve failed run; add conservative explicit-label value withholding and line-boundary tests. Same-fixture regression now withholds 14/14 scored sensitive tokens and retains 25/25 useful tokens.
@@ -202,24 +202,24 @@ SIH26171 implementation. The earlier preparation pack is historical evidence, no
 
 ## Round 1
 ### Findings (open)
-- [ ] Prototype/README.md:1 — no implementation exists for the now supplied SIH26171 statement — critical delivery gap. Build and verify client vision, privacy boundary, server reasoning, and browser action execution before closing.
+- [ ] Prototype/README.md:1: no implementation exists for the now supplied SIH26171 statement; critical delivery gap. Build and verify client vision, privacy boundary, server reasoning, and browser action execution before closing.
 ### Fixed
 None yet. Audit begins with the implementation; additional findings require concrete file/line evidence.
 
-- [x] scripts/build-prototype.mjs:8 — URL pathname encoded spaces and broke bundling; switched to fileURLToPath. Build rerun below.
-- [x] Prototype/server/app.mjs:8 — trailing root slash rejected valid static paths; normalized root and added real-entry HTTP regression coverage.
+- [x] scripts/build-prototype.mjs:8: URL pathname encoded spaces and broke bundling; switched to fileURLToPath. Build rerun below.
+- [x] Prototype/server/app.mjs:8: trailing root slash rejected valid static paths; normalized root and added real-entry HTTP regression coverage.
 
-- [x] Prototype/server/provider.mjs:17 — real Qwen response omitted the action wrapper under unconstrained JSON mode; enforced a full output JSON schema; real Qwen plan accepted and confirmed Pending click observed in browser.
+- [x] Prototype/server/provider.mjs:17: real Qwen response omitted the action wrapper under unconstrained JSON mode; enforced a full output JSON schema; real Qwen plan accepted and confirmed Pending click observed in browser.
 
-- [x] Prototype/app/main.mjs:13 — iframe document can be absent during navigation/reload, throwing before load listener handles the ready fixture; guarded document readiness; browser reload then capture succeeded (106ms observed, one face) at 390px.
+- [x] Prototype/app/main.mjs:13: iframe document can be absent during navigation/reload, throwing before load listener handles the ready fixture; guarded document readiness; browser reload then capture succeeded (106ms observed, one face) at 390px.
 
-- [x] Prototype/models/ultraface-rfb320.onnx — obsolete graph inputs and unused training counters emitted hundreds of warnings and prevented constant folding; removed redundant metadata, preserved active weights, rechecked browser face inference. The runtime still emits a CPU-vendor identification warning in this embedded browser.
+- [x] Prototype/models/ultraface-rfb320.onnx: obsolete graph inputs and unused training counters emitted hundreds of warnings and prevented constant folding; removed redundant metadata, preserved active weights, rechecked browser face inference. The runtime still emits a CPU-vendor identification warning in this embedded browser.
 
 ## Open validation work
 - [x] Web workspace now proactively revokes expired/changed context; observed status update and both plan/execute disabled after expiry. Extension still revalidates on each request/action.
 - [ ] Chrome and Firefox unpacked-extension execution; full dataset and resource measurements; VLM evaluation; privacy/utility baselines; accessibility and user study.
 
-## Round 2 — current candidate
+## Round 2: current candidate
 
 The original "no implementation exists" finding is superseded: implementation, local WASM inference and actual Qwen-confirmed task completion now exist. The broader delivery gap remains open under the validation work above; do not infer native-extension or dataset readiness.
 
@@ -229,7 +229,7 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [x] Website GitHub source links used nonexistent main branch; changed to verified default master.
 - [x] Presentation render: corrected title/subtitle overlap, dense panel body size and cropped screenshot. Current PDFs and contact sheets regenerated.
 
-## Round 3 — measured model behavior and recording
+## Round 3: measured model behavior and recording
 
 - [x] Shared page-agent browser tests now exercise the actual DOM, shadow roots, overlays, CSSOM movement and expiry: 18/18 pass. This closes the synthetic Chrome harness gap only.
 - [x] Model benchmark output could overwrite previous evidence. Runs now require a fresh directory and default to frozen first-run cases. Historical runs and failures are preserved.
@@ -237,14 +237,14 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [ ] Qwen7B latest adapter still selects the wrong action in 2/24 authored development cases. Smaller models also fail; strict JSON is not semantic correctness. See Docs/decisions/model-pilot.md.
 - [ ] Native extension installation was blocked by browser URL policy. Respect that boundary; no cross-browser extension readiness claim.
 
-## Round 4 — external raster diagnostic
+## Round 4: external raster diagnostic
 
 - [x] Benchmark inherited fixed 800x500 iframe CSS while annotations used full-image bounds. Reject the old coverage summary, set exact dimensions, and verify them in both harness and scorer.
 - [ ] Raster-only input loses all original visual context. The external 100-screen slice produces zero usable controls and zero localized PII detections; full-image masking does not satisfy useful selective redaction.
 - [ ] Worker adapter reduces observed main-thread blocking but first-run detection p95 worsens. Keep it experimental until repeated measurements justify a default change.
 - [x] Scorer overlap/matching rules tested; failed attempts remain in the declared denominator.
 
-## Round 5 — local text experiment and reference review
+## Round 5: local text experiment and reference review
 
 - [x] Token-window parameters could produce a non-advancing loop. Reject invalid sizes/overlap; alignment and rejection tests pass.
 - [x] OCR build used a nonexistent `LICENSE` filename. Corrected to the installed `LICENSE.md` and rebuilt successfully.
@@ -252,14 +252,14 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [ ] Current reviewed one-action workflow needs a bounded goal loop with observed task postconditions before claiming autonomous goal completion. Do not inherit VEIL's claims or fuzzy retargeting behavior from the transcript.
 - [ ] Transcript score and ISRO operational claims require original code/evidence or domain validation. Separate hypothesized use cases from verified capabilities.
 
-## Round 6 — bounded coordinator
+## Round 6: bounded coordinator
 
 - [x] A model saying `done` must not itself prove goal completion. Runner reports `completion_unverified` unless the local fixture postcondition holds.
 - [x] Late planner results after cancellation could otherwise reach execution. Abort-aware coordinator checks again before execution; cancellation/late-result unit test passes.
 - [x] A reloaded fixture at the same URL must not reuse the old target map. Adapter checks document identity as well as the authorized fixture URL.
 - [ ] Runner integration is built but has no real-browser/visual/native-extension evidence. The generic-site autonomy gap remains open.
 
-## Round 7 — private value references
+## Round 7: private value references
 
 - [x] A reusable reference would allow replay after an uncertain write. Consume before writing and reject unknown/reused/expired/wrong-target bindings; tests pass.
 - [x] Rechecking vault size inside the write callback failed after intentional consumption. Keep target/revision/hit tests inside the callback, while requiring reference availability before consumption. Browser execution still needs validation.
@@ -267,7 +267,7 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [ ] Synthetic reference UI remains browser-unverified; do not infer DOM execution from the shared-module pilot.
 - [ ] Three fixed reference cases do not demonstrate general PII detection, free-text task sanitization, arbitrary-site typing or native extension support.
 
-## Round 8 — deck audit and page-agent guard
+## Round 8: deck audit and page-agent guard
 
 - [x] `Prototype/shared/page-agent.mjs` carried a duplicated guard block, so `OBSERVABLE_NODE_TYPES` was declared twice and the module failed to parse. Collapse to one copy and keep the `nodeType` guard in `collect`. `node --check` passes.
 - [x] A deck slide stated "139–141 ms capture + protection" with no evidence file behind it. Replace it with the persisted `captureMs` range 92–108 ms from `prototype-v01-browser.json`, which measures the same window. Do not ship an unpersisted console reading as a measurement.
@@ -275,11 +275,11 @@ The original "no implementation exists" finding is superseded: implementation, l
 - [x] The 11 September unit-test report could not be regenerated under the sandbox: nine tests bind `127.0.0.1` and fail with `EPERM ... syscall: 'listen'`. The sandbox-only 66/75 run was rejected as evidence and the committed report was restored; the report was then regenerated from a real unrestricted run at 75 passing, 0 failing.
 - [x] `Docs/submission-deck.pdf` and `Docs/pitch-deck.pdf` corresponded to the 9 September PPTX builds. Re-exported from the regenerated sources once `soffice` could run, and both were visually checked page by page against the corrected slides.
 
-## Round 9 — native-extension harness
+## Round 9: native-extension harness
 
 - [x] New harness `scripts/validate-extension.mjs` loads the real unpacked MV3 build into a throwaway Chromium profile (Playwright) and drives extension load, content-script injection, popup load and the declared host-permission fetch from inside the actual browser. First run: 5/7 checks passed, verdict `fail`. `content_script_injection` and `collect_protected_scene` failed with page error `crypto.randomUUID is not a function`.
-- [x] Traced to `Prototype/shared/page-agent.mjs`: `createPageAgent()` called `crypto.randomUUID()` unguarded for the scene revision id. `Crypto.randomUUID()` is restricted to secure contexts and is `undefined` on plain `http://` pages, `data:` fixtures and `file://` pages — exactly where a content script with `activeTab`/`scripting` permissions gets injected. The throw happened before `content.mjs` registered its `chrome.runtime.onMessage` listener, so `globalThis.__dhristiController` was never set; the popup only reported the generic `"Page connection lost. Reopen the extension."`, not the real cause.
+- [x] Traced to `Prototype/shared/page-agent.mjs`: `createPageAgent()` called `crypto.randomUUID()` unguarded for the scene revision id. `Crypto.randomUUID()` is restricted to secure contexts and is `undefined` on plain `http://` pages, `data:` fixtures and `file://` pages, exactly where a content script with `activeTab`/`scripting` permissions gets injected. The throw happened before `content.mjs` registered its `chrome.runtime.onMessage` listener, so `globalThis.__dhristiController` was never set; the popup only reported the generic `"Page connection lost. Reopen the extension."`, not the real cause.
 - [x] Fixed with `Prototype/shared/random-id.mjs` (`newRevisionId`), which falls back to `crypto.getRandomValues()` (no secure-context restriction) when `randomUUID` is absent, and throws loudly rather than silently degrading if neither is available. Applied to both `page-agent.mjs` call sites and to `local-values.mjs`'s equivalent default. Two regression tests added to `page-agent.test.mjs`, one exercising a page with no `randomUUID`, one exercising `newRevisionId`'s own error/fallback paths directly. Rebuilt `Prototype/extension-build`; harness now passes 7/7, verdict `pass`. Full suite: 77/77.
-- [x] One of the two new regression tests initially asserted `newRevisionId(undefined)` throws "No crypto source" — it did not, because a JS default parameter only substitutes for `undefined`, so the call was indistinguishable from `newRevisionId()` and resolved to Node's real `crypto`. Corrected to `newRevisionId(null)`, which is defined-but-falsy and actually exercises the guard.
+- [x] One of the two new regression tests initially asserted `newRevisionId(undefined)` throws "No crypto source"; it did not, because a JS default parameter only substitutes for `undefined`, so the call was indistinguishable from `newRevisionId()` and resolved to Node's real `crypto`. Corrected to `newRevisionId(null)`, which is defined-but-falsy and actually exercises the guard.
 - [ ] One page error remains by design and is documented in the harness's own `limitations`: `content_script_injection` injects via Playwright's `page.addScriptTag`, which runs in the page's main world, not the isolated content-script world Chrome grants to `chrome.scripting.executeScript` (the real popup's injection path), so `chrome.runtime` is absent only in that harness step. Does not reflect production behavior.
 - [ ] Scope of what this closes: real Chromium load/inject/reach evidence for the popup-driven MV3 build only. Firefox is not exercised, the popup was opened as an extension document rather than through the toolbar action so `captureVisibleTab` and the pairing-token/planner round-trip are not driven, and this is not a PII-accuracy or performance measurement. Native-extension gate remains open beyond this scope.

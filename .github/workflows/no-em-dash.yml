@@ -1,0 +1,32 @@
+# Repo-wide text guard. Runs on every PR with no path filters.
+name: No em dashes
+
+on:
+  pull_request:
+  push:
+    branches: [master, 'brain/**', 'feat/**', 'cursor/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: no-em-dash-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Em dash guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check tracked text files
+        run: node scripts/check-no-em-dash.mjs --list-allowed

@@ -1,4 +1,4 @@
-# Dhristi — judge / demo checklist (1 page)
+# Dhristi: judge / demo checklist (1 page)
 
 **Purpose:** Human toolbar / activeTab path. Automation cannot click the Chrome toolbar glyph; do not claim it did.
 
@@ -21,7 +21,7 @@
 
 ## Say out loud (honest)
 
-- UltraFace is **face-only**; WebPII text retained exact PII on **58/100** screens — OCR stays local-only.
+- UltraFace is **face-only**; WebPII text retained exact PII on **58/100** screens; OCR stays local-only.
 - Full-flow **&lt;200 ms fails** (planner seconds). Privacy-only local protect is not a G11 pass.
 - Firefox package exists; live Firefox run unverified in this environment.
 - Synthetic fixtures only in the demo.

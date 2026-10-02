@@ -1,4 +1,4 @@
-# Brain — Fundamentals restructure (halt wrap path; freeze Warden target)
+# Brain: Fundamentals restructure (halt wrap path; freeze Warden target)
 
 **Date:** 2026-09-23  
 **Branch:** `brain/fundamentals-warden-pivot`  
@@ -40,11 +40,11 @@ Those files are historical shipping chrome and prototype code. They are not dele
 
 Target pipeline, taken from the briefing's description of `sightline-v2-foundation@2afd215` and present as the PR #31 import. This PR does not re-verify that code:
 
-1. **PERCEIVE** — browser content script serialises the DOM and can capture the visible tab.
-2. **STRIP** — Warden, same machine. Regex and GLiNER. Uncertain spans prompt before plan.
-3. **PLAN** — Warden calls the configured open-weight provider. Only the sanitised scene leaves the machine.
-4. **VALIDATE** — Warden, local. Deterministic checks, then optional local reasoning.
-5. **EXECUTE** — browser. The extension re-computes the op tier locally and only then acts.
+1. **PERCEIVE**: browser content script serialises the DOM and can capture the visible tab.
+2. **STRIP**: Warden, same machine. Regex and GLiNER. Uncertain spans prompt before plan.
+3. **PLAN**: Warden calls the configured open-weight provider. Only the sanitised scene leaves the machine.
+4. **VALIDATE**: Warden, local. Deterministic checks, then optional local reasoning.
+5. **EXECUTE**: browser. The extension re-computes the op tier locally and only then acts.
 
 Binding constraints that travel with that target:
 

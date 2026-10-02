@@ -1,4 +1,4 @@
-# G14 run pack — rehearsal week (Francis)
+# G14 run pack: rehearsal week (Francis)
 
 **Status:** Ready to book and run. **No fabricated results.** Arrays in `Benchmarks/results/demo-rehearsal.json` stay empty until you log live runs. Do **not** mark G14 pass until three consecutive `success` rows share one `build_sha`.
 
@@ -64,7 +64,7 @@ Book quiet blocks. Prefer the **same build** across the streak. A fail resets to
 
 1. Open `Benchmarks/results/demo-rehearsal.json`.
 2. Keep `"status": "unknown"` until all three consecutive rows are `success` with the **same** `build_sha` and offline fallback verified.
-3. After each **live** run, append one object to the `consecutive_rehearsals` array (leave it `[]` until then — no placeholders).
+3. After each **live** run, append one object to the `consecutive_rehearsals` array (leave it `[]` until then; no placeholders).
 
 ```json
 {
@@ -81,9 +81,9 @@ Book quiet blocks. Prefer the **same build** across the streak. A fail resets to
 ```
 
 4. Optional: fill `planned_slots` when dates are booked (still not a pass).
-5. Only then may Gate owners consider G14 / `"status": "pass"` — **not** this pack’s job.
+5. Only then may Gate owners consider G14 / `"status": "pass"`. **Not** this pack’s job.
 
-Offline fallback (once per streak): open `Docs/demo-fallback.webm` with no network; note scope aloud (web workspace Pending→Review — **not** toolbar-glyph MV3).
+Offline fallback (once per streak): open `Docs/demo-fallback.webm` with no network; note scope aloud (web workspace Pending→Review, **not** toolbar-glyph MV3).
 
 ---
 

@@ -1,4 +1,4 @@
-# SIH26171 — verified problem identity
+# SIH26171: verified problem identity
 
 Verified 9 September 2026. The initial user shorthand SIH2171 is superseded by the complete statement supplied in the goal attachment, and by the retrieved organizer catalogue.
 

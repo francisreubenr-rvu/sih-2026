@@ -1,4 +1,4 @@
-# Synthetic Earth-observation workflow — implementation and evidence
+# Synthetic Earth-observation workflow: implementation and evidence
 
 11 September 2026. A single integrated simulation now ties the verified components together: browser-local capture → conservative protected context → real Qwen planning → revision-checked local actions → expiring local value reference → explicit confirmation → fixture-verified completion.
 

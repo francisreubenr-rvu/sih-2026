@@ -1,4 +1,4 @@
-# ARCH — G11 core flow under Option C (measurement plan)
+# ARCH: G11 core flow under Option C (measurement plan)
 
 **Task:** GATE-VERIFY-001 / Architect slice  
 **Date:** 2026-09-23  
@@ -12,9 +12,9 @@
 
 | Role | Surface | Port | Counts as G11 full-flow? |
 |---|---|---|---|
-| **Frozen shipping core** | Root `extension/` (side panel) talking to **Warden** loop **PERCEIVE → STRIP → PLAN → VALIDATE → EXECUTE** | Warden `127.0.0.1:8756` | **Yes** — this is the only Option C surface that may be labeled “core flow” for a new G11 run |
-| Measurement / HUD / historical | Master `Prototype/` (+ `Prototype/extension` popup) | Prototype `127.0.0.1:9041` | **No** — keep for compare/HUD/demo; never redefine as the shipping core after Option C |
-| Privacy-only / skip-LLM | Any local protect path that omits PLAN (+ confirm/execute as required by full-flow) | n/a | **No** — may be reported as a separate lane; must not be scored as G11 pass |
+| **Frozen shipping core** | Root `extension/` (side panel) talking to **Warden** loop **PERCEIVE → STRIP → PLAN → VALIDATE → EXECUTE** | Warden `127.0.0.1:8756` | **Yes**: this is the only Option C surface that may be labeled “core flow” for a new G11 run |
+| Measurement / HUD / historical | Master `Prototype/` (+ `Prototype/extension` popup) | Prototype `127.0.0.1:9041` | **No**: keep for compare/HUD/demo; never redefine as the shipping core after Option C |
+| Privacy-only / skip-LLM | Any local protect path that omits PLAN (+ confirm/execute as required by full-flow) | n/a | **No**: may be reported as a separate lane; must not be scored as G11 pass |
 
 **Decision (locked for measurement):** Under Option C, G11’s frozen core flow is **root extension + Warden on 8756**, end-to-end through EXECUTE (with F17 client `opTierLocal` still mandatory before unattended execute). Prototype protect on **9041** is **not** that frozen core.
 

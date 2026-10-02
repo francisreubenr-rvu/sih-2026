@@ -1,0 +1,41 @@
+{
+  "comment": "Paths scripts/check-no-em-dash.mjs skips. A trailing slash means the whole directory, and * matches within one path segment. Every entry needs a one-line reason. Add to this list only for evidence, verbatim third-party captures, or text where the character is functional.",
+  "vendored": [
+    { "path": "**/node_modules/", "reason": "Third-party dependencies, not our text." },
+    { "path": "**/package-lock.json", "reason": "Generated lockfile." },
+    { "path": "**/*.min.js", "reason": "Vendored minified bundles (GSAP, ScrollTrigger)." },
+    { "path": "**/*.min.mjs", "reason": "Vendored minified bundles (onnxruntime-web)." },
+    { "path": "Prototype/models/", "reason": "Third-party model assets; pii/tokenizer.json is model vocabulary and must match the upstream weights." }
+  ],
+  "evidence": [
+    { "path": "Benchmarks/results/", "reason": "Committed evidence; must stay byte-identical (includes the Wave7 core-latency.json and Lighthouse reports)." },
+    { "path": "Guardrails/guardrails.json", "reason": "Gate board; values are evidence and must stay byte-identical." },
+    { "path": "Website/downloads/guardrails.json", "reason": "Byte copy of Guardrails/guardrails.json written by scripts/build_documents.py." },
+    { "path": "Benchmarks/release-status.json", "reason": "Release gate status record read by scripts/check_release.py; gate reasons are evidence." },
+    { "path": "Benchmarks/datasets/*-heldout-pii-fixtures.json", "reason": "Held-out benchmark inputs; editing them would change measured results." },
+    { "path": "Raw/", "reason": "Verbatim third-party source captures (official SIH pages, reference chats, scraped docs); quotes must stay exact." },
+    { "path": "Prototype/shared/score-path.mjs", "reason": "Honesty strings are emitted verbatim into Benchmarks/results/score-path-heldout-v01.json." },
+    { "path": "scripts/eval-dom-text-pii-heldout.mjs", "reason": "Strings are emitted verbatim into Benchmarks/results/cycle05-dom-text-pii-heldout-v01.json." },
+    { "path": "scripts/measure-core-latency.mjs", "reason": "Strings are emitted verbatim into Benchmarks/results/core-latency.json." },
+    { "path": "scripts/validate-extension-capture.mjs", "reason": "Strings are emitted verbatim into Benchmarks/results/extension-capture-v01.json." },
+    { "path": "scripts/validate-extension-e2e.mjs", "reason": "Strings are emitted verbatim into Benchmarks/results/e2e.json." },
+    { "path": "scripts/wave6-hardening-evidence.mjs", "reason": "G08 mapping strings are emitted verbatim into Benchmarks/results/hardening.json." },
+    { "path": "scripts/wave7-load-notes.mjs", "reason": "Strings are emitted verbatim into Benchmarks/results/load.json." }
+  ],
+  "functional": [
+    { "path": "scripts/build_documents.py", "reason": "Functional: the PDF text sanitizer maps the em dash character to a hyphen." },
+    { "path": "scripts/build_process.py", "reason": "Functional: the PDF markup sanitizer maps the em dash character to a hyphen." },
+    { "path": "warden/redactor.py", "reason": "Security: redaction patterns; kept byte-identical to master." },
+    { "path": "warden/strip.py", "reason": "Security: strip patterns; kept byte-identical to master." },
+    { "path": "warden/entities.py", "reason": "Security: GLiNER label list; kept byte-identical to master." },
+    { "path": "warden/groq_client.py", "reason": "Security: planner prompt; kept byte-identical to master." },
+    { "path": "extension/utils/redactor.js", "reason": "Security: extension redaction patterns; kept byte-identical to master." },
+    { "path": "Prototype/shared/dom-text-pii.mjs", "reason": "Security: DOM text PII detection patterns; kept byte-identical to master." },
+    { "path": "Prototype/shared/selective-redaction.mjs", "reason": "Security: selective redaction rules; kept byte-identical to master." },
+    { "path": "warden/test_warden.py", "reason": "Security: Warden tests hold seeded PII and leak probes; kept byte-identical." },
+    { "path": "extension/tests/", "reason": "Security: extension tests and harnesses hold seeded values; kept byte-identical." },
+    { "path": "Prototype/tests/selective-redaction.test.mjs", "reason": "Security: holds seeded PII test values; kept byte-identical." },
+    { "path": "scripts/e2e-v5/", "reason": "Security: leak-test fixtures and seeded values; kept byte-identical." },
+    { "path": "Benchmarks/fixtures/", "reason": "Security: G11 leak-test fixture page with seeded values; kept byte-identical." }
+  ]
+}

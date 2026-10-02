@@ -1,14 +1,14 @@
-# Blind cycle-05 — DOM text PII + face-only gap honesty
+# Blind cycle-05: DOM text PII + face-only gap honesty
 
 **Date:** 2026-09-15  
 **Branch:** `brain/blind-cycle-05`  
-**Scope:** Organizer visual+PII+redaction ≈65%. Face-only is insufficient — PS lists passwords/OTP/cards/PII text. No fabricated WebPII/officialScore. No ORT sandbox rewrite (W-004 may still be in flight).
+**Scope:** Organizer visual+PII+redaction ≈65%. Face-only is insufficient: PS lists passwords/OTP/cards/PII text. No fabricated WebPII/officialScore. No ORT sandbox rewrite (W-004 may still be in flight).
 
 ## Verified problems
 
 1. **UltraFace / face-only** cannot detect passwords, OTP codes, card numbers, or free-text PII.
 2. **Legacy `classifySensitive`** missed phrases such as “Your one-time code is 391204”, “verification code …”, “6-digit code: …”.
-3. Prior wave fixture JSON compared **pre-authored** `detectorRegions` vs GT — it did not execute the live DOM text classifier.
+3. Prior wave fixture JSON compared **pre-authored** `detectorRegions` vs GT; it did not execute the live DOM text classifier.
 
 ## Fixes
 

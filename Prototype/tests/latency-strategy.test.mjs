@@ -24,7 +24,7 @@ test('privacy_only mode skips planner and does not claim G11 pass', () => {
   });
   assert.equal(breakdown.plannerMs, 0);
   assert.equal(breakdown.fullFlowMs, 120);
-  // Privacy-only under 200ms must still fail G11 — not a full planner+confirm flow.
+  // Privacy-only under 200ms must still fail G11, not a full planner+confirm flow.
   assert.equal(breakdown.gate.status, 'fail');
   assert.match(breakdown.gate.note, /Privacy-only/);
   assert.match(breakdown.honesty, /Do not weaken/);

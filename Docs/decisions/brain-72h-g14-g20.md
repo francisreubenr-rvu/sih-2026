@@ -1,4 +1,4 @@
-# Brain 72h — G14 demo rehearsals + G20 human evals (next step)
+# Brain 72h: G14 demo rehearsals + G20 human evals (next step)
 
 **Date:** 2026-09-15  
 **Branch:** `brain/72h-human-eval`  
@@ -9,7 +9,7 @@
 
 ## What to do this week
 
-### G14 — three consecutive live rehearsals
+### G14: three consecutive live rehearsals
 
 1. Book a quiet 60–90 min block (or three short slots the same day).
 2. Follow `Docs/demo-rehearsal-checklist.md` reset → critical journey → log.
@@ -18,7 +18,7 @@
 5. A single `fail` resets the streak. Do not set `"status": "pass"` until three consecutive `success` rows share one `build_sha` and offline `Docs/demo-fallback.webm` was verified.
 6. Optional: one run may follow `Docs/demo-toolbar-capture-protocol.md` and fill `toolbar-capture-log-v01.json` (still not a G03 claim alone).
 
-### G20 — recruit ≥5 non-author participants (+ ≥3 narrative reviewers)
+### G20: recruit ≥5 non-author participants (+ ≥3 narrative reviewers)
 
 1. Copy the recruit template from `Docs/human-evaluation-protocol.md`; invite ≥8 people to net ≥5 completes.
 2. Run frozen synthetic-fixture tasks only; use forms in `Docs/human-evaluation-forms.md`.
@@ -57,6 +57,6 @@
 
 ---
 
-## Addendum — recruitment paused (2026-09-15)
+## Addendum: recruitment paused (2026-09-15)
 
 Francis paused G20 non-author recruitment. Keep protocol/forms as templates. Leave `Guardrails` G20 `status: unknown`. Do not send the recruit template until explicitly resumed. Blind cycle-04 aligned site/ledger/protocol language to this pause.

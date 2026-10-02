@@ -1,10 +1,10 @@
-# Brain 72h — Ollama-free CI + toolbar capture evidence path
+# Brain 72h: Ollama-free CI + toolbar capture evidence path
 
 **Date:** 2026-09-14  
 **Branch:** `brain/72h-claims-honesty` / PR #5  
 **Scope:** CI honesty + human toolbar Capture & protect protocol. **Do not claim G03 pass.** G11 stays fail. `submission_ready` stays false.
 
-## GOAL A — Ollama-free CI
+## GOAL A: Ollama-free CI
 
 ### Facts
 
@@ -20,7 +20,7 @@
 |-------|----------|
 | `cd Prototype && npm test` | Node built-in test runner; doubles only |
 | `cd Prototype && npm run test:ci` | Same tests with `OLLAMA_URL=http://127.0.0.1:9` + `DHRISTI_CI=1` so accidental live planner calls fail fast |
-| `.github/workflows/prototype-test.yml` | checkout → setup-node 22 → `npm ci` → `npm run test:ci` — **no Ollama service** |
+| `.github/workflows/prototype-test.yml` | checkout → setup-node 22 → `npm ci` → `npm run test:ci`; **no Ollama service** |
 
 ### Explicit non-goals
 
@@ -28,10 +28,10 @@
 - No fabricated planner latency or G11 flip from CI.
 - Soak (`wave7-load-notes.mjs`) stays manual/local; not required on PR.
 
-## GOAL B — Toolbar capture evidence (documentation only)
+## GOAL B: Toolbar capture evidence (documentation only)
 
-- Protocol: `Docs/demo-toolbar-capture-protocol.md` — human production Chrome toolbar **Capture & protect** (privacy-only Fast path).
-- First-run log stub: `Benchmarks/results/toolbar-capture-log-v01.json` — **empty fields**, `status: not_run`, **not** a G03 pass.
+- Protocol: `Docs/demo-toolbar-capture-protocol.md`, human production Chrome toolbar **Capture & protect** (privacy-only Fast path).
+- First-run log stub: `Benchmarks/results/toolbar-capture-log-v01.json`, **empty fields**, `status: not_run`, **not** a G03 pass.
 - Runbook / Prototype README point at the protocol.
 - Automation harnesses (`validate-extension-*.mjs`) still use temporary overlay; they **must not** be cited as toolbar-glyph proof.
 

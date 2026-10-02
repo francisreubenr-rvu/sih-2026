@@ -1,4 +1,4 @@
-# Brain 72h — Fast / Score / Reason productization
+# Brain 72h: Fast / Score / Reason productization
 
 **Date:** 2026-09-14  
 **Branch:** `brain/72h-claims-honesty` (continues Hour 0 PR)  
@@ -9,7 +9,7 @@
 | Path | What it is | Product status | Timing / G11 |
 |------|------------|----------------|--------------|
 | **Fast** | capture → detect → mask → privacy review; **no LLM** | Implemented (privacy-only checkbox, default on) | Popup may show local capture/WASM ms. **Fast ≠ G11.** |
-| **Score** | Local heuristic risk after Fast protect | **Partial runnable** — popup risk band; `officialScore` null | Diagnostic only; not official SIH weighted score / not WebPII |
+| **Score** | Local heuristic risk after Fast protect | **Partial runnable**: popup risk band; `officialScore` null | Diagnostic only; not official SIH weighted score / not WebPII |
 | **Reason** | Ollama/Qwen plan + human confirm | Implemented (uncheck Fast → Send protected layout) | Historically **seconds**; **outside &lt;200 ms budget**; included in G11 full-flow |
 
 ## Measurement policy (non-negotiable)
@@ -18,7 +18,7 @@
 2. **Fast path timings must never be reported as a G11 pass**, even if local protect is sub-200 ms on some machines.
 3. **Reason** stays out of budget until measured otherwise; historical Qwen responses are multi-second (`Docs/decisions/wave4-latency-strategy.md`, `Benchmarks/results/core-latency.json`).
 4. **Score** may show a local heuristic risk band after Fast protect; **officialScore stays null**. Do not fabricate SIH weighted totals or WebPII wins.
-5. DigiLocker references are **inspired UX** (trust chip / navy–paper instrument look) only — not DigiLocker APIs, credentials, or data sharing.
+5. DigiLocker references are **inspired UX** (trust chip / navy–paper instrument look) only, not DigiLocker APIs, credentials, or data sharing.
 6. `submission_ready` stays **false**; no fabricated metrics.
 
 ## UI surfaces

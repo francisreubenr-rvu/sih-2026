@@ -1,4 +1,4 @@
-# Wave 7 — a11y depth + load soak + latency opts (14 September 2026)
+# Wave 7: a11y depth + load soak + latency opts (14 September 2026)
 
 ## Decisions
 - Axe alone still cannot flip G09/G10. Wave7 adds keyboard Tab sampling, WCAG 1.4.12 text-spacing override, EN/HI lang switch evidence, and 320/390/1440 reflow notes while keeping statuses **unknown**.

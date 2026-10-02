@@ -13,20 +13,20 @@
 - Checked here on CPU only: a tiny 2-epoch run with an epoch-1 checkpoint, and `validate.py` on it. No GPU result yet. Not deployed; the fast path stays off by default.
 - Result (A100 80 GB, about 33 min per run, `laya-colab-sweep-v01.json`): the free-text question trains on GPU (AUROC 1.0 on unseen generated steps), but the selected checkpoint fails Jev's bar on the held-out cases (21 acted, 2 wrong, one of them a free-text step). Not accepted, nothing uploaded. Generator coverage is now the limit; proposed next step is a wider generator with held-out template families for validation.
 
-## Laya fine-tuning, CPU — 1 October 2026
+## Laya fine-tuning, CPU (1 October 2026)
 
 - Found why v1/v2 underfit: `gen_data.py` gave each wrong option 2% of the target and split the right answer over several options, so no calibrated model could pass 0.9. Fixed (one right answer per step, 2% total on wrong options); a 64-step overfit test then fit 63/64.
 - v3 (sharp targets) and v4 (+25% free-text steps, warm from v3), top 6 of 28 layers on CPU: top choice 17 → 19 → 28 of 41 scenes. The free-text question never learned its cue in any run. v4 acts at 0.9 and is wrong on a free-text step. None deployed; CPU training stopped; the GPU notebook (now on the v4 generator) is the next attempt.
 - Groq settings re-run on a fresh quota: Qwen 41/42 at temperature 0, gpt-oss-20b 35/42; Qwen stays first.
 
-## Laya fine-tuning — 30 September 2026
+## Laya fine-tuning (30 September 2026)
 
 - Francis: Jev for demos stays an open decision; go forward on training Laya.
 - Built `scripts/laya-finetune/` (generator with zero overlap against the evaluation sets, trainer ported from the authors' notebook, `diagnose.py`, `kaggle_train.ipynb`) and `WARDEN_LAYA_MODEL` / `WARDEN_LAYA_DEVICE` in the Warden.
 - v1 failed on option truncation (fixed with compact keys for Laya); v2 underfit on CPU (29/120 on its own training steps, base 24/120) and its free-text answer collapsed to "no", so it must not be used or run below the 0.9 threshold. Neither CPU run answered a single held-out step at 0.9.
 - Next: run `kaggle_train.ipynb` (needs Francis's Kaggle account) and decide where the weights live (about 0.8 GB; no Git LFS, no Hugging Face token here).
 
-## Qwen first, Jev fast path, Laya — 30 September 2026
+## Qwen first, Jev fast path, Laya (30 September 2026)
 
 - Francis: Qwen first in the Groq chain; build the Jev fast path and benchmark it; test Laya (`convaiinnovations/laya`, the "Layla" of 29 September).
 - Groq chain now `qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b`, called at **temperature 0**. Correction: the 29 September Qwen ranking was measured at temperature 0 while the Warden sent none, and the same model answered the same scene differently between runs. The settings re-measure (`groq-settings-bench-v01.json`) was rate-limited (61 of 168 calls 429); re-run on a fresh quota on 1 October (`groq-settings-bench-v02.json`), at temperature 0 Qwen answered 41/42 and gpt-oss-20b 35/42, so Qwen stays first.
@@ -34,7 +34,7 @@
 - Laya zero-shot on CPU: top choice right on 33 to 55% of steps, said "free text needed" on all 123, so it deferred everything and added 585 to 847 ms per step; without that gate it would have been wrong on all 6 held-out steps it was confident about. Leave off until fine-tuned.
 - Tests: Warden 112 + 6 skips. G11 **fail**, G20 **paused**, `submission_ready` **false**.
 
-## Real cloud planner, cloud-model bench, branch merge — 29 September 2026
+## Real cloud planner, cloud-model bench, branch merge (29 September 2026)
 
 - First end-to-end run with the **real** Groq planner (earlier v5 evidence used a scripted fake): 48 cloud requests over five runs, **0 personal values** (`Benchmarks/results/e2e-v5-boundary-v02.json`). The first run never finished: the planner could not see the page's "Saved" status and history had no value, so it retyped and resaved to the 25-step limit. Fixed (`extension/content.js` STATUS lines, `buildHistory` vault token, finish rule in `groq_client`); 3 of 3 runs then finished in 3 to 4 steps, planner round trip 325 to 1219 ms. Tests: extension 104/104 (two new, each failing on the old code).
 - Cloud models vs local models: `Docs/decisions/brain-cloud-models-jev.md`. GLiNER and UltraFace stay local (privacy boundary). Groq `qwen/qwen3.8-27b` 36/36 at p50 342 ms vs default gpt-oss-20b 31/31 at 615 ms; Jev (TypeSafe decision model) 55/60 at p50 191 ms, every miss a free-text value it cannot produce. Reviewer: Jev 30/30 at 194 ms. Recommendations only; defaults unchanged. OpenCode: no valid key present. "Layla": not found, needs a link.
@@ -42,7 +42,7 @@
 - Claims corrected: Website and README cited the fake-planner run as "reached the cloud planner"; now cite v02. 305 ms tile marked as one run. README no longer lists Qwen2.5/Ollama as the current planner. `warden/README.md` names `protobuf` (GLiNER failed to load without it in a fresh venv).
 - Verified unchanged: Prototype 141/141, Warden 101 + 6 skips (103 + 4 with GLiNER loaded), G11 harness 13/13, ledger 14 pass / 1 fail / 5 unknown matching the committed file. G11 **fail**, G20 **paused**, `submission_ready` **false**.
 
-## v5: device redaction, cloud planning — 29 September 2026
+## v5: device redaction, cloud planning (29 September 2026)
 
 - Francis: redaction stays local so a bigger model can do that one job; planning runs online. This supersedes the 23 September "planner default is Ollama" lock; `WARDEN_PLANNER=ollama` stays as the offline mode. Decision: `Docs/decisions/brain-v5-local-redaction-cloud-planner.md`.
 - Fixed: GLiNER lost every name on a 41-line page (window + dilution; now one chunk per line with a per-line cache); element labels and PII-shaped ids reached `/plan` raw; the Warden could not load off the author's Mac; `/validate` round trip per step removed (checks moved into `extension/utils/plan-check.js`); nine extension bugs listed in the decision's PR.
@@ -59,7 +59,7 @@
 
 Francis halted the wrap/polish-as-primary path. Target fundamentals are the Warden / v4 pipeline (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE): browser holds no cloud key, protected scene only outbound, client op-tier gate F17 stays mandatory. Decision: `Docs/decisions/brain-fundamentals-restructure.md`. Handoff record: `Docs/grokbot-briefing.md`.
 
-Francis locks (2026-09-23): Option C — Prototype and Website HUD stay measurement/demo, real `warden/` only when sourced and no stubs, one shipping extension surface later (`Prototype/extension` is not shipping Warden); HUD/Pages polish frozen until Phase 0 docs and ARCH land (this PR is Phase 0 docs); Phase 1 planner default is Ollama on loopback (origin is a setting; Groq is optional host-env only and is never the offline path).
+Francis locks (2026-09-23): Option C. Prototype and Website HUD stay measurement/demo, real `warden/` only when sourced and no stubs, one shipping extension surface later (`Prototype/extension` is not shipping Warden); HUD/Pages polish frozen until Phase 0 docs and ARCH land (this PR is Phase 0 docs); Phase 1 planner default is Ollama on loopback (origin is a setting; Groq is optional host-env only and is never the offline path).
 
 Wrap densify (PR #29, ARCH-002 HUD) is no longer the primary queue. The Option C and Ollama checkpoints from master stay below this section. Wave 7 and earlier sections stay as history. Do not delete them.
 
@@ -67,29 +67,29 @@ Still true, and not flipped by this section: G11 **fail**, G20 **paused** (recru
 
 Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names only (`--ink`, `--navy`, `--paper`, `--mist`, `--saffron`, `--trust`) plus HudFrame / cell / stepped-motion classes. Dark v4 names stay in `extension/pixel.css`. The alias bridge is PR3, not this PR. Gates are unchanged. Decision: `Docs/decisions/brain-website-pixel-redesign-pr1.md`.
 
-## G11 Option C harness — 23 September 2026
+## G11 Option C harness (23 September 2026)
 
 - Harness: `scripts/g11-warden-option-c-harness.mjs`. Frozen surface is root `extension/` plus Warden `127.0.0.1:8756` (PERCEIVE → STRIP → PLAN → VALIDATE → EXECUTE). Prototype port 9041 is not this surface.
 - New artifact only: `Benchmarks/results/core-latency-warden-option-c.json`. Historical `Benchmarks/results/core-latency.json` is not overwritten.
 - This environment had no Warden on 8756 and no Ollama on 11434, so no live L2 samples were collected. Gate status stays **fail**. `budgetMs` stays 200. `submission_ready` stays **false**. Release status was not edited.
 
-## Option C — selective Warden port — 23 September 2026
+## Option C: selective Warden port (23 September 2026)
 
 - Source: public archive `https://github.com/francisreubenr-rvu/sih26171-dhristi` branch `sightline-v2-foundation` at `2afd215d795d781f74c8a45468a86eedfa58253e`.
 - Imported only: `warden/` (no real `.env`), root `extension/` (candidate Warden side panel), and the two 13 September Warden specs.
-- Left in place: `Prototype/`, `Website/`, `Benchmarks/`, wrap HUD, `Prototype/extension/` (measurement/demo chrome — do not load it as Warden).
+- Left in place: `Prototype/`, `Website/`, `Benchmarks/`, wrap HUD, `Prototype/extension/` (measurement/demo chrome; do not load it as Warden).
 - Phase 1 planner default is local Ollama (offline). At import time `POST /plan` still called Groq. That switch is PR #32, in the next section.
 - Ports: Warden `127.0.0.1:8756`; Prototype stays `127.0.0.1:9041`.
 - `Docs/decisions/brain-fundamentals-restructure.md` lands with PR #30. The port decision stays self-contained: `Docs/decisions/brain-option-c-warden-port.md`.
 - G11 remains **fail**. `submission_ready` remains **false**. No gate flip.
 
-## Warden Ollama `/plan` default — 23 September 2026
+## Warden Ollama `/plan` default (23 September 2026)
 
 - `POST /plan` defaults to loopback Ollama. Groq runs only when `WARDEN_PLANNER=groq`. Ollama down does not call Groq.
 - Root extension install-time host permissions are loopback (`8756` and `7860`). Page scan uses optional `<all_urls>` requested on send. Residual: after that grant, and `web_accessible_resources` for `redactor.js`. Decision: `Docs/decisions/brain-warden-ollama-plan-harden.md`.
 - G11 stays **fail**. G20 stays **paused** (ledger status not edited). `submission_ready` stays **false**. F17 client op-tier was not removed. Prototype and Website HUD were not edited.
 
-## Wave 7 — a11y depth + load soak + latency opts — 14 September 2026
+## Wave 7: a11y depth + load soak + latency opts (14 September 2026)
 
 - G09/G10: axe + keyboard Tab + 1.4.12 text-spacing + EN/HI (Website + popup HTTP harness); statuses **unknown**.
 - G05: `scripts/wave7-load-notes.mjs` → `load.json` 5-minute soak, 20 workers, 1000 durable rows, heap snapshots → **pass** (local scope).
@@ -100,19 +100,19 @@ Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names o
 - Counts → pass **14** / fail **1** / unknown **5**. submission_ready **false**.
 - Do not mark G14/G20/G03 human toolbar as pass.
 
-## Wave 6 — Node hardening + a11y + latency + fixtures — 14 September 2026
+## Wave 6: Node hardening + a11y + latency + fixtures (14 September 2026)
 
 - G08: `scripts/wave6-hardening-evidence.mjs` → `hardening.json` (8/8); security headers + production guards; G08 → **pass** (declared local scope).
 - G09/G10: axe Website + extension popup + prototype (0 violations after contrast/reveal fixes); CSS zoom approx; statuses **unknown**.
 - G11: stage p95 + mosaic subsample; full-flow **fail** retained; judge breakdown enriched.
 - WebPII-style: 24 held-out synthetic cases → `wave6-pii-redaction-utility-v01.json`; GSTIN/UPI telemetry; official score **null**.
-- G05: load.json concurrent health + 1000 durable rows (wall-clock short) — **unknown**.
-- G14/G20: rehearsal checklist + human forms templates — **unknown** (no fake human passes).
+- G05: load.json concurrent health + 1000 durable rows (wall-clock short): **unknown**.
+- G14/G20: rehearsal checklist + human forms templates: **unknown** (no fake human passes).
 - Security rescan 0 high; Ollama skipped; Firefox live unverified.
 - Automated tests: **112 pass / 0 fail**.
 - Counts → pass **13** / fail **1** / unknown **6**. submission_ready **false**.
 
-## Wave 5 — e2e maximize + redaction saturation + gate evidence — 14 September 2026
+## Wave 5: e2e maximize + redaction saturation + gate evidence (14 September 2026)
 
 - G03: `scripts/validate-extension-e2e.mjs` → `e2e.json` + `wave5-demo-screens/` (9/9 harness pass). Toolbar glyph still human-required; G03 remains **unknown**.
 - WebPII/redaction: 18 held-out synthetic cases → `wave5-pii-redaction-utility-v01.json`. Detector/merge improvements; official score **null**.
@@ -122,7 +122,7 @@ Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names o
 - Automated tests: **109 pass / 0 fail**.
 - Counts → pass **12** / fail **1** / unknown **7**. submission_ready **false**.
 
-## Wave 4 — rubric diagnostics + latency strategy + deck/site honesty — 14 September 2026
+## Wave 4: rubric diagnostics + latency strategy + deck/site honesty (14 September 2026)
 
 - Expanded held-out synthetic fixtures (12 cases) → `Benchmarks/results/wave4-pii-redaction-utility-v01.json`. Official score **null**.
 - G11 strategy: privacy-only skip-LLM (extension default), detector session cache, optional wireframe preview. `core-latency.json` distribution evidence; full-flow **fail** retained (not weakened).
@@ -133,39 +133,39 @@ Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names o
 - Automated tests: **107 pass / 0 fail**.
 - Still open for submission_ready: G11 fail, e2e.json / toolbar glyph automation, Firefox live, WebPII saturation, human eval (G20), G08/G09/G10/G14/G17/G18 unknowns as applicable.
 
-## Wave 3 — toolbar path reliability + packaging + evidence — 14 September 2026
+## Wave 3: toolbar path reliability + packaging + evidence (14 September 2026)
 
 - Production popup path: stage strip, toolbar/activeTab guidance (EN/HI), content-script reinject on disconnect, http(s) tab fallback when popup is opened as a document.
 - Loop harness `scripts/validate-extension-loop.mjs`: shipped activeTab gate + overlay-driven `#capture` UI completing capture→filter→sanitize→review (8/8). Record: `Benchmarks/results/extension-loop-v01.json`. Native refresh: `extension-native-v03.json`.
 - Packaging: extension **0.1.1** icons; `npm run build:extension` writes Chrome + Firefox unpacked trees and zips (`Docs/dhristi-extension-wave3.zip`, firefox zip, Website download alias). OCR/PII lab weights excluded from MV3 package.
 - Security: `scripts/wave3-security-scan.mjs` → `Benchmarks/results/security.json` + `dependency-audit.json` (0 high secrets; 0 critical/high npm audit omit=dev). G06/G07 → **pass**. G11 remains **fail**.
 - Website: DigiLocker-credible trust bar (EN/HI) + wave3 evidence panels.
-- Ollama unreachable; Firefox binary absent — status JSON skipped honestly.
+- Ollama unreachable; Firefox binary absent; status JSON skipped honestly.
 - Automated tests: **100 pass / 0 fail**.
 - Still open for wave 4 / submission: true toolbar glyph automation, Firefox live run, WebPII/official saturation, human/domain review, deck refresh, live planner when Ollama available.
 
-## Wave 2 — capture harness + held-out fixtures + resources — 14 September 2026
+## Wave 2: capture harness + held-out fixtures + resources (14 September 2026)
 
 - Chromium capture harness (`scripts/validate-extension-capture.mjs`): production inject/collect on `http://127.0.0.1:9041/app/fixture.html`; production `captureVisibleTab` correctly requires `activeTab`; harness-only temp `<all_urls>` overlay proves PNG capture + sanitized semantics egress (shipped manifest unchanged). Record: `Benchmarks/results/extension-capture-v01.json` (9 pass / 0 fail). Native refresh: `extension-native-v02.json`.
 - Held-out synthetic PII/redaction/utility fixtures: `Benchmarks/datasets/wave2-heldout-pii-fixtures.json` → `Benchmarks/results/wave2-pii-redaction-utility-v01.json`. Separates coverage vs preservation; includes intentional miss and over-redaction cases. Official score remains null.
 - Client resource hooks: `Prototype/shared/client-resources.mjs`; extension popup records capture-stage JS heap when available. Evidence: `wave2-client-resources-v01.json` (observed null).
 - Firefox: shipped manifest + polyfill only; live run unverified (`wave2-firefox-status-v01.json`).
-- Ollama unreachable — planner E2E skipped (`wave2-ollama-planner-status-v01.json`).
-- Automated tests: 92 pass / 0 fail. G11 full-flow <200ms remains **fail** — not weakened.
+- Ollama unreachable; planner E2E skipped (`wave2-ollama-planner-status-v01.json`).
+- Automated tests: 92 pass / 0 fail. G11 full-flow <200ms remains **fail**, not weakened.
 - Still open for wave 3 / submission: real toolbar glyph click, Firefox live validation, WebPII/official saturation, human/domain review, packaging, live planner when Ollama available.
 
-## Wave 1 P0 — extension + selective redaction — 14 September 2026
+## Wave 1 P0: extension + selective redaction (14 September 2026)
 
-- Implemented local selective pixelation (`Prototype/shared/selective-redaction.mjs`) for human review previews; non-sensitive pixels preserved; sensitive regions (face/private/field/media/password kinds) mosaicked. **Outbound API still forbids raw screenshots** — `assertSanitizedPayload` + existing Zod scene schema.
+- Implemented local selective pixelation (`Prototype/shared/selective-redaction.mjs`) for human review previews; non-sensitive pixels preserved; sensitive regions (face/private/field/media/password kinds) mosaicked. **Outbound API still forbids raw screenshots**: `assertSanitizedPayload` + existing Zod scene schema.
 - Wired into MV3 extension popup and web workspace capture path. Trust chip + EN/HI-ready strings on extension surfaces. DigiLocker-credible navy/paper palette.
 - Rubric measurement hooks: visual P/R, PII instance P/R, redaction coverage vs preservation, latency gate (200ms). Unit fixtures only; ledger score remains null; latency status remains fail.
 - Indic PII telemetry: Aadhaar 4-4-4 and PAN ABCDE1234F patterns in `classifySensitive` (export still allow-list only).
 - Automated tests: 86 pass / 0 fail. `npm run build` and `npm run build:extension` succeed.
-- Still open for wave 2: toolbar-driven `captureVisibleTab` harness, Firefox live validation, labeled held-out PII/redaction datasets, client resource budgets, full-flow latency (G11 fail — do not weaken), human/domain review, Ollama E2E when available.
+- Still open for wave 2: toolbar-driven `captureVisibleTab` harness, Firefox live validation, labeled held-out PII/redaction datasets, client resource budgets, full-flow latency (G11 fail; do not weaken), human/domain review, Ollama E2E when available.
 
 # SIH26171 delivery plan
 
-## Integrated simulation checkpoint — 11 September 2026
+## Integrated simulation checkpoint (11 September 2026)
 
 - Previous turn verified the external OCR/PII privacy failure (`0eff696`); policy kept local-only.
 - Built `/app/operations.html`: original synthetic Earth-observation desk with basin grid, protected map region and report-contact draft. Combines the verified bounded loop, protected scene, Qwen planning on `/api/v1/plans` and `/api/v2/local-plans`, and one-use local value references.
@@ -174,7 +174,7 @@ Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names o
 - 74 automated tests pass. 390px layout has no horizontal overflow. Decision record: `Docs/decisions/operations-simulation.md`. Evidence: `Benchmarks/results/operations-v01/`.
 - Remaining for the full objective: native extension execution, broader task/privacy datasets, human/domain validation, full-flow latency and resources, refreshed presentation/website evidence tied to this simulation, and final packaging audit.
 
-## External text checkpoint — 11 September 2026
+## External text checkpoint (11 September 2026)
 
 - Previous turn made verified progress: three browser experiments and the explicit address-label regression fix published as `bfcbb43`.
 - Froze an annotation-free image input listing, browser OCR/PII harness, source hashes and separate scoring contract before the external run. Scoring agent produced a draft then exhausted quota; main completed/reviewed it and added tests.
@@ -183,7 +183,7 @@ Website pixel PR1 (2026-09-23, Option A): marketing chrome uses Hybrid C names o
 - Corrected the public repository description from unresolved SIH2171 preparation to the verified SIH26171 engineering candidate; verified readback. No website deployment claimed.
 - Next: whole-field/contextual privacy beyond entity tagging, meaningful synthetic domain workflow, native-extension/resource and human validation, and final artifact review. Full objective remains active.
 
-## Latest checkpoint — 11 September 2026
+## Latest checkpoint (11 September 2026)
 
 - Published local-reference implementation through `75f69f5`; remote master verified. No Website files changed in that checkpoint.
 - Updated browser connection opens original local preview. OCR/NER baseline exposes two address-token leaks; conservative explicit-label correction yields 14/14 sensitive and 25/25 useful tokens on the same three development screens. Original results and source retained. Local-only preview remains the boundary.
@@ -216,7 +216,7 @@ Local capture → local model + DOM bounds → opaque masks → strict sanitized
 ## Goal-turn audit
 Previous turn verified existing GitHub deployment and byte identity; useful publication evidence, no domain implementation. This turn resumes the full build rather than repeating publication status. Goal remains active until all requirements are verified.
 
-## Verified build checkpoint — 9 September2026
+## Verified build checkpoint (9 September2026)
 - Correct SIH26171 row retrieved from official catalogue; full source and extracted statement preserved. G01 now passes.
 - Prototype app, shared privacy schema, real ONNX/WASM face detector, Qwen2.5 server, SQLite audit counts, native extension source/build and deployment recipe written.
 - Real browser workflow reached Request ready for review after Pending and Review actions. Expired capture rejected. 390px/1440px payload/overflow checks and screenshots saved.
@@ -228,7 +228,7 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 
 - Stitch landing generation completed: screen71600ce8d3cf4dc280c782e44b4a7e24. Raw HTML saved; fabricated generator metrics/configuration rejected in Docs/design-comparison.md. No replacement generation is pending.
 
-## Current candidate checkpoint — 9 September 2026, evening
+## Current candidate checkpoint (9 September 2026, evening)
 
 - Domain identity, technical literature and competitor synthesis now cite the retrieved official SIH26171 statement and primary papers.
 - Stitch comparison is complete and the selected Website implementation is built. Six fresh local Lighthouse runs score 100 in every category; architecture interaction, setup modal and 390px overflow checks completed.
@@ -240,7 +240,7 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 
 - Published candidate `69188d7`; Pages run34379912074 succeeded. Seven public file hashes matched local bytes and the live architecture/setup interactions passed. This completes this candidate publication, not the remaining full-entry audit.
 
-## Validation checkpoint — 10 September 2026
+## Validation checkpoint (10 September 2026)
 
 - Real Chrome shared-JS boundary harness passed 18/18 checks, including actual 31-second expiry, open shadow roots, overlays, CSSOM movement, disabled/inert targets and manual-only submissions/links. Saved exact results; native extension remains separate.
 - Compared three real Ollama models across four adapter designs; all development runs and failures preserved. Qwen7B single-choice adapter reaches 22/24 authored cases, with two semantic failures still open. Current suite: 39 passing tests.
@@ -251,7 +251,7 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 
 - Video checkpoint `7e9b692` is live; Pages run34418979547 succeeded. Four public resource hashes matched and the live MP4 played to completion. Updated delivery status corrects the stale preparation-only inventory while retaining historical records.
 
-## Raster diagnostic checkpoint — 10 September 2026
+## Raster diagnostic checkpoint (10 September 2026)
 
 - Previous goal turn made progress: model adapter tests, continuous recording, live Pages verification and delivery inventory were published. Current work adds external synthetic dataset measurements rather than repeating that status.
 - Froze 100 WebPII test rows from 46 source IDs; all selected rows are Amazon reproductions. Images are released synthetic viewer JPEGs, not original private reproduction targets. Source revision, license cards, annotations and hashes retained.
@@ -261,12 +261,12 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Current verification: 42 automated prototype tests and 7 scorer tests pass. Official metric ledger records partial diagnostics and keeps weighted score null.
 - Next substantial work: recover useful privacy-filtered context for raster/unknown interfaces, broader PII and native-DOM task evaluation, full resources and task latency. Human/native-extension gates remain open.
 
-## Reference intake — 10 September 2026
+## Reference intake (10 September 2026)
 
 - Grok alternate-project and Perplexity reference links recorded in `Raw/reference-chats/intake-2026-09-10.json`; both retrieval attempts were blocked by the web tool. No transcript or claims have been assessed. See `Wiki/reference-chat-review.md`.
 - Transcript text or an export is needed for this reference review. The Dhristi implementation and its existing validation gaps remain unchanged by these unread sources.
 
-## Reference and text-privacy checkpoint — 10 September 2026
+## Reference and text-privacy checkpoint (10 September 2026)
 
 - Previous goal turn made concrete reference-intake progress; shared links remained unread until Francis supplied both transcripts. Exact attachments now archived with hashes; major architecture/security/domain claims reviewed against primary sources. The original URL failures remain in provenance.
 - Keep the existing client/server split. Neither mandatory cloud hosting nor mandatory local-only inference follows from the supplied statement. CAPED extends the prior-art comparison; Bhoonidhi API documentation corrects the assumption that catalogue retrieval lacks an automation route.
@@ -274,14 +274,14 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Real preview navigation returned `net::ERR_BLOCKED_BY_CLIENT`. No alternate browser/URL workaround attempted. Browser OCR/NER results remain unmeasured; native extension also remains unverified.
 - Next implementation contracts are in `Docs/decisions/reference-informed-plan.md`: raster utility/privacy, bounded observe/act/verify loop, local value references, and synthetic domain scenario. Source transcript instructions do not alter the current task or authorize external actions.
 
-## Bounded runner implementation checkpoint — 10 September 2026
+## Bounded runner implementation checkpoint (10 September 2026)
 
 - Published reference/OCR checkpoint `2d65852` to GitHub; no Website files changed and no Pages redeployment claimed.
 - Implemented shared bounded coordinator and connected a synthetic task-runner page using existing local vision, protected request, open-weight provider and validated executor. Goal completion requires a local fixture postcondition; cancellation, deadlines and no-progress stop the loop.
 - 58 automated tests pass, including 10 coordinator cases. Build passes. Browser integration, responsive/visual checks and extension execution are still unverified; existing manual-demo results are not reused as runner evidence.
 - The earlier manifest process handle disappeared without a refreshed file; its old 483-file inventory was confirmed unchanged. The previously stalled file is readable now; rebuild the manifest for this checkpoint.
 
-## Local-reference implementation checkpoint — 10 September 2026
+## Local-reference implementation checkpoint (10 September 2026)
 
 - Prior goal turn made progress: reference review, bounded runner, and a refreshed 519-file inventory were published through `77dc051`.
 - Added random, expiring, one-use local value references; v2 typed field/reference protocol; real open-weight provider; authenticated API; and an explicitly synthetic confirmed draft-fill UI. The native extension and original v1 action contract still do not support typing.
@@ -289,7 +289,7 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Retried the same three authored cases: 3/3 correct; exact known-value absence checks pass; both local resolutions reject replay. Separate actual-service test verifies SQLite audit persistence without the reference/value. This is server/shared-module evidence, not browser execution.
 - Build and 68 automated tests pass. Browser/visual verification remains unavailable, as do native-extension and broader PII guarantees. Full-flow latency remains failed. Next: validate browser adapters when available, extend the meaningful domain workflow, and finish broader privacy/utility/resource evidence.
 
-## In-app browser harness and face-scale checkpoint — 11 September 2026
+## In-app browser harness and face-scale checkpoint (11 September 2026)
 
 - Prior goal turn made progress: the face-scale harness was rebuilt and the matrix was measured, then published through `826e5f0`, `36d0b75` and `25acdf1`.
 - Operator instruction recorded: all browser work now runs in the Codex in-app browser. Standalone Chrome launches were disrupting the operator's machine and are no longer used.
@@ -301,7 +301,7 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Unrelated defect recorded rather than silently fixed: `/app/index.html` logs `Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.`
 - Still open: native extension validation, deck refresh against the newest evidence, full-flow latency (G11 remains failed and must not be weakened), broader privacy and task datasets, client resource budgets, and human/domain validation.
 
-## Deck refresh and page-agent guard checkpoint — 11 September 2026
+## Deck refresh and page-agent guard checkpoint (11 September 2026)
 
 - Prior goal turn made progress: the deck builder was rewritten against the newest evidence and the page-agent observe-target defect was traced to `Prototype/shared/page-agent.mjs`.
 - Repaired a duplicated patch: `OBSERVABLE_NODE_TYPES`, `observableRoot` and the two guard throws in `Prototype/shared/page-agent.mjs` had each been inserted twice, which is a hard `SyntaxError` at load time. Collapsed to one copy; `node --check` now passes for `page-agent.mjs`, `main.mjs` and `page-agent.test.mjs`.
@@ -309,7 +309,7 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Removed an untraceable metric from the talk deck. Slide 10 previously read "139–141 ms · Capture + protection"; no evidence file in the repository contains that figure. Replaced it with the persisted `captureMs` range 92–108 ms from `Benchmarks/results/prototype-v01-browser.json`, which measures the same capture-and-protection window as the app's "Protected in N ms" message. Slide label, source line and speaker note all updated.
 - Verified the deck's other cited figures against their records: `face-scale-v01.json` (14 sizes, 9.1–20.2 ms per inference) and `webpii-text-v01-summary.json` (`completed_screens_with_exact_retained_pii` 58 of 100). The 3,029 ms first-model-step figure resolves to `observations[1].latencyMsDisplayed` in the 9 September `prototype-v01-browser.json` record.
 - Regenerated `Docs/submission-deck.pptx` (6 slides), `Docs/pitch-deck.pptx` (15 slides), `Docs/dhristi-template.potx` and `Docs/pitch-speaker-notes.md`. Both decks parse and slide 10 renders the corrected values.
-- Blocked and left open: the 11 September 75-test report needs an unrestricted run (nine tests bind `127.0.0.1` and fail with `EPERM ... syscall: 'listen'` under the sandbox), the PDF exports still match the 9 September PPTX builds because `soffice` cannot spawn in the sandbox, and nothing is committed because `.git` is read-only. Automatic approval review is currently failing for a separate reason — the local Ollama guardian returned `502 Bad Gateway` with "Guardian did not call submit_guardian_decision".
+- Blocked and left open: the 11 September 75-test report needs an unrestricted run (nine tests bind `127.0.0.1` and fail with `EPERM ... syscall: 'listen'` under the sandbox), the PDF exports still match the 9 September PPTX builds because `soffice` cannot spawn in the sandbox, and nothing is committed because `.git` is read-only. Automatic approval review is currently failing for a separate reason: the local Ollama guardian returned `502 Bad Gateway` with "Guardian did not call submit_guardian_decision".
 - Restored `Benchmarks/results/prototype-unit-tests.txt` to its committed 37-test content so a sandbox-only 66/75 run is not left in the tree as if it were evidence.
 - Still open from earlier: native extension validation, broader privacy and task datasets, client resource budgets, full-flow latency (G11 remains failed and must not be weakened), human/domain validation, and final packaging.
 
@@ -323,9 +323,9 @@ Previous turn verified existing GitHub deployment and byte identity; useful publ
 - Restored `Benchmarks/results/prototype-unit-tests.txt` to its committed 37-test content so a sandbox-only 66/75 run is not left in the tree as if it were evidence.
 - Still open from earlier: native extension validation, broader privacy and task datasets, client resource budgets, full-flow latency (G11 remains failed and must not be weakened), human/domain validation, and final packaging.
 
-## Native-extension harness checkpoint — 11 September 2026
+## Native-extension harness checkpoint (11 September 2026)
 
 - Codex added `scripts/validate-extension.mjs`, a Playwright harness that loads the real unpacked MV3 build (`Prototype/extension-build`) into a throwaway Chromium profile and drives extension load, content-script injection, popup load and the host-permission fetch from inside the actual browser (no operator Chrome profile touched). First run: 5/7 checks passed, verdict `fail`.
-- Root cause traced and fixed jointly in this session: `Prototype/shared/page-agent.mjs` called `crypto.randomUUID()` unguarded, which is `undefined` outside secure contexts (`http://`, `data:`, `file://`) — exactly where the extension's `activeTab`/`scripting` permissions let it inject. The content script threw before registering its message listener, and the popup surfaced only the generic `"Page connection lost. Reopen the extension."`. Fixed with a new `Prototype/shared/random-id.mjs` (`newRevisionId`) that falls back to `crypto.getRandomValues()`, applied at both `page-agent.mjs` call sites and to the equivalent default in `local-values.mjs`, with two new regression tests in `page-agent.test.mjs`.
+- Root cause traced and fixed jointly in this session: `Prototype/shared/page-agent.mjs` called `crypto.randomUUID()` unguarded, which is `undefined` outside secure contexts (`http://`, `data:`, `file://`), exactly where the extension's `activeTab`/`scripting` permissions let it inject. The content script threw before registering its message listener, and the popup surfaced only the generic `"Page connection lost. Reopen the extension."`. Fixed with a new `Prototype/shared/random-id.mjs` (`newRevisionId`) that falls back to `crypto.getRandomValues()`, applied at both `page-agent.mjs` call sites and to the equivalent default in `local-values.mjs`, with two new regression tests in `page-agent.test.mjs`.
 - Harness now passes 8/8 with 1 informational, verdict `pass`. The informational check records that the manifest declares no `background` key, so this popup-driven build exposes no MV3 service worker; an earlier version of the harness waited for one and produced a false failure. A negative check (`unlisted_control_refused`) was added alongside it so the allow-list is proven to be a refusal rather than a filter of convenience. A stopped local server is now recorded as `info` rather than `fail`, so an environment fact cannot mask a real host-permission failure. Full unit suite: 77/77 (75 prior + 2 new). Record: `Benchmarks/results/extension-native-v01.json`.
 - Scope of what this closes: real Chromium load/inject/reach evidence for the popup-driven MV3 build. Still open: Firefox is not exercised, the popup was opened as an extension document rather than through the toolbar action so `captureVisibleTab` and the pairing-token/planner round-trip are not driven, and this is not a PII-accuracy or performance measurement. Broader privacy/task datasets, client resource budgets, full-flow latency (G11) and human/domain validation remain open.

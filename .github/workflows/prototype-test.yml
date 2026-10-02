@@ -1,4 +1,4 @@
-# Prototype unit/integration tests — Ollama-free.
+# Prototype unit/integration tests: Ollama-free.
 # Uses createApp test-double infer / ollamaProvider fetchImpl stubs only.
 # Do not add an Ollama service container to this job.
 name: Prototype tests
@@ -50,7 +50,7 @@ jobs:
       - name: Install and test (no Ollama)
         working-directory: Prototype
         env:
-          # Unreachable on purpose — CI must never call a live planner.
+          # Unreachable on purpose: CI must never call a live planner.
           OLLAMA_URL: http://127.0.0.1:9
           DHRISTI_CI: '1'
         run: |

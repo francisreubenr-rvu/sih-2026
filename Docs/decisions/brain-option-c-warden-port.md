@@ -1,4 +1,4 @@
-# Option C — selective Warden port
+# Option C: selective Warden port
 
 **Date:** 2026-09-23  
 **Branch:** `brain/option-c-warden-port`  
@@ -19,8 +19,8 @@
 
 Real files from `2afd215` only. No empty stubs.
 
-- `warden/` — FastAPI package (`app.py`, strip, plan, validate, tests, `README.md`, `.env.example`, `.gitignore`).
-- Root `extension/` — side panel (`manifest.json`, `background.js`, `sidepanel.*`, `pixel.css`, utils, icons). This is the candidate shipping Warden UI.
+- `warden/`: FastAPI package (`app.py`, strip, plan, validate, tests, `README.md`, `.env.example`, `.gitignore`).
+- Root `extension/`: side panel (`manifest.json`, `background.js`, `sidepanel.*`, `pixel.css`, utils, icons). This is the candidate shipping Warden UI.
 - `Docs/specs/2026-09-13-dhristi-v4-warden.md`
 - `Docs/specs/2026-09-13-sidepanel-chat-ui.md`
 

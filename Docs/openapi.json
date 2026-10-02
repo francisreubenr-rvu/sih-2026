@@ -438,7 +438,7 @@
       "LocalReferenceRequest": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
-        "description": "Experimental local-reference contract. Top-level scheme is dhristi-local-references-v1. Field bindings carry UUID references only \u2014 never the private value. Runtime superRefine currently accepts email kind only for prepare-report-contact.",
+        "description": "Experimental local-reference contract. Top-level scheme is dhristi-local-references-v1. Field bindings carry UUID references only, never the private value. Runtime superRefine currently accepts email kind only for prepare-report-contact.",
         "properties": {
           "scheme": {
             "type": "string",

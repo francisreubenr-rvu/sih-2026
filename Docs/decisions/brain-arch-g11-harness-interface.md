@@ -1,4 +1,4 @@
-# ARCH — G11 Option C harness interface (Worker sketch)
+# ARCH: G11 Option C harness interface (Worker sketch)
 
 **Task:** GATE-VERIFY-001 follow-up · design-only  
 **Date:** 2026-09-23  
@@ -28,13 +28,13 @@ root `extension/` ↔ Warden `127.0.0.1:8756` · **PERCEIVE → STRIP → PLAN �
 | `lane` | enum | yes | `"L0_strip_local"` \| `"L1_plan_validate"` \| `"L2_full_core"` |
 | `wardenBaseUrl` | string | yes | must be `http://127.0.0.1:8756` (reject other hosts/ports) |
 | `planner` | object | yes | see §4 |
-| `extensionId` / load path | string | yes | root `extension/` only — refuse if Prototype extension |
+| `extensionId` / load path | string | yes | root `extension/` only; refuse if Prototype extension |
 | `pages` | string[] | yes | fixed absolute URLs; list written into artifact; no invented pages |
 | `warmups` | int | yes | default **10**; discarded from aggregates |
 | `sampleCount` | int | yes | default **100** minimum for L2 gate eligibility |
-| `budgetMs` | int | yes | **200** — harness must refuse config that raises this |
+| `budgetMs` | int | yes | **200**; harness must refuse config that raises this |
 | `f17` | object | yes | `{ requireOpTierLocal: true, trustServerRequiresConfirmation: false }` |
-| `executePolicy` | enum | L2 | `"confirm_auto_safe_only"` \| `"scripted_confirm"` — never skip local tier gate |
+| `executePolicy` | enum | L2 | `"confirm_auto_safe_only"` \| `"scripted_confirm"`; never skip local tier gate |
 | `outPath` | string | yes | `Benchmarks/results/core-latency-warden-option-c.json` |
 
 ### 2.2 Outputs
@@ -96,7 +96,7 @@ Wall-clock **per attempt**, milliseconds, float ok. Start/stop around real work 
 |---|---|---|
 | `ollama` | `ollama@127.0.0.1:11434` | `/plan` actually served by local Ollama (Phase 1 lock) |
 | `groq` | `groq` (no host fantasy) | Import-as-is stack where `POST /plan` still uses Groq |
-| `unknown` | omit or `"unverified"` | Harness could not verify — **L2 not gate-eligible** |
+| `unknown` | omit or `"unverified"` | Harness could not verify; **L2 not gate-eligible** |
 
 **Verification (design intent for Worker):**
 
@@ -136,7 +136,7 @@ G11 aggregate uses only attempts with `f17.ok: true`.
 
 ---
 
-## 6. Artifact schema — `Benchmarks/results/core-latency-warden-option-c.json`
+## 6. Artifact schema: `Benchmarks/results/core-latency-warden-option-c.json`
 
 ```json
 {
@@ -240,7 +240,7 @@ G11 aggregate uses only attempts with `f17.ok: true`.
 **Defaults on first write / incomplete run:** `status` and L2 `gate.status` = **`fail`**; `budget_weakened` = **false**; never omit `honesty`.
 
 **Historical link (optional field):**  
-`"predecessor": "Benchmarks/results/core-latency.json"` — read-only reference; do not overwrite predecessor.
+`"predecessor": "Benchmarks/results/core-latency.json"`, read-only reference; do not overwrite predecessor.
 
 ---
 

@@ -1,4 +1,4 @@
-# Blind cycle-04 — G20 pause honesty + Score↔GT correlation + Reason pre-Send health
+# Blind cycle-04: G20 pause honesty + Score↔GT correlation + Reason pre-Send health
 
 **Date:** 2026-09-15  
 **Branch:** `brain/blind-cycle-04`  
@@ -7,8 +7,8 @@
 ## Verified problems
 
 1. **G20 still read as active recruiting** in `Docs/human-evaluation-protocol.md` / forms / `human-evaluation.json` / G20 reason, while delivery-status and site evidence already said Francis paused recruits. Delivery timeline still said “G03/G20 remain open.”
-2. **Score held-out bridge lacked band↔GT-kind correlation** — bands existed, but no descriptive association report vs fixture `groundTruthPii.kind` (without inventing WebPII/officialScore).
-3. **Reason Send still paid full planner latency** before discovering Ollama was down — cycle-03 cold-start helped after failure; pre-Send probe was missing.
+2. **Score held-out bridge lacked band↔GT-kind correlation**: bands existed, but no descriptive association report vs fixture `groundTruthPii.kind` (without inventing WebPII/officialScore).
+3. **Reason Send still paid full planner latency** before discovering Ollama was down: cycle-03 cold-start helped after failure; pre-Send probe was missing.
 4. **Pages deploy lag:** live `#latest-evidence` still headed “Wave 4…” while master (post cycle-03) already promotes Wave 5–7 + G14.
 
 ## Fixes

@@ -1,4 +1,4 @@
-# Blind cycle-02 — Score path + Fast judge + claim drift
+# Blind cycle-02: Score path + Fast judge + claim drift
 
 **Date:** 2026-09-15  
 **Branch:** `brain/blind-cycle-02`  
@@ -6,7 +6,7 @@
 
 ## Verified problems (not trusted from cycle-01 alone)
 
-1. **Score path** was labelled on the website and popup but had **no runnable UI** — organizer weights put visual+PII+redaction ≈65%, so a planned-only chip was a judge gap.
+1. **Score path** was labelled on the website and popup but had **no runnable UI**; organizer weights put visual+PII+redaction ≈65%, so a planned-only chip was a judge gap.
 2. **Claim drift:** pitch/submission decks and speaker notes still said **75** / **107** Node tests while README / delivery-status measured **115** (2026-09-15).
 3. **No single Fast-path judge command** that is explicitly Ollama-free end-to-end (docs mentioned optional Ollama; CI had `test:ci`, but judges lacked one entrypoint).
 

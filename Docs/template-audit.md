@@ -19,4 +19,4 @@ No official title, theme, ministry or problem description is inferred from SIH21
 
 ## Wave 5 verification (14 September 2026)
 
-Evidence present: `Docs/submission-deck.pptx`, `Docs/pitch-deck.pptx`, rendered slides under `Docs/presentation-render/`, and this audit. Six-slide submission structure retained; longer talk deck is separate. Problem identity SIH26171 and honesty caveats (official score null, G11 fail, WebPII 58/100) are visible in Wave4+ deck refreshes. Registered team portal ID may still need operator fill-in before portal upload — narrative caveats remain visible.
+Evidence present: `Docs/submission-deck.pptx`, `Docs/pitch-deck.pptx`, rendered slides under `Docs/presentation-render/`, and this audit. Six-slide submission structure retained; longer talk deck is separate. Problem identity SIH26171 and honesty caveats (official score null, G11 fail, WebPII 58/100) are visible in Wave4+ deck refreshes. Registered team portal ID may still need operator fill-in before portal upload; narrative caveats remain visible.
