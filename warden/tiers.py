@@ -90,7 +90,12 @@ def op_tier(plan: dict, elements: list) -> str:
             return "destructive"
         if SUBMIT_LABEL_RE.search(haystack):
             return "state-changing"
-        if NAV_LABEL_RE.search(haystack):
+        # Navigational is matched on the label alone, as extension/utils/op-tier.js
+        # does on the accessible name. Matching the label + fieldType haystack let
+        # fieldType "link" satisfy \blink\b, so any link without a destructive or
+        # submit keyword ("Kick from folder", "खाता बंद करें") tiered navigational
+        # and accepted (ROAST round 28).
+        if NAV_LABEL_RE.search((el.get("label") or "").strip()):
             return "navigational"
         # Conservative default (same reasoning as op-tier.mjs's click branch):
         # anything not proven reversible stops for confirmation.

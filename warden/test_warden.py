@@ -1457,6 +1457,178 @@ def test_real_values_are_not_descriptors(value):
 
 
 # ---------------------------------------------------------------------------
+# Laya plan reviewer (laya_review.py, WARDEN_REVIEWER=laya, 30 September 2026).
+# A stub agent stands in for the model: these tests pin the contract (only
+# accept -> ask, never lower a tier, skipped on any failure), not model quality.
+# Model quality is Benchmarks/results/laya-plan-review-v01.json.
+# ---------------------------------------------------------------------------
+import laya_review  # noqa: E402
+
+
+class _StubLaya:
+    def __init__(self, p_destructive=0.0, p_off_task=0.0, raises=None):
+        self.p_destructive, self.p_off_task, self.raises = p_destructive, p_off_task, raises
+        self.calls = []
+
+    def predict(self, state, questions):
+        self.calls.append((state, sorted(questions)))
+        if self.raises:
+            raise self.raises
+        answers = {"serves_task": {"probabilities": {"A": 1 - self.p_off_task, "B": self.p_off_task}}}
+        if "tier" in questions:
+            rest = (1 - self.p_destructive) / 2
+            answers["tier"] = {"probabilities": {"navigational": rest, "state-changing": rest,
+                                                 "destructive": self.p_destructive}}
+        return {"answers": answers}
+
+
+_LAYA_ELEMENTS = [{"selector": "#go", "label": "Wipe all data", "fieldType": "button", "filled": False, "x": 1, "y": 2}]
+
+
+def _use_laya(monkeypatch, stub):
+    monkeypatch.setenv("WARDEN_REVIEWER", "laya")
+    monkeypatch.setattr(laya_review, "_load_agent", lambda: stub)
+
+
+def test_reviewer_default_is_ollama(monkeypatch):
+    monkeypatch.delenv("WARDEN_REVIEWER", raising=False)
+    assert config.reviewer_mode() == "ollama"
+    monkeypatch.setenv("WARDEN_REVIEWER", "something-else")
+    assert config.reviewer_mode() == "ollama"
+
+
+def test_laya_state_carries_only_tokenized_fields():
+    plan = {"action": "type", "target_selector": "#go", "value": "EMAIL#1", "reasoning_token": "free text"}
+    state = laya_review.build_state("Sign in with EMAIL#1", plan, _LAYA_ELEMENTS)
+    assert state == {"task": "Sign in with EMAIL#1", "action": "type", "control": "Wipe all data",
+                     "control_type": "button", "value": "EMAIL#1"}
+
+
+def test_laya_asks_when_it_sees_a_destructive_step_the_regex_missed(monkeypatch):
+    _use_laya(monkeypatch, _StubLaya(p_destructive=0.9))
+    out = validate_module.maybe_apply_local_reasoning("Download my statement", _base_plan(), "state-changing", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+    assert "destructive" in out["question"]["text"]
+
+
+def test_laya_asks_when_the_step_does_not_serve_the_task(monkeypatch):
+    _use_laya(monkeypatch, _StubLaya(p_off_task=0.8))
+    out = validate_module.maybe_apply_local_reasoning("Download my statement", _base_plan(), "navigational", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+
+
+def test_laya_off_task_is_ignored_for_reversible_steps(monkeypatch):
+    stub = _StubLaya(p_off_task=0.99)
+    _use_laya(monkeypatch, stub)
+    plan = {"action": "scroll", "target_selector": None, "coordinates": {"x": 0, "y": 0}, "value": None, "reasoning_token": "x"}
+    out = validate_module.maybe_apply_local_reasoning("Download my statement", plan, "reversible", [])
+    assert out["verdict"] == "accept"
+    assert stub.calls == []  # no question applies to a scroll
+
+
+def test_laya_cannot_let_a_destructive_tier_through(monkeypatch):
+    _use_laya(monkeypatch, _StubLaya(p_destructive=0.0, p_off_task=0.0))
+    out = validate_module.maybe_apply_local_reasoning("Delete my account", _base_plan(), "destructive", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+
+
+@pytest.mark.parametrize("stub", [_StubLaya(raises=RuntimeError("boom")), _StubLaya(p_destructive=float("nan"))])
+def test_laya_failure_is_a_skipped_check_and_the_tier_rule_still_speaks(monkeypatch, stub):
+    _use_laya(monkeypatch, stub)
+    out = validate_module.maybe_apply_local_reasoning("Delete my account", _base_plan(), "destructive", _LAYA_ELEMENTS)
+    assert out["verdict"] == "ask"
+    assert out["reasoning_check"]["skipped"] is True
+
+
+def test_laya_unconfigured_is_skipped_not_an_error(monkeypatch):
+    monkeypatch.setenv("WARDEN_REVIEWER", "laya")
+    monkeypatch.delenv("WARDEN_LAYA_MODEL", raising=False)
+    monkeypatch.setattr(laya_review, "_agent", None)
+    monkeypatch.setattr(laya_review, "_agent_error", None)
+    out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), "navigational", _LAYA_ELEMENTS)
+    assert out["verdict"] == "accept"
+    assert out["reasoning_check"]["skipped"] is True
+    assert "WARDEN_LAYA_MODEL" in out["reasoning_check"]["reason"]
+
+
+def test_laya_verdict_is_never_reject(monkeypatch):
+    for p_d, p_o in ((0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0)):
+        _use_laya(monkeypatch, _StubLaya(p_destructive=p_d, p_off_task=p_o))
+        for tier in tiers.TIERS:
+            out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), tier, _LAYA_ELEMENTS)
+            assert out["verdict"] in ("accept", "ask")
+
+
+# ---------------------------------------------------------------------------
+# tiers.py navigational match is label-only (ROAST round 28, 30 September 2026).
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("label", ["Wipe all data", "Kick from folder", "खाता बंद करें", "Statements"])
+def test_a_link_is_not_navigational_because_it_is_a_link(label):
+    elements = [{"selector": "#t", "label": label, "fieldType": "link", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
+
+
+@pytest.mark.parametrize("label,field_type", [("View statement", "link"), ("Go to settings", "button"), ("  Home", "link")])
+def test_navigation_labels_still_tier_navigational(label, field_type):
+    elements = [{"selector": "#t", "label": label, "fieldType": field_type, "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "navigational"
+
+
+# ---------------------------------------------------------------------------
+# /plan carries Laya release scores when WARDEN_REVIEWER=laya (30 September 2026).
+# The extension decides the release (extension/utils/plan-check.js layaRelease);
+# the Warden only scores, locally, after the planner answered.
+# ---------------------------------------------------------------------------
+class _StubLayaCfg(_StubLaya):
+    def __init__(self, cfg, **kw):
+        super().__init__(**kw)
+        self.cfg = cfg
+
+
+def _fake_planner(monkeypatch, plan):
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
+    monkeypatch.setattr(ollama_client, "plan_via_ollama", lambda body: {"plan": dict(plan), "model": "fake"})
+
+
+def test_plan_attaches_laya_scores_for_a_click(monkeypatch):
+    stub = _StubLayaCfg({"model_name": "laya-dhristi-plan-review", "fine_tuned": True}, p_destructive=0.02, p_off_task=0.1)
+    _use_laya(monkeypatch, stub)
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    result = warden_app.dispatch_plan(_plan_body())
+    review = result["review"]
+    assert review["model"] == "laya-dhristi-plan-review" and review["fineTuned"] is True
+    assert review["action"] == "click" and review["targetSelector"] == "#go"
+    assert review["pDestructive"] == pytest.approx(0.02) and review["pOffTask"] == pytest.approx(0.1)
+    assert review["pNavigational"] == pytest.approx(0.49)
+    # scored on the tokenized task and the element label, nothing else
+    assert stub.calls[0][0] == {"task": "Email EMAIL#1 the report", "action": "click", "control": "Go", "control_type": "button"}
+
+
+def test_plan_review_is_absent_by_default_and_null_for_non_clicks(monkeypatch):
+    monkeypatch.delenv("WARDEN_REVIEWER", raising=False)
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    assert "review" not in warden_app.dispatch_plan(_plan_body())
+    _use_laya(monkeypatch, _StubLayaCfg({"model_name": "laya-dhristi-plan-review", "fine_tuned": True}))
+    _fake_planner(monkeypatch, {"action": "scroll", "target_selector": None})
+    assert warden_app.dispatch_plan(_plan_body())["review"] is None
+
+
+def test_plan_review_failure_never_fails_plan(monkeypatch):
+    _use_laya(monkeypatch, _StubLayaCfg({}, raises=RuntimeError("boom")))
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    result = warden_app.dispatch_plan(_plan_body())
+    assert result["plan"]["action"] == "click"
+    assert "skipped" in result["review"]
+
+
+def test_plan_review_reports_a_zero_shot_checkpoint_as_not_fine_tuned(monkeypatch):
+    _use_laya(monkeypatch, _StubLayaCfg({"model_name": "rl-agent"}))
+    _fake_planner(monkeypatch, {"action": "click", "target_selector": "#go"})
+    review = warden_app.dispatch_plan(_plan_body())["review"]
+    assert review["fineTuned"] is False and review["model"] == "rl-agent"
+
+
+# ---------------------------------------------------------------------------
 # Decision-model fast path (fastpath.py): WARDEN_FAST_PATH=jev|laya
 # ---------------------------------------------------------------------------
 import fastpath  # noqa: E402
@@ -1606,3 +1778,14 @@ def test_laya_backend_loads_a_local_checkpoint_when_named(monkeypatch):
     monkeypatch.delenv("WARDEN_LAYA_MODEL")
     fastpath._ask_laya({}, {})
     assert made.get("router") is True
+
+
+def test_plan_review_also_scores_a_fast_path_answer(monkeypatch):
+    # Merge of PR #41 (fast path) and PR #42 (Laya review): the review covers whichever planner
+    # produced the plan, so a fast-path click carries scores the same way an LLM click does.
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
+    stub = _StubLayaCfg({"model_name": "laya-dhristi-plan-review", "fine_tuned": True}, p_destructive=0.01, p_off_task=0.05)
+    _use_laya(monkeypatch, stub)
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 1 and calls["groq"] == 0 and result["fastPath"]["used"] is True
+    assert result["review"]["targetSelector"] == "#save" and result["review"]["fineTuned"] is True

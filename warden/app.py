@@ -21,6 +21,7 @@ import config
 import entities
 import fastpath
 import groq_client
+import laya_review
 import ollama_client
 import redactor
 import strip as strip_module
@@ -169,8 +170,32 @@ def dispatch_plan(body: dict) -> dict:
             fast, fast_record = fastpath.plan_or_none(body)
             if fast is not None:
                 fast["fastPath"] = fast_record
-                return fast
+                return _with_review(body, fast)
 
+    return _with_review(body, _dispatch_planner(mode, body, fast_record))
+
+
+def _with_review(body: dict, result: dict) -> dict:
+    """Adds Laya review scores for the returned plan, whichever planner produced it, when
+    WARDEN_REVIEWER=laya."""
+    if config.reviewer_mode() == "laya":
+        result["review"] = _laya_review(body, result.get("plan"))
+    return result
+
+
+def _laya_review(body: dict, plan) -> Optional[dict]:
+    """Laya scores for the returned plan (extension/utils/plan-check.js layaRelease decides).
+    Never fails /plan: any problem becomes {"skipped": reason}, which the extension treats as no
+    release."""
+    try:
+        return laya_review.release_scores(body.get("tokenizedTask") or "", plan or {}, body.get("elements") or [])
+    except laya_review.LayaSkipped as exc:
+        return {"skipped": str(exc)}
+    except Exception as exc:  # noqa: BLE001 -- optional component, never load-bearing
+        return {"skipped": f"laya review raised {type(exc).__name__}"}
+
+
+def _dispatch_planner(mode: str, body: dict, fast_record: Optional[dict] = None) -> dict:
     if mode == "groq":
         if not config.groq_configured():
             raise PlanRouteError(
@@ -242,7 +267,7 @@ async def do_validate(request: Request):
 
     # All deterministic checks passed. Local reasoning may only downgrade
     # accept -> ask from here; see validate.maybe_apply_local_reasoning.
-    reasoning = validate_module.maybe_apply_local_reasoning(tokenized_task, det["overridden_plan"], tier)
+    reasoning = validate_module.maybe_apply_local_reasoning(tokenized_task, det["overridden_plan"], tier, elements)
     checks = checks + [reasoning["reasoning_check"]]
 
     return {

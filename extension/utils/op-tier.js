@@ -65,20 +65,28 @@ export function nameMismatch(visibleText, accessibleName) {
 // `d` fields (all optional strings unless noted): visibleText, ariaLabel, title, value,
 // placeholder, formAction, formaction, href, type, submitsForm (boolean).
 export function classifyClickTarget(d) {
+  return classifyClickTargetBasis(d).tier;
+}
+
+// The same rules, also naming which one decided. `basis` is one of 'destructive-keyword',
+// 'submit-keyword', 'submits-form', 'name-mismatch', 'navigation-label' or 'unproven' (the
+// conservative state-changing default: nothing identified the control either way). Only an
+// 'unproven' click may ever be released by a plan reviewer (plan-check.js layaRelease).
+export function classifyClickTargetBasis(d) {
   const desc = d || {};
   const all = [desc.visibleText, desc.ariaLabel, desc.title, desc.value, desc.placeholder,
     desc.formAction, desc.formaction, desc.href, desc.type];
-  if (all.some((text) => DESTRUCTIVE_LABEL_RE.test(normalise(text)))) return 'destructive';
+  if (all.some((text) => DESTRUCTIVE_LABEL_RE.test(normalise(text)))) return { tier: 'destructive', basis: 'destructive-keyword' };
 
   const labels = [desc.visibleText, desc.ariaLabel, desc.title, desc.value, desc.type];
-  if (labels.some((text) => SUBMIT_LABEL_RE.test(normalise(text)))) return 'state-changing';
-  if (desc.submitsForm === true) return 'state-changing';
+  if (labels.some((text) => SUBMIT_LABEL_RE.test(normalise(text)))) return { tier: 'state-changing', basis: 'submit-keyword' };
+  if (desc.submitsForm === true) return { tier: 'state-changing', basis: 'submits-form' };
   const accessibleName = desc.ariaLabel || desc.title || '';
-  if (nameMismatch(desc.visibleText, accessibleName)) return 'state-changing';
+  if (nameMismatch(desc.visibleText, accessibleName)) return { tier: 'state-changing', basis: 'name-mismatch' };
 
   const name = collapse(desc.ariaLabel || desc.visibleText || desc.title || desc.value);
-  if (NAV_LABEL_RE.test(name)) return 'navigational';
-  return 'state-changing'; // conservative default: stop for confirmation, not proven safe
+  if (NAV_LABEL_RE.test(name)) return { tier: 'navigational', basis: 'navigation-label' };
+  return { tier: 'state-changing', basis: 'unproven' }; // conservative default: stop for confirmation, not proven safe
 }
 
 // Exactly one element of the extension's own scan carries `selector`, or this throws. Selectors

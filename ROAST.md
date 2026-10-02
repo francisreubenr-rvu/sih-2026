@@ -1,3 +1,12 @@
+## Round 28: Laya plan reviewer, PR #42 (work of 30 September 2026, merged 2 October)
+
+- [x] Optional Laya reviewer behind `WARDEN_REVIEWER=laya`; stub tests pin accept → ask only, no tier lowering, SKIPPED on any failure. Warden suite 111 passed / 6 skipped (real-model tests).
+- [x] Zero-shot Laya is not usable here: it rated "Close account permanently" as serving a "download my statement" task at 0.92, and at a 0.9 release threshold it would have released 5 destructive steps. Only the fine-tuned checkpoint was evaluated for release.
+- [x] MEDIUM, `warden/tiers.py` (legacy `/validate`): `NAV_LABEL_RE` ran over label + fieldType, so fieldType `link` satisfied `\blink\b`. Any link without a destructive/submit keyword tiered navigational, and 42/120 destructive test steps would accept (e.g. "Kick from folder", "खाता बंद करें"). Fixed: navigational is matched on the label only, as `op-tier.js` does. Now 0/120, with regression tests.
+- [x] The live F17 gate over-asked: 126/144 genuinely navigational test clicks were forced to confirm. Francis approved release under the constraint. `layaRelease` now skips a confirmation only for an `unproven` click with a confident review from the fine-tuned checkpoint. The live element must still read `unproven` at execute; a relabel to "Pay now" stops, tested in real Chromium. Extension suite 120/120, Warden 122 passed / 6 skipped.
+- [ ] RESIDUAL, accepted: the extension does not authenticate the Warden. Any process on 127.0.0.1:8756 can now release an `unproven` click, including a Hindi destructive label, which the English keyword rules leave `unproven`. Fix candidates: Hindi and other-language destructive keywords in `op-tier.js`, and a pairing secret.
+- [ ] Evidence scope: synthetic hand-authored dataset, author labels, Hindi not native-reviewed, one control per state, correlated tier rows (61 distinct held-out controls). CPU only. No loaded-extension run of the release.
+
 ## Round 27: Laya Colab run v02 (2 October 2026)
 
 - [x] Held-out-wording validation ranks candidates (1 of 12 pass); same-generator validation could not.

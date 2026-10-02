@@ -26,6 +26,19 @@
 - v1 failed on option truncation (fixed with compact keys for Laya); v2 underfit on CPU (29/120 on its own training steps, base 24/120) and its free-text answer collapsed to "no", so it must not be used or run below the 0.9 threshold. Neither CPU run answered a single held-out step at 0.9.
 - Next: run `kaggle_train.ipynb` (needs Francis's Kaggle account) and decide where the weights live (about 0.8 GB; no Git LFS, no Hugging Face token here).
 
+## Laya plan reviewer, PR #42 (30 September 2026)
+
+- Francis: fine-tune `convaiinnovations/laya` (multilingual) as the plan-review check, trained in the session container. Decision: `Docs/decisions/brain-laya-plan-review.md`.
+- Shipped opt-in: `WARDEN_REVIEWER=laya` (`warden/laya_review.py`), accept → ask only; default reviewer stays Ollama. Dataset `Benchmarks/datasets/laya-plan-review-v01` (synthetic, EN/HI), `scripts/laya/` generator, trainer and evaluator.
+- Evidence: `Benchmarks/results/laya-plan-review-v01.json`. Held-out synthetic test: tier accuracy 0.921 (regex 0.506, zero-shot 0.465), destructive recall 0.983; serves-task AUROC 0.927 with false-ask 0.246; CPU p50 171 ms per step. Not a field estimate.
+- Found: the live extension F17 gate forces a confirmation on 126/144 navigational test clicks (0/120 destructive missed); Warden `tiers.py` lets 42/120 destructive through because fieldType `link` matches `\blink\b` (ROAST round 28).
+- Francis approved the same day, all shipped in PR #42:
+  - **Release:** `/plan` carries Laya scores, and the extension's `layaRelease` skips a confirmation only for an `unproven` click, from the fine-tuned checkpoint, at p(nav) ≥ 0.9 with p(destructive) < 0.5 and p(off task) < 0.5. The release is re-checked on the live element at execute.
+  - **Weights:** private Hugging Face repo `francisreubenr/dhristi-laya-plan-review`.
+  - **`tiers.py` fix:** navigational is matched on the label alone. On the test split, destructive steps accepted as navigational went from 42/120 to 0/120.
+- Residual risk accepted: the Warden is not authenticated, so a spoofed one can release `unproven` clicks, including Hindi destructive labels. Next: Hindi destructive keywords in `op-tier.js`, a Warden pairing secret, and a loaded-extension run of the release.
+- Not changed: G11 **fail**, G14 **unknown**, G20 **paused**, `submission_ready` **false**.
+
 ## Qwen first, Jev fast path, Laya (30 September 2026)
 
 - Francis: Qwen first in the Groq chain; build the Jev fast path and benchmark it; test Laya (`convaiinnovations/laya`, the "Layla" of 29 September).

@@ -66,6 +66,16 @@ def planner_model(mode: str):
     return None
 
 
+# /validate plan reviewer (validate.maybe_apply_local_reasoning). Default
+# "ollama", unchanged since 13 September. "laya" selects the fine-tuned Laya
+# classifier in laya_review.py (Docs/decisions/brain-laya-plan-review.md).
+# Either can only turn accept into ask, so an unknown value falls back to the
+# default rather than failing /validate.
+def reviewer_mode() -> str:
+    raw = os.environ.get("WARDEN_REVIEWER", "ollama").strip().lower()
+    return "laya" if raw == "laya" else "ollama"
+
+
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 

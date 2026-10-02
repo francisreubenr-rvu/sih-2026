@@ -252,6 +252,37 @@ Local reasoning through Ollama runs only after those pass, and may downgrade `ac
 can never upgrade a `reject`. A reasoning model does not overrule a deterministic safety check. When
 Ollama is absent the check is recorded as SKIPPED, never as passed.
 
+### Laya reviewer (optional, 30 September 2026)
+
+`WARDEN_REVIEWER=laya` swaps the Ollama review for `laya_review.py`, a fine-tuned
+[Laya](https://huggingface.co/convaiinnovations/laya) classifier (Apache 2.0, multilingual
+checkpoint, 322M). It answers two typed questions per step in one forward pass: the click's tier
+(navigational / state-changing / destructive) and whether the step serves the task. The contract
+is the reasoning stage's: it can only turn `accept` into `ask`, never lowers a tier, and any
+failure is a SKIPPED check. The default stays `ollama`.
+
+| Variable | Meaning |
+|---|---|
+| `WARDEN_REVIEWER` | `ollama` (default) or `laya` |
+| `WARDEN_LAYA_MODEL` | local checkpoint directory or Hub repo id; unset means SKIPPED |
+| `WARDEN_LAYA_SUBFOLDER`, `WARDEN_LAYA_DEVICE` | optional; device defaults to `cpu` |
+| `WARDEN_LAYA_DESTRUCTIVE_MIN`, `WARDEN_LAYA_OFF_TASK_MIN` | ask thresholds, default 0.5 |
+
+Needs `pip install laya` (pulls torch); it is not a test dependency. Dataset, trainer and evaluator:
+`../scripts/laya/`. Results and limits: `../Benchmarks/results/laya-plan-review-v01.json` and
+`../Docs/decisions/brain-laya-plan-review.md`. The fine-tuned weights are in the private Hub repo
+`francisreubenr/dhristi-laya-plan-review`, so set `WARDEN_LAYA_MODEL` to that id with an `HF_TOKEN` that
+can read it. The model loads on first use (about 11 s on a 4-thread CPU), then scores a step in
+about 200–260 ms.
+
+With `WARDEN_REVIEWER=laya`, `/plan` also returns `review`: `model`, `fineTuned`, `action`,
+`targetSelector`, `pNavigational`, `pDestructive` and `pOffTask` for the returned click, or
+`{"skipped": reason}`, or `null` for anything but a click. The Warden scores; the extension
+decides. `extension/utils/plan-check.js` `layaRelease` may skip a local confirmation only for a click
+its own scan could not identify (`unproven`), under thresholds it holds itself. Since v5 the
+extension's run loop does not call `/validate`, so the escalation review above reaches only older
+harnesses.
+
 ### The reasoning stage, measured 13 September 2026
 
 It had never been exercised before this date: every call recorded `skipped`, and three real defects

@@ -448,6 +448,31 @@ test('scan: an id or name that is itself personal data is never used as the sele
   await p.close();
 });
 
+test('Laya release: a released link relabelled into a rule after scan escalates instead of clicking', async () => {
+  const p = await h.open('<a id="st" href="#statements">Statements</a>');
+  const scan = await p.scan();
+  const el = byLabel(scan, 'Statements');
+  assert.equal(el.tier, 'state-changing');
+  assert.equal(el.tierBasis, 'unproven');
+  await p.page.evaluate(() => { document.getElementById('st').textContent = 'Pay now'; });
+  const result = await p.execute({ action: 'click', handle: el.handle, plannedTier: el.tier, requireUnprovenBasis: true });
+  assert.equal(result.tierEscalated, true);
+  assert.equal(result.releaseRevoked, true);
+  assert.equal(result.liveTier, 'state-changing');
+  assert.equal(await p.page.evaluate(() => location.hash), '', 'nothing was clicked');
+  await p.close();
+});
+
+test('Laya release: an unchanged released link is clicked', async () => {
+  const p = await h.open('<a id="st" href="#statements">Statements</a>');
+  const scan = await p.scan();
+  const el = byLabel(scan, 'Statements');
+  const result = await p.execute({ action: 'click', handle: el.handle, plannedTier: el.tier, requireUnprovenBasis: true });
+  assert.notEqual(result?.tierEscalated, true);
+  assert.equal(await p.page.evaluate(() => location.hash), '#statements');
+  await p.close();
+});
+
 test('live-region text reaches the scanned DOM as STATUS lines; empty and hidden regions do not', async () => {
   const p = await h.open(`<button id="save">Save profile</button>
     <p id="status" role="status">Saved profile</p>

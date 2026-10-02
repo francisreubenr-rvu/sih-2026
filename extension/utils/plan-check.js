@@ -142,3 +142,44 @@ export function questionForTier(tier, plan) {
   const target = (plan && plan.target_selector) || 'the selected element';
   return `This plan is classified ${tier} and acts on ${target}. It changes state that may not be reversible. Proceed?`;
 }
+
+// Laya release (Francis, 30 September 2026; Docs/decisions/brain-laya-plan-review.md). The local
+// gate confirms every click it cannot prove navigational, which measured as 126 of 144 genuinely
+// navigational test clicks. The Warden's fine-tuned Laya checkpoint may release that confirmation,
+// and only that one, when every condition below holds. The thresholds live HERE, not in the
+// Warden: the Warden supplies probabilities, the extension decides.
+//   - a click (never type, scroll, finish)
+//   - the extension's own scan tiered it state-changing by the conservative default ('unproven'):
+//     no destructive or submit keyword anywhere, no form submit, no label/name mismatch
+//   - the task does not express destructive intent
+//   - the review names the fine-tuned checkpoint and this exact action and target
+//   - p(navigational) >= 0.9, p(destructive) < 0.5, p(off task) < 0.5
+// Anything missing, malformed or out of range is no release: the confirmation stands.
+export const LAYA_RELEASE_MODEL = 'laya-dhristi-plan-review';
+export const LAYA_RELEASE_MIN_NAVIGATIONAL = 0.9;
+export const LAYA_RELEASE_MAX_DESTRUCTIVE = 0.5;
+export const LAYA_RELEASE_MAX_OFF_TASK = 0.5;
+
+const isProbability = (p) => typeof p === 'number' && Number.isFinite(p) && p >= 0 && p <= 1;
+
+export function layaRelease({ plan, sceneElement, review, destructiveIntent }) {
+  const no = (reason) => ({ released: false, reason });
+  if (!plan || plan.action !== 'click') return no('only a click can be released');
+  if (!sceneElement || sceneElement.tier !== 'state-changing' || sceneElement.tierBasis !== 'unproven') {
+    return no('the local tier was decided by a rule, not the conservative default');
+  }
+  if (destructiveIntent === true) return no('the task expresses destructive intent');
+  if (!review || typeof review !== 'object' || Array.isArray(review)) return no('no Laya review');
+  if (review.skipped) return no(`Laya review skipped: ${String(review.skipped).slice(0, 200)}`);
+  if (review.model !== LAYA_RELEASE_MODEL || review.fineTuned !== true) return no('the review is not from the fine-tuned checkpoint');
+  if (review.action !== 'click' || review.targetSelector !== plan.target_selector) return no('the review is for a different step');
+  const { pNavigational, pDestructive, pOffTask } = review;
+  if (![pNavigational, pDestructive, pOffTask].every(isProbability)) return no('the review carries an unusable probability');
+  if (pNavigational < LAYA_RELEASE_MIN_NAVIGATIONAL) return no(`p(navigational) ${pNavigational.toFixed(2)} is below ${LAYA_RELEASE_MIN_NAVIGATIONAL}`);
+  if (pDestructive >= LAYA_RELEASE_MAX_DESTRUCTIVE) return no(`p(destructive) ${pDestructive.toFixed(2)} is not below ${LAYA_RELEASE_MAX_DESTRUCTIVE}`);
+  if (pOffTask >= LAYA_RELEASE_MAX_OFF_TASK) return no(`p(off task) ${pOffTask.toFixed(2)} is not below ${LAYA_RELEASE_MAX_OFF_TASK}`);
+  return {
+    released: true,
+    reason: `Laya released the confirmation: p(navigational) ${pNavigational.toFixed(2)}, p(destructive) ${pDestructive.toFixed(2)}, p(off task) ${pOffTask.toFixed(2)}`,
+  };
+}
