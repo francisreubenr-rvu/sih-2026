@@ -9,7 +9,7 @@
 ### Task 1: Laya after the Colab run (start here)
 
 - **Result (1 October):** `Benchmarks/results/laya-colab-sweep-v01.json` (transcribed from the notebook outputs; the full JSON files are on Francis's Drive, `MyDrive/dhristi-laya/colab-v01`, under a Google account this container's Drive connector does not see). The selected `a-s2-e6` fails Jev's bar on held-out: wrong on `support-desc-free` (needs free text) and `profile-phone`. Not deployed, nothing uploaded.
-- **Run v02 done (2 October): not accepted** (`laya-colab-sweep-v02.json`; held-out 24 acted / 1 wrong on `support-desc-free`; design regressions on prose success messages). Next step waits on Francis: a fresh held-out set before generator v6. Colab saved v02 under `determined-babbage-mhi2zj/` on this branch again; removed.
+- **Run v02 done (2 October): not accepted** (`laya-colab-sweep-v02.json`; held-out 24 acted / 1 wrong on `support-desc-free`; design regressions on prose success messages). Francis parked Laya training on 2 October; resuming needs a fresh held-out set first. Colab saved v02 under `determined-babbage-mhi2zj/` on this branch again; removed.
 - (Earlier) **Generator v5 was built and the notebook set for run v02** (Francis approved): overwrite, click-then-type, optional fields and composed free-text requests, with `--split train|val` held-out wording for validation. Francis runs it in Colab, then saves to this branch (the save dialog defaulted to `master` last time). Results land in `MyDrive/dhristi-laya/colab-v02/`. Judge by the same bar, and record the disclosure that the held-out cases are no longer blind to the new categories.
 - **Stray file on master:** PR #43 removes `determined-babbage-mhi2zj/` (Francis asked).
 

@@ -173,7 +173,8 @@ Pipeline: `scripts/laya-finetune/` (data generator, CPU/GPU trainer ported from 
   - **Design cases at 0.9:** 9 of 11 acted, 7 right. `account-finish` and `already-done` regressed: both pages state success in prose, while every v5 finish step uses a `STATUS` line.
   - **Why `support-desc-free` still fails:** its text area comes before the email field, its choice control is a SELECT, and its task does not name the topic. v5's click-then-type pages always put contact, then radio buttons, then the text area.
   - **`rename-free`:** the free-text gate missed it (0.05). The step is only deferred because the model's confidence was below 0.9.
-  - **Not deployed.** Each further generator round built on these same 30 cases makes them less of a test; see the next-step note in PLAN.md.
+  - **Not deployed.** Each further generator round built on these same 30 cases makes them less of a test.
+- **Parked (2 October, Francis).** Laya fast-path training stops after v02. The fast path stays off by default (Jev and Laya both opt-in), and no guardrail depends on it. To resume: write a fresh held-out set first, then generator v6 (PLAN.md).
 
 ### Recommendation (30 September)
 
