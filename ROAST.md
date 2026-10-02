@@ -1,3 +1,55 @@
+## Round 27: Laya Colab run v02 (2 October 2026)
+
+- [x] Held-out-wording validation ranks candidates (1 of 12 pass); same-generator validation could not.
+- [x] `profile-phone` and four over-flagged free-text steps fixed on held-out.
+- [ ] Still wrong on `support-desc-free` (free text, 0.05; clicked Submit at 0.98). Not accepted.
+- [ ] Design regressions: `account-finish`, `already-done`; success shown as prose, not a STATUS line, which v5 never generates.
+- [ ] The held-out set is being fitted round by round. A fresh, untouched held-out set is needed before another generator round counts as evidence.
+- [x] Laya fast-path training parked by Francis (2 October). Evidence kept: v01, v02, generator v5, `validate.py`, the Colab notebook.
+
+## Round 26: Laya on Colab (1 October 2026)
+
+- [x] Free-text hypothesis checked and ruled out: Laya drops the end of the JSON state (`done_so_far`) when it runs out of room, but no free-text question on `train_v4.jsonl` loses any state at 512/192 or 1024/256.
+- [x] Selection leak avoided: the Colab sweep makes 12 candidates, chosen on unseen generated steps (`validate.py`) by a rule fixed before the run; only the chosen one sees the 30 held-out benchmark cases.
+- [x] GPU run done (A100 80 GB). Free-text question learned (AUROC 1.0 on generated steps), unlike every CPU run.
+- [ ] Fails Jev's bar on held-out: wrong on `support-desc-free` (free text, 0.05) and `profile-phone` (pre-filled field to overwrite). Not deployed. Generator lacks both situations.
+- [x] Generator v5 holds wording out for validation (`--split val`): in a dry run, no tasks or labels were shared with training. Untested on GPU until run v02.
+- [ ] Confidence is pinned to the training targets (0.98; 0.05/0.95), so the 0.9 threshold barely filters.
+- [x] Colab saved the run notebook to `master` (`fbcda5c`); Francis asked for removal, which is PR #43.
+- [ ] The v5 situations were picked after seeing held-out failures: the 30 held-out cases are no longer blind to them. A v02 pass on those cases is weaker evidence than v01's fail.
+- [ ] Validation steps come from the same generator as training; they measure fit and calibration, not generalization to new wording. Only the benchmark measures that.
+
+## Round 25 — Laya on CPU, and the Groq re-run (1 October 2026)
+
+- [x] Root cause of the v1/v2 underfit: flat targets (2% per wrong option, right answer split up to five ways) capped a calibrated model near 0.8. Fixed in `gen_data.py`; overfit test 63/64.
+- [ ] The free-text question never learned its cue on CPU (v3 about 0.1, v4 about 0.3 on every step, tracking the training share). v4 acts wrongly at 0.9 on `rename-free`, a free-text step, and at 0.95 on `already-logged-in`. Not deployed. Needs the GPU run, judged by Jev's bar.
+- [x] Groq settings re-run with 429 retries: at temperature 0 Qwen 41/42, gpt-oss-20b 35/42 (3 of its misses are JSON Groq rejected).
+
+## Round 24 — Laya fine-tuning (30 September 2026)
+
+- [x] v1 option truncation found and fixed: long option keys left about 12 tokens per option and cut off the field label (61 of 200 training steps collapsed); Laya now gets compact keys.
+- [ ] Both CPU fine-tunes underfit (v2: 29/120 on its own training steps, base 24/120). The authors' recipe (whole encoder, 4 epochs, ~6,000 decisions) needs a GPU; `kaggle_train.ipynb` is ready but not run.
+- [ ] v2's free-text answer collapsed to "no" everywhere (training set 12% free-text steps), removing the gate that kept zero-shot Laya safe; below 0.9 it acts wrongly on free-text steps. Not deployed; the threshold must not be lowered for Laya without re-benchmarking. Rebalance the generator if the GPU run shows the same collapse.
+- [ ] Fine-tuned weights (0.8 GB) cannot go in Git here (no LFS, 100 MB limit); needs a Hugging Face repo or release asset chosen by Francis.
+
+## Round 23 — Qwen first, fast path, Laya (30 September 2026)
+
+- [x] Warden's Groq call had no temperature, so the same scene got different plans between runs; now temperature 0 (test asserts it). The 29 September Qwen ranking was measured under different settings than the Warden used; recorded as a correction in `Docs/decisions/brain-cloud-models-jev.md`.
+- [x] Decision-model fast path built and measured; off by default; cannot block planning (defers on backend error), runs after the egress guard, never sends to the cloud in offline mode.
+- [ ] Jev's "free text needed" answer sits near 0.5 on token-only steps, which caps coverage at about half the steps. Question wording not tuned (kept the held-out set clean).
+- [ ] Laya zero-shot is unsafe without the free-text gate (0 of 6 confident held-out steps right). Needs fine-tuning on action choices before any use.
+- [x] Groq free-tier rate limits made the model/temperature comparison inconclusive; re-run on a fresh quota on 1 October with 429s retried (`groq-settings-bench-v02.json`): at temperature 0 Qwen 41/42, gpt-oss-20b 35/42.
+- [ ] `OPENROUTER_API_KEY` in this session's environment still holds three words; the fix Francis made applies to new sessions.
+
+## Round 22 — real cloud planner + cloud-model bench (29 September 2026)
+
+- [x] HIGH, found by the first real-Groq end-to-end run: the planner never chose finish on a completed task and looped to the 25-step limit (it could not see the page's status message, and history carried no value). The fake planner in e2e v01 was scripted to finish, so it hid this. Fixed in `extension/content.js` (STATUS lines), `extension/background.js` (vault token in history), `warden/groq_client.py` (finish rule). Two new tests, each failing on the old code. Evidence: `Benchmarks/results/e2e-v5-boundary-v02.json`.
+- [x] Privacy boundary against a real cloud planner: 48 requests, 0 personal values, recorded at a loopback relay.
+- [x] Claims corrected: Website and README had called the fake-planner run "the cloud planner".
+- [ ] Round 18's "`/plan` default is local Ollama" was superseded by v5 (Groq default); left above as history.
+- [ ] Jev hybrid fast path and a Groq chain reorder are recommendations only (`Docs/decisions/brain-cloud-models-jev.md`). No end-to-end G11 measurement with either. G11 stays fail.
+- [ ] Groq free-tier 429s under back-to-back runs are a live-demo risk.
+
 ## Round 21 — Signal redesign (29 September 2026)
 
 - [x] One design system (Signal) across Website, side panel, Prototype operator pages and popup; canonical tokens in `design/signal-tokens.css`, CI check for drift and WCAG AA contrast. Decision: `Docs/decisions/brain-signal-redesign.md`. Resolves the ARCH-002 vs side-panel palette conflict.

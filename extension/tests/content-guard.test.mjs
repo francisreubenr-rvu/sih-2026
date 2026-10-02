@@ -447,3 +447,14 @@ test('scan: an id or name that is itself personal data is never used as the sele
   assert.ok(selectors.includes('#save'), 'an ordinary id is still used');
   await p.close();
 });
+
+test('live-region text reaches the scanned DOM as STATUS lines; empty and hidden regions do not', async () => {
+  const p = await h.open(`<button id="save">Save profile</button>
+    <p id="status" role="status">Saved profile</p>
+    <div role="alert" style="display:none">Hidden alert</div>
+    <div aria-live="polite"></div>`);
+  const scan = await p.scan();
+  const statusLines = scan.dom.split('\n').filter((l) => l.startsWith('STATUS'));
+  assert.deepEqual(statusLines, ['STATUS text="Saved profile"']);
+  await p.close();
+});

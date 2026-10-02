@@ -1,0 +1,1936 @@
+{
+ "id": "fastpath-bench-laya-ft-v04",
+ "date": "2026-10-01",
+ "harness": "scripts/cloud-models/fastpath_bench.py",
+ "scope": "Synthetic, already-tokenized scenes. 'design' = scripts/cloud-models/cases.py (the cases the fast path was designed against); 'heldout' = scripts/cloud-models/cases_heldout.py (written afterwards, not used to tune it). Jev is TypeSafe's cloud API; Laya ran on this container's CPU (4 cores, no GPU). Latency is wall-clock from a cloud container (location not verified) and is not the G11 full flow.",
+ "llm_chain": [
+  "qwen/qwen3.8-27b",
+  "openai/gpt-oss-20b",
+  "openai/gpt-oss-120b"
+ ],
+ "reps": 3,
+ "llm_reps": 1,
+ "backends": {
+  "laya:laya-dhristi-v4": {
+   "cases": {
+    "account-type-email": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.7314,
+       "freeTextProbability": 0.2969,
+       "latencyMs": 4450.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.7314,
+       "freeTextProbability": 0.2969,
+       "latencyMs": 610.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.7314,
+       "freeTextProbability": 0.2969,
+       "latencyMs": 582.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "account-save": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #save",
+       "confidence": 0.6822,
+       "freeTextProbability": 0.2869,
+       "latencyMs": 599.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #save",
+       "confidence": 0.6822,
+       "freeTextProbability": 0.2869,
+       "latencyMs": 612.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #save",
+       "confidence": 0.6822,
+       "freeTextProbability": 0.2869,
+       "latencyMs": 614.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "account-finish": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.9843,
+       "freeTextProbability": 0.266,
+       "latencyMs": 531.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9843,
+       "freeTextProbability": 0.266,
+       "latencyMs": 581.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9843,
+       "freeTextProbability": 0.266,
+       "latencyMs": 574.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "save-not-delete": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #save",
+       "confidence": 0.9424,
+       "freeTextProbability": 0.2747,
+       "latencyMs": 387.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #save",
+       "confidence": 0.9424,
+       "freeTextProbability": 0.2747,
+       "latencyMs": 404.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #save",
+       "confidence": 0.9424,
+       "freeTextProbability": 0.2747,
+       "latencyMs": 373.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "phone-type": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #mobile PHONE#1",
+       "confidence": 0.9232,
+       "freeTextProbability": 0.3663,
+       "latencyMs": 396.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #mobile PHONE#1",
+       "confidence": 0.9232,
+       "freeTextProbability": 0.3663,
+       "latencyMs": 409.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #mobile PHONE#1",
+       "confidence": 0.9232,
+       "freeTextProbability": 0.3663,
+       "latencyMs": 413.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "nav-downloads": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #downloads",
+       "confidence": 0.9561,
+       "freeTextProbability": 0.2679,
+       "latencyMs": 358.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #downloads",
+       "confidence": 0.9561,
+       "freeTextProbability": 0.2679,
+       "latencyMs": 417.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #downloads",
+       "confidence": 0.9561,
+       "freeTextProbability": 0.2679,
+       "latencyMs": 390.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "two-fields-first": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.8393,
+       "freeTextProbability": 0.3744,
+       "latencyMs": 538.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.8393,
+       "freeTextProbability": 0.3744,
+       "latencyMs": 537.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.8393,
+       "freeTextProbability": 0.3744,
+       "latencyMs": 533.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "two-fields-second": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.9087,
+       "freeTextProbability": 0.3259,
+       "latencyMs": 667.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9087,
+       "freeTextProbability": 0.3259,
+       "latencyMs": 631.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9087,
+       "freeTextProbability": 0.3259,
+       "latencyMs": 609.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "login-user": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #user EMAIL#1",
+       "confidence": 0.8261,
+       "freeTextProbability": 0.3441,
+       "latencyMs": 622.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #user EMAIL#1",
+       "confidence": 0.8261,
+       "freeTextProbability": 0.3441,
+       "latencyMs": 639.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #user EMAIL#1",
+       "confidence": 0.8261,
+       "freeTextProbability": 0.3441,
+       "latencyMs": 625.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "report-link": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #monthly",
+       "confidence": 0.9544,
+       "freeTextProbability": 0.2458,
+       "latencyMs": 402.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #monthly",
+       "confidence": 0.9544,
+       "freeTextProbability": 0.2458,
+       "latencyMs": 416.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #monthly",
+       "confidence": 0.9544,
+       "freeTextProbability": 0.2458,
+       "latencyMs": 386.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "already-done": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.8217,
+       "freeTextProbability": 0.2818,
+       "latencyMs": 349.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.8217,
+       "freeTextProbability": 0.2818,
+       "latencyMs": 339.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.8217,
+       "freeTextProbability": 0.2818,
+       "latencyMs": 338.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "search-free-text": {
+     "split": "design",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "none of these",
+       "confidence": 0.7366,
+       "freeTextProbability": 0.2848,
+       "latencyMs": 324.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "none of these",
+       "confidence": 0.7366,
+       "freeTextProbability": 0.2848,
+       "latencyMs": 318.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "none of these",
+       "confidence": 0.7366,
+       "freeTextProbability": 0.2848,
+       "latencyMs": 309.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "ship-name": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.2641,
+       "freeTextProbability": 0.3458,
+       "latencyMs": 1152.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.2641,
+       "freeTextProbability": 0.3458,
+       "latencyMs": 1136.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.2641,
+       "freeTextProbability": 0.3458,
+       "latencyMs": 1176.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "ship-addr": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.2496,
+       "freeTextProbability": 0.2512,
+       "latencyMs": 1381.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.2496,
+       "freeTextProbability": 0.2512,
+       "latencyMs": 1331.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.2496,
+       "freeTextProbability": 0.2512,
+       "latencyMs": 1269.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "ship-continue": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.3145,
+       "freeTextProbability": 0.2637,
+       "latencyMs": 1361.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.3145,
+       "freeTextProbability": 0.2637,
+       "latencyMs": 1297.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.3145,
+       "freeTextProbability": 0.2637,
+       "latencyMs": 1361.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "bank-acct": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #add",
+       "confidence": 0.8271,
+       "freeTextProbability": 0.4387,
+       "latencyMs": 919.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "click #add",
+       "confidence": 0.8271,
+       "freeTextProbability": 0.4387,
+       "latencyMs": 855.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "click #add",
+       "confidence": 0.8271,
+       "freeTextProbability": 0.4387,
+       "latencyMs": 820.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "bank-add-not-cancel": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #add",
+       "confidence": 0.3365,
+       "freeTextProbability": 0.2721,
+       "latencyMs": 950.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #add",
+       "confidence": 0.3365,
+       "freeTextProbability": 0.2721,
+       "latencyMs": 969.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #add",
+       "confidence": 0.3365,
+       "freeTextProbability": 0.2721,
+       "latencyMs": 946.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "bank-done": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.9124,
+       "freeTextProbability": 0.264,
+       "latencyMs": 959.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9124,
+       "freeTextProbability": 0.264,
+       "latencyMs": 965.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9124,
+       "freeTextProbability": 0.264,
+       "latencyMs": 980.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "mail-to": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #to EMAIL#1",
+       "confidence": 0.8169,
+       "freeTextProbability": 0.2578,
+       "latencyMs": 688.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #to EMAIL#1",
+       "confidence": 0.8169,
+       "freeTextProbability": 0.2578,
+       "latencyMs": 675.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #to EMAIL#1",
+       "confidence": 0.8169,
+       "freeTextProbability": 0.2578,
+       "latencyMs": 719.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "mail-body-free": {
+     "split": "heldout",
+     "needs_llm": true,
+     "rows": [
+      {
+       "choice": "type #subj EMAIL#1",
+       "confidence": 0.247,
+       "freeTextProbability": 0.2456,
+       "latencyMs": 697.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "type #subj EMAIL#1",
+       "confidence": 0.247,
+       "freeTextProbability": 0.2456,
+       "latencyMs": 700.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "type #subj EMAIL#1",
+       "confidence": 0.247,
+       "freeTextProbability": 0.2456,
+       "latencyMs": 695.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "mail-send": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #send",
+       "confidence": 0.8849,
+       "freeTextProbability": 0.2448,
+       "latencyMs": 780.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #send",
+       "confidence": 0.8849,
+       "freeTextProbability": 0.2448,
+       "latencyMs": 770.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #send",
+       "confidence": 0.8849,
+       "freeTextProbability": 0.2448,
+       "latencyMs": 765.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "login-no-forgot": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #signin",
+       "confidence": 0.9132,
+       "freeTextProbability": 0.2781,
+       "latencyMs": 659.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #signin",
+       "confidence": 0.9132,
+       "freeTextProbability": 0.2781,
+       "latencyMs": 674.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #signin",
+       "confidence": 0.9132,
+       "freeTextProbability": 0.2781,
+       "latencyMs": 665.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "settings-security": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #t-security",
+       "confidence": 0.2234,
+       "freeTextProbability": 0.2669,
+       "latencyMs": 632.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #t-security",
+       "confidence": 0.2234,
+       "freeTextProbability": 0.2669,
+       "latencyMs": 625.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #t-security",
+       "confidence": 0.2234,
+       "freeTextProbability": 0.2669,
+       "latencyMs": 616.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "settings-notif": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #t-notif",
+       "confidence": 0.9664,
+       "freeTextProbability": 0.2677,
+       "latencyMs": 611.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #t-notif",
+       "confidence": 0.9664,
+       "freeTextProbability": 0.2677,
+       "latencyMs": 623.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #t-notif",
+       "confidence": 0.9664,
+       "freeTextProbability": 0.2677,
+       "latencyMs": 638.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "notif-sms": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #sms-alerts",
+       "confidence": 0.8068,
+       "freeTextProbability": 0.2816,
+       "latencyMs": 481.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #sms-alerts",
+       "confidence": 0.8068,
+       "freeTextProbability": 0.2816,
+       "latencyMs": 491.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #sms-alerts",
+       "confidence": 0.8068,
+       "freeTextProbability": 0.2816,
+       "latencyMs": 475.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "notif-save": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.3596,
+       "freeTextProbability": 0.2284,
+       "latencyMs": 534.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.3596,
+       "freeTextProbability": 0.2284,
+       "latencyMs": 508.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.3596,
+       "freeTextProbability": 0.2284,
+       "latencyMs": 494.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "notif-done": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "finish",
+       "confidence": 0.9888,
+       "freeTextProbability": 0.2309,
+       "latencyMs": 549.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9888,
+       "freeTextProbability": 0.2309,
+       "latencyMs": 561.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "finish",
+       "confidence": 0.9888,
+       "freeTextProbability": 0.2309,
+       "latencyMs": 585.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "search-free": {
+     "split": "heldout",
+     "needs_llm": true,
+     "rows": [
+      {
+       "choice": "none of these",
+       "confidence": 0.9753,
+       "freeTextProbability": 0.3456,
+       "latencyMs": 435.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "none of these",
+       "confidence": 0.9753,
+       "freeTextProbability": 0.3456,
+       "latencyMs": 449.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "none of these",
+       "confidence": 0.9753,
+       "freeTextProbability": 0.3456,
+       "latencyMs": 441.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "search-go": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #go",
+       "confidence": 0.9247,
+       "freeTextProbability": 0.2342,
+       "latencyMs": 451.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #go",
+       "confidence": 0.9247,
+       "freeTextProbability": 0.2342,
+       "latencyMs": 488.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #go",
+       "confidence": 0.9247,
+       "freeTextProbability": 0.2342,
+       "latencyMs": 538.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "cart-open": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #cart",
+       "confidence": 0.9652,
+       "freeTextProbability": 0.2805,
+       "latencyMs": 508.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #cart",
+       "confidence": 0.9652,
+       "freeTextProbability": 0.2805,
+       "latencyMs": 438.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #cart",
+       "confidence": 0.9652,
+       "freeTextProbability": 0.2805,
+       "latencyMs": 468.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "support-email": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.5496,
+       "freeTextProbability": 0.239,
+       "latencyMs": 712.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.5496,
+       "freeTextProbability": 0.239,
+       "latencyMs": 677.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.5496,
+       "freeTextProbability": 0.239,
+       "latencyMs": 679.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "support-desc-free": {
+     "split": "heldout",
+     "needs_llm": true,
+     "rows": [
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.213,
+       "freeTextProbability": 0.2379,
+       "latencyMs": 688.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.213,
+       "freeTextProbability": 0.2379,
+       "latencyMs": 718.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "type #email EMAIL#1",
+       "confidence": 0.213,
+       "freeTextProbability": 0.2379,
+       "latencyMs": 693.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "support-submit": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #submit",
+       "confidence": 0.205,
+       "freeTextProbability": 0.2444,
+       "latencyMs": 711.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #submit",
+       "confidence": 0.205,
+       "freeTextProbability": 0.2444,
+       "latencyMs": 752.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #submit",
+       "confidence": 0.205,
+       "freeTextProbability": 0.2444,
+       "latencyMs": 720.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "profile-phone": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #ph PHONE#1",
+       "confidence": 0.6763,
+       "freeTextProbability": 0.3487,
+       "latencyMs": 478.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #ph PHONE#1",
+       "confidence": 0.6763,
+       "freeTextProbability": 0.3487,
+       "latencyMs": 479.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #ph PHONE#1",
+       "confidence": 0.6763,
+       "freeTextProbability": 0.3487,
+       "latencyMs": 465.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "profile-phone-update": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #upd",
+       "confidence": 0.6981,
+       "freeTextProbability": 0.2607,
+       "latencyMs": 498.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #upd",
+       "confidence": 0.6981,
+       "freeTextProbability": 0.2607,
+       "latencyMs": 569.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #upd",
+       "confidence": 0.6981,
+       "freeTextProbability": 0.2607,
+       "latencyMs": 493.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "download-statement": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #sep",
+       "confidence": 0.8938,
+       "freeTextProbability": 0.2592,
+       "latencyMs": 530.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #sep",
+       "confidence": 0.8938,
+       "freeTextProbability": 0.2592,
+       "latencyMs": 542.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #sep",
+       "confidence": 0.8938,
+       "freeTextProbability": 0.2592,
+       "latencyMs": 544.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "already-logged-in": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #acct",
+       "confidence": 0.9593,
+       "freeTextProbability": 0.2733,
+       "latencyMs": 473.8,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "click #acct",
+       "confidence": 0.9593,
+       "freeTextProbability": 0.2733,
+       "latencyMs": 459.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "click #acct",
+       "confidence": 0.9593,
+       "freeTextProbability": 0.2733,
+       "latencyMs": 463.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "cookie-then-link": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #pricing",
+       "confidence": 0.9664,
+       "freeTextProbability": 0.2595,
+       "latencyMs": 446.2,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #pricing",
+       "confidence": 0.9664,
+       "freeTextProbability": 0.2595,
+       "latencyMs": 448.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #pricing",
+       "confidence": 0.9664,
+       "freeTextProbability": 0.2595,
+       "latencyMs": 455.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "rename-free": {
+     "split": "heldout",
+     "needs_llm": true,
+     "rows": [
+      {
+       "choice": "click #rename",
+       "confidence": 0.9056,
+       "freeTextProbability": 0.257,
+       "latencyMs": 367.4,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "click #rename",
+       "confidence": 0.9056,
+       "freeTextProbability": 0.257,
+       "latencyMs": 382.6,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      },
+      {
+       "choice": "click #rename",
+       "confidence": 0.9056,
+       "freeTextProbability": 0.257,
+       "latencyMs": 383.5,
+       "model": "laya:laya-dhristi-v4",
+       "correct": false
+      }
+     ]
+    },
+    "aadhaar-type": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "type #aad AADHAAR#1",
+       "confidence": 0.7292,
+       "freeTextProbability": 0.352,
+       "latencyMs": 527.7,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #aad AADHAAR#1",
+       "confidence": 0.7292,
+       "freeTextProbability": 0.352,
+       "latencyMs": 551.1,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "type #aad AADHAAR#1",
+       "confidence": 0.7292,
+       "freeTextProbability": 0.352,
+       "latencyMs": 538.0,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    },
+    "aadhaar-verify": {
+     "split": "heldout",
+     "needs_llm": false,
+     "rows": [
+      {
+       "choice": "click #verify",
+       "confidence": 0.8592,
+       "freeTextProbability": 0.2809,
+       "latencyMs": 560.9,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #verify",
+       "confidence": 0.8592,
+       "freeTextProbability": 0.2809,
+       "latencyMs": 556.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      },
+      {
+       "choice": "click #verify",
+       "confidence": 0.8592,
+       "freeTextProbability": 0.2809,
+       "latencyMs": 601.3,
+       "model": "laya:laya-dhristi-v4",
+       "correct": true
+      }
+     ]
+    }
+   },
+   "summary": {
+    "design": {
+     "errors": 0,
+     "raw_top_choice_accuracy": 0.727,
+     "p50_ms": 416.2,
+     "p95_ms": 631.5,
+     "0.5": {
+      "decisions": 33,
+      "fast_path_used": 30,
+      "coverage": 0.909,
+      "fast_path_correct": 24,
+      "fast_path_precision": 0.8,
+      "wrong_when_used": [
+       "two-fields-first",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.818,
+      "llm_only_accuracy": 0.727
+     },
+     "0.7": {
+      "decisions": 33,
+      "fast_path_used": 27,
+      "coverage": 0.818,
+      "fast_path_correct": 21,
+      "fast_path_precision": 0.778,
+      "wrong_when_used": [
+       "two-fields-first",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.818,
+      "llm_only_accuracy": 0.727
+     },
+     "0.8": {
+      "decisions": 33,
+      "fast_path_used": 24,
+      "coverage": 0.727,
+      "fast_path_correct": 18,
+      "fast_path_precision": 0.75,
+      "wrong_when_used": [
+       "two-fields-first",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.727,
+      "llm_only_accuracy": 0.727
+     },
+     "0.9": {
+      "decisions": 33,
+      "fast_path_used": 18,
+      "coverage": 0.545,
+      "fast_path_correct": 15,
+      "fast_path_precision": 0.833,
+      "wrong_when_used": [
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.727,
+      "llm_only_accuracy": 0.727
+     },
+     "0.95": {
+      "decisions": 33,
+      "fast_path_used": 9,
+      "coverage": 0.273,
+      "fast_path_correct": 9,
+      "fast_path_precision": 1.0,
+      "wrong_when_used": [],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.727,
+      "llm_only_accuracy": 0.727
+     },
+     "0.99": {
+      "decisions": 33,
+      "fast_path_used": 0,
+      "coverage": 0.0,
+      "fast_path_correct": 0,
+      "fast_path_precision": null,
+      "wrong_when_used": [],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.727,
+      "llm_only_accuracy": 0.727
+     }
+    },
+    "heldout": {
+     "errors": 0,
+     "raw_top_choice_accuracy": 0.667,
+     "p50_ms": 622.2,
+     "p95_ms": 1297.6,
+     "0.5": {
+      "decisions": 90,
+      "fast_path_used": 60,
+      "coverage": 0.667,
+      "fast_path_correct": 51,
+      "fast_path_precision": 0.85,
+      "wrong_when_used": [
+       "already-logged-in",
+       "bank-acct",
+       "rename-free"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.9,
+      "llm_only_accuracy": 0.933
+     },
+     "0.7": {
+      "decisions": 90,
+      "fast_path_used": 51,
+      "coverage": 0.567,
+      "fast_path_correct": 42,
+      "fast_path_precision": 0.824,
+      "wrong_when_used": [
+       "already-logged-in",
+       "bank-acct",
+       "rename-free"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.9,
+      "llm_only_accuracy": 0.933
+     },
+     "0.8": {
+      "decisions": 90,
+      "fast_path_used": 48,
+      "coverage": 0.533,
+      "fast_path_correct": 39,
+      "fast_path_precision": 0.812,
+      "wrong_when_used": [
+       "already-logged-in",
+       "bank-acct",
+       "rename-free"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.9,
+      "llm_only_accuracy": 0.933
+     },
+     "0.9": {
+      "decisions": 90,
+      "fast_path_used": 27,
+      "coverage": 0.3,
+      "fast_path_correct": 21,
+      "fast_path_precision": 0.778,
+      "wrong_when_used": [
+       "already-logged-in",
+       "rename-free"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.933,
+      "llm_only_accuracy": 0.933
+     },
+     "0.95": {
+      "decisions": 90,
+      "fast_path_used": 15,
+      "coverage": 0.167,
+      "fast_path_correct": 12,
+      "fast_path_precision": 0.8,
+      "wrong_when_used": [
+       "already-logged-in"
+      ],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.9,
+      "llm_only_accuracy": 0.933
+     },
+     "0.99": {
+      "decisions": 90,
+      "fast_path_used": 0,
+      "coverage": 0.0,
+      "fast_path_correct": 0,
+      "fast_path_precision": null,
+      "wrong_when_used": [],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.933,
+      "llm_only_accuracy": 0.933
+     }
+    },
+    "all": {
+     "errors": 0,
+     "raw_top_choice_accuracy": 0.683,
+     "p50_ms": 569.4,
+     "p95_ms": 1269.2,
+     "0.5": {
+      "decisions": 123,
+      "fast_path_used": 90,
+      "coverage": 0.732,
+      "fast_path_correct": 75,
+      "fast_path_precision": 0.833,
+      "wrong_when_used": [
+       "already-logged-in",
+       "bank-acct",
+       "rename-free",
+       "two-fields-first",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.878,
+      "llm_only_accuracy": 0.878
+     },
+     "0.7": {
+      "decisions": 123,
+      "fast_path_used": 78,
+      "coverage": 0.634,
+      "fast_path_correct": 63,
+      "fast_path_precision": 0.808,
+      "wrong_when_used": [
+       "already-logged-in",
+       "bank-acct",
+       "rename-free",
+       "two-fields-first",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.878,
+      "llm_only_accuracy": 0.878
+     },
+     "0.8": {
+      "decisions": 123,
+      "fast_path_used": 72,
+      "coverage": 0.585,
+      "fast_path_correct": 57,
+      "fast_path_precision": 0.792,
+      "wrong_when_used": [
+       "already-logged-in",
+       "bank-acct",
+       "rename-free",
+       "two-fields-first",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.854,
+      "llm_only_accuracy": 0.878
+     },
+     "0.9": {
+      "decisions": 123,
+      "fast_path_used": 45,
+      "coverage": 0.366,
+      "fast_path_correct": 36,
+      "fast_path_precision": 0.8,
+      "wrong_when_used": [
+       "already-logged-in",
+       "rename-free",
+       "two-fields-second"
+      ],
+      "wrong_on_needs_llm": [
+       "rename-free"
+      ],
+      "hybrid_accuracy": 0.878,
+      "llm_only_accuracy": 0.878
+     },
+     "0.95": {
+      "decisions": 123,
+      "fast_path_used": 24,
+      "coverage": 0.195,
+      "fast_path_correct": 21,
+      "fast_path_precision": 0.875,
+      "wrong_when_used": [
+       "already-logged-in"
+      ],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.854,
+      "llm_only_accuracy": 0.878
+     },
+     "0.99": {
+      "decisions": 123,
+      "fast_path_used": 0,
+      "coverage": 0.0,
+      "fast_path_correct": 0,
+      "fast_path_precision": null,
+      "wrong_when_used": [],
+      "wrong_on_needs_llm": [],
+      "hybrid_accuracy": 0.878,
+      "llm_only_accuracy": 0.878
+     }
+    }
+   }
+  }
+ },
+ "llm": {
+  "account-type-email": [
+   {
+    "ms": 739.2,
+    "key": "click #email",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": false
+   }
+  ],
+  "account-save": [
+   {
+    "ms": 1555.8,
+    "key": "click #save",
+    "model": "openai/gpt-oss-20b",
+    "switched": [
+     "qwen/qwen3.8-27b"
+    ],
+    "correct": true
+   }
+  ],
+  "account-finish": [
+   {
+    "ms": 746.9,
+    "key": "finish",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "save-not-delete": [
+   {
+    "ms": 926.4,
+    "key": "click #save",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "phone-type": [
+   {
+    "ms": 706.2,
+    "key": "click #mobile",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": false
+   }
+  ],
+  "nav-downloads": [
+   {
+    "ms": 689.5,
+    "key": "click #downloads",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "two-fields-first": [
+   {
+    "ms": 770.9,
+    "key": "click #name",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": false
+   }
+  ],
+  "two-fields-second": [
+   {
+    "ms": 707.7,
+    "key": "type #email EMAIL#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "login-user": [
+   {
+    "ms": 579.6,
+    "key": "type #user EMAIL#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "report-link": [
+   {
+    "ms": 984.1,
+    "key": "click #accept",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "already-done": [
+   {
+    "ms": 740.1,
+    "key": "finish",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "search-free-text": [
+   {
+    "ms": 635.5,
+    "key": "type #q Sentinel-2 imagery",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "ship-name": [
+   {
+    "ms": 918.2,
+    "key": "type #name PERSONNAME#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "ship-addr": [
+   {
+    "ms": 721.3,
+    "key": "type #addr ADDRESS#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "ship-continue": [
+   {
+    "ms": 1003.1,
+    "key": "click #cont",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "bank-acct": [
+   {
+    "ms": 666.1,
+    "key": "type #acct BANKACCOUNT#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "bank-add-not-cancel": [
+   {
+    "ms": 757.7,
+    "key": "click #add",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "bank-done": [
+   {
+    "ms": 766.4,
+    "key": "finish",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "mail-to": [
+   {
+    "ms": 741.0,
+    "key": "type #to EMAIL#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "mail-body-free": [
+   {
+    "ms": 654.2,
+    "key": "type #subj Meeting moved to Friday",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "mail-send": [
+   {
+    "ms": 601.3,
+    "key": "click #send",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "login-no-forgot": [
+   {
+    "ms": 1302.7,
+    "key": "click #signin",
+    "model": "openai/gpt-oss-20b",
+    "switched": [
+     "qwen/qwen3.8-27b"
+    ],
+    "correct": true
+   }
+  ],
+  "settings-security": [
+   {
+    "ms": 642.4,
+    "key": "click #t-security",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "settings-notif": [
+   {
+    "ms": 743.5,
+    "key": "click #t-notif",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "notif-sms": [
+   {
+    "ms": 673.7,
+    "key": "click #sms-alerts",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "notif-save": [
+   {
+    "ms": 719.8,
+    "key": "click #save-n",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "notif-done": [
+   {
+    "ms": 792.7,
+    "key": "finish",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "search-free": [
+   {
+    "ms": 740.5,
+    "key": "type #q USB-C charger",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "search-go": [
+   {
+    "ms": 1082.5,
+    "key": "type #q USB-C charger",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": false
+   }
+  ],
+  "cart-open": [
+   {
+    "ms": 637.5,
+    "key": "click #cart",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "support-email": [
+   {
+    "ms": 682.2,
+    "key": "click #topic",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "support-desc-free": [
+   {
+    "ms": 1905.5,
+    "key": "type #desc The payment for my recent purchase failed, please assist.",
+    "model": "openai/gpt-oss-20b",
+    "switched": [
+     "qwen/qwen3.8-27b"
+    ],
+    "correct": true
+   }
+  ],
+  "support-submit": [
+   {
+    "ms": 647.7,
+    "key": "click #submit",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "profile-phone": [
+   {
+    "ms": 710.7,
+    "key": "type #ph PHONE#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "profile-phone-update": [
+   {
+    "ms": 645.9,
+    "key": "click #upd",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "download-statement": [
+   {
+    "ms": 717.9,
+    "key": "click #sep",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "already-logged-in": [
+   {
+    "ms": 607.2,
+    "key": "finish",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "cookie-then-link": [
+   {
+    "ms": 938.4,
+    "key": "click #pricing",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "rename-free": [
+   {
+    "ms": 564.6,
+    "key": "click #rename",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": false
+   }
+  ],
+  "aadhaar-type": [
+   {
+    "ms": 662.2,
+    "key": "type #aad AADHAAR#1",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ],
+  "aadhaar-verify": [
+   {
+    "ms": 765.9,
+    "key": "click #verify",
+    "model": "qwen/qwen3.8-27b",
+    "switched": [],
+    "correct": true
+   }
+  ]
+ },
+ "llm_from": "Benchmarks/results/fastpath-bench-v01.json",
+ "model_training": {
+  "script": "scripts/laya-finetune/train_cpu.py",
+  "data": "scripts/laya-finetune/train_v4.jsonl",
+  "base": "laya-dhristi v3 (warm start)",
+  "epochs": 3,
+  "train_top_layers": 6,
+  "lr_encoder": 0.0001,
+  "lr_head": 0.0005,
+  "grad_accum": 1,
+  "mean_ce_by_epoch": [
+   1.1855,
+   1.0023,
+   0.869
+  ],
+  "elapsed_s": 6684,
+  "calibration_temperatures": [
+   1.193,
+   1.251,
+   2.32
+  ],
+  "training_fit_choice": "80/120 on train_v4.jsonl (v3 60/120 on train_v3.jsonl)"
+ },
+ "caveats": "Model: laya-dhristi v4 = v3 plus 3 epochs on train_v4.jsonl (25% free-text steps), top 6 of 28 layers, CPU. Top choice correct on 28 of 41 scenes (v3 19, zero-shot 17). At the default 0.9 it acts on 15 scenes with 80% precision (36 of 45 decisions) and is wrong on three: two-fields-second (finish), already-logged-in (click #acct) and rename-free (click #rename at 0.91), a step that needs free text. Jev at 0.9 was 39 of 39 on held-out. The free-text answer did not learn the cue: 0.24-0.35 on the four steps that need free text and up to 0.44 elsewhere, about the training share (25%). Not safe to deploy at any threshold measured here (0.95 still acts wrongly on already-logged-in). LLM rows reused from fastpath-bench-v01.json; synthetic scenes written by us."
+}

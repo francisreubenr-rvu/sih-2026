@@ -1,3 +1,47 @@
+## Laya Colab run v02 (2 October 2026)
+
+- Run v02 on generator v5: not accepted (`laya-colab-sweep-v02.json`). On held-out cases at 0.9 it acted on 24 and was wrong on 1, `support-desc-free`, a free-text step. Design cases regressed on two finish steps whose success message is prose, not a `STATUS` line. Validation on held-out wording now ranks candidates (1 of 12 passed).
+- **Parked (2 October, Francis).** Laya fast-path training stops here; the fast path stays off by default and no gate depends on it. If it is ever resumed: before any generator v6, write a fresh held-out set the model and generator have not been tuned against, and judge v03 on both sets. Otherwise each round fits these 30 cases more closely. v6 changes, if approved: shuffle element order, use SELECT as well as radio choice controls, state success in prose as well as STATUS lines, and add requests to set a field to a literal value.
+
+## Laya on Colab (1 October 2026)
+- Generator v5 built (Francis approved): overwrite, click-then-type and optional-field situations, composed free-text requests, and `--split train|val` so validation uses held-out wording. Notebook set to run v02 (`colab-v02` on Drive). Disclosure recorded: the held-out cases are no longer blind to the new categories. Waiting on Francis's Colab run.
+- PR #43 removes the run notebook Colab saved to `master`.
+
+- Francis: run the Laya fine-tune on his Colab Pro (GPUs up to 80 GB, 160 GB RAM) instead of Kaggle, and go big.
+- `scripts/laya-finetune/colab_train.ipynb` replaces `kaggle_train.ipynb`: 20,000 steps, 4 whole-encoder runs x 6 epochs, 12 checkpoints scored by the new `validate.py` on unseen generated steps, one chosen by a fixed rule, only that one benchmarked. `train_cpu.py` gains `MICRO_BATCH`, `AMP_DTYPE=bf16`, `GRAD_CKPT=0`, `SEED`, `SAVE_EPOCHS` and per-question losses; the CPU defaults are unchanged.
+- Ruled out: state truncation as the cause of the free-text failure (no free-text question loses state on `train_v4.jsonl`, even at 512/192).
+- Checked here on CPU only: a tiny 2-epoch run with an epoch-1 checkpoint, and `validate.py` on it. No GPU result yet. Not deployed; the fast path stays off by default.
+- Result (A100 80 GB, about 33 min per run, `laya-colab-sweep-v01.json`): the free-text question trains on GPU (AUROC 1.0 on unseen generated steps), but the selected checkpoint fails Jev's bar on the held-out cases (21 acted, 2 wrong, one of them a free-text step). Not accepted, nothing uploaded. Generator coverage is now the limit; proposed next step is a wider generator with held-out template families for validation.
+
+## Laya fine-tuning, CPU — 1 October 2026
+
+- Found why v1/v2 underfit: `gen_data.py` gave each wrong option 2% of the target and split the right answer over several options, so no calibrated model could pass 0.9. Fixed (one right answer per step, 2% total on wrong options); a 64-step overfit test then fit 63/64.
+- v3 (sharp targets) and v4 (+25% free-text steps, warm from v3), top 6 of 28 layers on CPU: top choice 17 → 19 → 28 of 41 scenes. The free-text question never learned its cue in any run. v4 acts at 0.9 and is wrong on a free-text step. None deployed; CPU training stopped; the GPU notebook (now on the v4 generator) is the next attempt.
+- Groq settings re-run on a fresh quota: Qwen 41/42 at temperature 0, gpt-oss-20b 35/42; Qwen stays first.
+
+## Laya fine-tuning — 30 September 2026
+
+- Francis: Jev for demos stays an open decision; go forward on training Laya.
+- Built `scripts/laya-finetune/` (generator with zero overlap against the evaluation sets, trainer ported from the authors' notebook, `diagnose.py`, `kaggle_train.ipynb`) and `WARDEN_LAYA_MODEL` / `WARDEN_LAYA_DEVICE` in the Warden.
+- v1 failed on option truncation (fixed with compact keys for Laya); v2 underfit on CPU (29/120 on its own training steps, base 24/120) and its free-text answer collapsed to "no", so it must not be used or run below the 0.9 threshold. Neither CPU run answered a single held-out step at 0.9.
+- Next: run `kaggle_train.ipynb` (needs Francis's Kaggle account) and decide where the weights live (about 0.8 GB; no Git LFS, no Hugging Face token here).
+
+## Qwen first, Jev fast path, Laya — 30 September 2026
+
+- Francis: Qwen first in the Groq chain; build the Jev fast path and benchmark it; test Laya (`convaiinnovations/laya`, the "Layla" of 29 September).
+- Groq chain now `qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b`, called at **temperature 0**. Correction: the 29 September Qwen ranking was measured at temperature 0 while the Warden sent none, and the same model answered the same scene differently between runs. The settings re-measure (`groq-settings-bench-v01.json`) was rate-limited (61 of 168 calls 429); re-run on a fresh quota on 1 October (`groq-settings-bench-v02.json`), at temperature 0 Qwen answered 41/42 and gpt-oss-20b 35/42, so Qwen stays first.
+- Fast path built (`warden/fastpath.py`, `WARDEN_FAST_PATH=jev|laya`, off by default, 11 tests). Held-out accuracy (`fastpath-bench-v01.json`): Jev answered 39/89 steps at 0.9, 39 correct, none on a free-text step. Real extension loop (`e2e-v5-boundary-v03.json`): 5 of 5 runs finished, 0 personal values; with Jev every step was answered by Jev (median about 236 ms) and Groq was never called.
+- Laya zero-shot on CPU: top choice right on 33 to 55% of steps, said "free text needed" on all 123, so it deferred everything and added 585 to 847 ms per step; without that gate it would have been wrong on all 6 held-out steps it was confident about. Leave off until fine-tuned.
+- Tests: Warden 112 + 6 skips. G11 **fail**, G20 **paused**, `submission_ready` **false**.
+
+## Real cloud planner, cloud-model bench, branch merge — 29 September 2026
+
+- First end-to-end run with the **real** Groq planner (earlier v5 evidence used a scripted fake): 48 cloud requests over five runs, **0 personal values** (`Benchmarks/results/e2e-v5-boundary-v02.json`). The first run never finished: the planner could not see the page's "Saved" status and history had no value, so it retyped and resaved to the 25-step limit. Fixed (`extension/content.js` STATUS lines, `buildHistory` vault token, finish rule in `groq_client`); 3 of 3 runs then finished in 3 to 4 steps, planner round trip 325 to 1219 ms. Tests: extension 104/104 (two new, each failing on the old code).
+- Cloud models vs local models: `Docs/decisions/brain-cloud-models-jev.md`. GLiNER and UltraFace stay local (privacy boundary). Groq `qwen/qwen3.8-27b` 36/36 at p50 342 ms vs default gpt-oss-20b 31/31 at 615 ms; Jev (TypeSafe decision model) 55/60 at p50 191 ms, every miss a free-text value it cannot produce. Reviewer: Jev 30/30 at 194 ms. Recommendations only; defaults unchanged. OpenCode: no valid key present. "Layla": not found, needs a link.
+- Branches: `feat/dhristi-wave8` stage a11y ported onto the Signal popup (`aria-current`, polite live region); `cursor/website-pixel-redesign-pr1-ac89` not merged, superseded by the Signal redesign and it reintroduces dark background tokens.
+- Claims corrected: Website and README cited the fake-planner run as "reached the cloud planner"; now cite v02. 305 ms tile marked as one run. README no longer lists Qwen2.5/Ollama as the current planner. `warden/README.md` names `protobuf` (GLiNER failed to load without it in a fresh venv).
+- Verified unchanged: Prototype 141/141, Warden 101 + 6 skips (103 + 4 with GLiNER loaded), G11 harness 13/13, ledger 14 pass / 1 fail / 5 unknown matching the committed file. G11 **fail**, G20 **paused**, `submission_ready` **false**.
+
 ## v5: device redaction, cloud planning — 29 September 2026
 
 - Francis: redaction stays local so a bigger model can do that one job; planning runs online. This supersedes the 23 September "planner default is Ollama" lock; `WARDEN_PLANNER=ollama` stays as the offline mode. Decision: `Docs/decisions/brain-v5-local-redaction-cloud-planner.md`.

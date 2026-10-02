@@ -215,3 +215,15 @@ test('a user-stripped uncertain span is reported with layer user', async () => {
   assert.deepEqual(t.redaction.replaced.find((row) => row.token === 'PERSONNAME#1'), { token: 'PERSONNAME#1', type: 'PERSONNAME', source: 'dom', layer: 'user', score: 0.5 });
   for (const u of run.traceUpdates) assert.equal(JSON.stringify(u).includes('Ravi'), false);
 });
+
+test('plan history carries a typed vault token, never a literal value', async () => {
+  const run = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(TYPE_TOKEN, FINISH) } });
+  const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;
+  assert.deepEqual(second.history.at(-1), { stepNumber: 1, action: 'type', target: '#to', status: 'ok', value: 'EMAIL#1' });
+
+  const literal = { ...TYPE_TOKEN, value: 'hunter2' };
+  const lit = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(literal, FINISH) } });
+  const body = lit.fetchBodies.filter((b) => b.path === '/plan')[1];
+  assert.equal('value' in body.body.history.at(-1), false, 'a masked literal is left out of history');
+  assert.equal(body.raw.includes('hunter2'), false);
+});

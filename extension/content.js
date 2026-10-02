@@ -145,7 +145,7 @@ async function scanPage() {
     if (elements.length >= 180) break;
   }
   scanHandles = handles;
-  const dom = serializeDom(elements);
+  const dom = serializeDom(elements, collectStatusText());
   const piiFields = collectPiiFields(redactText);
   const viewport = { width: window.innerWidth, height: window.innerHeight };
   return { elements, dom, digest: digest(dom), piiMaskedCount: piiFields.length, piiFields, viewport };
@@ -456,8 +456,24 @@ function structuralPath(element) {
   return path.join(' > ');
 }
 
-function serializeDom(elements) {
+// Visible text of live regions (role=status/alert, aria-live, <output>). Without it the planner
+// sees only controls and cannot tell that a save succeeded: in the first real-Groq run
+// (29 September 2026) it retyped and resaved until the 25-step limit. This text goes to /strip
+// with the rest of the DOM, so the Warden tokenizes it ("Saved EMAIL#1") before /plan.
+function collectStatusText() {
+  const out = [];
+  for (const element of document.querySelectorAll('[role="status"], [role="alert"], [aria-live]:not([aria-live="off"]), output')) {
+    if (isDhristiOverlay(element) || !isRenderedVisible(element)) continue;
+    const text = (element.innerText || element.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 200);
+    if (text && !out.includes(text)) out.push(text);
+    if (out.length >= 5) break;
+  }
+  return out;
+}
+
+function serializeDom(elements, statusTexts = []) {
   const lines = elements.map((element, index) => `${index + 1}. ${element.tag.toUpperCase()} type=${element.type} selector=${element.selector} label="${element.label}" position=${element.x},${element.y}`);
+  for (const text of statusTexts) lines.push(`STATUS text="${text}"`);
   let text = lines.join('\n');
   if (text.length > MAX_DOM_BYTES) text = `${text.slice(0, MAX_DOM_BYTES)}\n[TRUNCATED]`;
   return text;
