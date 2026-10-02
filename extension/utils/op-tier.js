@@ -11,8 +11,27 @@
 
 export const TIERS = Object.freeze(['reversible', 'navigational', 'state-changing', 'destructive']);
 
-const DESTRUCTIVE_INTENT_RE = /\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\b|\bclose (?:my|the) account\b|\bcancel (?:my|the) (?:account|subscription)\b/i;
-const DESTRUCTIVE_LABEL_RE = /delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)/i;
+// Hindi (Devanagari and common transliterations) mirrors the English list: delete/remove (हटा,
+// डिलीट, रिमूव), erase (मिटा), deactivate (निष्क्रिय, डीएक्टिवेट), destroy (नष्ट), unsubscribe,
+// terminate / close / cancel an account, subscription or session. Substring match, like the English
+// label list, because JavaScript's \b is ASCII-only. Bare "रद्द करें" (Cancel) and bare "समाप्त"
+// (also the usual "Finish" button) are left out, as bare "Cancel" is in English. Without this list
+// every Hindi destructive label tiered state-changing by the unproven default (ROAST round 28).
+//
+// 2 October 2026 (Francis): the verbs neither language had. English forget, discard, withdraw,
+// purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team/workspace, end a
+// membership/subscription, empty trash, clear history/data, factory reset, void a transaction;
+// Hindi भूल जाएं (forget), leaving a group (समूह छोड़ें; bare "छोड़ें" is also the usual Skip button
+// and is left out), stop sharing, revoke access, वापस लें (withdraw), unlink, disconnect, factory
+// reset, empty trash, removing a member. Kept narrow on purpose: "Leave a review", "Swipe", "Clear
+// filters" and "avoid" must not read destructive. The pattern is NFC-normalised because "छोड़"
+// carries a nukta that NFC decomposes, and matched text is canonicalised the same way.
+const HI_DESTRUCTIVE = ('हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)|'
+  + 'भूल जा|(?:समूह|ग्रुप|टीम|संगठन|चैनल|चैट|परिवार) (?:को )?छोड़|(?:साझा|शेयर) करना बंद|(?:पहुँच|पहुंच|एक्सेस|अनुमति) (?:रद्द|हटा|वापस)|वापस ले|अनलिंक|डिस्कनेक्ट|(?:फ़ैक्टरी|फैक्टरी) रीसेट|(?:ट्रैश|कचरा|रीसायकल बिन|बिन) खाली|बाहर निकाल|सदस्य(?:ों)? (?:को )?निकाल').normalize('NFC');
+const EN_DESTRUCTIVE_LABEL_EXTRA = 'forget|discard|withdraw|purge|revoke|unlink|disconnect|\\bwipe|\\bkick\\b|stop sharing|leave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)|end (?:membership|subscription|session|plan)|empty (?:trash|bin)|clear (?:all )?(?:history|data|messages|activity|chats?)|factory reset|reset to factory|void (?:transaction|payment|order)';
+const EN_DESTRUCTIVE_INTENT_EXTRA = '\\b(?:forget|discard(?:ed|ing)?|withdraw(?:n|ing)?|purg(?:e|ed|ing)|revok(?:e|ed|ing)|unlink(?:ed|ing)?|disconnect(?:ed|ing)?|wip(?:e|ed|ing)|kick(?:ed|ing)?)\\b|\\bstop sharing\\b|\\bleave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)\\b|\\bend (?:my |the )?(?:membership|subscription|plan)\\b|\\bempty (?:the |my )?(?:trash|bin)\\b|\\bfactory reset\\b';
+const DESTRUCTIVE_INTENT_RE = new RegExp(`\\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\\b|\\bclose (?:my|the) account\\b|\\bcancel (?:my|the) (?:account|subscription)\\b|${EN_DESTRUCTIVE_INTENT_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
+const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)|${EN_DESTRUCTIVE_LABEL_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
 const SUBMIT_LABEL_RE = /submit|save|confirm|pay|checkout|place order|purchase|send/i;
 const NAV_LABEL_RE = /^(go to|view|open|back|next|home|menu)\b|\blink\b/i;
 
@@ -35,16 +54,22 @@ export function tierPermitsUnattended(tier) {
 }
 
 export function expressesDestructiveIntent(task) {
-  return DESTRUCTIVE_INTENT_RE.test(String(task || ''));
+  return DESTRUCTIVE_INTENT_RE.test(canonical(task));
 }
 
 // URL paths and slugs ("/account/close-account", "cancel_subscription") are matched as words.
+// NFC, and zero-width characters removed: a page must not hide "हटाएं" from the rules with a
+// joiner that renders identically.
+function canonical(text) {
+  return String(text || '').normalize('NFC').replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+}
+
 function normalise(text) {
-  return String(text || '').replace(/[\s\-_/.?=&+#:%]+/g, ' ').trim();
+  return canonical(text).replace(/[\s\-_/.?=&+#:%]+/g, ' ').trim();
 }
 
 function collapse(text) {
-  return String(text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  return canonical(text).replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
 // True when a control shows one thing and announces another: both non-empty and neither contains

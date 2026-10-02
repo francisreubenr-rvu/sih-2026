@@ -1,3 +1,61 @@
+## Review and next steps (2 October 2026)
+
+Francis asked for a review of the current state and a plan. Facts first, then the plan, then the decisions only Francis can make.
+
+**State.**
+
+- **Architecture (v5).**
+  - Redaction runs on the device: GLiNER, one line at a time, behind an egress guard.
+  - Planning runs in the cloud: the Groq chain with Qwen first, at temperature 0.
+  - The extension runs every plan check itself (F17) and shows the boundary live.
+- **Evidence.** The real-Groq end-to-end run (`e2e-v5-boundary-v02.json`) sent 48 cloud requests with 0 personal values. The fast path with Jev (`e2e-v5-boundary-v03.json`): 5 of 5 runs finished, median about 236 ms per step. Both are on the synthetic fixture only.
+- **Laya, two separate tracks.**
+  - The plan reviewer and release (PR #42, merged) works on the author's held-out synthetic split: tier 0.921, destructive recall 0.983.
+  - The fast-path planner (PR #41) failed Jev's bar twice on Colab and is parked.
+- **Safety rules (PR #44, open).** Hindi and the missing verbs tier destructive, and pairing is required. Release needs a verified `/plan` response from the fine-tuned checkpoint.
+- **Ledger.** 14 pass / 1 fail / 5 unknown; `submission_ready` false.
+  - Fail: G11 (core response time, budget 200 ms).
+  - Unknown: G03 (reproducible workflow), G09 (WCAG), G10 (responsive and motion), G14 (fallback), G20 (human validation, paused).
+  - Every pass is stale: its evidence is 39 to 156 commits behind the tree (`check_release.py --dry-run`).
+- **Deadline.** The ledger's deadline is 11 September 2026, marked "not verified as official". Nothing in the repo states the current SIH date.
+
+**Plan, in order.**
+
+1. Merge PR #44 (Francis).
+2. **Loaded-extension evidence for release and pairing.** Run `scripts/e2e-v5` on the synthetic fixture with `WARDEN_PAIRING_SECRET`, `WARDEN_REVIEWER=laya` and the real Groq planner. It writes `e2e-v5-boundary-v04.json` with personal values sent, prompts asked, prompts released and per-step time. This container needs GLiNER, torch and the Laya weights installed for it.
+3. **A blind test set** for the reviewer and the keyword rules: about 150 EN/HI controls and tasks, written by a teammate who has not seen `laya-plan-review-v01` or the keyword lists. Measure release precision on it; a wrongly released state-changing or destructive step is the failure that matters.
+4. **G11 honestly.** Measure the full loop on the current tree, with and without the Jev fast path. Score with Laya only where it can change the outcome (a click the Warden's own rules tier state-changing), which cuts its 170 to 260 ms from most steps. Never lower the 200 ms budget. If no measured path meets it, record that.
+5. **Refresh stale passes** at the current head, cheapest first: security scan (G06/G07), hardening (G08), load (G05). Then use `check_release.py --max-behind`.
+6. **G09/G10.** Fix the three side-panel axe findings (ROAST round 21) and run axe on the new pairing field.
+7. **G14.** Re-record the fallback video on the current side panel, after #44 and step 2.
+8. **Small and cheap:** Hindi submit keywords (भुगतान, भेजें, जमा), so Hindi pay/send labels are never `unproven`.
+
+**Decided by Francis (2 October).**
+
+- **Deadline:** 16 October 2026, two weeks; a working date, not a verified SIH date.
+- **G20:** unpaused. Its status stays `unknown` until real sessions are logged.
+- **Jev fast path:** disabled in code but kept (`warden/fastpath.py` `JEV_ENABLED = False`).
+- **Installs:** packages and models this work needs are approved, provided nothing destructive happens in the container.
+
+**Schedule, 2 to 16 October.** "Claude" is this agent; "team" is Francis and the RVU team. Each line names the evidence it must produce.
+
+| Dates | Owner | Work | Evidence |
+|---|---|---|---|
+| 2 to 3 Oct | Claude | **Done 2 Oct.** Real end-to-end run: loaded extension, real Warden (GLiNER), pairing, Laya release, real Groq. 9 runs, 21 cloud requests, 0 personal values; release 3 of 3 where it should; wrong code sent nothing | `Benchmarks/results/e2e-v5-boundary-v04.json` |
+| 3 Oct | Francis | Merge PR #44 | merged PR |
+| 3 to 4 Oct | team, Claude | Blind test set: one teammate who has not seen the data writes ~150 EN/HI controls and tasks with labels. Claude supplies the template and scorer | `Benchmarks/datasets/laya-blind-v01/`, then a results file |
+| 4 to 6 Oct | Claude | G11 measured honestly on the current tree. Laya runs only where it can change the outcome. Budget stays 200 ms | `core-latency-*.json`; G11 status from evidence |
+| 5 to 10 Oct | team | G20 sessions: 5+ non-author participants, 3+ narrative reviewers (protocol and forms refreshed for v5) | `human-evaluation.json`; `scripts/g20_summarize.py` |
+| 6 to 7 Oct | Claude | Refresh stale passes at the current head (G05, G06/G07, G08), then `check_release.py --max-behind` | regenerated evidence files |
+| 7 to 8 Oct | Claude | G09/G10: fix the three side-panel axe findings; axe on the pairing field | `accessibility*.json` |
+| 8 to 9 Oct | Claude | G03: setup from a clean container, end to end, scripted | a run record |
+| 9 Oct | Claude | GLiNER false positives on control labels (finding below): measure them and propose a fix; decide with Francis | results file and decision |
+| 12 to 13 Oct | team, Claude | G14: rehearse live, re-record the fallback video on the current side panel | `demo-rehearsal.json`, video |
+| 14 Oct | Claude, Francis | Freeze; regenerate the ledger; Francis decides each gate from the evidence | `release-status.json` |
+| 15 to 16 Oct | all | Buffer for whatever slipped | |
+
+**Will not fit in the two weeks:** Laya as a fast-path planner (parked), a live Firefox run, OCR redraw, and anything needing real (non-synthetic) pages.
+
 ## Laya Colab run v02 (2 October 2026)
 
 - Run v02 on generator v5: not accepted (`laya-colab-sweep-v02.json`). On held-out cases at 0.9 it acted on 24 and was wrong on 1, `support-desc-free`, a free-text step. Design cases regressed on two finish steps whose success message is prose, not a `STATUS` line. Validation on held-out wording now ranks candidates (1 of 12 passed).
@@ -36,7 +94,10 @@
   - **Release:** `/plan` carries Laya scores, and the extension's `layaRelease` skips a confirmation only for an `unproven` click, from the fine-tuned checkpoint, at p(nav) ≥ 0.9 with p(destructive) < 0.5 and p(off task) < 0.5. The release is re-checked on the live element at execute.
   - **Weights:** private Hugging Face repo `francisreubenr/dhristi-laya-plan-review`.
   - **`tiers.py` fix:** navigational is matched on the label alone. On the test split, destructive steps accepted as navigational went from 42/120 to 0/120.
-- Residual risk accepted: the Warden is not authenticated, so a spoofed one can release `unproven` clicks, including Hindi destructive labels. Next: Hindi destructive keywords in `op-tier.js`, a Warden pairing secret, and a loaded-extension run of the release.
+- Francis, 30 September, same PR:
+  - **Hindi destructive keywords** in `op-tier.js` and `tiers.py`. Hindi destructive test steps tiered destructive: 0/42 → 24/42.
+  - **Pairing secret** (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). A paired extension refuses unproven responses, and only a verified `/plan` response can release a confirmation.
+- Next: a loaded-extension run of release and pairing. Then destructive verbs neither language lists (forget, leave, stop sharing, discard, withdraw, purge, revoke) and Hindi submit keywords. Then whether pairing becomes mandatory.
 - Not changed: G11 **fail**, G14 **unknown**, G20 **paused**, `submission_ready` **false**.
 
 ## Qwen first, Jev fast path, Laya (30 September 2026)

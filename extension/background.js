@@ -219,6 +219,7 @@ function emitSession() {
 const BLOCKED_SERVER_ID = 'blocked-server';
 const BLOCKED_LOADING_ID = 'blocked-loading';
 const BLOCKED_GROQ_ID = 'blocked-groq';
+const BLOCKED_PAIRING_ID = 'blocked-pairing';
 
 function noteBlocked(id, { text, reason, command, refused }) {
   const found = transcript.find((e) => e.id === id);
@@ -267,6 +268,10 @@ function clearBlockedOnRecovery(health, stateName) {
     }
     // Same rule for the missing cloud key: it stands until /health stops reporting it.
     if (entry.id === BLOCKED_GROQ_ID && (stateName === 'groq-missing' || stateName === 'unreachable')) {
+      survivors.push(entry);
+      continue;
+    }
+    if (entry.id === BLOCKED_PAIRING_ID && (stateName === 'pairing-needed' || stateName === 'unreachable')) {
       survivors.push(entry);
       continue;
     }
@@ -375,6 +380,7 @@ let loadingSince = null;
 let healthFailStreak = 0;
 
 async function refreshWardenHealth() {
+  const paired = (await wardenClient.getPairingCode()) !== null;
   try {
     const health = await wardenClient.health();
     state.wardenHealth = {
@@ -390,6 +396,12 @@ async function refreshWardenHealth() {
       plannerModel: typeof health.plannerModel === 'string' ? health.plannerModel : null,
       groqConfigured: health.groqConfigured === true,
       warden: health.warden || null,
+      // Pairing (utils/warden.js): what the Warden reports, whether this extension holds a code,
+      // and whether this very response proved it. Booleans and a state name, never the code.
+      pairing: ['off', 'required', 'misconfigured'].includes(health.pairing) ? health.pairing : null,
+      paired: paired,
+      pairingVerified: wardenClient.isPairingVerified(health),
+      pairingFailed: false,
       error: null,
     };
   } catch (error) {
@@ -404,6 +416,12 @@ async function refreshWardenHealth() {
       plannerModel: null,
       groqConfigured: false,
       warden: null,
+      pairing: null,
+      paired,
+      pairingVerified: false,
+      // Something answered but could not prove the pairing code. Treated as unreachable: nothing
+      // is sent to it and no run starts, but the card says what actually happened.
+      pairingFailed: error instanceof wardenClient.WardenPairingError,
       error: error.message,
     };
   }
@@ -424,6 +442,9 @@ function destinationFor(health) {
 // with a card naming both fixes. An offline Warden (planner "ollama") needs no key.
 function healthState(health) {
   if (!health || health.reachable !== true) return 'unreachable';
+  // Pairing is required (2 October 2026): with no code this extension sends no POST at all, so a
+  // run cannot start, whatever the Warden reports.
+  if (health.paired !== true) return 'pairing-needed';
   if (health.loaded !== true) return 'loading';
   if (health.planner === 'groq' && health.groqConfigured !== true) return 'groq-missing';
   return 'ready';
@@ -449,6 +470,9 @@ function emitHealth(health) {
     destination: health.destination || null,
     plannerModel: health.plannerModel || null,
     groqConfigured: health.groqConfigured === true,
+    pairing: health.pairing ?? null,
+    paired: health.paired === true,
+    pairingVerified: health.pairingVerified === true,
     elapsedMs,
     error: health.error || null,
   }).catch(() => {});
@@ -469,11 +493,13 @@ async function refreshHealthAndSync({ refused = false } = {}) {
     if (healthFailStreak >= 2 || refused) {
       const timedOut = /timed out/i.test(health.error || '');
       noteBlocked(BLOCKED_SERVER_ID, {
-        // The two failures are reported as what was actually measured, not merged into one
-        // claim: a probe that timed out is not the same observation as a refused connection.
-        text: timedOut
-          ? 'The Warden did not answer GET /health in time. Nothing is sent while it cannot confirm it is up, and no run can start.'
-          : 'The Warden is not running. Nothing is sent to it while it is down, and no run can start.',
+        // The failures are reported as what was actually measured, not merged into one claim: a
+        // probe that timed out, a refused connection and a failed pairing proof are different.
+        text: health.pairingFailed
+          ? "Something answered on the Warden's port but could not prove this extension's pairing code. Nothing is sent to it, and no run can start. Check that the Warden runs with WARDEN_PAIRING_SECRET set to the code saved in Settings."
+          : timedOut
+            ? 'The Warden did not answer GET /health in time. Nothing is sent while it cannot confirm it is up, and no run can start.'
+            : 'The Warden is not running. Nothing is sent to it while it is down, and no run can start.',
         reason: health.error,
         command: WARDEN_START_COMMAND,
         refused,
@@ -590,6 +616,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       return false;
     case 'SET_WARDEN_ORIGIN':
       return respondWith(setWardenOrigin(message.origin), sendResponse, { origin: null });
+    case 'SET_WARDEN_PAIRING':
+      return respondWith(setWardenPairing(message.code), sendResponse);
     case 'RETRY_HEALTH':
       return respondWith(refreshHealthAndSync().then((health) => ({ ok: true, state: healthState(health) })), sendResponse);
     default:
@@ -617,6 +645,22 @@ async function setWardenOrigin(origin) {
   await chrome.storage.local.set({ wardenOrigin: value });
   const health = await refreshHealthAndSync();
   return { ok: true, origin: value, state: healthState(health) };
+}
+
+// The pairing code is the Warden's WARDEN_PAIRING_SECRET. Kept in chrome.storage.local (this
+// extension's own storage), read fresh by utils/warden.js on every request, never sent anywhere:
+// requests and responses carry HMAC proofs made with it. An empty value unpairs.
+async function setWardenPairing(code) {
+  const value = String(code || '').trim();
+  if (!value) {
+    await chrome.storage.local.remove('wardenPairing');
+  } else if (!wardenClient.PAIRING_CODE_RE.test(value)) {
+    return { ok: false, error: 'A pairing code is at least 32 characters of letters, digits, - and _. Copy WARDEN_PAIRING_SECRET from warden/.env.' };
+  } else {
+    await chrome.storage.local.set({ wardenPairing: value });
+  }
+  const health = await refreshHealthAndSync();
+  return { ok: true, paired: Boolean(value), verified: health.pairingVerified === true, state: healthState(health) };
 }
 
 // ---- Task lifecycle --------------------------------------------------------
@@ -697,6 +741,16 @@ async function startAcceptedTask(task) {
   if (stateName === 'unreachable') {
     noteRunEnd('The task was not sent.', 'refused');
     return { ok: false, refused: true, reason: 'The Warden is not running.', entries: transcript };
+  }
+  if (stateName === 'pairing-needed') {
+    noteBlocked(BLOCKED_PAIRING_ID, {
+      text: 'Pairing is required and this extension has no pairing code, so that task was refused. Copy WARDEN_PAIRING_SECRET from warden/.env into Settings > Pairing code. If the Warden has none yet, make one with `python pairing.py new` in warden/.',
+      reason: 'No pairing code is saved in this extension.',
+      command: null,
+      refused: true,
+    });
+    noteRunEnd('The task was not sent.', 'refused');
+    return { ok: false, refused: true, reason: 'Pairing is required.', entries: transcript };
   }
   if (stateName === 'loading') {
     noteBlocked(BLOCKED_LOADING_ID, {
@@ -1064,7 +1118,10 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
     if (gate.path === 'confirm') {
       let sceneElement = null;
       try { sceneElement = findSceneElement(plan.target_selector, localScene); } catch { sceneElement = null; }
-      release = layaRelease({ plan, sceneElement, review: planResp.review, destructiveIntent: expressesDestructiveIntent(task) });
+      release = layaRelease({
+        plan, sceneElement, review: planResp.review, destructiveIntent: expressesDestructiveIntent(task),
+        reviewVerified: wardenClient.isPairingVerified(planResp),
+      });
       if (release.released) gate = { path: 'unattended', finalTier: gate.finalTier, reasons: [], released: true };
     }
     // Recorded under the harness's existing 'validate' key: this is the work /validate used to do.

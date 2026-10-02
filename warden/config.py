@@ -76,6 +76,30 @@ def reviewer_mode() -> str:
     return "laya" if raw == "laya" else "ollama"
 
 
+# Extension <-> Warden pairing secret (pairing.py). Required since 2 October 2026
+# (Francis): with no secret every POST is refused with setup instructions.
+#   required       WARDEN_PAIRING_SECRET set, at least PAIRING_MIN_LEN characters
+#   misconfigured  set but shorter: refused, never run with a guessable secret
+#   missing        unset: refused
+#   disabled       unset and WARDEN_PAIRING_DISABLED=1: for scripted harnesses only.
+#                  The extension never accepts a Warden that cannot prove pairing, so
+#                  this flag cannot weaken it; it only lets non-extension tools in.
+PAIRING_MIN_LEN = 32
+
+
+def pairing_secret():
+    return os.environ.get("WARDEN_PAIRING_SECRET", "").strip() or None
+
+
+def pairing_state() -> str:
+    secret = pairing_secret()
+    if secret is not None:
+        return "required" if len(secret) >= PAIRING_MIN_LEN else "misconfigured"
+    if os.environ.get("WARDEN_PAIRING_DISABLED", "").strip() == "1":
+        return "disabled"
+    return "missing"
+
+
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 

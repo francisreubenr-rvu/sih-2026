@@ -152,6 +152,7 @@ export function questionForTier(tier, plan) {
 //   - the extension's own scan tiered it state-changing by the conservative default ('unproven'):
 //     no destructive or submit keyword anywhere, no form submit, no label/name mismatch
 //   - the task does not express destructive intent
+//   - the /plan response carrying the review verified the pairing code (utils/warden.js)
 //   - the review names the fine-tuned checkpoint and this exact action and target
 //   - p(navigational) >= 0.9, p(destructive) < 0.5, p(off task) < 0.5
 // Anything missing, malformed or out of range is no release: the confirmation stands.
@@ -162,7 +163,7 @@ export const LAYA_RELEASE_MAX_OFF_TASK = 0.5;
 
 const isProbability = (p) => typeof p === 'number' && Number.isFinite(p) && p >= 0 && p <= 1;
 
-export function layaRelease({ plan, sceneElement, review, destructiveIntent }) {
+export function layaRelease({ plan, sceneElement, review, destructiveIntent, reviewVerified }) {
   const no = (reason) => ({ released: false, reason });
   if (!plan || plan.action !== 'click') return no('only a click can be released');
   if (!sceneElement || sceneElement.tier !== 'state-changing' || sceneElement.tierBasis !== 'unproven') {
@@ -171,6 +172,9 @@ export function layaRelease({ plan, sceneElement, review, destructiveIntent }) {
   if (destructiveIntent === true) return no('the task expresses destructive intent');
   if (!review || typeof review !== 'object' || Array.isArray(review)) return no('no Laya review');
   if (review.skipped) return no(`Laya review skipped: ${String(review.skipped).slice(0, 200)}`);
+  // Pairing (utils/warden.js): only a /plan response that proved the shared code can release.
+  // Without it, anything listening on the Warden's port could send a confident review.
+  if (reviewVerified !== true) return no('the Warden response was not verified by pairing');
   if (review.model !== LAYA_RELEASE_MODEL || review.fineTuned !== true) return no('the review is not from the fine-tuned checkpoint');
   if (review.action !== 'click' || review.targetSelector !== plan.target_selector) return no('the review is for a different step');
   const { pNavigational, pDestructive, pOffTask } = review;

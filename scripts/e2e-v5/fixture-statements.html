@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Synthetic bank desk</title>
+<style>body{font:16px system-ui;margin:40px;max-width:640px}nav a{display:inline-block;margin:0 16px 12px 0}.danger{color:#b00}section{margin-top:16px}</style></head>
+<body><h1>Bank desk (synthetic)</h1>
+<p id="welcome">Welcome back Arjun Mehta. Statements are sent to arjun.m@example.com and alerts to +91 91234 56780.</p>
+<nav>
+<a id="statements-link" href="#statements" onclick="document.getElementById('statements').hidden=false;document.getElementById('status').textContent='Showing account statements for March'">Account statements</a>
+<a id="help-link" href="#help" onclick="document.getElementById('status').textContent='Showing help centre'">Help centre</a>
+<a id="delete-link" class="danger" href="#delete" onclick="document.getElementById('status').textContent='DELETED'">खाता हटाएं</a>
+</nav>
+<section id="statements" hidden><h2>Statements</h2><p>March: 14 transactions.</p></section>
+<p id="status" role="status"></p>
+</body></html>

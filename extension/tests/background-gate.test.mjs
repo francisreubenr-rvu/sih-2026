@@ -6,7 +6,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { defaultStrip, runTask } from './helpers/background-harness.mjs';
+import { DEFAULT_HEALTH, defaultStrip, runTask } from './helpers/background-harness.mjs';
+
 
 const H_NEXT = `h${'a'.repeat(32)}`;
 const H_DEL = `h${'b'.repeat(32)}`;
@@ -306,8 +307,11 @@ const planWithReview = (plan, rev) => (body, n) => (n === 1
   ? { model: 'fake-planner', destination: 'cloud', plan, review: rev }
   : { model: 'fake-planner', destination: 'cloud', plan: FINISH });
 
-test('Laya release: an unproven click with a confident fine-tuned review runs without a prompt', async () => {
-  const run = await runTask({ task: 'download my statement', scan: scanOf([STATEMENTS_LINK]), warden: { plan: planWithReview(click('a.st'), review('a.st')) } });
+const CODE = 'k'.repeat(43);
+const PAIRED = { pairingCode: CODE, wardenSecret: CODE };
+
+test('Laya release: an unproven click with a confident fine-tuned review from a paired Warden runs without a prompt', async () => {
+  const run = await runTask({ ...PAIRED, task: 'download my statement', scan: scanOf([STATEMENTS_LINK]), warden: { plan: planWithReview(click('a.st'), review('a.st')) } });
   assertNoValidate(run);
   assert.equal(run.prompts.length, 0);
   assert.deepEqual(run.executed[0], { action: 'click', value: null, plannedTier: 'state-changing', handle: H_ST, requireUnprovenBasis: true });
@@ -330,7 +334,7 @@ for (const [name, scanEl, rev] of [
   ['no review does not release', STATEMENTS_LINK, undefined],
 ]) {
   test(`Laya release: ${name}`, async () => {
-    const run = await runTask({ task: 'download my statement', scan: scanOf([scanEl]), warden: { plan: planWithReview(click(scanEl.selector), rev) } });
+    const run = await runTask({ ...PAIRED, task: 'download my statement', scan: scanOf([scanEl]), warden: { plan: planWithReview(click(scanEl.selector), rev) } });
     assert.equal(run.prompts.length, 1);
     assert.match(run.prompts[0].text, /tier 'state-changing' and requires local confirmation/);
     assert.equal(run.executed.length, 0);
@@ -340,6 +344,7 @@ for (const [name, scanEl, rev] of [
 test('Laya release is revoked when the live element now matches a rule; proceed re-sends without the requirement', async () => {
   const seen = []; // the harness keeps the (mutated) action object; record what each send carried
   const run = await runTask({
+    ...PAIRED,
     task: 'download my statement',
     scan: scanOf([STATEMENTS_LINK]),
     choices: ['proceed'],
@@ -363,3 +368,57 @@ test('egress: the local tier basis never reaches the Warden', async () => {
     for (const el of body?.elements || []) assert.equal('tierBasis' in el, false, `${path} element carries a tier basis`);
   }
 });
+
+test('Laya release: a Hindi destructive task never releases (intent coherence rewrites it to finish)', async () => {
+  const run = await runTask({ task: 'मेरा खाता हटाएं', scan: scanOf([STATEMENTS_LINK]), warden: { plan: planWithReview(click('a.st'), review('a.st')) } });
+  assert.equal(run.prompts.length, 0);
+  assert.equal(run.executed.some((a) => a.action === 'click'), false, 'the click was rewritten to finish, not released');
+  assert.equal(run.executed[0].action, 'finish');
+});
+
+// ---- Pairing (utils/warden.js, warden/pairing.py) -----------------------------------------------
+import { createHash, createHmac } from 'node:crypto';
+
+const requestMac = (secret, method, path, nonce, raw) => createHmac('sha256', secret)
+  .update(`dhristi-req\n${method}\n${path}\n${nonce}\n${createHash('sha256').update(raw || '').digest('hex')}`)
+  .digest('base64url');
+
+test('pairing: every request carries a fresh nonce and a request proof the Warden can check', async () => {
+  const run = await runTask({ ...PAIRED, scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(click('body > a')) } });
+  assert.equal(run.terminal.status, 'finished');
+  const nonces = new Set();
+  for (const { path, raw, headers } of run.fetchBodies) {
+    const nonce = headers['X-Dhristi-Nonce'];
+    assert.match(nonce, /^[A-Za-z0-9_-]{16,128}$/, `${path} nonce`);
+    assert.equal(nonces.has(nonce), false, 'nonces are never reused');
+    nonces.add(nonce);
+    assert.equal(headers['X-Dhristi-Auth'], requestMac(CODE, raw ? 'POST' : 'GET', path, nonce, raw), `${path} proof`);
+    assert.equal(JSON.stringify(headers).includes(CODE), false, `${path} carries the code itself`);
+  }
+});
+
+for (const [name, wardenSecret] of [['an unsigned impostor', null], ['a Warden with another secret', 'z'.repeat(43)]]) {
+  test(`pairing: ${name} on the port is refused before any page text is sent`, async () => {
+    const run = await runTask({ pairingCode: CODE, wardenSecret, scan: scanOf([STATEMENTS_LINK]), warden: { plan: planWithReview(click('a.st'), review('a.st')) } });
+    assert.equal(run.start.ok, false);
+    assert.equal(run.fetchBodies.some((b) => b.path === '/strip' || b.path === '/plan'), false, 'nothing but /health was sent');
+    assert.equal(run.executed.length, 0);
+    const card = run.entries.find((e) => e.kind === 'blocked');
+    assert.match(card.text, /could not prove this extension's pairing code/);
+  });
+}
+
+for (const wardenPairing of ['required', 'disabled', 'missing', undefined]) {
+  test(`pairing is required: an unpaired extension refuses the run before any POST (Warden reports ${wardenPairing})`, async () => {
+    const run = await runTask({
+      pairingCode: null,
+      wardenSecret: null,
+      scan: scanOf([STATEMENTS_LINK]),
+      warden: { health: () => ({ ...DEFAULT_HEALTH, pairing: wardenPairing }), plan: planWithReview(click('a.st'), { ...review('a.st'), pairingVerified: true }) },
+    });
+    assert.equal(run.start.ok, false);
+    assert.equal(run.fetchBodies.some((b) => b.path !== '/health'), false, 'only GET /health left the browser');
+    assert.equal(run.executed.length, 0);
+    assert.match(run.entries.find((e) => e.kind === 'blocked').text, /Pairing is required/);
+  });
+}

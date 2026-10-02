@@ -10,12 +10,13 @@ version, from inside warden/:
 """
 
 import re
+import sys
 import threading
 from typing import Optional
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 import config
 import entities
@@ -23,6 +24,7 @@ import fastpath
 import groq_client
 import laya_review
 import ollama_client
+import pairing
 import redactor
 import strip as strip_module
 import validate as validate_module
@@ -33,12 +35,63 @@ app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=config.CORS_ORIGIN_REGEX,
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Content-Type", "X-Dhristi-Nonce", "X-Dhristi-Auth"],
+    expose_headers=["X-Dhristi-Proof"],
 )
+
+_replay_guard = pairing.ReplayGuard()
+
+
+@app.middleware("http")
+async def pairing_middleware(request: Request, call_next):
+    """Pairing (pairing.py), required since 2 October 2026. Every POST must carry a valid
+    request proof with a fresh nonce, and every response to a request with a nonce carries
+    X-Dhristi-Proof, so the extension can tell this Warden from anything else listening on
+    the port. Without a usable secret every POST is refused (config.pairing_state)."""
+    state = config.pairing_state()
+    if state == "disabled" or request.method == "OPTIONS":
+        return await call_next(request)
+    secret = config.pairing_secret()
+    path = request.url.path
+    nonce = request.headers.get("x-dhristi-nonce")
+    if request.method == "POST":
+        if state != "required":
+            problem = ("is not set" if state == "missing"
+                       else f"is shorter than {config.PAIRING_MIN_LEN} characters")
+            return JSONResponse(status_code=503, content={
+                "error": f"Pairing is required and WARDEN_PAIRING_SECRET {problem}. Make one with "
+                         "`python pairing.py new`, put it in warden/.env, restart the Warden, and paste "
+                         "the same value into the extension's Settings > Pairing code.",
+                "pairing": state, "warden": config.WARDEN_VERSION,
+            })
+        body = await request.body()
+        if not pairing.verify_request(secret, request.method, path, nonce, request.headers.get("x-dhristi-auth"), body):
+            return JSONResponse(status_code=401, content={
+                "error": "This Warden requires pairing: the request carried no valid pairing proof. "
+                         "Paste the pairing code into the extension's Settings.",
+                "pairing": state, "warden": config.WARDEN_VERSION,
+            })
+        if not _replay_guard.first_use(nonce):
+            return JSONResponse(status_code=401, content={
+                "error": "pairing nonce already used", "pairing": state, "warden": config.WARDEN_VERSION,
+            })
+    response = await call_next(request)
+    if state != "required" or not pairing.valid_nonce(nonce):
+        return response
+    body = b"".join([chunk async for chunk in response.body_iterator])
+    headers = dict(response.headers)
+    headers.pop("content-length", None)
+    headers["X-Dhristi-Proof"] = pairing.response_mac(secret, path, nonce, response.status_code, body)
+    return Response(content=body, status_code=response.status_code, headers=headers, media_type=response.media_type)
 
 
 @app.on_event("startup")
 def _start_model_load() -> None:
+    state = config.pairing_state()
+    if state in ("missing", "misconfigured"):
+        # The state and the fix, never the secret.
+        print(f"warden: pairing {state}; every POST is refused until WARDEN_PAIRING_SECRET is set "
+              "(python pairing.py new). See warden/README.md, 'Pairing with the extension'.", file=sys.stderr)
     # Load in a background thread so the server is already answering /health
     # (with loaded: false) while the ~76s cold load runs, rather than
     # blocking the socket from accepting connections until it finishes.
@@ -58,7 +111,9 @@ def health():
         "plannerModel": config.planner_model(config.planner_mode()),
         "groqConfigured": config.groq_configured(),
         "fastPath": {"mode": fastpath.mode(), "destination": fastpath.destination(fastpath.mode()),
-                     "minConfidence": fastpath.min_confidence()},
+                     "minConfidence": fastpath.min_confidence(),
+                     "jevDisabled": fastpath.jev_disabled_request()},
+        "pairing": config.pairing_state(),
         "warden": config.WARDEN_VERSION,
     }
 

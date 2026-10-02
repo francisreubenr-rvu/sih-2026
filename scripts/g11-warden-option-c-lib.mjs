@@ -3,6 +3,7 @@
  * Times only clocks the caller supplies from the root extension trace.
  * Missing stages stay null. budgetMs stays 200. Privacy-only never mayFlipG11.
  */
+import { createHash, createHmac, randomBytes } from 'node:crypto';
 import { resolve, sep } from 'node:path';
 
 export const BUDGET_MS = 200;
@@ -309,7 +310,16 @@ export function classifyPlannerProbe(status, body) {
   };
 }
 
-export async function probePlanner(wardenBaseUrl, fetchImpl = fetch) {
+// Request-proof headers in warden/pairing.py's scheme, or none without a secret.
+export function pairingHeaders(secret, method, path, raw) {
+  if (!secret) return {};
+  const nonce = randomBytes(18).toString('base64url');
+  const bodyHash = createHash('sha256').update(raw || '').digest('hex');
+  const auth = createHmac('sha256', secret).update(`dhristi-req\n${method}\n${path}\n${nonce}\n${bodyHash}`).digest('base64url');
+  return { 'X-Dhristi-Nonce': nonce, 'X-Dhristi-Auth': auth };
+}
+
+export async function probePlanner(wardenBaseUrl, fetchImpl = fetch, pairingSecret = process.env.WARDEN_PAIRING_SECRET || null) {
   assertWardenOrigin(wardenBaseUrl);
   const body = {
     tokenizedTask: 'open the next control',
@@ -317,12 +327,16 @@ export async function probePlanner(wardenBaseUrl, fetchImpl = fetch) {
     elements: [{ selector: '#next', label: 'Next', fieldType: 'link', filled: false, x: 8, y: 8 }],
     history: [],
   };
+  // Pairing is required by the Warden (warden/pairing.py): sign with WARDEN_PAIRING_SECRET when the
+  // harness has it, else the probe records the Warden's refusal rather than a planner.
+  const raw = JSON.stringify(body);
+  const headers = { 'content-type': 'application/json', ...pairingHeaders(pairingSecret, 'POST', '/plan', raw) };
   let response;
   try {
     response = await fetchImpl(`${WARDEN_ORIGIN}/plan`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
+      headers,
+      body: raw,
     });
   } catch (error) {
     return {

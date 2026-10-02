@@ -4,6 +4,7 @@
 // Each call imports a fresh module instance (query-string cache bust), so run state never leaks
 // between tests. Prompts are answered automatically with the scripted choices, in order.
 
+import { createHash, createHmac } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 
@@ -21,7 +22,13 @@ let instance = 0;
 //            is parked on it (the vault is live then). `send(message, sender)` reaches the worker.
 export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhristi-test/sidepanel.html' };
 
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1 } = {}) {
+// `pairingCode` is what the extension holds (chrome.storage.local 'wardenPairing'); `wardenSecret`
+// is what the fake Warden signs responses with (warden/pairing.py's scheme), so a test can pair
+// them, mismatch them, or leave the Warden unsigned.
+// Pairing is required (2 October 2026), so runs are paired by default; pass pairingCode: null to
+// test an unpaired extension.
+export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];
@@ -66,7 +73,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
       executeScript: async () => [],
     },
     storage: {
-      local: { get: async () => ({}), set: async () => {}, remove: async () => {} },
+      local: { get: async () => (pairingCode ? { wardenPairing: pairingCode } : {}), set: async () => {}, remove: async () => {} },
       session: { get: async () => ({}), set: async () => {} },
     },
     tabs: {
@@ -90,13 +97,29 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
   globalThis.fetch = async (url, init = {}) => {
     const path = new URL(url).pathname;
     const body = init.body ? JSON.parse(init.body) : null;
-    fetchBodies.push({ path, raw: init.body || '', body });
-    const reply = (value) => ({ ok: true, status: 200, json: async () => value });
+    const headers = init.headers || {};
+    fetchBodies.push({ path, raw: init.body || '', body, headers });
+    // Shaped like a fetch Response as utils/warden.js reads it: raw bytes and a header lookup.
+    const respond = (status, value) => {
+      const bytes = Buffer.from(JSON.stringify(value ?? null));
+      const nonce = headers['X-Dhristi-Nonce'];
+      const proof = wardenSecret && nonce
+        ? createHmac('sha256', wardenSecret)
+          .update(`dhristi-res\n${path}\n${nonce}\n${status}\n${createHash('sha256').update(bytes).digest('hex')}`)
+          .digest('base64url')
+        : null;
+      return {
+        ok: status >= 200 && status < 300,
+        status,
+        headers: { get: (name) => (name.toLowerCase() === 'x-dhristi-proof' ? proof : null) },
+        arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+      };
+    };
     const answer = (fn) => {
       try {
-        return reply(fn());
+        return respond(200, fn());
       } catch (error) {
-        if (error && typeof error.status === 'number') return { ok: false, status: error.status, json: async () => error.body ?? null };
+        if (error && typeof error.status === 'number') return respond(error.status, error.body ?? null);
         throw error;
       }
     };

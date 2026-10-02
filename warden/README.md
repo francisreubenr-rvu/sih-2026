@@ -283,6 +283,51 @@ its own scan could not identify (`unproven`), under thresholds it holds itself. 
 extension's run loop does not call `/validate`, so the escalation review above reaches only older
 harnesses.
 
+### Pairing with the extension (required since 2 October 2026)
+
+Before 30 September the extension trusted whatever answered on `127.0.0.1:8756`. Once a `/plan`
+response could skip a confirmation (Laya release, above), that was not good enough. `pairing.py`
+adds a shared secret that never crosses the wire, and since 2 October (Francis) it is required.
+
+| Direction | Header | HMAC-SHA256 over |
+|---|---|---|
+| request | `X-Dhristi-Nonce`, `X-Dhristi-Auth` | `dhristi-req`, method, path, nonce, sha256(body) |
+| response | `X-Dhristi-Proof` | `dhristi-res`, path, nonce, status, sha256(exact response bytes) |
+
+Setup, once per machine:
+
+```sh
+cd warden
+python pairing.py new          # prints a fresh secret
+# put it in warden/.env as WARDEN_PAIRING_SECRET=..., restart the Warden,
+# and paste the same value into the extension's Settings > Pairing code
+```
+
+`/health` reports the pairing state:
+
+| `pairing` | Meaning | POST /strip, /plan, /validate |
+|---|---|---|
+| `required` | secret set, 32+ characters | must carry a valid, unused request proof, else 401; every response is signed |
+| `missing` | no secret | refused (503) with these setup steps; the Warden also says so on startup |
+| `misconfigured` | secret shorter than 32 characters | refused (503) |
+| `disabled` | no secret and `WARDEN_PAIRING_DISABLED=1` | accepted unsigned; for scripted harnesses and the test suite only |
+
+The extension (`extension/utils/warden.js`) behaves as follows:
+
+- **No code saved:** it sends no POST at all, and no run starts, whatever the Warden reports. Only an
+  unsigned `GET /health` goes out, so the panel can say what is missing.
+- **Code saved:** it refuses any response without a valid proof. A failed `/health` proof stops the
+  run before any page text is sent. A `disabled` Warden therefore cannot serve the extension; the
+  flag only lets non-extension tools in.
+- **Laya release:** only on a verified `/plan` response.
+
+The G11 harness signs its `/plan` probe when `WARDEN_PAIRING_SECRET` is in its environment.
+`scripts/e2e-v5/run.mjs` saves that same value into the loaded extension.
+
+Residual: the pairing code sits in the extension's `chrome.storage.local`. If an impostor takes the
+port mid-run after the real Warden answered, at most one `/strip` body reaches it before its unproven
+response stops the run.
+
 ### The reasoning stage, measured 13 September 2026
 
 It had never been exercised before this date: every call recorded `skipped`, and three real defects

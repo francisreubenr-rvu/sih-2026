@@ -1,6 +1,33 @@
 # Dhristi: SIH26171
 
-## Session handoff: start here (updated 1 October 2026, 07:00 UTC)
+## Session handoff: start here (2 October 2026)
+
+**Where the work is.** PR #42 (Laya plan reviewer and release) and PR #41 (fast path, Groq settings, Laya fast-path training, now parked) are merged into `master` (`3314513`). Open: PR #44 on `claude/lucid-fermat-6dkxla`. It adds Hindi and missing-verb destructive rules, and makes extension-Warden pairing required (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). Current review and ordered plan: `PLAN.md`, "Review and next steps (2 October 2026)". Findings: `ROAST.md` rounds 28 and 29. Decision: `Docs/decisions/brain-laya-plan-review.md`.
+
+**Decided by Francis (2 October):**
+
+- Working deadline 16 October 2026.
+- G20 unpaused, with the protocol and forms refreshed for the v5 side panel; still `unknown`, zero sessions.
+- Jev fast path disabled in code but kept.
+- Installs approved, provided nothing destructive happens in the container.
+
+The two-week schedule is in `PLAN.md`.
+
+**Since pairing is required:**
+
+- A Warden with no secret refuses every POST, and an unpaired extension starts no run.
+- Scripted harnesses and the Warden tests use `WARDEN_PAIRING_DISABLED=1`, or sign with the secret.
+- The e2e harness reads `WARDEN_PAIRING_SECRET` and saves it into the loaded extension.
+
+**Checks at the PR #44 head:**
+
+- Warden: 158 passed, 6 skipped.
+- Extension: 134/134 in real Chromium.
+- Prototype: 141/141.
+- G11 harness: 13/13.
+- Ledger: 14 pass / 1 fail / 5 unknown.
+
+## Session handoff, 1 October 2026 (history; superseded by the section above)
 
 **Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), head `ba36a0b` or later, CI green, no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details: `Docs/decisions/brain-cloud-models-jev.md`, `scripts/laya-finetune/README.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 25.
 
@@ -63,7 +90,7 @@ python3 scripts/check_release.py --dry-run                        # 14 pass / 1 
 
 ## Fundamentals restructure (2026-09-23)
 
-Wrap/polish is not the primary path. Target architecture is Warden / v4 (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE), recorded in `Docs/decisions/brain-fundamentals-restructure.md` and `Docs/grokbot-briefing.md`. `warden/` and root `extension/` are on master via PR #31 (archive `2afd215`) and PR #32 (Ollama `/plan` default). G11 stays fail, G20 stays paused, `submission_ready` stays false. Since 29 September the product surfaces (side panel, Prototype pages and popup) use the Signal design system and the public Website is a light landing page with key information only (`DESIGN.md`, `Docs/decisions/brain-signal-redesign.md`); that resolves the earlier ARCH-002 vs side-panel palette conflict. Since 29 September (v5) redaction runs on the device and planning in the cloud: the Warden's GLiNER scores the page line by line (it previously lost names past its window), `/plan` defaults to Groq behind an egress guard, and the extension does every plan check itself and shows the boundary live (`Docs/decisions/brain-v5-local-redaction-cloud-planner.md`). Waves below are history of the master prototype. On 29 September the first real-Groq end-to-end run (`Benchmarks/results/e2e-v5-boundary-v02.json`) replaced the fake-planner evidence, and `Docs/decisions/brain-cloud-models-jev.md` records which local models can move to cloud or Jev (GLiNER and UltraFace cannot). On 30 September the Groq chain put `qwen/qwen3.8-27b` first at temperature 0, and an opt-in decision-model fast path (`WARDEN_FAST_PATH=jev|laya`) was built and measured in the same note. Since 30 September an optional Laya reviewer (`WARDEN_REVIEWER=laya`, fine-tuned multilingual checkpoint, private Hub repo `francisreubenr/dhristi-laya-plan-review`) is available. It is off by default. When on, `/plan` carries its scores, and the extension may skip the F17 confirmation for a click its own rules could not identify, under thresholds the extension holds (`Docs/decisions/brain-laya-plan-review.md`). Because the Warden is unauthenticated, a spoofed Warden could use this; that residual risk is accepted and recorded in ROAST round 28.
+Wrap/polish is not the primary path. Target architecture is Warden / v4 (PERCEIVE→STRIP→PLAN→VALIDATE→EXECUTE), recorded in `Docs/decisions/brain-fundamentals-restructure.md` and `Docs/grokbot-briefing.md`. `warden/` and root `extension/` are on master via PR #31 (archive `2afd215`) and PR #32 (Ollama `/plan` default). G11 stays fail, G20 stays paused, `submission_ready` stays false. Since 29 September the product surfaces (side panel, Prototype pages and popup) use the Signal design system and the public Website is a light landing page with key information only (`DESIGN.md`, `Docs/decisions/brain-signal-redesign.md`); that resolves the earlier ARCH-002 vs side-panel palette conflict. Since 29 September (v5) redaction runs on the device and planning in the cloud: the Warden's GLiNER scores the page line by line (it previously lost names past its window), `/plan` defaults to Groq behind an egress guard, and the extension does every plan check itself and shows the boundary live (`Docs/decisions/brain-v5-local-redaction-cloud-planner.md`). Waves below are history of the master prototype. On 29 September the first real-Groq end-to-end run (`Benchmarks/results/e2e-v5-boundary-v02.json`) replaced the fake-planner evidence, and `Docs/decisions/brain-cloud-models-jev.md` records which local models can move to cloud or Jev (GLiNER and UltraFace cannot). On 30 September the Groq chain put `qwen/qwen3.8-27b` first at temperature 0, and an opt-in decision-model fast path (`WARDEN_FAST_PATH=jev|laya`) was built and measured in the same note. Since 30 September an optional Laya reviewer (`WARDEN_REVIEWER=laya`, fine-tuned multilingual checkpoint, private Hub repo `francisreubenr/dhristi-laya-plan-review`) is available. It is off by default. When on, `/plan` carries its scores, and the extension may skip the F17 confirmation for a click its own rules could not identify, under thresholds the extension holds (`Docs/decisions/brain-laya-plan-review.md`). Only a `/plan` response that proved the extension-Warden pairing secret (`warden/pairing.py`, opt-in through `WARDEN_PAIRING_SECRET`) can release a confirmation. Hindi destructive labels now tier destructive and always ask (ROAST round 28).
 
 ## Product rename (2026-09-14)
 Product renamed **Sightline → Dhristi** on 2026-09-14 (user spelling: Dhristi). Repo slug and GitHub Pages path remain `sih-2026`. Name collision note: a separate Devpost project named SightLine (voice browser agent) is unrelated prior art; former name Sightline / now Dhristi for this SIH26171 candidate.

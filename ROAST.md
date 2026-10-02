@@ -1,10 +1,33 @@
+## Round 29: destructive verbs and required pairing (2 October 2026)
+
+- [x] Verbs neither language listed are now destructive in `op-tier.js` and `tiers.py`. English: forget, discard, withdraw, purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team, end a membership, empty trash, clear history, factory reset, void a transaction. Hindi equivalents too. A node-backed parity test runs the real JS against the Python on 36 labels and 9 tasks.
+- [x] Over-match guarded: "Leave a review", "Swipe", "Clear filters", "Forgot password", "Kickstart", "avoid", bare "छोड़ें" (Skip) and "वापस जाएं" (go back) stay non-destructive. "Withdraw cash" now always asks (accepted).
+- [ ] The test split now reads 120/120 destructive caught, but the verbs were fitted to it (`held_out: false`). A blind set written by someone else is still needed.
+- [x] Pairing is required.
+  - **Warden:** with no secret it refuses every POST (`missing`, 503) and says so on startup. `WARDEN_PAIRING_DISABLED=1` is for harnesses and tests only.
+  - **Extension:** with no code it sends no POST and starts no run, whatever the Warden reports (tested for each state).
+  - **Harnesses:** the G11 probe signs; e2e-v5 pairs the loaded extension.
+- [x] Real loop (`e2e-v5-boundary-v04.json`): loaded extension, real Warden with GLiNER, pairing through Settings, Laya from the private Hub repo, real Groq. 9 runs, 21 cloud requests, 0 personal values, Groq round trip 227 to 1117 ms (median 416).
+  - Release worked in 3 of 3 runs where the statements label was kept.
+  - Destructive always asked (C2).
+  - A wrong pairing code sent 0 POSTs and 0 cloud requests, and showed the refusal.
+- [ ] NEW, GLiNER flags ordinary UI text as an account number in the uncertain band: the link label "Account statements" (0.42) and the task "Delete my account" (35%). Each costs the user a prompt. Stripping a label makes it opaque to the planner, and blocks a release that would have been right. To measure and fix (PLAN schedule, 9 October). Do not lower thresholds to hide it.
+- [ ] NEW, planner: asked to "Delete my account" on the bank page, Qwen clicked "Account statements" instead of the Hindi "खाता हटाएं" link, then finished. Laya did not release that off-task click, so a person would have been asked. Cross-language control choice is a planner weakness.
+- [ ] Laya warns that the checkpoint's serves-task temperature (7.1) is outside its supported range and clamps it to 5. The evaluation ran with the same clamp; recorded here so a future laya upgrade does not shift the numbers silently.
+
 ## Round 28: Laya plan reviewer, PR #42 (work of 30 September 2026, merged 2 October)
 
 - [x] Optional Laya reviewer behind `WARDEN_REVIEWER=laya`; stub tests pin accept → ask only, no tier lowering, SKIPPED on any failure. Warden suite 111 passed / 6 skipped (real-model tests).
 - [x] Zero-shot Laya is not usable here: it rated "Close account permanently" as serving a "download my statement" task at 0.92, and at a 0.9 release threshold it would have released 5 destructive steps. Only the fine-tuned checkpoint was evaluated for release.
 - [x] MEDIUM, `warden/tiers.py` (legacy `/validate`): `NAV_LABEL_RE` ran over label + fieldType, so fieldType `link` satisfied `\blink\b`. Any link without a destructive/submit keyword tiered navigational, and 42/120 destructive test steps would accept (e.g. "Kick from folder", "खाता बंद करें"). Fixed: navigational is matched on the label only, as `op-tier.js` does. Now 0/120, with regression tests.
 - [x] The live F17 gate over-asked: 126/144 genuinely navigational test clicks were forced to confirm. Francis approved release under the constraint. `layaRelease` now skips a confirmation only for an `unproven` click with a confident review from the fine-tuned checkpoint. The live element must still read `unproven` at execute; a relabel to "Pay now" stops, tested in real Chromium. Extension suite 120/120, Warden 122 passed / 6 skipped.
-- [ ] RESIDUAL, accepted: the extension does not authenticate the Warden. Any process on 127.0.0.1:8756 can now release an `unproven` click, including a Hindi destructive label, which the English keyword rules leave `unproven`. Fix candidates: Hindi and other-language destructive keywords in `op-tier.js`, and a pairing secret.
+- [x] RESIDUAL, closed for paired setups. The extension did not authenticate the Warden, so any process on 127.0.0.1:8756 could release an `unproven` click, including a Hindi destructive label.
+  - **Pairing:** `warden/pairing.py` (HMAC request and response proofs, the secret never on the wire). A paired extension refuses any unproven response, and stops before `/strip` when `/health` fails the proof. `layaRelease` requires a verified `/plan` response. Tested against a fake Warden in the extension suite, in Warden pytest, and cross-language against a real uvicorn Warden.
+  - **Hindi keywords:** `HI_DESTRUCTIVE` in `op-tier.js` and `tiers.py`, matched after NFC and zero-width stripping. Hindi destructive test steps tiered destructive: 0/42 → 24/42.
+- [ ] Still open:
+  - Destructive verbs neither language lists (forget, leave, stop sharing, discard, withdraw, purge, revoke), and Hindi submit keywords. These stay `unproven`; only a verified fine-tuned review can release them.
+  - Pairing is opt-in. Unpaired setups never release, but are otherwise as trusting as before.
+  - A mid-run port takeover can receive one `/strip` body before it is detected.
 - [ ] Evidence scope: synthetic hand-authored dataset, author labels, Hindi not native-reviewed, one control per state, correlated tier rows (61 distinct held-out controls). CPU only. No loaded-extension run of the release.
 
 ## Round 27: Laya Colab run v02 (2 October 2026)

@@ -3,9 +3,14 @@
   "created_at": "2026-09-08T18:18:59.042063+00:00",
   "scope": "SIH26171 privacy-preserving visual browser agent; prototype v0.1 in validation",
   "deadline": {
-    "date": "2026-09-11",
+    "date": "2026-10-16",
     "timezone": "Asia/Kolkata",
-    "source": "user instruction; not verified as official SIH deadline"
+    "source": "Francis, 2 October 2026: two weeks to complete. User instruction; not verified as an official SIH date.",
+    "previous": {
+      "date": "2026-09-11",
+      "timezone": "Asia/Kolkata",
+      "source": "user instruction; not verified as official SIH deadline"
+    }
   },
   "status_vocabulary": [
     "pass",
@@ -302,7 +307,7 @@
         "Benchmarks/results/human-evaluation.json"
       ],
       "status": "unknown",
-      "reason": "Recruitment paused by Francis (2026-09-15). Docs/human-evaluation-protocol.md + forms + human-evaluation.json retain templates with zero non-author participants \u2014 status stays unknown; do not claim active recruiting or G20 pass."
+      "reason": "Recruitment unpaused by Francis (2026-10-02); it had been paused since 2026-09-15. Docs/human-evaluation-protocol.md, the forms and Benchmarks/results/human-evaluation.json are templates with zero non-author participants, so the status stays unknown until that results file holds real, anonymized sessions. Do not claim a G20 pass or participants who have not taken part."
     }
   ],
   "iteration_policy": {

@@ -204,7 +204,7 @@ const goodReview = (over = {}) => ({ model: 'laya-dhristi-plan-review', fineTune
 const clickSt = { action: 'click', target_selector: 'a.st' };
 
 test('layaRelease releases only the unproven state-changing click with a confident fine-tuned review', () => {
-  assert.equal(layaRelease({ plan: clickSt, sceneElement: UNPROVEN, review: goodReview(), destructiveIntent: false }).released, true);
+  assert.equal(layaRelease({ plan: clickSt, sceneElement: UNPROVEN, review: goodReview(), destructiveIntent: false, reviewVerified: true }).released, true);
   assert.equal(LAYA_RELEASE_MIN_NAVIGATIONAL, 0.9);
 });
 
@@ -226,9 +226,12 @@ test('layaRelease refuses everything else', () => {
     { review: goodReview({ pNavigational: 1.2 }) },
     { review: goodReview({ pDestructive: 0.5 }) },
     { review: goodReview({ pOffTask: '0.1' }) },
+    { reviewVerified: false },
+    { reviewVerified: undefined },
+    { reviewVerified: 'true' },
   ];
   for (const over of cases) {
-    const args = { plan: clickSt, sceneElement: UNPROVEN, review: goodReview(), destructiveIntent: false, ...over };
+    const args = { plan: clickSt, sceneElement: UNPROVEN, review: goodReview(), destructiveIntent: false, reviewVerified: true, ...over };
     const r = layaRelease(args);
     assert.equal(r.released, false, JSON.stringify(over));
     assert.equal(typeof r.reason, 'string');

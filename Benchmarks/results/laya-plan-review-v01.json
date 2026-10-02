@@ -485,5 +485,41 @@
     "n_navigational": 144,
     "tier_accuracy": 0.4262,
     "measured_with": "warden/tiers.py after the label-only navigational fix (30 September 2026); the dataset's regex_tier column and the 'regex' block above keep the pre-fix values"
+  },
+  "extension_gate_after_hindi_keywords": {
+    "destructive_tiered_destructive": 60,
+    "n_destructive": 120,
+    "destructive_left_unproven": 60,
+    "destructive_left_unproven_controls": [
+      "Discard draft",
+      "End membership",
+      "Forget this device",
+      "Kick from folder",
+      "Leave group",
+      "Purge activity log",
+      "Withdraw application",
+      "डिवाइस भूल जाएं",
+      "समूह छोड़ें",
+      "साझा करना बंद करें"
+    ],
+    "destructive_unattended": 0,
+    "navigational_forced_to_confirm": 126,
+    "n_navigational": 144,
+    "hindi_destructive_tiered_destructive": 24,
+    "n_hindi_destructive": 42,
+    "measured_with": "extension/utils/op-tier.js after the Hindi destructive keywords (30 September 2026), via the evaluate.py port; 'extension_gate' above keeps the English-only values"
+  },
+  "extension_gate_after_added_verbs": {
+    "destructive_tiered_destructive": 120,
+    "n_destructive": 120,
+    "destructive_left_unproven_controls": [],
+    "hindi_destructive_tiered_destructive": 42,
+    "n_hindi_destructive": 42,
+    "navigational_tiered_destructive": 0,
+    "state_changing_tiered_destructive": 0,
+    "navigational_forced_to_confirm": 126,
+    "n_navigational": 144,
+    "held_out": false,
+    "measured_with": "extension/utils/op-tier.js after the 2 October verb additions (same list as warden/tiers.py, parity-tested); the verbs were chosen after seeing this split's misses, so these numbers are not a held-out measure"
   }
 }

@@ -37,7 +37,12 @@ DATA = ROOT / "Benchmarks" / "datasets" / "laya-plan-review-v01"
 # Port of extension/utils/op-tier.js classifyClickTarget for a descriptor that
 # carries only visible text (the dataset has no aria/href/form fields). The
 # live F17 gate lets a click run unattended only when this says navigational.
-_EXT_D = re.compile(r"delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)", re.I)
+# The destructive list is the Warden's (warden/tiers.py), which a node-backed test in
+# warden/test_warden.py keeps identical to op-tier.js. Results files written before 30 September
+# record the English-only rule, and before 2 October the rule without the added verbs.
+import tiers  # noqa: E402
+
+_EXT_D = tiers.DESTRUCTIVE_LABEL_RE
 _EXT_S = re.compile(r"submit|save|confirm|pay|checkout|place order|purchase|send", re.I)
 _EXT_N = re.compile(r"^(go to|view|open|back|next|home|menu)\b|\blink\b", re.I)
 
@@ -47,6 +52,7 @@ RELEASE_MIN = 0.9
 
 
 def extension_tier(label):
+    label = tiers._canonical(label)
     normalised = re.sub(r"[\s\-_/.?=&+#:%]+", " ", label).strip()
     if _EXT_D.search(normalised):
         return "destructive"

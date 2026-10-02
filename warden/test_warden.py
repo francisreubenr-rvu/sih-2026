@@ -74,6 +74,15 @@ import tiers  # noqa: E402
 import validate as validate_module  # noqa: E402
 from minter import TokenMinter  # noqa: E402
 
+
+@pytest.fixture(autouse=True)
+def _pairing_disabled_for_logic_tests(monkeypatch):
+    """Pairing is required by default (config.pairing_state). Tests of planning, stripping and
+    validation logic are not about pairing, so they run with the harness escape; the pairing
+    tests below clear it to exercise the real default."""
+    monkeypatch.setenv("WARDEN_PAIRING_DISABLED", "1")
+    monkeypatch.delenv("WARDEN_PAIRING_SECRET", raising=False)
+
 REPO_ROOT = WARDEN_DIR.parent
 REDACTOR_JS_PATH = REPO_ROOT / "extension" / "utils" / "redactor.js"
 
@@ -1562,7 +1571,7 @@ def test_laya_verdict_is_never_reject(monkeypatch):
 # ---------------------------------------------------------------------------
 # tiers.py navigational match is label-only (ROAST round 28, 30 September 2026).
 # ---------------------------------------------------------------------------
-@pytest.mark.parametrize("label", ["Wipe all data", "Kick from folder", "खाता बंद करें", "Statements"])
+@pytest.mark.parametrize("label", ["Help centre", "My orders", "सहायता केंद्र", "Statements"])
 def test_a_link_is_not_navigational_because_it_is_a_link(label):
     elements = [{"selector": "#t", "label": label, "fieldType": "link", "filled": False, "x": 1, "y": 2}]
     assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
@@ -1670,6 +1679,8 @@ def _fp_env(monkeypatch, backend, answers=None, raises=None):
     monkeypatch.setattr(groq_client, "plan_via_groq", fake_groq)
     monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
     monkeypatch.setenv("WARDEN_FAST_PATH", backend)
+    # Jev is disabled in code (Francis, 2 October 2026); its tests flip the constant to keep coverage.
+    monkeypatch.setattr(fastpath, "JEV_ENABLED", True)
     monkeypatch.delenv("WARDEN_PLANNER", raising=False)
     monkeypatch.delenv("WARDEN_FAST_PATH_MIN_CONFIDENCE", raising=False)
     return calls
@@ -1789,3 +1800,181 @@ def test_plan_review_also_scores_a_fast_path_answer(monkeypatch):
     result = warden_app.dispatch_plan(dict(_FP_BODY))
     assert calls["fast"] == 1 and calls["groq"] == 0 and result["fastPath"]["used"] is True
     assert result["review"]["targetSelector"] == "#save" and result["review"]["fineTuned"] is True
+
+
+# ---------------------------------------------------------------------------
+# Hindi destructive keywords (30 September 2026), mirrored from
+# extension/utils/op-tier.js HI_DESTRUCTIVE.
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("label", [
+    "खाता हटाएं", "सभी डेटा मिटाएं", "खाता बंद करें", "सदस्यता रद्द करें", "प्रोफ़ाइल निष्क्रिय करें",
+    "कार्ड डिलीट करें", "सत्र समाप्त करें", "ह\u200dटाएं",
+])
+def test_hindi_destructive_labels_tier_destructive(label):
+    elements = [{"selector": "#t", "label": label, "fieldType": "link", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "destructive"
+
+
+@pytest.mark.parametrize("label", ["रद्द करें", "समाप्त", "सहायता केंद्र", "भुगतान करें"])
+def test_hindi_cancel_finish_and_others_are_not_destructive(label):
+    elements = [{"selector": "#t", "label": label, "fieldType": "button", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) != "destructive"
+
+
+def test_hindi_task_expresses_destructive_intent():
+    assert tiers.expresses_destructive_intent("मेरा खाता हटाएं")
+    assert tiers.expresses_destructive_intent("मेरी संगीत सदस्यता रद्द करें")
+    assert not tiers.expresses_destructive_intent("मेरा बिजली का बिल भरें")
+
+
+# ---------------------------------------------------------------------------
+# Extension <-> Warden pairing (pairing.py, 30 September 2026).
+# ---------------------------------------------------------------------------
+import pairing  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+_PAIR_SECRET = "p" * 43
+
+
+def _signed_post(client, path, body, secret=_PAIR_SECRET, nonce=None):
+    raw = json.dumps(body).encode()
+    nonce = nonce or pairing.new_secret()[:24]
+    headers = {
+        "Content-Type": "application/json",
+        "X-Dhristi-Nonce": nonce,
+        "X-Dhristi-Auth": pairing.request_mac(secret, "POST", path, nonce, raw),
+    }
+    return client.post(path, content=raw, headers=headers), nonce
+
+
+def _paired_client(monkeypatch):
+    monkeypatch.setenv("WARDEN_PAIRING_SECRET", _PAIR_SECRET)
+    monkeypatch.setattr(warden_app, "_replay_guard", pairing.ReplayGuard())
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    return TestClient(warden_app.app)
+
+
+def test_pairing_is_required_by_default(monkeypatch):
+    monkeypatch.delenv("WARDEN_PAIRING_DISABLED", raising=False)
+    monkeypatch.delenv("WARDEN_PAIRING_SECRET", raising=False)
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    client = TestClient(warden_app.app)
+    res = client.post("/plan", json=_plan_body())
+    assert res.status_code == 503 and "WARDEN_PAIRING_SECRET is not set" in res.json()["error"]
+    assert client.get("/health").json()["pairing"] == "missing"
+
+
+def test_pairing_disabled_escape_lets_harnesses_through_unsigned(monkeypatch):
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    client = TestClient(warden_app.app)
+    res = client.post("/plan", json=_plan_body())
+    assert res.status_code == 200 and "x-dhristi-proof" not in res.headers
+    assert client.get("/health").json()["pairing"] == "disabled"
+
+
+def test_a_secret_wins_over_the_disabled_escape(monkeypatch):
+    monkeypatch.setenv("WARDEN_PAIRING_SECRET", _PAIR_SECRET)
+    assert config.pairing_state() == "required"
+    assert TestClient(warden_app.app).post("/plan", json=_plan_body()).status_code == 401
+
+
+def test_paired_warden_refuses_an_unsigned_or_tampered_post(monkeypatch):
+    client = _paired_client(monkeypatch)
+    assert client.post("/plan", json=_plan_body()).status_code == 401
+    raw = json.dumps(_plan_body()).encode()
+    nonce = "n" * 24
+    good = pairing.request_mac(_PAIR_SECRET, "POST", "/plan", nonce, raw)
+    tampered = client.post("/plan", content=raw + b" ", headers={"X-Dhristi-Nonce": nonce, "X-Dhristi-Auth": good, "Content-Type": "application/json"})
+    assert tampered.status_code == 401
+    wrong_key = pairing.request_mac("q" * 43, "POST", "/plan", nonce, raw)
+    assert client.post("/plan", content=raw, headers={"X-Dhristi-Nonce": nonce, "X-Dhristi-Auth": wrong_key, "Content-Type": "application/json"}).status_code == 401
+
+
+def test_paired_warden_signs_its_response_and_refuses_a_replayed_nonce(monkeypatch):
+    client = _paired_client(monkeypatch)
+    res, nonce = _signed_post(client, "/plan", _plan_body())
+    assert res.status_code == 200
+    expected = pairing.response_mac(_PAIR_SECRET, "/plan", nonce, 200, res.content)
+    assert res.headers["x-dhristi-proof"] == expected
+    replay, _ = _signed_post(client, "/plan", _plan_body(), nonce=nonce)
+    assert replay.status_code == 401
+
+
+def test_paired_health_is_signed_when_asked_and_reports_pairing(monkeypatch):
+    client = _paired_client(monkeypatch)
+    nonce = "h" * 24
+    res = client.get("/health", headers={"X-Dhristi-Nonce": nonce})
+    assert res.json()["pairing"] == "required"
+    assert res.headers["x-dhristi-proof"] == pairing.response_mac(_PAIR_SECRET, "/health", nonce, 200, res.content)
+
+
+def test_short_pairing_secret_fails_closed(monkeypatch):
+    monkeypatch.setenv("WARDEN_PAIRING_SECRET", "short")
+    client = TestClient(warden_app.app)
+    assert client.post("/plan", json=_plan_body()).status_code == 503
+    assert client.get("/health").json()["pairing"] == "misconfigured"
+
+
+def test_pairing_new_secret_is_long_enough():
+    assert len(pairing.new_secret()) >= config.PAIRING_MIN_LEN
+
+
+# ---------------------------------------------------------------------------
+# Destructive keyword parity: warden/tiers.py and extension/utils/op-tier.js
+# (2 October 2026). The lists are written twice; this runs the real JS.
+# ---------------------------------------------------------------------------
+_PARITY_LABELS = [
+    "Delete account", "Leave group", "Leave a review", "Swipe to continue", "Wipe all data", "Clear filters",
+    "Clear history", "Kick from folder", "Kickstart", "Void transaction", "avoid", "Forget this device",
+    "Forgot password", "Withdraw application", "Discard draft", "Purge activity log", "Revoke access",
+    "Stop sharing", "End membership", "Empty trash", "Factory reset", "Unlink card", "Statements",
+    "खाता हटाएं", "समूह छोड़ें", "छोड़ें", "साझा करना बंद करें", "डिवाइस भूल जाएं", "आवेदन वापस लें",
+    "वापस जाएं", "पहुँच रद्द करें", "रद्द करें", "समाप्त", "सहायता केंद्र", "सदस्य को निकालें", "ह‍टाएं",
+]
+_PARITY_TASKS = [
+    "leave the group", "delete my account", "stop sharing the folder", "download my statement",
+    "मेरा खाता हटाएं", "समूह छोड़ें", "मेरा बिजली का बिल भरें", "wipe my history", "write a review",
+]
+
+
+def test_destructive_rules_match_the_extension():
+    if which("node") is None:
+        pytest.skip("node is not on PATH; cannot run extension/utils/op-tier.js")
+    script = (
+        "const m = await import(process.argv[1]);"
+        "const [labels, tasks] = JSON.parse(process.argv[2]);"
+        "console.log(JSON.stringify([labels.map((t) => m.classifyClickTarget({ visibleText: t }) === 'destructive'),"
+        " tasks.map((t) => m.expressesDestructiveIntent(t))]));"
+    )
+    op_tier = (REPO_ROOT / "extension" / "utils" / "op-tier.js").as_uri()
+    out = subprocess.run(
+        ["node", "--input-type=module", "-e", script, op_tier, json.dumps([_PARITY_LABELS, _PARITY_TASKS])],
+        capture_output=True, text=True, check=True,
+    )
+    js_labels, js_tasks = json.loads(out.stdout)
+    py_labels = [
+        tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": l, "fieldType": "button"}]) == "destructive"
+        for l in _PARITY_LABELS
+    ]
+    py_tasks = [tiers.expresses_destructive_intent(t) for t in _PARITY_TASKS]
+    assert dict(zip(_PARITY_LABELS, py_labels)) == dict(zip(_PARITY_LABELS, js_labels))
+    assert dict(zip(_PARITY_TASKS, py_tasks)) == dict(zip(_PARITY_TASKS, js_tasks))
+    expected_destructive = {
+        "Delete account", "Leave group", "Wipe all data", "Clear history", "Kick from folder", "Void transaction",
+        "Forget this device", "Withdraw application", "Discard draft", "Purge activity log", "Revoke access",
+        "Stop sharing", "End membership", "Empty trash", "Factory reset", "Unlink card", "खाता हटाएं", "समूह छोड़ें",
+        "साझा करना बंद करें", "डिवाइस भूल जाएं", "आवेदन वापस लें", "पहुँच रद्द करें", "सदस्य को निकालें", "ह‍टाएं",
+    }
+    assert {l for l, d in zip(_PARITY_LABELS, py_labels) if d} == expected_destructive
+
+
+
+def test_jev_fast_path_is_disabled_but_kept(monkeypatch):
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
+    monkeypatch.setattr(fastpath, "JEV_ENABLED", False)
+    assert fastpath.mode() == "off" and fastpath.jev_disabled_request() is True
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 0, "no body may reach Jev while it is disabled"
+    assert calls["groq"] == 1 and "fastPath" not in result
+    assert TestClient(warden_app.app).get("/health").json()["fastPath"]["jevDisabled"] is True
+    assert callable(fastpath.plan_or_none), "the code is kept"
