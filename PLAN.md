@@ -43,7 +43,7 @@ Francis asked for a review of the current state and a plan. Facts first, then th
 |---|---|---|---|
 | 2 to 3 Oct | Claude | **Done 2 Oct.** Real end-to-end run: loaded extension, real Warden (GLiNER), pairing, Laya release, real Groq. 9 runs, 21 cloud requests, 0 personal values; release 3 of 3 where it should; wrong code sent nothing | `Benchmarks/results/e2e-v5-boundary-v04.json` |
 | 3 Oct | Francis | Merge PR #44 | merged PR |
-| 3 to 4 Oct | team, Claude | Blind test set: one teammate who has not seen the data writes ~150 EN/HI controls and tasks with labels. Claude supplies the template and scorer | `Benchmarks/datasets/laya-blind-v01/`, then a results file |
+| 3 to 4 Oct | Gopreeth, Varun, Claude | Blind test set: Gopreeth (`writer-a.csv`) and Varun (`writer-b.csv`) each write 75 EN/HI rows without opening the v01 data or keyword lists. Kit ready 2 Oct: README, template, `scripts/laya/score_blind.py --check` (writers) and `--score` (Claude) | `Benchmarks/datasets/laya-blind-v01/`, then `Benchmarks/results/laya-blind-v01.json` |
 | 4 to 6 Oct | Claude | G11 measured honestly on the current tree. Laya runs only where it can change the outcome. Budget stays 200 ms | `core-latency-*.json`; G11 status from evidence |
 | 5 to 10 Oct | team | G20 sessions: 5+ non-author participants, 3+ narrative reviewers (protocol and forms refreshed for v5) | `human-evaluation.json`; `scripts/g20_summarize.py` |
 | 6 to 7 Oct | Claude | Refresh stale passes at the current head (G05, G06/G07, G08), then `check_release.py --max-behind` | regenerated evidence files |
