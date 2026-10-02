@@ -9,7 +9,7 @@ Short honesty one-pager for judges and teammates. Product copy lives on the Webs
 | Semantic scene fields: allowlisted control labels, geometry, opaque region kinds | Raw pixels / screenshots |
 | Sent to local Node (+ Ollama when planner used) after sanitize | Field values, URLs, free text, pairing secrets |
 
-- **DigiLocker** = inspired UX / trust pattern only — not partner, API, credential share, or custody.
+- **DigiLocker** = inspired UX / trust pattern only, not partner, API, credential share, or custody.
 - A smaller semantic payload is **not** anonymity; layout can still reveal task structure.
 
 ## Source of truth

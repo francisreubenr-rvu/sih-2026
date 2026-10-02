@@ -1562,7 +1562,14 @@ function buildHistory(steps) {
   return steps
     .filter((step) => step.action !== 'PAGE_SCAN')
     .slice(-HISTORY_LIMIT)
-    .map((step) => ({ stepNumber: step.stepNumber, action: step.action, target: step.target ?? null, status: step.status }));
+    .map((step) => {
+      const entry = { stepNumber: step.stepNumber, action: step.action, target: step.target ?? null, status: step.status };
+      // A vault token names a PII type and slot, not content, so the planner may see which value was
+      // typed. Without it the first real-Groq run retyped EMAIL#1 twice before saving. A masked
+      // free-text value is left out: its asterisks would only leak its length.
+      if (isVaultToken(step.valueToken)) entry.value = step.valueToken;
+      return entry;
+    });
 }
 
 // ---- Startup ---------------------------------------------------------------

@@ -1,0 +1,57 @@
+{
+ "id": "e2e-v5-boundary-v02",
+ "date": "2026-09-29",
+ "harness": "scripts/e2e-v5/run.mjs with scripts/e2e-v5/recording-relay.mjs",
+ "surface": "root extension/ (unpacked, Chromium headless=new) + warden/ with GLiNER urchade/gliner_multi_pii-v1 loaded on CPU + REAL Groq planner (openai/gpt-oss-20b, fallback openai/gpt-oss-120b). The Warden posts to a loopback recording relay (GROQ_BASE_URL=http://127.0.0.1:8799) that logs each body and forwards it unchanged to https://api.groq.com/openai/v1, so the log is exactly what left the machine.",
+ "scope": "Synthetic fixture only (scripts/e2e-v5/fixture.html), same task as v01. Run in a Linux cloud container (location not verified) behind an egress proxy, not on the team machine in India. Five runs: run1 on master as merged (8c04ecd), run2 after the STATUS-text fix, run3-run5 after the STATUS-text and history-token fixes. The harness answers every prompt with proceed.",
+ "task": "Update my contact email to priya.r@example.com and save the profile",
+ "values_checked": ["priya.r@example.com", "Priya", "Raghunathan", "98765", "43210"],
+ "runs": {
+  "run1": {
+   "tree": "master 8c04ecd (no fix)",
+   "run_status": "stopped at the 25-step limit",
+   "page_outcome": "status 'Saved priya.r@example.com' reached, but the planner never chose finish; it retyped and resaved until the step limit",
+   "cloud_requests": 33, "raw_pii_hits_in_cloud_requests": 0,
+   "upstream_status": {"200": 25, "429": 8},
+   "note": "The 429s coincided with scripts/cloud-models/bench.py running against the same Groq key; the Warden's fallback chain moved to gpt-oss-120b and the run continued.",
+   "relay_ms_min": 87, "relay_ms_p50": 563, "relay_ms_max": 1124
+  },
+  "run2": {
+   "tree": "STATUS text fix (extension/content.js collectStatusText + groq_client finish rule)",
+   "run_status": "finished", "steps": 5,
+   "plans": ["type #email", "type #email", "type #email", "click #save", "finish"],
+   "cloud_requests": 5, "raw_pii_hits_in_cloud_requests": 0, "upstream_status": {"200": 5},
+   "relay_ms_min": 432, "relay_ms_p50": 1085, "relay_ms_max": 1585
+  },
+  "run3": {
+   "tree": "STATUS text fix + vault token in plan history (extension/background.js buildHistory)",
+   "run_status": "finished", "steps": 3, "plans": ["type #email EMAIL#1", "click #save", "finish"],
+   "cloud_requests": 3, "raw_pii_hits_in_cloud_requests": 0, "upstream_status": {"200": 3},
+   "relay_ms_min": 613, "relay_ms_p50": 732, "relay_ms_max": 1219
+  },
+  "run4": {
+   "tree": "same as run3",
+   "run_status": "finished", "steps": 3, "plans": ["type #email EMAIL#1", "click #save", "finish"],
+   "cloud_requests": 3, "raw_pii_hits_in_cloud_requests": 0, "upstream_status": {"200": 3},
+   "relay_ms_min": 325, "relay_ms_p50": 774, "relay_ms_max": 793
+  },
+  "run5": {
+   "tree": "same as run3",
+   "run_status": "finished", "steps": 4, "plans": ["click #email", "type #email EMAIL#1", "click #save", "finish"],
+   "cloud_requests": 4, "raw_pii_hits_in_cloud_requests": 0, "upstream_status": {"200": 4},
+   "relay_ms_min": 511, "relay_ms_p50": 596, "relay_ms_max": 942
+  }
+ },
+ "totals": {
+  "real_cloud_requests": 48,
+  "raw_pii_hits_in_cloud_requests": 0,
+  "fixed_tree_runs_finished": "3 of 3 (3, 3 and 4 steps)",
+  "fixed_tree_planner_relay_ms": {"calls": 10, "min": 325, "p50": 732, "max": 1219}
+ },
+ "cloud_saw_task": "Update my contact email to EMAIL#1 and save the profile",
+ "cloud_saw_label": "Signed in as PERSONNAME#1",
+ "panel_console_errors": 0,
+ "found": "With a real planner the v01 loop could not end: sanitizedDom listed controls only, so the page's own 'Saved ...' status never reached the planner, and plan history carried no value, so the planner could not tell the email was already typed. The scripted fake planner in v01 hid both, because it was hard-coded to finish after the save.",
+ "not_measured": "Ollama offline mode; toolbar-opened side panel (the harness opens sidepanel.html as a tab); Firefox; any real site; latency from India. Relay ms is one planner round trip, not the G11 full flow.",
+ "guardrails": "No guardrail status changed. G11 stays fail (one planner round trip alone is 325-1219 ms against a 200 ms full-flow budget); submission_ready stays false."
+}

@@ -1,4 +1,4 @@
-# Wave 3 — extension capture→review loop + packaging (14 September 2026)
+# Wave 3: extension capture→review loop + packaging (14 September 2026)
 
 ## What was proven
 
@@ -13,9 +13,9 @@ Native refresh: `extension-native-v03.json`. Packaging: extension **0.1.1** with
 
 ## What still needs a human
 
-- **Chrome toolbar glyph click** — Playwright cannot invoke the action UI; production `activeTab` grant remains a human gesture for the shipped manifest.
-- **Firefox live unpacked run** — package + `browser ?? chrome` exist; no Firefox binary on this host.
-- **Live Ollama/Qwen planner E2E** — :11434/:11436 unreachable this wave; skipped, not faked.
+- **Chrome toolbar glyph click**: Playwright cannot invoke the action UI; production `activeTab` grant remains a human gesture for the shipped manifest.
+- **Firefox live unpacked run**: package + `browser ?? chrome` exist; no Firefox binary on this host.
+- **Live Ollama/Qwen planner E2E**: :11434/:11436 unreachable this wave; skipped, not faked.
 
 ## Guardrails
 

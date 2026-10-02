@@ -122,7 +122,14 @@ def ollama_model_is_local(model: str) -> bool:
 # Probed across this account's reachable catalogue the only two usable models
 # are the two below. Re-probe before editing; do not add a model id because it
 # looks plausible, since a dead entry costs a wasted request on every call.
-_DEFAULT_CHAIN = "openai/gpt-oss-20b,openai/gpt-oss-120b"
+#
+# 30 September 2026 (Francis): qwen/qwen3.8-27b goes first. Re-probed that day,
+# all three answer on this account. On the Warden's own prompt it was correct
+# on 36 of 36 valid answers at p50 342 ms, against 31 of 31 at 615 ms for
+# gpt-oss-20b (Benchmarks/results/cloud-model-bench-groq-v02.json). Its free-tier
+# token limit is lower: under load it has returned "Request too large" 429s,
+# which the chain treats like any 429 and moves on.
+_DEFAULT_CHAIN = "qwen/qwen3.8-27b,openai/gpt-oss-20b,openai/gpt-oss-120b"
 GROQ_MODEL_CHAIN = [
     m.strip() for m in os.environ.get("GROQ_MODEL_CHAIN", _DEFAULT_CHAIN).split(",") if m.strip()
 ]

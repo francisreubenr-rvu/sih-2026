@@ -1,6 +1,6 @@
 /**
  * Honest SIH26171 rubric measurement hooks.
- * Return labeled unit-fixture / unknown / fail results — never invent saturation.
+ * Return labeled unit-fixture / unknown / fail results; never invent saturation.
  * Official weights: visual 25%, PII 20%, redaction 20%, client resources 20%, latency 15%.
  */
 
@@ -15,7 +15,7 @@ export const RUBRIC_WEIGHTS = Object.freeze({
   'task-latency': 15,
 });
 
-/** Full-flow under-200ms gate from Guardrails — do not weaken. */
+/** Full-flow under-200ms gate from Guardrails; do not weaken. */
 export const FULL_FLOW_LATENCY_MS = 200;
 
 export function scoreVisualContext({ expectedControls, observedControls }) {

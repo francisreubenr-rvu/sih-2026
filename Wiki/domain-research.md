@@ -1,4 +1,4 @@
-# Technical research — SIH26171
+# Technical research: SIH26171
 
 Updated 9 September 2026. Sources below are technical literature and implementations, not evidence of our prototype's accuracy or winning probability. Raw page archives and retrieval hashes: `Raw/domain/archive-manifest.json`. SciSpace/Consensus discovery responses are preserved under `Raw/domain/discovery-*.json`; all six cited Consensus result fetches were archived before use.
 

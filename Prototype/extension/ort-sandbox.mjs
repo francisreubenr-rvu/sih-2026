@@ -1,6 +1,6 @@
 /**
  * ORT host for MV3 manifest sandbox page (DBG-002 / DBG-003).
- * No chrome.* APIs — parent passes absolute package URLs or we resolve relative to this document.
+ * No chrome.* APIs; parent passes absolute package URLs or we resolve relative to this document.
  * Raw pixels stay in-browser (postMessage / transferable ImageBitmap only).
  *
  * DBG-003: decode → detect → selective mosaic run here so the action popup stays thin

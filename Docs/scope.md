@@ -19,4 +19,4 @@
 
 ## Six-person ceiling
 
-Team of six CSE students (proposed roles). Architecture stays within: 1 journey, 2 services, 1 SQLite store, 1 optional local model provider — see `Docs/architecture.md`.
+Team of six CSE students (proposed roles). Architecture stays within: 1 journey, 2 services, 1 SQLite store, 1 optional local model provider. See `Docs/architecture.md`.

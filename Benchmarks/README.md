@@ -1,4 +1,4 @@
-# Benchmarks — definitions, not results
+# Benchmarks: definitions, not results
 
 `definitions.json` and `definitions.csv` contain eleven measurable KPIs and their protocols. All values are currently `null` / blank because no verified SIH2171 prototype or independent participant study exists. Targets are self-imposed, not official SIH weights.
 

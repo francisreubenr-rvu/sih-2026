@@ -255,7 +255,7 @@ def template():
 
 submission();talk();template()
 total=sum(n[1] for n in NOTES)
-lines=['# Dhristi — 15-slide speaker notes','',f'Planned talk slots: {total} seconds ({total//60}m {total%60}s). Approximately 12 minutes; not a measured rehearsal. Allow operator time on slide 9. Sources and limitations are retained in the PPTX notes.','',
+lines=['# Dhristi: 15-slide speaker notes','',f'Planned talk slots: {total} seconds ({total//60}m {total%60}s). Approximately 12 minutes; not a measured rehearsal. Allow operator time on slide 9. Sources and limitations are retained in the PPTX notes.','',
  '## Files and template use','',
  '- `submission-deck.pptx/pdf`: six content slides derived from the supplied 2025 reference. Registered team details and current organizer-format applicability remain open. Dhristi is the working project name.',
  '- `pitch-deck.pptx/pdf`: separate 15-slide technical talk; it is not the six-slide portal submission.',

@@ -1,9 +1,9 @@
-# Brain — Wrap harder finish (pixel HUD + prototype + explain)
+# Brain: Wrap harder finish (pixel HUD + prototype + explain)
 
 **Date:** 2026-09-22  
 **Branch:** `brain/wrap-harder-finish`  
 **Authority chrome brief:** `Docs/decisions/brain-arch-pixel-hud-002.md` (ARCH-PIXEL-HUD-002)  
-**Prior wrap:** PR#27 / `Docs/decisions/brain-pixel-ui-wrap.md` (not enough — densify further)  
+**Prior wrap:** PR#27 / `Docs/decisions/brain-pixel-ui-wrap.md` (not enough; densify further)  
 **Scope:** Website + extension popup + Prototype/app chrome densify; prototype zips/tests green; explain video refresh. Brand Hybrid C unchanged. No gate flips. `submission_ready` remains **false**.
 
 ## What changed vs PR#27
@@ -31,7 +31,7 @@
 
 ## Honesty (unchanged)
 
-- DigiLocker = color tokens / UX rhythm only — not partner/API/custody.  
+- DigiLocker = color tokens / UX rhythm only, not partner/API/custody.  
 - Fast ≠ G11; G11 remains fail.  
 - Semantic scene egress only; raw pixels local.  
 - No named ISRO portal fiction; no MeitY seal.  
@@ -53,7 +53,7 @@
 
 ## Remaining gaps needing Francis
 
-- Chrome **toolbar glyph** human click (`activeTab`) — automation cannot complete G03 multi-scenario.  
+- Chrome **toolbar glyph** human click (`activeTab`); automation cannot complete G03 multi-scenario.  
 - Live Firefox validation of packaged extension.  
 - G20 non-author human validation remains paused.  
 - G11 full-flow still fail (Reason-inclusive p95).  

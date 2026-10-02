@@ -73,7 +73,7 @@ async function populateExtensionTree(dest) {
     minify: true,
     legalComments: 'eof',
   });
-  // Extension needs UltraFace + ORT WASM only — never ship local OCR/PII lab weights in the MV3 zip.
+  // Extension needs UltraFace + ORT WASM only; never ship local OCR/PII lab weights in the MV3 zip.
   await mkdir(new URL('models/', dest), { recursive: true });
   await mkdir(new URL('models/ort/', dest), { recursive: true });
   for (const name of [

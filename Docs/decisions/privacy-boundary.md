@@ -1,4 +1,4 @@
-# ADR 001 — Reconstruct context before egress
+# ADR 001: Reconstruct context before egress
 
 Status: implemented v0.1, 9 September 2026. Working project name: Dhristi (not a trademark or novelty claim).
 

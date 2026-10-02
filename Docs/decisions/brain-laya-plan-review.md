@@ -64,7 +64,7 @@ The plan was to add confirmations. The dataset showed that the live gate does no
 
 - **Extension F17.** It runs a click unattended only when the English label starts with a navigation word. It misses nothing destructive here, but it asks on 88% of genuinely navigational clicks. So in the live loop, a reviewer that can only escalate changes almost nothing.
 - **Release simulation (not shipped).** Laya releases a confirmation only when p(navigational) ≥ 0.9, a threshold fixed in advance. It would have released **97 of the 126** unnecessary confirmations and **0** state-changing or destructive steps. Zero-shot Laya at the same threshold released 5 destructive steps, including "Close account". A released step would therefore go through unattended, so this path needs the fine-tuned checkpoint and a decision.
-- **Warden `tiers.py`.** It matches the navigation regex against label + fieldType, so a fieldType of `link` satisfies `\blink\b`. Any link without a destructive or submit keyword becomes navigational. This path is outside the v5 loop, so it is recorded in ROAST round 22 and not fixed here.
+- **Warden `tiers.py`.** It matches the navigation regex against label + fieldType, so a fieldType of `link` satisfies `\blink\b`. Any link without a destructive or submit keyword becomes navigational. This path is outside the v5 loop, so it is recorded in ROAST round 28 (numbered 22 before the merge) and not fixed here.
 
 ## Limits
 

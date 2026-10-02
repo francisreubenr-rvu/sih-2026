@@ -1,5 +1,5 @@
 /**
- * G11 latency strategy — reduce full-flow time without weakening the <200ms gate.
+ * G11 latency strategy: reduce full-flow time without weakening the <200ms gate.
  *
  * Honest model:
  * - Privacy-only mode ends at local sanitize/review (no planner/LLM network).
@@ -35,7 +35,7 @@ export const THREE_PATHS = Object.freeze({
     llm: false,
     status: 'partial_runnable',
     g11: 'Not a G11 measurement. Local risk band only; officialScore null.',
-    slo: 'Diagnostic risk band only — not official SIH weighted score / not WebPII.',
+    slo: 'Diagnostic risk band only, not official SIH weighted score / not WebPII.',
   },
   reason: {
     id: 'reason',
@@ -87,7 +87,7 @@ export function resolveOperatingMode(mode) {
 
 /**
  * Session-scoped detector holder so warm captures reuse the WASM session.
- * In the MV3 action popup this session is the popup document lifetime only —
+ * In the MV3 action popup this session is the popup document lifetime only;
  * closing the toolbar popup drops the sandbox iframe / Worker (DBG-002).
  */
 export function createDetectorCache() {
@@ -119,7 +119,7 @@ export function resolvePreviewStrategy(preference = PREVIEW_STRATEGIES.selective
       strategy: PREVIEW_STRATEGIES.wireframe,
       useSelectiveMosaic: false,
       expectedCost: 'low',
-      note: 'Wireframe paintScene only — faster local preview; still semantics-only egress.',
+      note: 'Wireframe paintScene only, faster local preview; still semantics-only egress.',
     };
   }
   return {
@@ -161,13 +161,13 @@ export function resolveCapturePreviewStrategy({
     return {
       ...resolvePreviewStrategy(PREVIEW_STRATEGIES.wireframe),
       autoHeavyWireframe: true,
-      note: 'Heavy page / multisite auto wireframe (DBG-003) — skips mosaic cost.',
+      note: 'Heavy page / multisite auto wireframe (DBG-003); skips mosaic cost.',
     };
   }
   return { ...resolvePreviewStrategy(PREVIEW_STRATEGIES.selective), autoHeavyWireframe: false };
 }
 
-/** Options for tabs.captureVisibleTab — jpeg shrinks decode cost on public pages (DBG-003). */
+/** Options for tabs.captureVisibleTab: jpeg shrinks decode cost on public pages (DBG-003). */
 export function captureVisibleTabOptions({ format = 'jpeg', quality = 70 } = {}) {
   if (format === 'png') return { format: 'png' };
   const q = Number.isFinite(quality) ? Math.max(0, Math.min(100, Math.round(quality))) : 70;
@@ -265,7 +265,7 @@ export function buildLatencyDistributionRecord({
   const localGate = local.length
     ? scoreLatency({ elapsedMs: percentile(local, 95) ?? local[local.length - 1], budgetMs })
     : null;
-  // G11 requires full-flow including model — use historical planner-inclusive samples when present.
+  // G11 requires full-flow including model; use historical planner-inclusive samples when present.
   const fullGate = full.length
     ? scoreLatency({ elapsedMs: percentile(full, 95) ?? full[full.length - 1], budgetMs })
     : {

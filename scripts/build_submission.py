@@ -28,7 +28,7 @@ for i,s in enumerate(p.slides):
   body=s.shapes[2];body.top=Inches(1.85);body.left=Inches(.7);body.width=Inches(11.9);body.height=Inches(4.55);text(body,additions[i],22 if i<5 else 19)
   text(s.shapes[5],'TEAM NAME\nPENDING',10)
  notice=s.shapes.add_textbox(Inches(.7),Inches(6.35),Inches(11.9),Inches(.42))
- text(notice,'PREPARATION BLUEPRINT — NOT SUBMISSION READY',15)
+ text(notice,'PREPARATION BLUEPRINT: NOT SUBMISSION READY',15)
  for para in notice.text_frame.paragraphs:para.font.bold=True;para.font.color.rgb=RGBColor.from_string('9F271D')
  s.notes_slide.notes_text_frame.text='Derived from the user-supplied 2025 template. Six content slides and original heading families/pointers preserved. 2026 applicability, SIH2171 identity and registered details require verification. This is an editable blueprint, not a completed idea submission. See Docs/template-audit.md.'
 p.core_properties.title='SIH2171 | Six-slide submission blueprint | NOT SUBMISSION READY'

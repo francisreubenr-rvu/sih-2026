@@ -1,0 +1,988 @@
+{
+ "id": "laya-colab-sweep-v01",
+ "date": "2026-10-01",
+ "source": "Transcribed from the cell outputs of scripts/laya-finetune/colab_train.ipynb as Francis saved it to GitHub (commit fbcda5c on master, path determined-babbage-mhi2zj/scripts/laya-finetune/colab_train.ipynb). The full fastpath-bench-laya-colab-v01.json, selection.json and validation/*.json are on Francis's Google Drive (MyDrive/dhristi-laya/colab-v01) and are not in this repo yet; nothing here is from those files.",
+ "notebook_commit_run": "e9cd7ab (branch claude/determined-babbage-mhi2zj)",
+ "gpu": "NVIDIA A100-SXM4-80GB | 79 GB | bf16 True | RAM 167 GB",
+ "setup": {
+  "train": "gen_data.py --n 20000 --seed 20261010 (4,492 free-text steps)",
+  "val": "gen_data.py --n 2000 --seed 20261011, 1,619 steps left after dropping those identical to a training step",
+  "runs": {
+   "a-s1": "LR 2.5e-5/1e-4 seed 1",
+   "a-s2": "LR 2.5e-5/1e-4 seed 2",
+   "b-s1": "LR 5e-5/2e-4 seed 1",
+   "c-s1": "LR 1e-5/5e-5 seed 1"
+  },
+  "common": "whole encoder (28/28), 6 epochs, max_len 1024 / head 256, micro-batch 32, bf16, no gradient checkpointing; checkpoints at epochs 2, 4, 6"
+ },
+ "training": {
+  "a-s1": {
+   "minutes": 34,
+   "epochs": [
+    {
+     "epoch": 1,
+     "mean_ce": 0.3554,
+     "ce_choice": 0.4133,
+     "ce_free_text": 0.2974,
+     "elapsed_s": 311
+    },
+    {
+     "epoch": 2,
+     "mean_ce": 0.1974,
+     "ce_choice": 0.1944,
+     "ce_free_text": 0.2005,
+     "elapsed_s": 622
+    },
+    {
+     "epoch": 3,
+     "mean_ce": 0.1776,
+     "ce_choice": 0.1564,
+     "ce_free_text": 0.1988,
+     "elapsed_s": 957
+    },
+    {
+     "epoch": 4,
+     "mean_ce": 0.1737,
+     "ce_choice": 0.1488,
+     "ce_free_text": 0.1987,
+     "elapsed_s": 1267
+    },
+    {
+     "epoch": 5,
+     "mean_ce": 0.1719,
+     "ce_choice": 0.1452,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1602
+    },
+    {
+     "epoch": 6,
+     "mean_ce": 0.1711,
+     "ce_choice": 0.1436,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1912
+    }
+   ]
+  },
+  "a-s2": {
+   "minutes": 33,
+   "epochs": [
+    {
+     "epoch": 1,
+     "mean_ce": 0.3186,
+     "ce_choice": 0.386,
+     "ce_free_text": 0.2513,
+     "elapsed_s": 310
+    },
+    {
+     "epoch": 2,
+     "mean_ce": 0.1914,
+     "ce_choice": 0.183,
+     "ce_free_text": 0.1998,
+     "elapsed_s": 619
+    },
+    {
+     "epoch": 3,
+     "mean_ce": 0.1736,
+     "ce_choice": 0.1481,
+     "ce_free_text": 0.1991,
+     "elapsed_s": 953
+    },
+    {
+     "epoch": 4,
+     "mean_ce": 0.1716,
+     "ce_choice": 0.1444,
+     "ce_free_text": 0.1988,
+     "elapsed_s": 1263
+    },
+    {
+     "epoch": 5,
+     "mean_ce": 0.1712,
+     "ce_choice": 0.1437,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1597
+    },
+    {
+     "epoch": 6,
+     "mean_ce": 0.1707,
+     "ce_choice": 0.1429,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1906
+    }
+   ]
+  },
+  "b-s1": {
+   "minutes": 33,
+   "epochs": [
+    {
+     "epoch": 1,
+     "mean_ce": 0.3333,
+     "ce_choice": 0.4143,
+     "ce_free_text": 0.2523,
+     "elapsed_s": 311
+    },
+    {
+     "epoch": 2,
+     "mean_ce": 0.2065,
+     "ce_choice": 0.2133,
+     "ce_free_text": 0.1997,
+     "elapsed_s": 621
+    },
+    {
+     "epoch": 3,
+     "mean_ce": 0.1922,
+     "ce_choice": 0.1842,
+     "ce_free_text": 0.2002,
+     "elapsed_s": 957
+    },
+    {
+     "epoch": 4,
+     "mean_ce": 0.1796,
+     "ce_choice": 0.1606,
+     "ce_free_text": 0.1987,
+     "elapsed_s": 1267
+    },
+    {
+     "epoch": 5,
+     "mean_ce": 0.1722,
+     "ce_choice": 0.1458,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1602
+    },
+    {
+     "epoch": 6,
+     "mean_ce": 0.1715,
+     "ce_choice": 0.1444,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1911
+    }
+   ]
+  },
+  "c-s1": {
+   "minutes": 33,
+   "epochs": [
+    {
+     "epoch": 1,
+     "mean_ce": 0.3604,
+     "ce_choice": 0.438,
+     "ce_free_text": 0.2827,
+     "elapsed_s": 311
+    },
+    {
+     "epoch": 2,
+     "mean_ce": 0.1939,
+     "ce_choice": 0.1886,
+     "ce_free_text": 0.1991,
+     "elapsed_s": 621
+    },
+    {
+     "epoch": 3,
+     "mean_ce": 0.1803,
+     "ce_choice": 0.1618,
+     "ce_free_text": 0.1988,
+     "elapsed_s": 956
+    },
+    {
+     "epoch": 4,
+     "mean_ce": 0.1734,
+     "ce_choice": 0.1482,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1266
+    },
+    {
+     "epoch": 5,
+     "mean_ce": 0.1717,
+     "ce_choice": 0.1448,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1601
+    },
+    {
+     "epoch": 6,
+     "mean_ce": 0.1713,
+     "ce_choice": 0.144,
+     "ce_free_text": 0.1986,
+     "elapsed_s": 1912
+    }
+   ]
+  }
+ },
+ "validation_unseen_generated_steps": {
+  "a-s1-e2": {
+   "steps": 1619,
+   "top_choice_right": 1612,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9477,
+    "mean_p_on_token_steps": 0.0494,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1228,
+    "wrong": 2,
+    "acted_on_free_text": 0,
+    "precision": 0.9984,
+    "coverage": 0.7585
+   },
+   "passes_at_0.9": false
+  },
+  "a-s1-e4": {
+   "steps": 1619,
+   "top_choice_right": 1616,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9492,
+    "mean_p_on_token_steps": 0.0497,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1254,
+    "wrong": 2,
+    "acted_on_free_text": 0,
+    "precision": 0.9984,
+    "coverage": 0.7746
+   },
+   "passes_at_0.9": false
+  },
+  "a-s1-e6": {
+   "steps": 1619,
+   "top_choice_right": 1618,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9505,
+    "mean_p_on_token_steps": 0.0501,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1256,
+    "wrong": 1,
+    "acted_on_free_text": 0,
+    "precision": 0.9992,
+    "coverage": 0.7758
+   },
+   "passes_at_0.9": false
+  },
+  "a-s2-e2": {
+   "steps": 1619,
+   "top_choice_right": 1614,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9479,
+    "mean_p_on_token_steps": 0.0505,
+    "token_steps_gated_at_0.5": 1,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1252,
+    "wrong": 4,
+    "acted_on_free_text": 0,
+    "precision": 0.9968,
+    "coverage": 0.7733
+   },
+   "passes_at_0.9": false
+  },
+  "a-s2-e4": {
+   "steps": 1619,
+   "top_choice_right": 1619,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9479,
+    "mean_p_on_token_steps": 0.0495,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1253,
+    "wrong": 0,
+    "acted_on_free_text": 0,
+    "precision": 1.0,
+    "coverage": 0.7739
+   },
+   "passes_at_0.9": true
+  },
+  "a-s2-e6": {
+   "steps": 1619,
+   "top_choice_right": 1619,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9505,
+    "mean_p_on_token_steps": 0.0502,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1256,
+    "wrong": 0,
+    "acted_on_free_text": 0,
+    "precision": 1.0,
+    "coverage": 0.7758
+   },
+   "passes_at_0.9": true
+  },
+  "b-s1-e2": {
+   "steps": 1619,
+   "top_choice_right": 1581,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9456,
+    "mean_p_on_token_steps": 0.0488,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1165,
+    "wrong": 1,
+    "acted_on_free_text": 0,
+    "precision": 0.9991,
+    "coverage": 0.7196
+   },
+   "passes_at_0.9": false
+  },
+  "b-s1-e4": {
+   "steps": 1619,
+   "top_choice_right": 1612,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9485,
+    "mean_p_on_token_steps": 0.0495,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1248,
+    "wrong": 5,
+    "acted_on_free_text": 0,
+    "precision": 0.996,
+    "coverage": 0.7708
+   },
+   "passes_at_0.9": false
+  },
+  "b-s1-e6": {
+   "steps": 1619,
+   "top_choice_right": 1618,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9517,
+    "mean_p_on_token_steps": 0.0504,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1256,
+    "wrong": 1,
+    "acted_on_free_text": 0,
+    "precision": 0.9992,
+    "coverage": 0.7758
+   },
+   "passes_at_0.9": false
+  },
+  "c-s1-e2": {
+   "steps": 1619,
+   "top_choice_right": 1600,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9477,
+    "mean_p_on_token_steps": 0.0493,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1197,
+    "wrong": 1,
+    "acted_on_free_text": 0,
+    "precision": 0.9992,
+    "coverage": 0.7393
+   },
+   "passes_at_0.9": false
+  },
+  "c-s1-e4": {
+   "steps": 1619,
+   "top_choice_right": 1615,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9487,
+    "mean_p_on_token_steps": 0.0494,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1255,
+    "wrong": 4,
+    "acted_on_free_text": 0,
+    "precision": 0.9968,
+    "coverage": 0.7752
+   },
+   "passes_at_0.9": false
+  },
+  "c-s1-e6": {
+   "steps": 1619,
+   "top_choice_right": 1619,
+   "free_text": {
+    "auroc": 1.0,
+    "mean_p_on_free_text_steps": 0.9505,
+    "mean_p_on_token_steps": 0.05,
+    "token_steps_gated_at_0.5": 0,
+    "free_text_steps_missed_at_0.5": 0
+   },
+   "at_0.9": {
+    "acted": 1255,
+    "wrong": 0,
+    "acted_on_free_text": 0,
+    "precision": 1.0,
+    "coverage": 0.7752
+   },
+   "passes_at_0.9": true
+  }
+ },
+ "selected": "a-s2-e6 (passes at 0.9 on validation, most steps acted on among passers: 1,256 of 1,619)",
+ "benchmark": {
+  "reps": 1,
+  "llm_from": "Benchmarks/results/fastpath-bench-v01.json",
+  "summary": {
+   "design@0.9": {
+    "decisions": 11,
+    "fast_path_used": 6,
+    "coverage": 0.545,
+    "fast_path_correct": 6,
+    "fast_path_precision": 1.0,
+    "wrong_when_used": [],
+    "wrong_on_needs_llm": [],
+    "hybrid_accuracy": 0.909,
+    "llm_only_accuracy": 0.727
+   },
+   "heldout@0.9": {
+    "decisions": 30,
+    "fast_path_used": 21,
+    "coverage": 0.7,
+    "fast_path_correct": 19,
+    "fast_path_precision": 0.905,
+    "wrong_when_used": [
+     "profile-phone",
+     "support-desc-free"
+    ],
+    "wrong_on_needs_llm": [
+     "support-desc-free"
+    ],
+    "hybrid_accuracy": 0.9,
+    "llm_only_accuracy": 0.933
+   }
+  },
+  "heldout_cases": {
+   "login-user": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "type #user EMAIL#1",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "ship-name": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.95,
+    "choice": "type #name PERSONNAME#1",
+    "confidence": 0.49,
+    "top_choice": "right"
+   },
+   "ship-addr": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.92,
+    "choice": "type #addr ADDRESS#1",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "ship-continue": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.95,
+    "choice": "none of these",
+    "confidence": 0.58,
+    "top_choice": "wrong"
+   },
+   "bank-acct": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "type #acct BANKACCOUNT#1",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "bank-add-not-cancel": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #add",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "bank-done": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "finish",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "mail-to": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.95,
+    "choice": "none of these",
+    "confidence": 0.98,
+    "top_choice": "wrong"
+   },
+   "mail-body-free": {
+    "needs_free_text": true,
+    "freeTextProbability": 0.95,
+    "choice": "none of these",
+    "confidence": 0.98,
+    "top_choice": "wrong"
+   },
+   "mail-send": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #send",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "login-no-forgot": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.95,
+    "choice": "none of these",
+    "confidence": 0.98,
+    "top_choice": "wrong"
+   },
+   "settings-security": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #t-security",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "settings-notif": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #t-notif",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "notif-sms": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #sms-alerts",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "notif-save": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #save-n",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "notif-done": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "finish",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "search-free": {
+    "needs_free_text": true,
+    "freeTextProbability": 0.95,
+    "choice": "none of these",
+    "confidence": 0.98,
+    "top_choice": "wrong"
+   },
+   "search-go": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #go",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "cart-open": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #cart",
+    "confidence": 0.92,
+    "top_choice": "right"
+   },
+   "support-email": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "type #email EMAIL#1",
+    "confidence": 0.97,
+    "top_choice": "right"
+   },
+   "support-desc-free": {
+    "needs_free_text": true,
+    "freeTextProbability": 0.05,
+    "choice": "click #submit",
+    "confidence": 0.98,
+    "top_choice": "wrong"
+   },
+   "support-submit": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #submit",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "profile-phone": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #upd",
+    "confidence": 0.97,
+    "top_choice": "wrong"
+   },
+   "profile-phone-update": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #upd",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "download-statement": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "none of these",
+    "confidence": 0.98,
+    "top_choice": "wrong"
+   },
+   "already-logged-in": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "finish",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "cookie-then-link": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #pricing",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "rename-free": {
+    "needs_free_text": true,
+    "freeTextProbability": 0.95,
+    "choice": "none of these",
+    "confidence": 0.99,
+    "top_choice": "wrong"
+   },
+   "aadhaar-type": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "type #aad AADHAAR#1",
+    "confidence": 0.98,
+    "top_choice": "right"
+   },
+   "aadhaar-verify": {
+    "needs_free_text": false,
+    "freeTextProbability": 0.05,
+    "choice": "click #verify",
+    "confidence": 0.98,
+    "top_choice": "right"
+   }
+  },
+  "all_cases_raw": {
+   "account-type-email": [
+    {
+     "choice": "type #email EMAIL#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "account-save": [
+    {
+     "choice": "type #city EMAIL#1",
+     "confidence": 0.95,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "account-finish": [
+    {
+     "choice": "finish",
+     "confidence": 0.98,
+     "freeTextProbability": 0.14
+    }
+   ],
+   "save-not-delete": [
+    {
+     "choice": "click #save",
+     "confidence": 0.61,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "phone-type": [
+    {
+     "choice": "none of these",
+     "confidence": 0.98,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "nav-downloads": [
+    {
+     "choice": "click #downloads",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "two-fields-first": [
+    {
+     "choice": "type #name PERSONNAME#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "two-fields-second": [
+    {
+     "choice": "click #save",
+     "confidence": 0.71,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "login-user": [
+    {
+     "choice": "type #user EMAIL#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    },
+    {
+     "choice": "type #user EMAIL#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "report-link": [
+    {
+     "choice": "click #monthly",
+     "confidence": 0.98,
+     "freeTextProbability": 0.26
+    }
+   ],
+   "already-done": [
+    {
+     "choice": "finish",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "search-free-text": [
+    {
+     "choice": "none of these",
+     "confidence": 0.99,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "ship-name": [
+    {
+     "choice": "type #name PERSONNAME#1",
+     "confidence": 0.49,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "ship-addr": [
+    {
+     "choice": "type #addr ADDRESS#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.92
+    }
+   ],
+   "ship-continue": [
+    {
+     "choice": "none of these",
+     "confidence": 0.58,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "bank-acct": [
+    {
+     "choice": "type #acct BANKACCOUNT#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "bank-add-not-cancel": [
+    {
+     "choice": "click #add",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "bank-done": [
+    {
+     "choice": "finish",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "mail-to": [
+    {
+     "choice": "none of these",
+     "confidence": 0.98,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "mail-body-free": [
+    {
+     "choice": "none of these",
+     "confidence": 0.98,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "mail-send": [
+    {
+     "choice": "click #send",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "login-no-forgot": [
+    {
+     "choice": "none of these",
+     "confidence": 0.98,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "settings-security": [
+    {
+     "choice": "click #t-security",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "settings-notif": [
+    {
+     "choice": "click #t-notif",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "notif-sms": [
+    {
+     "choice": "click #sms-alerts",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "notif-save": [
+    {
+     "choice": "click #save-n",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "notif-done": [
+    {
+     "choice": "finish",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "search-free": [
+    {
+     "choice": "none of these",
+     "confidence": 0.98,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "search-go": [
+    {
+     "choice": "click #go",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "cart-open": [
+    {
+     "choice": "click #cart",
+     "confidence": 0.92,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "support-email": [
+    {
+     "choice": "type #email EMAIL#1",
+     "confidence": 0.97,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "support-desc-free": [
+    {
+     "choice": "click #submit",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "support-submit": [
+    {
+     "choice": "click #submit",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "profile-phone": [
+    {
+     "choice": "click #upd",
+     "confidence": 0.97,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "profile-phone-update": [
+    {
+     "choice": "click #upd",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "download-statement": [
+    {
+     "choice": "none of these",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "already-logged-in": [
+    {
+     "choice": "finish",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "cookie-then-link": [
+    {
+     "choice": "click #pricing",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "rename-free": [
+    {
+     "choice": "none of these",
+     "confidence": 0.99,
+     "freeTextProbability": 0.95
+    }
+   ],
+   "aadhaar-type": [
+    {
+     "choice": "type #aad AADHAAR#1",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ],
+   "aadhaar-verify": [
+    {
+     "choice": "click #verify",
+     "confidence": 0.98,
+     "freeTextProbability": 0.05
+    }
+   ]
+  }
+ },
+ "accepted_at_0.9": false,
+ "verdict": "Not accepted. On the 30 held-out cases at 0.9 it acted on 21 and was wrong on 2: profile-phone (clicked Update while the pre-filled phone field still needed PHONE#1) and support-desc-free (a step that needs free text: free-text probability 0.05, clicked Submit at 0.98). Jev at 0.9 was right on every held-out step it answered and never acted on a free-text step. Design cases at 0.9: 6 of 11 acted, all right.",
+ "findings": [
+  "The free-text question now trains: training loss reaches its floor (0.1985, the entropy of the 0.95/0.05 targets) by epoch 3-4 in every run, and on unseen generated steps its AUROC is 1.0 for all 12 candidates. The CPU runs never separated it.",
+  "Validation from the same generator saturates (1,612-1,619 of 1,619 top choices right; precision 0.996-1.0 at 0.9) and no longer separates candidates; the held-out benchmark does (precision 0.905).",
+  "Both held-out errors are situations the generator never produces: a field that is already filled but must be overwritten (profile-phone), and a free-text need stated as 'about <topic>' after a click on another control (support-desc-free). Over-flagging free text on ship-name, ship-addr, ship-continue, mail-to and login-no-forgot costs coverage, not safety.",
+  "Confidence is capped by the training targets: chosen-option probability is 0.98 (1 - WRONG_MASS) and free-text 0.05/0.95 on almost every case, so the 0.9 threshold only removes the few cases the model is unsure of.",
+  "The runtime restarted after the 16:11 IST snapshot, so all four runs trained a second time (losses differ slightly from the snapshot); the numbers here are from the completed second pass."
+ ],
+ "caveats": "Synthetic, already-tokenized scenes written by us, for both training and evaluation. One rep per held-out case (Laya is deterministic). Not a field estimate. Weights were not uploaded; the selected checkpoint is on Francis's Drive only."
+}

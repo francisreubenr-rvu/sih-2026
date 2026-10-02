@@ -1,6 +1,6 @@
 /**
  * Reason-path planner health helpers (Ollama reachability).
- * Small, safe pre-Send probe — does not start Ollama, does not claim G11.
+ * Small, safe pre-Send probe: does not start Ollama, does not claim G11.
  */
 
 export const REASON_HEALTH_PATH = '/api/v1/health';

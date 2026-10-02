@@ -19,6 +19,7 @@ from fastapi.responses import JSONResponse
 
 import config
 import entities
+import fastpath
 import groq_client
 import laya_review
 import ollama_client
@@ -42,6 +43,7 @@ def _start_model_load() -> None:
     # (with loaded: false) while the ~76s cold load runs, rather than
     # blocking the socket from accepting connections until it finishes.
     threading.Thread(target=entities.load_model, daemon=True).start()
+    threading.Thread(target=fastpath.warm, daemon=True).start()
 
 
 @app.get("/health")
@@ -55,6 +57,8 @@ def health():
         "destination": config.planner_destination(config.planner_mode()),
         "plannerModel": config.planner_model(config.planner_mode()),
         "groqConfigured": config.groq_configured(),
+        "fastPath": {"mode": fastpath.mode(), "destination": fastpath.destination(fastpath.mode()),
+                     "minConfidence": fastpath.min_confidence()},
         "warden": config.WARDEN_VERSION,
     }
 
@@ -154,7 +158,26 @@ def dispatch_plan(body: dict) -> dict:
             "WARDEN_PLANNER must be 'groq' (default) or 'ollama'. POST /plan did not call a model.",
         )
 
-    result = _dispatch_planner(mode, body)
+    # Optional decision-model fast path (fastpath.py). It can only remove an LLM call: when it
+    # defers or fails, the configured planner answers as before. Offline mode never sends a body
+    # off the machine, so a cloud fast path (Jev) is skipped there; Laya runs locally and is allowed.
+    fast_record = None
+    if fastpath.mode() != "off":
+        if mode == "ollama" and fastpath.destination(fastpath.mode()) == "cloud":
+            fast_record = {"backend": fastpath.mode(), "used": False,
+                           "reason": "cloud fast path skipped: WARDEN_PLANNER=ollama is offline"}
+        else:
+            fast, fast_record = fastpath.plan_or_none(body)
+            if fast is not None:
+                fast["fastPath"] = fast_record
+                return _with_review(body, fast)
+
+    return _with_review(body, _dispatch_planner(mode, body, fast_record))
+
+
+def _with_review(body: dict, result: dict) -> dict:
+    """Adds Laya review scores for the returned plan, whichever planner produced it, when
+    WARDEN_REVIEWER=laya."""
     if config.reviewer_mode() == "laya":
         result["review"] = _laya_review(body, result.get("plan"))
     return result
@@ -172,7 +195,7 @@ def _laya_review(body: dict, plan) -> Optional[dict]:
         return {"skipped": f"laya review raised {type(exc).__name__}"}
 
 
-def _dispatch_planner(mode: str, body: dict) -> dict:
+def _dispatch_planner(mode: str, body: dict, fast_record: Optional[dict] = None) -> dict:
     if mode == "groq":
         if not config.groq_configured():
             raise PlanRouteError(
@@ -185,6 +208,8 @@ def _dispatch_planner(mode: str, body: dict) -> dict:
             raise PlanRouteError(502, str(exc), switched=exc.switched) from exc
         result["planner"] = "groq"
         result["destination"] = config.planner_destination("groq")
+        if fast_record is not None:
+            result["fastPath"] = fast_record
         return result
 
     try:
@@ -192,6 +217,8 @@ def _dispatch_planner(mode: str, body: dict) -> dict:
     except ollama_client.OllamaPlanError as exc:
         raise PlanRouteError(503, str(exc)) from exc
     result["destination"] = config.planner_destination("ollama")
+    if fast_record is not None:
+        result["fastPath"] = fast_record
     return result
 
 

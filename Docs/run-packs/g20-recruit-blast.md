@@ -1,4 +1,4 @@
-# G20 run pack — recruit blast (Francis)
+# G20 run pack: recruit blast (Francis)
 
 **Status:** Copy-paste ready. **Zero** non-author results until real sessions are logged. Do **not** mark G20 pass. No purchases. No Google login required.
 
@@ -11,13 +11,13 @@
 
 ---
 
-## Short recruit message (EN) — copy/paste
+## Short recruit message (EN): copy/paste
 
 **Subject / opener:** Quick 20-min privacy UX check for a student SIH prototype (synthetic data only)
 
 Hi ________,
 
-I am Francis (RVU). For our SIH prototype **Dhristi** (on-device screen protect / selective redaction), I need **non-author** feedback — people who did not build the code or write the claims.
+I am Francis (RVU). For our SIH prototype **Dhristi** (on-device screen protect / selective redaction), I need **non-author** feedback: people who did not build the code or write the claims.
 
 **What you would do (≈20 minutes):**
 1. Look at a **synthetic** demo page only (no real accounts, no personal data).
@@ -28,21 +28,21 @@ I am Francis (RVU). For our SIH prototype **Dhristi** (on-device screen protect 
 
 **Constraints we already disclose:** face-only detector; text OCR limits; full-flow &lt;200 ms **not** claimed (G11 fail). Synthetic fixtures only.
 
-If you are free this week, reply with a 20-min slot (in person or call). Thank you — no purchase or Google login needed.
+If you are free this week, reply with a 20-min slot (in person or call). Thank you. No purchase or Google login needed.
 
-— Francis
+Francis
 
 **Eligibility:** not a repo author / not primary claims writer for this entry. Classmates OK if they did not implement Dhristi.
 
 ---
 
-## Optional Hindi (HI) — short version
+## Optional Hindi (HI): short version
 
-**विषय:** SIH प्रोटोटाइप — 20 मिनट प्राइवेसी UX चेक (केवल सिंथेटिक डेटा)
+**विषय:** SIH प्रोटोटाइप, 20 मिनट प्राइवेसी UX चेक (केवल सिंथेटिक डेटा)
 
 नमस्ते ________,
 
-मैं Francis (RVU) हूँ। हमारे SIH प्रोटोटाइप **Dhristi** (डिवाइस पर स्क्रीन प्रोटेक्ट / selective redaction) के लिए **non-author** फीडबैक चाहिए — जिन्होंने कोड/claims नहीं लिखे।
+मैं Francis (RVU) हूँ। हमारे SIH प्रोटोटाइप **Dhristi** (डिवाइस पर स्क्रीन प्रोटेक्ट / selective redaction) के लिए **non-author** फीडबैक चाहिए: जिन्होंने कोड/claims नहीं लिखे।
 
 **आप क्या करेंगे (≈20 मिनट):** सिंथेटिक डेमो पेज → toolbar capture → protect → “इस उपकरण पर” trust chip → outbound JSON देखें (पिक्सेल डिवाइस नहीं छोड़ते)। छोटा Likert + 2–3 नोट्स (P# के रूप में anonymized)।
 
@@ -52,7 +52,7 @@ If you are free this week, reply with a 20-min slot (in person or call). Thank y
 
 इस हफ़्ते 20 मिनट का स्लॉट हो तो जवाब दें। धन्यवाद।
 
-— Francis
+Francis
 
 ---
 
@@ -73,7 +73,7 @@ Facilitator prep: `cd Prototype && npm start` → load unpacked `Prototype/exten
 ## Privacy note (say aloud / paste in invite thread)
 
 - Prefer **synthetic fixtures** only. Never open production, personal email, banking, DigiLocker, or Aadhaar-bearing tabs during eval.
-- Repo stores **anonymized IDs** (`P1`… / `R1`…) only — no real names, emails, phones, or screenshots of personal data.
+- Repo stores **anonymized IDs** (`P1`… / `R1`…) only; no real names, emails, phones, or screenshots of personal data.
 - DigiLocker styling on the UI is **aesthetic / “on this device” trust language**, not a partner or custody claim.
 - Invite tracking stays in your private notes; do not commit PII.
 

@@ -1,4 +1,4 @@
-# Website pixel redesign — PR1 of 3
+# Website pixel redesign: PR1 of 3
 
 **Date:** 2026-09-23  
 **Scope:** `Website/` marketing canvas, `DESIGN.md` surfaces note, this decision.  

@@ -1,4 +1,4 @@
-# Human evaluation forms (G20) — print / copy per session
+# Human evaluation forms (G20): print / copy per session
 
 **Status:** Forms retained; **G20 recruitment paused** by Francis (2026-09-15). **Zero** non-author results in repo until real sessions are logged. Do **not** mark G20 pass. Do not treat the recruit checklist as an active invite campaign.
 
@@ -55,11 +55,11 @@ Use with `Docs/human-evaluation-protocol.md`. After each session, append anonymi
 
 ---
 
-## Recruit checklist (facilitator private — do not commit PII) — **paused**
+## Recruit checklist (facilitator private; do not commit PII): **paused**
 
 | Invite # | Channel | Invited (private) | Accepted? | Scheduled | Completed as | Notes |
 |----------|---------|-------------------|:---------:|-----------|--------------|-------|
-| 1 | | | ☐ | | P__ / R__ / — | |
+| 1 | | | ☐ | | P__ / R__ / n/a | |
 | 2 | | | ☐ | | | |
 | 3 | | | ☐ | | | |
 | 4 | | | ☐ | | | |

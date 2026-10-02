@@ -1,4 +1,4 @@
-# ARCH-PIXEL-HUD-002 — Denser Japanese pixel / RPG-HUD chrome
+# ARCH-PIXEL-HUD-002: Denser Japanese pixel / RPG-HUD chrome
 
 **Task:** ARCH-PIXEL-HUD-002 (Synapse harder finish)  
 **Agent:** Architect  
@@ -25,7 +25,7 @@ Move from “soft densify” (stepped corners + navy headers + mono telemetry) t
 - Icons **32px** logical (integer scale from 16px source), silhouette-first.
 - **Nearest-neighbor** scaling; **whole-pixel** coordinates only.
 
-Calm instrument — not arcade neon, not SaaS glass.
+Calm instrument, not arcade neon, not SaaS glass.
 
 ---
 
@@ -97,9 +97,9 @@ No new semantic colors. No neon accents outside saffron/trust rules.
 │  │ label      │ label      │ label      │      │
 │  │ VALUE      │ VALUE      │ VALUE      │      │
 │  └────────────┴────────────┴────────────┘      │
-│  SegmentMeter (risk/heuristic — honest copy)   │
+│  SegmentMeter (risk/heuristic, honest copy)    │
 ├─ CommandLane ──────────────────────────────────┤
-│  [PRIMARY CTA — saffron]   [secondary]         │
+│  [PRIMARY CTA: saffron]    [secondary]         │
 │  CursorTick on focused control                 │
 ├─ MetaLane ─────────────────────────────────────┤
 │  ORIGIN · SCOPE · REV · “inspired-by only”     │
@@ -109,8 +109,8 @@ No new semantic colors. No neon accents outside saffron/trust rules.
 Rules:
 
 - Fixed header; one primary action.
-- `activeTab` / human-gated capture stays visible as permission truth — do not chrome over it.
-- If `officialScore` is null, MetricCell shows honest null/—; never invent a pass.
+- `activeTab` / human-gated capture stays visible as permission truth; do not chrome over it.
+- If `officialScore` is null, MetricCell shows honest null/-; never invent a pass.
 - Fast path label must not read as G11 pass.
 
 ### 4.2 Website hero (+ masthead)
@@ -128,7 +128,7 @@ Rules:
 
 - Masthead = lockup only (Hybrid C). Favicon = bug.
 - Hero evidence module uses same `HudFrame` / `HudTitleBar` language as popup (shared tokens).
-- DigiLocker mention in copy stays “inspired-by / UX rhythm” — **no** locker iconography in chrome.
+- DigiLocker mention in copy stays “inspired-by / UX rhythm”; **no** locker iconography in chrome.
 
 ### 4.3 Prototype/app evidence / workspace
 
@@ -136,7 +136,7 @@ Rules:
 HudTitleBar SYS · LOCAL WORKSPACE · PATH tags
 ┌ StatusLane ┐┌──────── GridPanel workspace ────────┐┌ MetaLane ┐
 │ path chips ││ HudFrame panels: SCAN / PATH / SCORE ││ timestamps│
-│ trust      ││ / REASON — navy headers, MetricCells ││ revision  │
+│ trust      ││ / REASON: navy headers, MetricCells  ││ revision  │
 └────────────┘└──────────────────────────────────────┘└───────────┘
 CommandLane toolbar under intro (same button states)
 ```
@@ -221,13 +221,13 @@ Apply in order:
 
 ## 10) Refs (R-PIXEL-HUD-001)
 
-- FFT menus as static grids — https://champicky.com/2019/10/10/final-fantasy-tactics-interface-design-analysis/
-- DQIII GridPanel — https://ue5exp0.com/ui_gridpanel/
-- Lospec 9-slice — https://lospec.com/pixel-art-tutorials/user-interface-9-slice-by-pedro-medeiros
-- RPG Maker window skins — https://rpgmaker.net/articles/2751/
-- Pixel button states — https://indieklem.substack.com/p/8-better-designed-buttons
-- HUD corners / 9-slice panels — https://generalistprogrammer.com/tutorials/game-ui-design-best-practices
-- Icons 32px / integer scale / silhouette — https://icora.io/blog/how-to-make-game-icons
+- FFT menus as static grids: https://champicky.com/2019/10/10/final-fantasy-tactics-interface-design-analysis/
+- DQIII GridPanel: https://ue5exp0.com/ui_gridpanel/
+- Lospec 9-slice: https://lospec.com/pixel-art-tutorials/user-interface-9-slice-by-pedro-medeiros
+- RPG Maker window skins: https://rpgmaker.net/articles/2751/
+- Pixel button states: https://indieklem.substack.com/p/8-better-designed-buttons
+- HUD corners / 9-slice panels: https://generalistprogrammer.com/tutorials/game-ui-design-best-practices
+- Icons 32px / integer scale / silhouette: https://icora.io/blog/how-to-make-game-icons
 
 ---
 

@@ -50,7 +50,7 @@ $('#capture').addEventListener('click',async()=>{
   values[1].textContent=String(faces.detections.length);
   values[2].textContent=`${(new TextEncoder().encode(JSON.stringify(prepared)).length/1024).toFixed(1)} KiB`;
   $('#plan').disabled=false;
-  status(`Protected in ${(performance.now()-start).toFixed(0)} ms. ${safe.controls.length} approved controls; ${safe.regions.length} regions (selective local preview). Review before sending — outbound JSON has no pixels.`);
+  status(`Protected in ${(performance.now()-start).toFixed(0)} ms. ${safe.controls.length} approved controls; ${safe.regions.length} regions (selective local preview). Review before sending; outbound JSON has no pixels.`);
  }catch(e){clear();status(`Capture blocked: ${e.message}. Retry after the page settles.`,true);}finally{if(raw){raw.width=0;raw.height=0;}setBusy(false);}
 });
 $('#plan').addEventListener('click',async()=>{
