@@ -24,7 +24,7 @@ Book **three consecutive successful** runs. A fail resets the streak (start agai
 2. **Streak block:** three reset→journey→log cycles back-to-back (or same day with short breaks). Total ~60–90 min including resets.
 3. **Debrief:** 10 min: append three objects to `consecutive_rehearsals` in `Benchmarks/results/demo-rehearsal.json`; leave `status: unknown` until all three are `success` with matching build.
 
-Offline fallback check (once per streak): open `Docs/demo-fallback.webm` with no network; note scope aloud (web workspace Pending→Review, **not** toolbar-glyph MV3).
+Offline fallback check (once per streak): open `Docs/demo-fallback.webm` with no network; note scope aloud. Since 2 October 2026 it is the v5 journey on build `a94aa1c` (fixture page and side panel, real Groq planner); the 10 September web-workspace recording is `Docs/demo-recording/demo-fallback-2026-09-10.webm`.
 
 ---
 

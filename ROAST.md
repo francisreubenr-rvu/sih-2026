@@ -1,3 +1,11 @@
+## Round 29: G14 v5 rehearsals (2 October 2026)
+
+- [x] Critical journey (v5) succeeded in 3 consecutive automated rehearsals from reset on one build (`a94aa1c`); 0 personal values in 9 cloud requests.
+- [x] Fallback recorded on that build, labelled, captioned, plays offline.
+- [x] First three runs (`9543056`) failed on a harness detector bug (it read a non-existent `#boundary`); logged as fails, not hidden. The product side of the step held in all three.
+- [ ] Rehearsals were automated: confirmations answered by the script, side panel opened as a tab, host permission pre-granted. A human dress rehearsal on the presenting machine is still to do.
+- [ ] G14 status is Francis's call; not flipped.
+
 ## Round 28: Laya plan reviewer, PR #42 (work of 30 September 2026, merged 2 October)
 
 - [x] Optional Laya reviewer behind `WARDEN_REVIEWER=laya`; stub tests pin accept → ask only, no tier lowering, SKIPPED on any failure. Warden suite 111 passed / 6 skipped (real-model tests).

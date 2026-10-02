@@ -1,5 +1,7 @@
 # G14 run pack: rehearsal week (Francis)
 
+> **Superseded on 2 October 2026.** This pack is for the Prototype popup path. The current live path, fallback and rehearsal harness are in `Docs/demo-runbook.md` (v5) and `scripts/g14/`.
+
 **Status:** Ready to book and run. **No fabricated results.** Arrays in `Benchmarks/results/demo-rehearsal.json` stay empty until you log live runs. Do **not** mark G14 pass until three consecutive `success` rows share one `build_sha`.
 
 **Guardrail:** Critical journey succeeds in **3 consecutive** rehearsals from reset; offline-safe fallback exists and matches the tested version.

@@ -1,0 +1,642 @@
+{
+ "id": "g14-v5-rehearsal-v01",
+ "date": "2026-10-02",
+ "harness": "scripts/g14/rehearse.mjs; fallback built by scripts/g14/make-fallback.mjs",
+ "journey": "v5 critical journey on the synthetic fixture (scripts/e2e-v5/fixture.html): root extension/ side panel, Warden with GLiNER on CPU, real Groq planner through a loopback recording relay. Task: 'Update my contact email to priya.r@example.com and save the profile'.",
+ "steps": {
+  "1": "Side panel connected to the local Warden (READY)",
+  "2": "Task with a real email sent from the side panel",
+  "3": "Redaction ran on the device, confirmed from the relay log: the task as sent carries EMAIL#n and not the address",
+  "4": "Cloud planner returned a step",
+  "5": "Extension typed the real value into the page locally",
+  "6": "Page shows 'Saved <email>' (not DELETED) and the run finished",
+  "7": "Relay log: at least one cloud request and 0 personal values"
+ },
+ "reset": "Every run: new Warden process (empty vault, GLiNER reloaded), new relay, new copy of extension/, new browser profile, new fixture server.",
+ "product_build": "extension/ and warden/ identical to master 3314513 for every run below",
+ "runs_on_9543056": [
+  {
+   "index": 1,
+   "date_utc": "2026-10-02T07:54:19.288Z",
+   "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+   "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+   "build_sha": "954305644bf4f1e05f107bf2cf2e1c8014c28065",
+   "result": "fail",
+   "journey_steps_passed": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    7
+   ],
+   "fallback_opened": false,
+   "fallback_used_in_live_path": false,
+   "cloud_requests": 3,
+   "personal_values_in_cloud_requests": 0,
+   "planner_models": [
+    "qwen/qwen3.8-27b"
+   ],
+   "relay_round_trip_ms": [
+    667,
+    388,
+    341
+   ],
+   "page_status": "Saved priya.r@example.com",
+   "uncertain_pii_stripped": false,
+   "task_as_sent": "Update my contact email to EMAIL#1 and save the profile",
+   "panel_errors": [],
+   "warden_health": {
+    "loaded": true,
+    "version": "0.1.0"
+   },
+   "events": [
+    {
+     "step": "reset",
+     "text": "Fresh Warden (GLiNER loaded), relay, extension copy and browser profile",
+     "t": 19.176
+    },
+    {
+     "step": 1,
+     "text": "Side panel connected to the local Warden: READY",
+     "t": 19.657
+    },
+    {
+     "step": 2,
+     "text": "Task with a real email address sent from the side panel",
+     "t": 20.513
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 23.526
+    },
+    {
+     "step": 4,
+     "text": "Cloud planner (Groq) returned a step that names only tokens and selectors",
+     "t": 23.529
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 26.119
+    },
+    {
+     "step": 5,
+     "text": "Extension typed the real value into the page locally: yes",
+     "t": 28.194
+    },
+    {
+     "step": 6,
+     "text": "Page shows \"Saved priya.r@example.com\" and the run finished: yes",
+     "t": 28.194
+    },
+    {
+     "step": 7,
+     "text": "What left the machine: 3 cloud requests, 0 personal values",
+     "t": 31.696
+    }
+   ],
+   "video_offsets_s": {
+    "page": 19.477,
+    "panel": 19.504
+   },
+   "harness_differences": [
+    "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+    "side panel opened as a tab",
+    "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+   ],
+   "notes": "Harness detector bug, not a product failure: step 3 read a #boundary element that does not exist. The product side held (task as sent: 'Update my contact email to EMAIL#1 and save the profile', 0 personal values in 3 cloud requests). Logged as fail; under the streak policy it resets the count."
+  },
+  {
+   "index": 2,
+   "date_utc": "2026-10-02T07:54:58.999Z",
+   "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+   "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+   "build_sha": "954305644bf4f1e05f107bf2cf2e1c8014c28065",
+   "result": "fail",
+   "journey_steps_passed": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    7
+   ],
+   "fallback_opened": false,
+   "fallback_used_in_live_path": false,
+   "cloud_requests": 3,
+   "personal_values_in_cloud_requests": 0,
+   "planner_models": [
+    "qwen/qwen3.8-27b"
+   ],
+   "relay_round_trip_ms": [
+    730,
+    341,
+    489
+   ],
+   "page_status": "Saved priya.r@example.com",
+   "uncertain_pii_stripped": false,
+   "task_as_sent": "Update my contact email to EMAIL#1 and save the profile",
+   "panel_errors": [],
+   "warden_health": {
+    "loaded": true,
+    "version": "0.1.0"
+   },
+   "events": [
+    {
+     "step": "reset",
+     "text": "Fresh Warden (GLiNER loaded), relay, extension copy and browser profile",
+     "t": 17.162
+    },
+    {
+     "step": 1,
+     "text": "Side panel connected to the local Warden: READY",
+     "t": 17.63
+    },
+    {
+     "step": 2,
+     "text": "Task with a real email address sent from the side panel",
+     "t": 18.482
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 21.493
+    },
+    {
+     "step": 4,
+     "text": "Cloud planner (Groq) returned a step that names only tokens and selectors",
+     "t": 21.499
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 24.08
+    },
+    {
+     "step": 5,
+     "text": "Extension typed the real value into the page locally: yes",
+     "t": 26.552
+    },
+    {
+     "step": 6,
+     "text": "Page shows \"Saved priya.r@example.com\" and the run finished: yes",
+     "t": 26.552
+    },
+    {
+     "step": 7,
+     "text": "What left the machine: 3 cloud requests, 0 personal values",
+     "t": 30.053
+    }
+   ],
+   "video_offsets_s": {
+    "page": 17.425,
+    "panel": 17.452
+   },
+   "harness_differences": [
+    "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+    "side panel opened as a tab",
+    "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+   ],
+   "notes": "Harness detector bug, not a product failure: step 3 read a #boundary element that does not exist. The product side held (task as sent: 'Update my contact email to EMAIL#1 and save the profile', 0 personal values in 3 cloud requests). Logged as fail; under the streak policy it resets the count."
+  },
+  {
+   "index": 3,
+   "date_utc": "2026-10-02T07:55:37.069Z",
+   "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+   "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+   "build_sha": "954305644bf4f1e05f107bf2cf2e1c8014c28065",
+   "result": "fail",
+   "journey_steps_passed": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    7
+   ],
+   "fallback_opened": false,
+   "fallback_used_in_live_path": false,
+   "cloud_requests": 3,
+   "personal_values_in_cloud_requests": 0,
+   "planner_models": [
+    "qwen/qwen3.8-27b"
+   ],
+   "relay_round_trip_ms": [
+    1431,
+    1479,
+    274
+   ],
+   "page_status": "Saved priya.r@example.com",
+   "uncertain_pii_stripped": false,
+   "task_as_sent": "Update my contact email to EMAIL#1 and save the profile",
+   "panel_errors": [],
+   "warden_health": {
+    "loaded": true,
+    "version": "0.1.0"
+   },
+   "events": [
+    {
+     "step": "reset",
+     "text": "Fresh Warden (GLiNER loaded), relay, extension copy and browser profile",
+     "t": 16.505
+    },
+    {
+     "step": 1,
+     "text": "Side panel connected to the local Warden: READY",
+     "t": 17.006
+    },
+    {
+     "step": 2,
+     "text": "Task with a real email address sent from the side panel",
+     "t": 17.845
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 21.662
+    },
+    {
+     "step": 4,
+     "text": "Cloud planner (Groq) returned a step that names only tokens and selectors",
+     "t": 21.672
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 25.488
+    },
+    {
+     "step": 5,
+     "text": "Extension typed the real value into the page locally: yes",
+     "t": 27.557
+    },
+    {
+     "step": 6,
+     "text": "Page shows \"Saved priya.r@example.com\" and the run finished: yes",
+     "t": 27.557
+    },
+    {
+     "step": 7,
+     "text": "What left the machine: 3 cloud requests, 0 personal values",
+     "t": 31.058
+    }
+   ],
+   "video_offsets_s": {
+    "page": 16.786,
+    "panel": 16.823
+   },
+   "harness_differences": [
+    "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+    "side panel opened as a tab",
+    "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+   ],
+   "notes": "Harness detector bug, not a product failure: step 3 read a #boundary element that does not exist. The product side held (task as sent: 'Update my contact email to EMAIL#1 and save the profile', 0 personal values in 3 cloud requests). Logged as fail; under the streak policy it resets the count."
+  }
+ ],
+ "runs_on_a94aa1c": [
+  {
+   "index": 1,
+   "date_utc": "2026-10-02T07:57:34.324Z",
+   "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+   "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+   "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+   "result": "success",
+   "journey_steps_passed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "fallback_opened": false,
+   "fallback_used_in_live_path": false,
+   "cloud_requests": 3,
+   "personal_values_in_cloud_requests": 0,
+   "planner_models": [
+    "qwen/qwen3.8-27b"
+   ],
+   "relay_round_trip_ms": [
+    727,
+    420,
+    270
+   ],
+   "page_status": "Saved priya.r@example.com",
+   "uncertain_pii_stripped": false,
+   "task_as_sent": "Update my contact email to EMAIL#1 and save the profile",
+   "panel_errors": [],
+   "warden_health": {
+    "loaded": true,
+    "version": "0.1.0"
+   },
+   "events": [
+    {
+     "step": "reset",
+     "text": "Fresh Warden (GLiNER loaded), relay, extension copy and browser profile",
+     "t": 16.444
+    },
+    {
+     "step": 1,
+     "text": "Side panel connected to the local Warden: READY",
+     "t": 16.947
+    },
+    {
+     "step": 2,
+     "text": "Task with a real email address sent from the side panel",
+     "t": 17.795
+    },
+    {
+     "step": 3,
+     "text": "Redaction ran on the device: the email became a token before planning",
+     "t": 19.04
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 20.851
+    },
+    {
+     "step": 4,
+     "text": "Cloud planner (Groq) returned a step that names only tokens and selectors",
+     "t": 20.856
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 23.475
+    },
+    {
+     "step": 5,
+     "text": "Extension typed the real value into the page locally: yes",
+     "t": 25.545
+    },
+    {
+     "step": 6,
+     "text": "Page shows \"Saved priya.r@example.com\" and the run finished: yes",
+     "t": 25.545
+    },
+    {
+     "step": 7,
+     "text": "What left the machine: 3 cloud requests, 0 personal values",
+     "t": 27.126
+    }
+   ],
+   "video_offsets_s": {
+    "page": 16.773,
+    "panel": 16.799
+   },
+   "harness_differences": [
+    "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+    "side panel opened as a tab",
+    "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+   ],
+   "notes": "All seven journey steps passed from reset.",
+   "screenshots": [
+    "Benchmarks/results/g14-v5-rehearsal/run-1-page-final.png",
+    "Benchmarks/results/g14-v5-rehearsal/run-1-panel-final.png"
+   ]
+  },
+  {
+   "index": 2,
+   "date_utc": "2026-10-02T07:58:09.550Z",
+   "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+   "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+   "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+   "result": "success",
+   "journey_steps_passed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "fallback_opened": false,
+   "fallback_used_in_live_path": false,
+   "cloud_requests": 3,
+   "personal_values_in_cloud_requests": 0,
+   "planner_models": [
+    "qwen/qwen3.8-27b"
+   ],
+   "relay_round_trip_ms": [
+    777,
+    384,
+    342
+   ],
+   "page_status": "Saved priya.r@example.com",
+   "uncertain_pii_stripped": false,
+   "task_as_sent": "Update my contact email to EMAIL#1 and save the profile",
+   "panel_errors": [],
+   "warden_health": {
+    "loaded": true,
+    "version": "0.1.0"
+   },
+   "events": [
+    {
+     "step": "reset",
+     "text": "Fresh Warden (GLiNER loaded), relay, extension copy and browser profile",
+     "t": 16.566
+    },
+    {
+     "step": 1,
+     "text": "Side panel connected to the local Warden: READY",
+     "t": 17.047
+    },
+    {
+     "step": 2,
+     "text": "Task with a real email address sent from the side panel",
+     "t": 17.892
+    },
+    {
+     "step": 3,
+     "text": "Redaction ran on the device: the email became a token before planning",
+     "t": 19.117
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 20.884
+    },
+    {
+     "step": 4,
+     "text": "Cloud planner (Groq) returned a step that names only tokens and selectors",
+     "t": 20.888
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 23.48
+    },
+    {
+     "step": 5,
+     "text": "Extension typed the real value into the page locally: yes",
+     "t": 25.557
+    },
+    {
+     "step": 6,
+     "text": "Page shows \"Saved priya.r@example.com\" and the run finished: yes",
+     "t": 25.557
+    },
+    {
+     "step": 7,
+     "text": "What left the machine: 3 cloud requests, 0 personal values",
+     "t": 27.146
+    }
+   ],
+   "video_offsets_s": {
+    "page": 16.848,
+    "panel": 16.885
+   },
+   "harness_differences": [
+    "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+    "side panel opened as a tab",
+    "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+   ],
+   "notes": "All seven journey steps passed from reset.",
+   "screenshots": [
+    "Benchmarks/results/g14-v5-rehearsal/run-2-page-final.png",
+    "Benchmarks/results/g14-v5-rehearsal/run-2-panel-final.png"
+   ]
+  },
+  {
+   "index": 3,
+   "date_utc": "2026-10-02T07:58:44.833Z",
+   "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+   "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+   "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+   "result": "success",
+   "journey_steps_passed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "fallback_opened": false,
+   "fallback_used_in_live_path": false,
+   "cloud_requests": 3,
+   "personal_values_in_cloud_requests": 0,
+   "planner_models": [
+    "qwen/qwen3.8-27b"
+   ],
+   "relay_round_trip_ms": [
+    912,
+    326,
+    273
+   ],
+   "page_status": "Saved priya.r@example.com",
+   "uncertain_pii_stripped": false,
+   "task_as_sent": "Update my contact email to EMAIL#1 and save the profile",
+   "panel_errors": [],
+   "warden_health": {
+    "loaded": true,
+    "version": "0.1.0"
+   },
+   "events": [
+    {
+     "step": "reset",
+     "text": "Fresh Warden (GLiNER loaded), relay, extension copy and browser profile",
+     "t": 16.153
+    },
+    {
+     "step": 1,
+     "text": "Side panel connected to the local Warden: READY",
+     "t": 16.568
+    },
+    {
+     "step": 2,
+     "text": "Task with a real email address sent from the side panel",
+     "t": 17.414
+    },
+    {
+     "step": 3,
+     "text": "Redaction ran on the device: the email became a token before planning",
+     "t": 18.642
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 20.421
+    },
+    {
+     "step": 4,
+     "text": "Cloud planner (Groq) returned a step that names only tokens and selectors",
+     "t": 20.425
+    },
+    {
+     "step": "confirm",
+     "text": "Confirmation answered: VALIDATION QUESTION AWAITING YOUR DECISION This action is tier 'state-changing' and requir",
+     "t": 23.013
+    },
+    {
+     "step": 5,
+     "text": "Extension typed the real value into the page locally: yes",
+     "t": 25.638
+    },
+    {
+     "step": 6,
+     "text": "Page shows \"Saved priya.r@example.com\" and the run finished: yes",
+     "t": 25.639
+    },
+    {
+     "step": 7,
+     "text": "What left the machine: 3 cloud requests, 0 personal values",
+     "t": 27.225
+    }
+   ],
+   "video_offsets_s": {
+    "page": 16.399,
+    "panel": 16.424
+   },
+   "harness_differences": [
+    "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+    "side panel opened as a tab",
+    "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+   ],
+   "notes": "All seven journey steps passed from reset.",
+   "screenshots": [
+    "Benchmarks/results/g14-v5-rehearsal/run-3-page-final.png",
+    "Benchmarks/results/g14-v5-rehearsal/run-3-panel-final.png"
+   ]
+  }
+ ],
+ "streak": {
+  "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+  "consecutive_successes": 3
+ },
+ "fallback": {
+  "path": "Docs/demo-fallback.webm",
+  "captions": "Docs/demo-fallback.vtt",
+  "source_run": "a94aa1c run 3",
+  "codec": "vp9",
+  "size": "1280x824",
+  "duration_s": 22.36,
+  "journey_real_time_s": 13.4,
+  "offline_playback_check": "Chromium, file:// page, offline context: metadata loaded, played from 18 s, 8 caption cues, no media error",
+  "label": "Recorded fallback. Dhristi v5, build a94aa1c, recorded 2026-10-02. Synthetic page; real Groq planner; journey in real time, first and last frames held."
+ },
+ "harness_differences": [
+  "<all_urls> added to the harness copy of the manifest (stands in for the optional grant)",
+  "side panel opened as a tab",
+  "confirmations answered by the script (uncertain PII: strip; questions: proceed)"
+ ],
+ "external_dependencies": [
+  "Groq API (api.groq.com) and GROQ_API_KEY for the live path; not needed to play the fallback",
+  "Hugging Face model urchade/gliner_multi_pii-v1, downloaded on the first Warden start (cached after)",
+  "Python packages: gliner, torch (CPU), transformers, protobuf, fastapi, uvicorn, httpx",
+  "Chromium or Chrome with the unpacked extension/"
+ ],
+ "not_shown": [
+  "A person at the keyboard: confirmations were answered by the script",
+  "The real Chrome side panel (opened as a tab)",
+  "The optional host-permission prompt (granted in the harness manifest copy)",
+  "Network conditions at the venue"
+ ],
+ "guardrail_status": "G14 not changed here; flipping it needs Francis's confirmation."
+}

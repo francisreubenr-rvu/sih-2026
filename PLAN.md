@@ -1,3 +1,11 @@
+## G14: v5 rehearsals and fallback (2 October 2026)
+
+- Francis: merge all PRs (done: #40-#43), then start on G14.
+- `scripts/g14/rehearse.mjs` runs the v5 journey from reset (new Warden with GLiNER, recording relay to real Groq, new extension copy and profile) and checks seven steps. Three consecutive successes on `a94aa1c` (`extension/` and `warden/` identical to master `3314513`), after three logged failures on `9543056` caused by a harness detector bug. Every success: 3 cloud requests, 0 personal values, task as sent "Update my contact email to EMAIL#1 and save the profile". Evidence: `Benchmarks/results/g14-v5-rehearsal/rehearsals.json`, rows appended to `demo-rehearsal.json`.
+- New fallback `Docs/demo-fallback.webm` (+ `.vtt`) recorded on `a94aa1c`, labelled with build and date; plays offline in Chromium with all captions. The 10 September fallback moved to `Docs/demo-recording/demo-fallback-2026-09-10.webm`.
+- Runbook rewritten for the v5 live path with external dependencies; the Prototype path kept as history.
+- G14 stays **unknown** pending Francis's confirmation. Not shown by the rehearsals: a person at the keyboard (the script answered confirmations), the real Chrome side panel (opened as a tab), the host-permission prompt.
+
 ## Laya Colab run v02 (2 October 2026)
 
 - Run v02 on generator v5: not accepted (`laya-colab-sweep-v02.json`). On held-out cases at 0.9 it acted on 24 and was wrong on 1, `support-desc-free`, a free-text step. Design cases regressed on two finish steps whose success message is prose, not a `STATUS` line. Validation on held-out wording now ranks candidates (1 of 12 passed).
