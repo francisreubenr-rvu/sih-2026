@@ -1,16 +1,17 @@
 {
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
-  "generatedAt": "2026-09-15T14:29:42.642Z",
-  "status": "pass",
+  "generatedAt": "2026-10-02T08:10:00Z",
+  "status": "pending_confirmation",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
-    "source": "Docs/demo-recording/dhristi-browser-v02.webm",
-    "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
+    "captions": "Docs/demo-fallback.vtt",
+    "source": "scripts/g14/make-fallback.mjs from rehearsal run 3 on a94aa1c",
+    "scope": "v5 journey: fixture page and side panel side by side, real Groq planner, synthetic page. Label bar names build and date.",
     "offline_playable": true,
     "codec": "vp9",
-    "source_note": "Re-encoded from AV1 original (Docs/demo-recording/demo-fallback-av1-original.webm) to VP9 for Chrome compatibility 2026-09-15"
+    "matches_build": "a94aa1c (extension/ and warden/ identical to master 3314513)"
   },
   "runbook": "Docs/demo-runbook.md",
   "judge_checklist": "Docs/demo-judge-checklist.md",
@@ -192,7 +193,167 @@
         "Benchmarks/results/g14-box-07/capture-complete.webp",
         "Benchmarks/results/g14-box-07/offline-fallback-vp9-playing.png"
       ]
+    },
+    {
+      "index": 1,
+      "date_utc": "2026-10-02T07:54:19.288Z",
+      "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+      "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+      "build_sha": "954305644bf4f1e05f107bf2cf2e1c8014c28065",
+      "result": "fail",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Harness detector bug, not a product failure: step 3 read a #boundary element that does not exist. The product side held (task as sent: 'Update my contact email to EMAIL#1 and save the profile', 0 personal values in 3 cloud requests). Logged as fail; under the streak policy it resets the count.",
+      "journey": "v5 (root extension/ side panel + Warden + real Groq)",
+      "evidence": "Benchmarks/results/g14-v5-rehearsal/rehearsals.json"
+    },
+    {
+      "index": 2,
+      "date_utc": "2026-10-02T07:54:58.999Z",
+      "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+      "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+      "build_sha": "954305644bf4f1e05f107bf2cf2e1c8014c28065",
+      "result": "fail",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Harness detector bug, not a product failure: step 3 read a #boundary element that does not exist. The product side held (task as sent: 'Update my contact email to EMAIL#1 and save the profile', 0 personal values in 3 cloud requests). Logged as fail; under the streak policy it resets the count.",
+      "journey": "v5 (root extension/ side panel + Warden + real Groq)",
+      "evidence": "Benchmarks/results/g14-v5-rehearsal/rehearsals.json"
+    },
+    {
+      "index": 3,
+      "date_utc": "2026-10-02T07:55:37.069Z",
+      "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+      "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+      "build_sha": "954305644bf4f1e05f107bf2cf2e1c8014c28065",
+      "result": "fail",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "Harness detector bug, not a product failure: step 3 read a #boundary element that does not exist. The product side held (task as sent: 'Update my contact email to EMAIL#1 and save the profile', 0 personal values in 3 cloud requests). Logged as fail; under the streak policy it resets the count.",
+      "journey": "v5 (root extension/ side panel + Warden + real Groq)",
+      "evidence": "Benchmarks/results/g14-v5-rehearsal/rehearsals.json"
+    },
+    {
+      "index": 1,
+      "date_utc": "2026-10-02T07:57:34.324Z",
+      "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+      "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+      "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+      "result": "success",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "All seven journey steps passed from reset.",
+      "journey": "v5 (root extension/ side panel + Warden + real Groq)",
+      "evidence": "Benchmarks/results/g14-v5-rehearsal/rehearsals.json",
+      "screenshots": [
+        "Benchmarks/results/g14-v5-rehearsal/run-1-page-final.png",
+        "Benchmarks/results/g14-v5-rehearsal/run-1-panel-final.png"
+      ]
+    },
+    {
+      "index": 2,
+      "date_utc": "2026-10-02T07:58:09.550Z",
+      "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+      "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+      "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+      "result": "success",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "All seven journey steps passed from reset.",
+      "journey": "v5 (root extension/ side panel + Warden + real Groq)",
+      "evidence": "Benchmarks/results/g14-v5-rehearsal/rehearsals.json",
+      "screenshots": [
+        "Benchmarks/results/g14-v5-rehearsal/run-2-page-final.png",
+        "Benchmarks/results/g14-v5-rehearsal/run-2-panel-final.png"
+      ]
+    },
+    {
+      "index": 3,
+      "date_utc": "2026-10-02T07:58:44.833Z",
+      "operator": "claude-container (automated, scripts/g14/rehearse.mjs)",
+      "environment": "Linux cloud container; Chromium headless=new; real Warden with GLiNER on CPU; real Groq through a loopback recording relay",
+      "build_sha": "a94aa1c24ad8c2fbeeca0df2574d7322662b3b64",
+      "result": "success",
+      "fallback_opened": false,
+      "journey_steps_passed": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fallback_used_in_live_path": false,
+      "notes": "All seven journey steps passed from reset.",
+      "journey": "v5 (root extension/ side panel + Warden + real Groq)",
+      "evidence": "Benchmarks/results/g14-v5-rehearsal/rehearsals.json",
+      "screenshots": [
+        "Benchmarks/results/g14-v5-rehearsal/run-3-page-final.png",
+        "Benchmarks/results/g14-v5-rehearsal/run-3-panel-final.png"
+      ]
     }
   ],
-  "g14_reason": "PASS criteria met 2026-09-15: three consecutive success rows on build_sha 996e40bf5f9fa08fb37dfc6eefbbe8c67acb78a3 (g14-box-05/06/07, operator brain-box, Reload-before-Capture protocol) plus offline Docs/demo-fallback.webm (VP9) verified playable in Chrome. submission_ready remains false (G20 paused; G11 fail; G03 unclaimed)."
+  "g14_reason": "2 October 2026: three consecutive v5 rehearsals from reset succeeded on a94aa1c (after three harness-detector failures on 9543056, logged), and a labelled fallback recorded on that build plays offline. Rehearsals were automated in a cloud container; confirmations were answered by the script. G14 stays unknown in Guardrails/guardrails.json until Francis confirms.",
+  "fallback_history": [
+    {
+      "path": "Docs/demo-recording/demo-fallback-2026-09-10.webm",
+      "source": "Docs/demo-recording/dhristi-browser-v02.webm",
+      "scope": "Recorded browser Pending\u2192Review workflow (shared JS / web workspace). Not a native toolbar-glyph extension capture.",
+      "offline_playable": true,
+      "codec": "vp9",
+      "source_note": "Re-encoded from AV1 original (Docs/demo-recording/demo-fallback-av1-original.webm) to VP9 for Chrome compatibility 2026-09-15",
+      "moved_note": "Was Docs/demo-fallback.webm until 2 October 2026; Prototype web workspace, 10 September build."
+    }
+  ],
+  "g14_reason_history": [
+    {
+      "status": "pass",
+      "generatedAt": "2026-09-15T14:29:42.642Z",
+      "g14_reason": "PASS criteria met 2026-09-15: three consecutive success rows on build_sha 996e40bf5f9fa08fb37dfc6eefbbe8c67acb78a3 (g14-box-05/06/07, operator brain-box, Reload-before-Capture protocol) plus offline Docs/demo-fallback.webm (VP9) verified playable in Chrome. submission_ready remains false (G20 paused; G11 fail; G03 unclaimed).",
+      "superseded_by": "Ledger reset of G14 to unknown on 29 September 2026 (build mismatch), then the 2 October v5 rows above."
+    }
+  ]
 }

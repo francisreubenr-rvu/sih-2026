@@ -1,0 +1,35 @@
+WEBVTT
+
+NOTE Recorded fallback. Dhristi v5, build a94aa1c, recorded 2026-10-02. Synthetic page; real Groq planner; journey in real time, first and last frames held.
+
+1
+00:00:00.000 --> 00:00:03.169
+Reset: fresh Warden, recording relay, extension copy and browser profile
+
+2
+00:00:03.169 --> 00:00:04.015
+Step 1: Side panel connected to the local Warden: READY
+
+3
+00:00:04.015 --> 00:00:05.242
+Step 2: Task with a real email address sent from the side panel
+
+4
+00:00:05.242 --> 00:00:07.021
+Step 3: Redaction ran on the device: the email became a token before planning
+
+5
+00:00:07.021 --> 00:00:09.614
+The Warden asked before a state-changing step; answered: run this step  |  Step 4: Cloud planner (Groq) returned a step that names only tokens and selectors
+
+6
+00:00:09.614 --> 00:00:12.239
+The Warden asked before a state-changing step; answered: run this step
+
+7
+00:00:12.239 --> 00:00:13.826
+Step 5: Extension typed the real value into the page locally: yes  |  Step 6: Page shows "Saved priya.r@example.com" and the run finished: yes
+
+8
+00:00:13.826 --> 00:00:22.360
+Step 7: What left the machine: 3 cloud requests, 0 personal values
