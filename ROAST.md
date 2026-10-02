@@ -1,3 +1,11 @@
+## Round 30: G10 review on current surfaces (2 October 2026)
+
+- [x] Website horizontal scroll at 320 px found and fixed (flex item split around `<code>`).
+- [x] Website, side panel and 8 Prototype operator pages pass reflow (320/390/1440/landscape), emulated 200% zoom, reduced motion and keyboard focus.
+- [ ] Prototype popup overflows by a scrollbar width at 320/390 px; not fixed (popup sizing risk), documented.
+- [ ] 200% zoom is emulated by viewport and DPR, not the browser zoom control; Firefox and Safari not covered; screen reader review is G09.
+- [x] Harness false positives found and fixed before reading results: media/iframe focus counted as traps, roving-tabindex tabs counted as unreached, a start click skipping the skip link, lazy images missing from screenshots.
+
 ## Round 28: Laya plan reviewer, PR #42 (work of 30 September 2026, merged 2 October)
 
 - [x] Optional Laya reviewer behind `WARDEN_REVIEWER=laya`; stub tests pin accept → ask only, no tier lowering, SKIPPED on any failure. Warden suite 111 passed / 6 skipped (real-model tests).

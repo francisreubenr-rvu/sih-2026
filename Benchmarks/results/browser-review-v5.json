@@ -1,0 +1,913 @@
+{
+ "id": "browser-review-v5",
+ "date": "2026-10-02",
+ "harness": "scripts/g10-browser-review.mjs",
+ "browser": "Chromium (Playwright, headless=new) on Linux",
+ "viewports": [
+  {
+   "name": "320",
+   "width": 320,
+   "height": 720
+  },
+  {
+   "name": "390",
+   "width": 390,
+   "height": 844
+  },
+  {
+   "name": "1440",
+   "width": 1440,
+   "height": 900
+  },
+  {
+   "name": "landscape-844x390",
+   "width": 844,
+   "height": 390
+  },
+  {
+   "name": "zoom200-of-1280x900",
+   "width": 640,
+   "height": 450,
+   "deviceScaleFactor": 2
+  }
+ ],
+ "zoom_method": "200% browser zoom of a 1280x900 window emulated as a 640x450 CSS px viewport at device pixel ratio 2",
+ "surfaces": [
+  {
+   "surface": "website",
+   "url": "http://127.0.0.1:8811/index.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [
+     {
+      "tag": "video",
+      "autoplay": false,
+      "muted": false,
+      "paused": true,
+      "controls": true
+     }
+    ],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 9,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 12,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "sidepanel",
+   "url": "chrome-extension://<extension-id>/sidepanel.html",
+   "note": "Warden not running: the panel shows its unreachable state",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 320,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 390,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1440,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 10,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 10,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-popup",
+   "url": "http://127.0.0.1:8812/popup.html",
+   "note": "Served over HTTP, outside an extension context",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 320,
+     "horizontalScroll": true,
+     "clipped": [
+      {
+       "el": "li",
+       "text": "Collect",
+       "ellipsis": true,
+       "scrollWidth": 48,
+       "clientWidth": 45
+      },
+      {
+       "el": "li",
+       "text": "Capture",
+       "ellipsis": true,
+       "scrollWidth": 48,
+       "clientWidth": 45
+      },
+      {
+       "el": "li",
+       "text": "Sanitize",
+       "ellipsis": true,
+       "scrollWidth": 55,
+       "clientWidth": 45
+      }
+     ],
+     "offscreenControls": [],
+     "pass": false
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 390,
+     "horizontalScroll": true,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": false
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 10,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 10,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": false
+  },
+  {
+   "surface": "prototype-index",
+   "url": "http://127.0.0.1:9041/app/index.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 10,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 10,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-operations",
+   "url": "http://127.0.0.1:9041/app/operations.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 6,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 6,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-task-loop",
+   "url": "http://127.0.0.1:9041/app/task-loop.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 6,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 6,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-validation",
+   "url": "http://127.0.0.1:9041/app/validation.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 5,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 5,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-local-reference",
+   "url": "http://127.0.0.1:9041/app/local-reference.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 6,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 6,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-benchmark",
+   "url": "http://127.0.0.1:9041/app/benchmark.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 5,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 5,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-text-benchmark",
+   "url": "http://127.0.0.1:9041/app/text-benchmark.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 4,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 4,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  },
+  {
+   "surface": "prototype-text-preview",
+   "url": "http://127.0.0.1:9041/app/text-preview.html",
+   "viewports": {
+    "320": {
+     "innerWidth": 320,
+     "scrollWidth": 305,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "390": {
+     "innerWidth": 390,
+     "scrollWidth": 375,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "1440": {
+     "innerWidth": 1440,
+     "scrollWidth": 1425,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "landscape-844x390": {
+     "innerWidth": 844,
+     "scrollWidth": 829,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    },
+    "zoom200-of-1280x900": {
+     "innerWidth": 640,
+     "scrollWidth": 625,
+     "horizontalScroll": false,
+     "clipped": [],
+     "offscreenControls": [],
+     "pass": true
+    }
+   },
+   "motion": {
+    "runningAnimations": 0,
+    "longOrInfinite": [],
+    "autoplayWithSound": [],
+    "media": [],
+    "reducedMotionMatches": true,
+    "pass": true
+   },
+   "keyboard": {
+    "390": {
+     "stops": 5,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    },
+    "1440": {
+     "stops": 5,
+     "withoutVisibleIndicator": [],
+     "trap": null,
+     "notReached": [],
+     "pass": true
+    }
+   },
+   "pageErrors": [],
+   "pass": true
+  }
+ ],
+ "all_pass": false,
+ "not_covered": [
+  "Screen reader and cognitive review (G09)",
+  "Real browser zoom control (emulated by viewport, see zoom_method)",
+  "Firefox and Safari",
+  "Side panel with a live run in its transcript (reviewed in its idle and unreachable states)"
+ ],
+ "screenshots": [
+  "Benchmarks/results/g10-browser-review/prototype-benchmark-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-index-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-local-reference-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-operations-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-popup-320.png",
+  "Benchmarks/results/g10-browser-review/prototype-popup-390.png",
+  "Benchmarks/results/g10-browser-review/prototype-popup-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-task-loop-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-text-benchmark-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-text-preview-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/prototype-validation-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/sidepanel-1440.png",
+  "Benchmarks/results/g10-browser-review/sidepanel-320.png",
+  "Benchmarks/results/g10-browser-review/sidepanel-390.png",
+  "Benchmarks/results/g10-browser-review/sidepanel-landscape-844x390.png",
+  "Benchmarks/results/g10-browser-review/sidepanel-zoom200-of-1280x900.png",
+  "Benchmarks/results/g10-browser-review/website-1440.jpg",
+  "Benchmarks/results/g10-browser-review/website-320.jpg",
+  "Benchmarks/results/g10-browser-review/website-390.jpg",
+  "Benchmarks/results/g10-browser-review/website-landscape-844x390.jpg",
+  "Benchmarks/results/g10-browser-review/website-zoom200-of-1280x900.jpg"
+ ],
+ "fixed_in_this_change": [
+  {
+   "surface": "website",
+   "finding": "Horizontal scroll at 320 px (content 354 px wide). The list item 'Placeholders such as EMAIL#1 instead of real values' is a flex container, so its text, the <code> and the rest of the text became three flex items that cannot wrap into one another, and the 'Sent to the cloud planner' box could not shrink below about 338 px.",
+   "fix": "Website/index.html: the item's content is wrapped in one <span>. No CSS change.",
+   "after": "320 px: scrollWidth 320, no clipped text, no off-screen controls"
+  }
+ ],
+ "known_limitations": [
+  {
+   "surface": "prototype-popup",
+   "finding": "At 320 and 390 px the popup scrolls sideways by the width of the vertical scrollbar: popup.css sets body{width:400px;max-width:100vw}, and 100vw includes the scrollbar.",
+   "why_not_fixed": "Chrome sizes an extension popup from its content, so the popup is never viewed narrower than 400 px; switching to percentage widths is a known way to collapse a popup to near zero, and the real toolbar popup cannot be checked from this container. Prototype/extension is the measurement/demo surface, not the shipping v5 extension (the side panel, which passes).",
+   "status": "open, documented"
+  }
+ ],
+ "manual_checks": {
+  "forced_orientation": "none: no screen.orientation.lock in Website, extension/, Prototype/app or Prototype/extension; landscape 844x390 passes on every surface",
+  "autoplay_audio": "none: the Website video has controls and preload=none, no autoplay; no audio elements",
+  "animation_only_information": "side panel stage states are written out (Idle, Active, Done) next to their markers; under prefers-reduced-motion no animation or transition over 0.1 s keeps running on any surface"
+ },
+ "g10_assessment": "Shipping surfaces (Website, v5 side panel) and all Prototype operator pages pass every check. The Prototype popup fails reflow at 320/390 px (scrollbar-width overflow), documented above. G10 status not changed here; Francis decides."
+}
