@@ -1,3 +1,10 @@
+## G10: responsive and motion review of the current surfaces (2 October 2026)
+
+- `scripts/g10-browser-review.mjs` checks the Website, the v5 side panel (real extension page), the Prototype popup and eight Prototype operator pages at 320, 390, 1440, 844x390 landscape and emulated 200% zoom (640x450 CSS px at DPR 2), plus prefers-reduced-motion and a keyboard walk with focus-indicator checks. Results: `Benchmarks/results/browser-review-v5.json`, screenshots in `Benchmarks/results/g10-browser-review/`. The 14 September `browser-review.json` stays as history.
+- Fixed: the Website scrolled sideways at 320 px (a flex list item split its text around `<code>`); one `<span>` in `Website/index.html`.
+- 10 of 11 surfaces pass every check, including both shipping surfaces. Open: the Prototype popup overflows by a scrollbar width at 320/390 px (`max-width:100vw`); left as is because the real popup sizes to its content and percentage widths risk collapsing it.
+- G10 not flipped; Francis decides.
+
 ## Laya Colab run v02 (2 October 2026)
 
 - Run v02 on generator v5: not accepted (`laya-colab-sweep-v02.json`). On held-out cases at 0.9 it acted on 24 and was wrong on 1, `support-desc-free`, a free-text step. Design cases regressed on two finish steps whose success message is prose, not a `STATUS` line. Validation on held-out wording now ranks candidates (1 of 12 passed).
