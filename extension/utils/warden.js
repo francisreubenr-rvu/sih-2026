@@ -17,6 +17,14 @@
 // Origin is configurable via chrome.storage.local key 'wardenOrigin' (read fresh on every
 // call, same convention background.js already uses for other settings), defaulting to
 // config.js's WARDEN_DEFAULT_ORIGIN.
+//
+// Pairing (30 September 2026, warden/pairing.py). When chrome.storage.local holds
+// 'wardenPairing', every request carries a fresh nonce and an HMAC-SHA256 request proof, and
+// every response must carry X-Dhristi-Proof over the same nonce, the path, the status and the
+// exact response bytes, or it is refused with WardenPairingError. The secret never crosses the
+// wire. Anything else on the Warden's port cannot produce a proof, so it cannot pass as the
+// Warden; a response that verified is recorded in VERIFIED (never a field the server could set),
+// and only such a response may release a local confirmation (plan-check.js layaRelease).
 
 import { WARDEN_DEFAULT_ORIGIN } from '../config.js';
 import { loopbackHttpUrl } from './loopback.js';
@@ -47,6 +55,58 @@ export class WardenHTTPError extends Error {
   }
 }
 
+export class WardenPairingError extends Error {
+  constructor(path, reason) {
+    super(`The service on the Warden's port did not prove the pairing code at ${path}: ${reason}. Nothing from it was used.`);
+    this.name = 'WardenPairingError';
+    this.path = path;
+  }
+}
+
+const VERIFIED = new WeakSet();
+
+// True only for a response object this module parsed from a Warden response whose pairing proof
+// verified. Server-supplied fields cannot make it true.
+export function isPairingVerified(value) {
+  return value !== null && typeof value === 'object' && VERIFIED.has(value);
+}
+
+// A pairing code is the Warden's WARDEN_PAIRING_SECRET: base64url, at least 32 characters.
+export const PAIRING_CODE_RE = /^[A-Za-z0-9_-]{32,256}$/;
+
+export async function getPairingCode() {
+  try {
+    const stored = await chrome.storage.local.get(['wardenPairing']);
+    const code = stored.wardenPairing && String(stored.wardenPairing).trim();
+    return code && PAIRING_CODE_RE.test(code) ? code : null;
+  } catch {
+    return null;
+  }
+}
+
+const encoder = new TextEncoder();
+
+function b64url(bytes) {
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function fromB64url(text) {
+  if (typeof text !== 'string' || !/^[A-Za-z0-9_-]+$/.test(text)) return null;
+  const bin = atob(text.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (text.length % 4)) % 4));
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+}
+
+async function sha256Hex(bytes) {
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+  return Array.from(digest, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hmacKey(code) {
+  return crypto.subtle.importKey('raw', encoder.encode(code), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+}
+
 async function getOrigin() {
   try {
     const stored = await chrome.storage.local.get(['wardenOrigin']);
@@ -66,9 +126,9 @@ async function getOrigin() {
   }
 }
 
-async function readJson(res) {
+function parseJson(bytes) {
   try {
-    return await res.json();
+    return JSON.parse(new TextDecoder().decode(bytes));
   } catch {
     return null;
   }
@@ -76,24 +136,49 @@ async function readJson(res) {
 
 async function request(path, { method = 'GET', body, timeoutMs } = {}) {
   const origin = await getOrigin();
+  const code = await getPairingCode();
+  const text = body !== undefined ? JSON.stringify(body) : undefined;
+  const headers = {};
+  if (text !== undefined) headers['Content-Type'] = 'application/json';
+  let key = null;
+  let nonce = null;
+  if (code) {
+    key = await hmacKey(code);
+    nonce = b64url(crypto.getRandomValues(new Uint8Array(18)));
+    const bodyHash = await sha256Hex(encoder.encode(text ?? ''));
+    const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(`dhristi-req\n${method}\n${path}\n${nonce}\n${bodyHash}`)));
+    headers['X-Dhristi-Nonce'] = nonce;
+    headers['X-Dhristi-Auth'] = b64url(mac);
+  }
   let res;
+  let bytes;
   try {
     res = await fetch(`${origin}${path}`, {
       method,
-      headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      headers: Object.keys(headers).length ? headers : undefined,
+      body: text,
       signal: AbortSignal.timeout(timeoutMs),
     });
+    bytes = new Uint8Array(await res.arrayBuffer());
   } catch (error) {
     // Any fetch-level failure (connection refused, DNS, abort/timeout) means the request
     // never got a response at all -- this is "not running", not "returned an error".
     throw new WardenUnreachableError(origin, path, error.name === 'TimeoutError' || error.name === 'AbortError' ? 'timed out' : error.message);
   }
 
-  const data = await readJson(res);
+  if (key) {
+    const proof = fromB64url(res.headers?.get?.('X-Dhristi-Proof') ?? null);
+    if (!proof) throw new WardenPairingError(path, 'no pairing proof in the response');
+    const bodyHash = await sha256Hex(bytes);
+    const ok = await crypto.subtle.verify('HMAC', key, proof, encoder.encode(`dhristi-res\n${path}\n${nonce}\n${res.status}\n${bodyHash}`));
+    if (!ok) throw new WardenPairingError(path, 'the pairing proof does not match');
+  }
+
+  const data = parseJson(bytes);
   if (!res.ok) {
     throw new WardenHTTPError(path, res.status, data);
   }
+  if (key && data !== null && typeof data === 'object') VERIFIED.add(data);
   return data;
 }
 

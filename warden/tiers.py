@@ -20,14 +20,23 @@ changed the available signal). Flagged in the delivery report.
 """
 
 import re
+import unicodedata
 
 TIERS = ("reversible", "navigational", "state-changing", "destructive")
 
 # Ported verbatim (semantics unchanged) from op-tier.mjs's
 # DESTRUCTIVE_INTENT_PATTERN.
+# Hindi mirrors the English list; same text and reasoning as HI_DESTRUCTIVE in
+# extension/utils/op-tier.js (30 September 2026, ROAST round 28). Bare "रद्द करें"
+# (Cancel) and bare "समाप्त" (Finish) are deliberately absent.
+HI_DESTRUCTIVE = (
+    r"हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब"
+    r"|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)"
+)
+
 DESTRUCTIVE_INTENT_RE = re.compile(
     r"\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\b"
-    r"|\bclose (?:my|the) account\b|\bcancel (?:my|the) (?:account|subscription)\b",
+    r"|\bclose (?:my|the) account\b|\bcancel (?:my|the) (?:account|subscription)\b|" + HI_DESTRUCTIVE,
     re.IGNORECASE,
 )
 
@@ -36,7 +45,8 @@ DESTRUCTIVE_INTENT_RE = re.compile(
 # op-tier.mjs states for its own destructive-intent pattern: a miss costs an
 # extra confirmation step (safe), not a wrong unattended action.
 DESTRUCTIVE_LABEL_RE = re.compile(
-    r"delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)",
+    r"delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)|"
+    + HI_DESTRUCTIVE,
     re.IGNORECASE,
 )
 SUBMIT_LABEL_RE = re.compile(
@@ -49,8 +59,16 @@ NAV_LABEL_RE = re.compile(
 )
 
 
+_ZERO_WIDTH_RE = re.compile("[\u200b-\u200d\u2060\ufeff]")
+
+
+def _canonical(text) -> str:
+    """NFC with zero-width characters removed, as op-tier.js canonical()."""
+    return _ZERO_WIDTH_RE.sub("", unicodedata.normalize("NFC", str(text or "")))
+
+
 def expresses_destructive_intent(task: str) -> bool:
-    return bool(DESTRUCTIVE_INTENT_RE.search(task or ""))
+    return bool(DESTRUCTIVE_INTENT_RE.search(_canonical(task)))
 
 
 def _find_element(selector, elements):
@@ -62,7 +80,7 @@ def _find_element(selector, elements):
 
 def has_destructive_control(elements) -> bool:
     for el in elements or []:
-        haystack = f"{el.get('label') or ''} {el.get('fieldType') or ''}"
+        haystack = _canonical(f"{el.get('label') or ''} {el.get('fieldType') or ''}")
         if DESTRUCTIVE_LABEL_RE.search(haystack):
             return True
     return False
@@ -85,7 +103,7 @@ def op_tier(plan: dict, elements: list) -> str:
         el = _find_element(selector, elements)
         if el is None:
             raise ValueError(f"warden: click targets a selector not present in this scene: {selector!r}")
-        haystack = f"{el.get('label') or ''} {el.get('fieldType') or ''}"
+        haystack = _canonical(f"{el.get('label') or ''} {el.get('fieldType') or ''}")
         if DESTRUCTIVE_LABEL_RE.search(haystack):
             return "destructive"
         if SUBMIT_LABEL_RE.search(haystack):
@@ -95,7 +113,7 @@ def op_tier(plan: dict, elements: list) -> str:
         # fieldType "link" satisfy \blink\b, so any link without a destructive or
         # submit keyword ("Kick from folder", "खाता बंद करें") tiered navigational
         # and accepted (ROAST round 28).
-        if NAV_LABEL_RE.search((el.get("label") or "").strip()):
+        if NAV_LABEL_RE.search(_canonical(el.get("label")).strip()):
             return "navigational"
         # Conservative default (same reasoning as op-tier.mjs's click branch):
         # anything not proven reversible stops for confirmation.

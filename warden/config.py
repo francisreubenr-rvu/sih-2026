@@ -76,6 +76,23 @@ def reviewer_mode() -> str:
     return "laya" if raw == "laya" else "ollama"
 
 
+# Extension <-> Warden pairing secret (pairing.py). Unset: pairing off, the
+# Warden behaves as before. Set but shorter than PAIRING_MIN_LEN: misconfigured,
+# and the Warden refuses POSTs rather than run with a guessable secret.
+PAIRING_MIN_LEN = 32
+
+
+def pairing_secret():
+    return os.environ.get("WARDEN_PAIRING_SECRET", "").strip() or None
+
+
+def pairing_state() -> str:
+    secret = pairing_secret()
+    if secret is None:
+        return "off"
+    return "required" if len(secret) >= PAIRING_MIN_LEN else "misconfigured"
+
+
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 

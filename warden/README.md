@@ -283,6 +283,40 @@ its own scan could not identify (`unproven`), under thresholds it holds itself. 
 extension's run loop does not call `/validate`, so the escalation review above reaches only older
 harnesses.
 
+### Pairing with the extension (30 September 2026)
+
+Before this change the extension trusted whatever answered on `127.0.0.1:8756`. Once a `/plan`
+response could skip a confirmation (Laya release, above), that was not good enough. `pairing.py`
+adds a shared secret that never crosses the wire:
+
+| Direction | Header | HMAC-SHA256 over |
+|---|---|---|
+| request | `X-Dhristi-Nonce`, `X-Dhristi-Auth` | `dhristi-req`, method, path, nonce, sha256(body) |
+| response | `X-Dhristi-Proof` | `dhristi-res`, path, nonce, status, sha256(exact response bytes) |
+
+Set `WARDEN_PAIRING_SECRET` in `warden/.env` (make one with `python pairing.py new`). Then paste the
+same value into the extension's Settings > Pairing code. With it set, the Warden behaves as follows:
+
+- It refuses a POST without a valid proof (401), and refuses a nonce it has seen in the last 10
+  minutes.
+- It signs every response to a request that carried a nonce. Error responses are signed too.
+- `/health` reports `pairing: required`.
+- A secret shorter than 32 characters reports `misconfigured`, and every POST is refused (503).
+
+Unset, nothing changes, and `/health` reports `pairing: off`.
+
+The extension (`extension/utils/warden.js`) behaves as follows:
+
+- **Paired:** it refuses any response without a valid proof. A refused `/health` stops the run
+  before any page text is sent.
+- **Unpaired, against a Warden that requires pairing:** it refuses the run up front.
+- **Laya release:** it happens only on a verified `/plan` response. Unpaired, a confirmation is
+  never skipped.
+
+Residual: the pairing code sits in the extension's `chrome.storage.local`. If the run starts while
+the real Warden answers and an impostor takes the port mid-run, at most one `/strip` body reaches
+the impostor before its unproven response stops the run.
+
 ### The reasoning stage, measured 13 September 2026
 
 It had never been exercised before this date: every call recorded `skipped`, and three real defects

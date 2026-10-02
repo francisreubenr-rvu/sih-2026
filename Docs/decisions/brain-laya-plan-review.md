@@ -101,7 +101,7 @@ Anything missing, malformed or out of range means no release.
 - **The release is re-checked at execute time.** The content script also requires that the live element still reads `unproven`. A "Statements" link relabelled "Pay now" after the scan keeps its tier, so without this check it would have run. Now it stops and asks, and a real-Chromium test covers it.
 - **Unchanged:** destructive always asks, a failed plan check still rejects, and every other `confirm` still confirms.
 
-**Residual risk accepted with this decision.** The extension does not authenticate the Warden; any process on `127.0.0.1:8756` is trusted as it.
+**Residual risk accepted with this decision** (narrowed the same day by pairing and the Hindi keywords, section "Follow-ups shipped"). The extension does not authenticate the Warden; any process on `127.0.0.1:8756` is trusted as it.
 
 - Before this change, a spoofed or compromised Warden could propose plans, but it could not make a non-navigational click run unattended.
 - Now it can release an `unproven` click by sending a confident review. That includes a destructive label the English keyword rules do not recognise, such as "खाता हटाएं".
@@ -123,7 +123,52 @@ Private Hugging Face repo `francisreubenr/dhristi-laya-plan-review`, revision `6
 
 The navigational rule now matches the label alone, as `op-tier.js` does. On the test split, destructive steps accepted as navigational went from 42/120 to 0/120 (`warden_regex_gate_after_fix` in the results file). The dataset's `regex_tier` column and the results file's `regex` block keep the pre-fix values, as generated at `2d7ad76`.
 
+## Follow-ups shipped (Francis, 30 September 2026)
+
+### Hindi destructive keywords
+
+`extension/utils/op-tier.js` `HI_DESTRUCTIVE`, mirrored in `warden/tiers.py`, adds Devanagari and common transliterations of the English list. That covers हटा (delete or remove), मिटा (erase), डिलीट, रिमूव, निष्क्रिय (deactivate), नष्ट (destroy), unsubscribe, and terminating, closing or cancelling an account, subscription or session. It feeds both the click tier and the destructive-intent check, so these labels tier `destructive` and always ask.
+
+- **Left out deliberately:** bare "रद्द करें" (Cancel) and bare "समाप्त" (also the usual Finish button), as bare "Cancel" is in English.
+- **Text is canonicalised before matching:** NFC, with zero-width characters removed. A page cannot hide "हटाएं" behind an invisible joiner.
+
+**Measured on the held-out test split** (`extension_gate_after_hindi_keywords` in the results file):
+
+- Destructive steps the extension tiers `destructive`: 36 of 120 before, 60 of 120 after.
+- Hindi destructive steps tiered `destructive`: 0 of 42 before, 24 of 42 after.
+
+The remaining misses use verbs neither list has, in either language: forget (भूल जाएं), leave (छोड़ें), stop sharing (साझा करना बंद करें), discard, withdraw, purge, kick, end membership. Those stay `unproven`. They always confirm when unpaired, and can be released only by a verified fine-tuned review. Widening the list is left to Francis: tuning it to this test set would overfit the evaluation.
+
+### Pairing secret
+
+`warden/pairing.py`, `warden/app.py` middleware and `extension/utils/warden.js`. The secret is shared and never sent:
+
+- Each request carries a fresh nonce and an HMAC-SHA256 request proof.
+- Each response carries an HMAC over the nonce, path, status and exact response bytes.
+- The Warden refuses unsigned, tampered or replayed POSTs.
+- A paired extension refuses any unproven response. A refused `/health` stops the run before any page text is sent.
+- `layaRelease` now also requires that the `/plan` response verified. Verification is tracked outside the response object, so a server cannot claim it with a JSON field.
+
+Pairing is opt-in. With no `WARDEN_PAIRING_SECRET`, the Warden behaves as before, and an unpaired extension can never skip a confirmation. Setup: `python warden/pairing.py new`, put the value in `warden/.env`, and paste it into Settings > Pairing code.
+
+**Evidence:**
+
+- Warden pytest: unsigned, tampered, wrong-key and replayed POSTs are refused; responses are signed; a short secret fails closed.
+- Extension suite against a fake Warden that signs like `pairing.py`:
+  - a matched pair releases, and every request carries a valid proof with no code on the wire;
+  - an unsigned or wrong-secret impostor is refused before any `/strip`;
+  - an unpaired extension never releases;
+  - a Warden that requires pairing refuses an unpaired extension.
+- Cross-language check: the real `extension/utils/warden.js` against a real uvicorn Warden. `/health` verified, signed POSTs were accepted, a wrong code was refused, and an unsigned POST got 401.
+
+**Residual risk, narrowed:**
+
+- **Mid-run port takeover.** If an impostor takes the port mid-run after the real Warden answered `/health`, at most one `/strip` body reaches it before its unproven response stops the run.
+- **Where the code lives.** The pairing code sits in the extension's `chrome.storage.local`.
+- **Unpaired setups.** They remain as trusting as before, minus the release.
+
 ## Still open
 
-1. Hindi and other-language destructive keywords in `op-tier.js`, and a pairing secret with the Warden. These close the residual risk above.
-2. A live run of the release on the real extension, Warden and Laya. So far: unit, fake-Warden and real-Chromium content tests, plus a real-checkpoint smoke run. There is no loaded-extension run.
+1. A live run of the release and pairing on the loaded extension, real Warden and Laya. So far: unit, fake-Warden, real-Chromium content tests, a real-checkpoint smoke run and the cross-language pairing check.
+2. Destructive verbs missing in both languages (forget, leave, stop sharing, discard, withdraw, purge, revoke), and Hindi submit keywords (भुगतान, भेजें, जमा). Hindi pay/send labels are still `unproven`, so a verified review could release one if Laya misjudged it.
+3. Whether pairing should become mandatory rather than opt-in.

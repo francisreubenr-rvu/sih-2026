@@ -1562,7 +1562,7 @@ def test_laya_verdict_is_never_reject(monkeypatch):
 # ---------------------------------------------------------------------------
 # tiers.py navigational match is label-only (ROAST round 28, 30 September 2026).
 # ---------------------------------------------------------------------------
-@pytest.mark.parametrize("label", ["Wipe all data", "Kick from folder", "खाता बंद करें", "Statements"])
+@pytest.mark.parametrize("label", ["Wipe all data", "Kick from folder", "सहायता केंद्र", "Statements"])
 def test_a_link_is_not_navigational_because_it_is_a_link(label):
     elements = [{"selector": "#t", "label": label, "fieldType": "link", "filled": False, "x": 1, "y": 2}]
     assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
@@ -1789,3 +1789,105 @@ def test_plan_review_also_scores_a_fast_path_answer(monkeypatch):
     result = warden_app.dispatch_plan(dict(_FP_BODY))
     assert calls["fast"] == 1 and calls["groq"] == 0 and result["fastPath"]["used"] is True
     assert result["review"]["targetSelector"] == "#save" and result["review"]["fineTuned"] is True
+
+
+# ---------------------------------------------------------------------------
+# Hindi destructive keywords (30 September 2026), mirrored from
+# extension/utils/op-tier.js HI_DESTRUCTIVE.
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("label", [
+    "खाता हटाएं", "सभी डेटा मिटाएं", "खाता बंद करें", "सदस्यता रद्द करें", "प्रोफ़ाइल निष्क्रिय करें",
+    "कार्ड डिलीट करें", "सत्र समाप्त करें", "ह\u200dटाएं",
+])
+def test_hindi_destructive_labels_tier_destructive(label):
+    elements = [{"selector": "#t", "label": label, "fieldType": "link", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "destructive"
+
+
+@pytest.mark.parametrize("label", ["रद्द करें", "समाप्त", "सहायता केंद्र", "भुगतान करें"])
+def test_hindi_cancel_finish_and_others_are_not_destructive(label):
+    elements = [{"selector": "#t", "label": label, "fieldType": "button", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) != "destructive"
+
+
+def test_hindi_task_expresses_destructive_intent():
+    assert tiers.expresses_destructive_intent("मेरा खाता हटाएं")
+    assert tiers.expresses_destructive_intent("मेरी संगीत सदस्यता रद्द करें")
+    assert not tiers.expresses_destructive_intent("मेरा बिजली का बिल भरें")
+
+
+# ---------------------------------------------------------------------------
+# Extension <-> Warden pairing (pairing.py, 30 September 2026).
+# ---------------------------------------------------------------------------
+import pairing  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+_PAIR_SECRET = "p" * 43
+
+
+def _signed_post(client, path, body, secret=_PAIR_SECRET, nonce=None):
+    raw = json.dumps(body).encode()
+    nonce = nonce or pairing.new_secret()[:24]
+    headers = {
+        "Content-Type": "application/json",
+        "X-Dhristi-Nonce": nonce,
+        "X-Dhristi-Auth": pairing.request_mac(secret, "POST", path, nonce, raw),
+    }
+    return client.post(path, content=raw, headers=headers), nonce
+
+
+def _paired_client(monkeypatch):
+    monkeypatch.setenv("WARDEN_PAIRING_SECRET", _PAIR_SECRET)
+    monkeypatch.setattr(warden_app, "_replay_guard", pairing.ReplayGuard())
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    return TestClient(warden_app.app)
+
+
+def test_pairing_off_by_default_changes_nothing(monkeypatch):
+    monkeypatch.delenv("WARDEN_PAIRING_SECRET", raising=False)
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    client = TestClient(warden_app.app)
+    res = client.post("/plan", json=_plan_body())
+    assert res.status_code == 200 and "x-dhristi-proof" not in res.headers
+    assert client.get("/health").json()["pairing"] == "off"
+
+
+def test_paired_warden_refuses_an_unsigned_or_tampered_post(monkeypatch):
+    client = _paired_client(monkeypatch)
+    assert client.post("/plan", json=_plan_body()).status_code == 401
+    raw = json.dumps(_plan_body()).encode()
+    nonce = "n" * 24
+    good = pairing.request_mac(_PAIR_SECRET, "POST", "/plan", nonce, raw)
+    tampered = client.post("/plan", content=raw + b" ", headers={"X-Dhristi-Nonce": nonce, "X-Dhristi-Auth": good, "Content-Type": "application/json"})
+    assert tampered.status_code == 401
+    wrong_key = pairing.request_mac("q" * 43, "POST", "/plan", nonce, raw)
+    assert client.post("/plan", content=raw, headers={"X-Dhristi-Nonce": nonce, "X-Dhristi-Auth": wrong_key, "Content-Type": "application/json"}).status_code == 401
+
+
+def test_paired_warden_signs_its_response_and_refuses_a_replayed_nonce(monkeypatch):
+    client = _paired_client(monkeypatch)
+    res, nonce = _signed_post(client, "/plan", _plan_body())
+    assert res.status_code == 200
+    expected = pairing.response_mac(_PAIR_SECRET, "/plan", nonce, 200, res.content)
+    assert res.headers["x-dhristi-proof"] == expected
+    replay, _ = _signed_post(client, "/plan", _plan_body(), nonce=nonce)
+    assert replay.status_code == 401
+
+
+def test_paired_health_is_signed_when_asked_and_reports_pairing(monkeypatch):
+    client = _paired_client(monkeypatch)
+    nonce = "h" * 24
+    res = client.get("/health", headers={"X-Dhristi-Nonce": nonce})
+    assert res.json()["pairing"] == "required"
+    assert res.headers["x-dhristi-proof"] == pairing.response_mac(_PAIR_SECRET, "/health", nonce, 200, res.content)
+
+
+def test_short_pairing_secret_fails_closed(monkeypatch):
+    monkeypatch.setenv("WARDEN_PAIRING_SECRET", "short")
+    client = TestClient(warden_app.app)
+    assert client.post("/plan", json=_plan_body()).status_code == 503
+    assert client.get("/health").json()["pairing"] == "misconfigured"
+
+
+def test_pairing_new_secret_is_long_enough():
+    assert len(pairing.new_secret()) >= config.PAIRING_MIN_LEN

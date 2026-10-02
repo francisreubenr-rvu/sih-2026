@@ -483,3 +483,12 @@ test('live-region text reaches the scanned DOM as STATUS lines; empty and hidden
   assert.deepEqual(statusLines, ['STATUS text="Saved profile"']);
   await p.close();
 });
+
+test('Hindi destructive link scans as destructive, so it always asks', async () => {
+  // The harness serves fixtures without a charset; declare UTF-8 so Devanagari is not decoded as windows-1252.
+  const p = await h.open('<meta charset="utf-8"><a id="d" href="#gone">खाता हटाएं</a><a id="h" href="#help">सहायता केंद्र</a>');
+  const scan = await p.scan();
+  assert.deepEqual([byLabel(scan, 'खाता हटाएं').tier, byLabel(scan, 'खाता हटाएं').tierBasis], ['destructive', 'destructive-keyword']);
+  assert.deepEqual([byLabel(scan, 'सहायता केंद्र').tier, byLabel(scan, 'सहायता केंद्र').tierBasis], ['state-changing', 'unproven']);
+  await p.close();
+});

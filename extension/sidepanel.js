@@ -50,6 +50,10 @@ const els = {
   wardenOrigin: document.getElementById('warden-origin'),
   wardenOriginSave: document.getElementById('warden-origin-save'),
   wardenOriginStatus: document.getElementById('warden-origin-status'),
+  wardenPairing: document.getElementById('warden-pairing'),
+  wardenPairingSave: document.getElementById('warden-pairing-save'),
+  wardenPairingStatus: document.getElementById('warden-pairing-status'),
+  detailPairing: document.getElementById('detail-pairing'),
   detailReachable: document.getElementById('detail-reachable'),
   detailLoaded: document.getElementById('detail-loaded'),
   detailModel: document.getElementById('detail-model'),
@@ -98,6 +102,7 @@ function init() {
     chrome.runtime.sendMessage({ type: 'STOP_TASK' }).catch(() => {});
   });
   els.wardenOriginSave.addEventListener('click', saveOrigin);
+  els.wardenPairingSave.addEventListener('click', savePairing);
   document.addEventListener('keydown', trapFocusInPendingCard, true);
 
   chrome.runtime.onMessage.addListener((message) => {
@@ -115,7 +120,9 @@ function init() {
 }
 
 async function restore() {
-  const settings = await chrome.storage.local.get(['wardenOrigin']).catch(() => ({}));
+  const settings = await chrome.storage.local.get(['wardenOrigin', 'wardenPairing']).catch(() => ({}));
+  // Presence only: the saved code is never put back into the page.
+  if (settings.wardenPairing) els.wardenPairingStatus.textContent = 'A pairing code is saved. Save an empty field to remove it.';
   const storedOrigin = settings.wardenOrigin && String(settings.wardenOrigin).trim();
   if (storedOrigin && !loopbackHttpUrl(storedOrigin)) {
     els.wardenOrigin.value = DEFAULT_WARDEN_ORIGIN;
@@ -688,7 +695,13 @@ function applyHealth(next) {
     chipText = 'OFFLINE';
     // "Not answering" rather than "not running": a probe can fail because the server is absent
     // or because it is busy. The measured error is on the card and in Settings.
-    text = 'The Warden is not answering. No task can start until it is.';
+    text = health.pairingFailed === true
+      ? "Something on the Warden's port could not prove the pairing code. No task can start."
+      : 'The Warden is not answering. No task can start until it is.';
+  } else if (health.pairing === 'required' && health.paired !== true) {
+    chipState = 'uncertain';
+    chipText = 'NOT PAIRED';
+    text = 'The Warden requires pairing. Paste WARDEN_PAIRING_SECRET from warden/.env into Settings > Pairing code.';
   } else if (health.loaded !== true) {
     // Not an error: the model is loading. The elapsed wait is measured from when this panel
     // first saw the loading state, so it is real time, not a progress bar.
@@ -719,6 +732,11 @@ function applyHealth(next) {
   const reachable = health.reachable === true;
   els.detailReachable.textContent = reachable ? 'yes' : 'no';
   els.detailLoaded.textContent = reachable ? (health.loaded === true ? 'yes' : 'no') : '-';
+  els.detailPairing.textContent = health.pairingVerified === true
+    ? 'verified'
+    : health.paired === true
+      ? (health.pairingFailed === true ? 'proof failed' : 'code saved, not verified')
+      : health.pairing === 'required' ? 'required, no code' : 'off';
   els.detailModel.textContent = reachable && health.model ? health.model : '-';
   els.detailPlanner.textContent = reachable && health.planner ? health.planner : '-';
   els.detailDestination.textContent = destination === 'cloud' ? 'in the cloud' : destination === 'local' ? 'on this device' : '-';
@@ -729,6 +747,23 @@ function applyHealth(next) {
   // With no trace carrying its own route, the pipeline draws the route this Warden will use.
   renderRoute(trace);
   renderSent(trace);
+}
+
+// The code is never echoed back into the field or any status line once saved.
+async function savePairing() {
+  const value = els.wardenPairing.value.trim();
+  const response = await send({ type: 'SET_WARDEN_PAIRING', code: value });
+  els.wardenPairing.value = '';
+  if (!response?.ok) {
+    els.wardenPairingStatus.textContent = response?.error || 'Could not save the pairing code.';
+    return;
+  }
+  els.wardenPairingStatus.textContent = !response.paired
+    ? 'Pairing code removed. The Warden\'s answers are not verified.'
+    : response.verified
+      ? 'Saved. The Warden proved the code.'
+      : 'Saved, but the Warden has not proved it yet. Check that it runs with the same WARDEN_PAIRING_SECRET.';
+  await refreshHealth();
 }
 
 async function saveOrigin() {

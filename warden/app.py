@@ -15,7 +15,7 @@ from typing import Optional
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 import config
 import entities
@@ -23,6 +23,7 @@ import fastpath
 import groq_client
 import laya_review
 import ollama_client
+import pairing
 import redactor
 import strip as strip_module
 import validate as validate_module
@@ -33,8 +34,51 @@ app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=config.CORS_ORIGIN_REGEX,
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type"],
+    allow_headers=["Content-Type", "X-Dhristi-Nonce", "X-Dhristi-Auth"],
+    expose_headers=["X-Dhristi-Proof"],
 )
+
+_replay_guard = pairing.ReplayGuard()
+
+
+@app.middleware("http")
+async def pairing_middleware(request: Request, call_next):
+    """Pairing (pairing.py). Off unless WARDEN_PAIRING_SECRET is set. When on, every POST
+    must carry a valid request proof with a fresh nonce, and every response to a request
+    with a nonce carries X-Dhristi-Proof, so the extension can tell this Warden from
+    anything else listening on the port."""
+    state = config.pairing_state()
+    if state == "off" or request.method == "OPTIONS":
+        return await call_next(request)
+    secret = config.pairing_secret()
+    path = request.url.path
+    nonce = request.headers.get("x-dhristi-nonce")
+    if request.method == "POST":
+        if state != "required":
+            return JSONResponse(status_code=503, content={
+                "error": f"WARDEN_PAIRING_SECRET is shorter than {config.PAIRING_MIN_LEN} characters; "
+                         "make one with `python pairing.py new`",
+                "pairing": state, "warden": config.WARDEN_VERSION,
+            })
+        body = await request.body()
+        if not pairing.verify_request(secret, request.method, path, nonce, request.headers.get("x-dhristi-auth"), body):
+            return JSONResponse(status_code=401, content={
+                "error": "This Warden requires pairing: the request carried no valid pairing proof. "
+                         "Paste the pairing code into the extension's Settings.",
+                "pairing": state, "warden": config.WARDEN_VERSION,
+            })
+        if not _replay_guard.first_use(nonce):
+            return JSONResponse(status_code=401, content={
+                "error": "pairing nonce already used", "pairing": state, "warden": config.WARDEN_VERSION,
+            })
+    response = await call_next(request)
+    if state != "required" or not pairing.valid_nonce(nonce):
+        return response
+    body = b"".join([chunk async for chunk in response.body_iterator])
+    headers = dict(response.headers)
+    headers.pop("content-length", None)
+    headers["X-Dhristi-Proof"] = pairing.response_mac(secret, path, nonce, response.status_code, body)
+    return Response(content=body, status_code=response.status_code, headers=headers, media_type=response.media_type)
 
 
 @app.on_event("startup")
@@ -59,6 +103,7 @@ def health():
         "groqConfigured": config.groq_configured(),
         "fastPath": {"mode": fastpath.mode(), "destination": fastpath.destination(fastpath.mode()),
                      "minConfidence": fastpath.min_confidence()},
+        "pairing": config.pairing_state(),
         "warden": config.WARDEN_VERSION,
     }
 

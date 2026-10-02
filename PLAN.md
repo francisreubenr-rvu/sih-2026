@@ -36,7 +36,10 @@
   - **Release:** `/plan` carries Laya scores, and the extension's `layaRelease` skips a confirmation only for an `unproven` click, from the fine-tuned checkpoint, at p(nav) ≥ 0.9 with p(destructive) < 0.5 and p(off task) < 0.5. The release is re-checked on the live element at execute.
   - **Weights:** private Hugging Face repo `francisreubenr/dhristi-laya-plan-review`.
   - **`tiers.py` fix:** navigational is matched on the label alone. On the test split, destructive steps accepted as navigational went from 42/120 to 0/120.
-- Residual risk accepted: the Warden is not authenticated, so a spoofed one can release `unproven` clicks, including Hindi destructive labels. Next: Hindi destructive keywords in `op-tier.js`, a Warden pairing secret, and a loaded-extension run of the release.
+- Francis, 30 September, same PR:
+  - **Hindi destructive keywords** in `op-tier.js` and `tiers.py`. Hindi destructive test steps tiered destructive: 0/42 → 24/42.
+  - **Pairing secret** (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). A paired extension refuses unproven responses, and only a verified `/plan` response can release a confirmation.
+- Next: a loaded-extension run of release and pairing. Then destructive verbs neither language lists (forget, leave, stop sharing, discard, withdraw, purge, revoke) and Hindi submit keywords. Then whether pairing becomes mandatory.
 - Not changed: G11 **fail**, G14 **unknown**, G20 **paused**, `submission_ready` **false**.
 
 ## Qwen first, Jev fast path, Laya (30 September 2026)

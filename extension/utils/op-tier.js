@@ -11,8 +11,15 @@
 
 export const TIERS = Object.freeze(['reversible', 'navigational', 'state-changing', 'destructive']);
 
-const DESTRUCTIVE_INTENT_RE = /\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\b|\bclose (?:my|the) account\b|\bcancel (?:my|the) (?:account|subscription)\b/i;
-const DESTRUCTIVE_LABEL_RE = /delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)/i;
+// Hindi (Devanagari and common transliterations) mirrors the English list: delete/remove (हटा,
+// डिलीट, रिमूव), erase (मिटा), deactivate (निष्क्रिय, डीएक्टिवेट), destroy (नष्ट), unsubscribe,
+// terminate / close / cancel an account, subscription or session. Substring match, like the English
+// label list, because JavaScript's \b is ASCII-only. Bare "रद्द करें" (Cancel) and bare "समाप्त"
+// (also the usual "Finish" button) are left out, as bare "Cancel" is in English. Without this list
+// every Hindi destructive label tiered state-changing by the unproven default (ROAST round 28).
+const HI_DESTRUCTIVE = 'हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)';
+const DESTRUCTIVE_INTENT_RE = new RegExp(`\\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\\b|\\bclose (?:my|the) account\\b|\\bcancel (?:my|the) (?:account|subscription)\\b|${HI_DESTRUCTIVE}`, 'i');
+const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)|${HI_DESTRUCTIVE}`, 'i');
 const SUBMIT_LABEL_RE = /submit|save|confirm|pay|checkout|place order|purchase|send/i;
 const NAV_LABEL_RE = /^(go to|view|open|back|next|home|menu)\b|\blink\b/i;
 
@@ -35,16 +42,22 @@ export function tierPermitsUnattended(tier) {
 }
 
 export function expressesDestructiveIntent(task) {
-  return DESTRUCTIVE_INTENT_RE.test(String(task || ''));
+  return DESTRUCTIVE_INTENT_RE.test(canonical(task));
 }
 
 // URL paths and slugs ("/account/close-account", "cancel_subscription") are matched as words.
+// NFC, and zero-width characters removed: a page must not hide "हटाएं" from the rules with a
+// joiner that renders identically.
+function canonical(text) {
+  return String(text || '').normalize('NFC').replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+}
+
 function normalise(text) {
-  return String(text || '').replace(/[\s\-_/.?=&+#:%]+/g, ' ').trim();
+  return canonical(text).replace(/[\s\-_/.?=&+#:%]+/g, ' ').trim();
 }
 
 function collapse(text) {
-  return String(text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  return canonical(text).replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
 // True when a control shows one thing and announces another: both non-empty and neither contains

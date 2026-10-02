@@ -193,6 +193,15 @@
           <p id="warden-origin-status" class="key-status">Default: http://127.0.0.1:8756.</p>
         </div>
 
+        <div class="key-field">
+          <label for="warden-pairing">Pairing code</label>
+          <div class="key-row">
+            <input id="warden-pairing" type="password" autocomplete="off" spellcheck="false" placeholder="WARDEN_PAIRING_SECRET from warden/.env">
+            <button id="warden-pairing-save" type="button" class="save-btn">Save code</button>
+          </div>
+          <p id="warden-pairing-status" class="key-status">Not paired. Without a code the Warden's answers are not verified, and Laya can never skip a confirmation.</p>
+        </div>
+
         <dl class="health-detail">
           <div><dt>Reachable</dt><dd id="detail-reachable">checking</dd></div>
           <div><dt>Redaction model loaded</dt><dd id="detail-loaded">-</dd></div>
@@ -201,6 +210,7 @@
           <div><dt>Planning runs</dt><dd id="detail-destination">-</dd></div>
           <div><dt>Planner model</dt><dd id="detail-planner-model">-</dd></div>
           <div><dt>Groq configured</dt><dd id="detail-groq">-</dd></div>
+          <div><dt>Pairing</dt><dd id="detail-pairing">-</dd></div>
         </dl>
         <p id="groq-note" class="note" hidden>The cloud planner has no key. Put <code>GROQ_API_KEY</code> in <code>warden/.env</code> and restart the Warden, or set <code>WARDEN_PLANNER=ollama</code> to plan offline on this device. The key never goes in this extension.</p>
       </section>

@@ -94,10 +94,33 @@ test('classifyClickTargetBasis names the rule that decided, and agrees with clas
     [{ visibleText: 'Orders', ariaLabel: 'Archive' }, 'state-changing', 'name-mismatch'],
     [{ visibleText: 'View statement' }, 'navigational', 'navigation-label'],
     [{ visibleText: 'Statements' }, 'state-changing', 'unproven'],
-    [{ visibleText: 'खाता हटाएं' }, 'state-changing', 'unproven'],
+    [{ visibleText: 'खाता हटाएं' }, 'destructive', 'destructive-keyword'],
+    [{ visibleText: 'सहायता केंद्र' }, 'state-changing', 'unproven'],
   ];
   for (const [desc, tier, basis] of cases) {
     assert.deepEqual(classifyClickTargetBasis(desc), { tier, basis }, JSON.stringify(desc));
     assert.equal(tierOf(desc), tier);
   }
+});
+
+// ---- Hindi destructive keywords (30 September 2026) ------------------------------------------------
+import { expressesDestructiveIntent as intentOf } from '../utils/op-tier.js';
+
+test('Hindi destructive labels tier destructive in every descriptor, including behind a zero-width joiner', () => {
+  for (const text of ['खाता हटाएं', 'सभी डेटा मिटाएं', 'खाता बंद करें', 'सदस्यता रद्द करें', 'प्रोफ़ाइल निष्क्रिय करें', 'कार्ड डिलीट करें', 'सत्र समाप्त करें', 'ह\u200dटाएं', 'मि\u200bटाएं']) {
+    assert.deepEqual(classifyClickTargetBasis({ visibleText: text }), { tier: 'destructive', basis: 'destructive-keyword' }, text);
+    assert.equal(tierOf({ visibleText: 'Settings', ariaLabel: 'Settings', title: text }), 'destructive', `title ${text}`);
+  }
+});
+
+test('Hindi Cancel, Finish and ordinary labels are not destructive', () => {
+  for (const text of ['रद्द करें', 'समाप्त', 'सहायता केंद्र', 'मेरे ऑर्डर']) {
+    assert.notEqual(tierOf({ visibleText: text }), 'destructive', text);
+  }
+});
+
+test('Hindi tasks express destructive intent', () => {
+  assert.equal(intentOf('मेरा खाता हटाएं'), true);
+  assert.equal(intentOf('मेरी संगीत सदस्यता रद्द करें'), true);
+  assert.equal(intentOf('मेरा बिजली का बिल भरें'), false);
 });
