@@ -8,7 +8,6 @@ import test from 'node:test';
 
 import { DEFAULT_HEALTH, defaultStrip, runTask } from './helpers/background-harness.mjs';
 
-const DEFAULT_HEALTH_PAIRED = { ...DEFAULT_HEALTH, pairing: 'required' };
 
 const H_NEXT = `h${'a'.repeat(32)}`;
 const H_DEL = `h${'b'.repeat(32)}`;
@@ -409,15 +408,17 @@ for (const [name, wardenSecret] of [['an unsigned impostor', null], ['a Warden w
   });
 }
 
-test('pairing: an unpaired extension never releases, whatever the review says', async () => {
-  const run = await runTask({ task: 'download my statement', scan: scanOf([STATEMENTS_LINK]), warden: { plan: planWithReview(click('a.st'), { ...review('a.st'), pairingVerified: true }) } });
-  assert.equal(run.prompts.length, 1);
-  assert.match(run.prompts[0].text, /requires local confirmation/);
-});
-
-test('pairing: a Warden that requires pairing refuses an unpaired extension before any page text is sent', async () => {
-  const run = await runTask({ scan: scanOf([NEXT_LINK]), warden: { health: () => ({ ...DEFAULT_HEALTH_PAIRED }), plan: planSeq(click('body > a')) } });
-  assert.equal(run.start.ok, false);
-  assert.equal(run.fetchBodies.some((b) => b.path === '/strip'), false);
-  assert.match(run.entries.find((e) => e.kind === 'blocked').text, /requires pairing/);
-});
+for (const wardenPairing of ['required', 'disabled', 'missing', undefined]) {
+  test(`pairing is required: an unpaired extension refuses the run before any POST (Warden reports ${wardenPairing})`, async () => {
+    const run = await runTask({
+      pairingCode: null,
+      wardenSecret: null,
+      scan: scanOf([STATEMENTS_LINK]),
+      warden: { health: () => ({ ...DEFAULT_HEALTH, pairing: wardenPairing }), plan: planWithReview(click('a.st'), { ...review('a.st'), pairingVerified: true }) },
+    });
+    assert.equal(run.start.ok, false);
+    assert.equal(run.fetchBodies.some((b) => b.path !== '/health'), false, 'only GET /health left the browser');
+    assert.equal(run.executed.length, 0);
+    assert.match(run.entries.find((e) => e.kind === 'blocked').text, /Pairing is required/);
+  });
+}

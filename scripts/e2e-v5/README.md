@@ -3,7 +3,11 @@
 Drives the real unpacked `extension/` in Chromium against a real Warden (GLiNER loaded) and a fake
 OpenAI-compatible cloud planner that records every request body it receives. Synthetic page only.
 
+Pairing is required (since 2 October 2026, `warden/pairing.py`): start the Warden and the run with the
+same `WARDEN_PAIRING_SECRET`. `run.mjs` saves it into the loaded extension before the first task.
+
 ```sh
+export WARDEN_PAIRING_SECRET="$(cd warden && python pairing.py new)"
 node scripts/e2e-v5/fake-cloud.mjs /tmp/cloud-received.jsonl 8799 &
 cd warden && GROQ_API_KEY=test-not-real GROQ_BASE_URL=http://127.0.0.1:8799 \
   python -m uvicorn app:app --host 127.0.0.1 --port 8756 &   # wait for /health loaded:true

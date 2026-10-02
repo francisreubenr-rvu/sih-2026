@@ -25,7 +25,10 @@ export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhris
 // `pairingCode` is what the extension holds (chrome.storage.local 'wardenPairing'); `wardenSecret`
 // is what the fake Warden signs responses with (warden/pairing.py's scheme), so a test can pair
 // them, mismatch them, or leave the Warden unsigned.
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, pairingCode = null, wardenSecret = null } = {}) {
+// Pairing is required (2 October 2026), so runs are paired by default; pass pairingCode: null to
+// test an unpaired extension.
+export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];

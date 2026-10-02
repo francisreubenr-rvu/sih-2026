@@ -17,9 +17,21 @@ export const TIERS = Object.freeze(['reversible', 'navigational', 'state-changin
 // label list, because JavaScript's \b is ASCII-only. Bare "रद्द करें" (Cancel) and bare "समाप्त"
 // (also the usual "Finish" button) are left out, as bare "Cancel" is in English. Without this list
 // every Hindi destructive label tiered state-changing by the unproven default (ROAST round 28).
-const HI_DESTRUCTIVE = 'हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)';
-const DESTRUCTIVE_INTENT_RE = new RegExp(`\\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\\b|\\bclose (?:my|the) account\\b|\\bcancel (?:my|the) (?:account|subscription)\\b|${HI_DESTRUCTIVE}`, 'i');
-const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)|${HI_DESTRUCTIVE}`, 'i');
+//
+// 2 October 2026 (Francis): the verbs neither language had. English forget, discard, withdraw,
+// purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team/workspace, end a
+// membership/subscription, empty trash, clear history/data, factory reset, void a transaction;
+// Hindi भूल जाएं (forget), leaving a group (समूह छोड़ें; bare "छोड़ें" is also the usual Skip button
+// and is left out), stop sharing, revoke access, वापस लें (withdraw), unlink, disconnect, factory
+// reset, empty trash, removing a member. Kept narrow on purpose: "Leave a review", "Swipe", "Clear
+// filters" and "avoid" must not read destructive. The pattern is NFC-normalised because "छोड़"
+// carries a nukta that NFC decomposes, and matched text is canonicalised the same way.
+const HI_DESTRUCTIVE = ('हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)|'
+  + 'भूल जा|(?:समूह|ग्रुप|टीम|संगठन|चैनल|चैट|परिवार) (?:को )?छोड़|(?:साझा|शेयर) करना बंद|(?:पहुँच|पहुंच|एक्सेस|अनुमति) (?:रद्द|हटा|वापस)|वापस ले|अनलिंक|डिस्कनेक्ट|(?:फ़ैक्टरी|फैक्टरी) रीसेट|(?:ट्रैश|कचरा|रीसायकल बिन|बिन) खाली|बाहर निकाल|सदस्य(?:ों)? (?:को )?निकाल').normalize('NFC');
+const EN_DESTRUCTIVE_LABEL_EXTRA = 'forget|discard|withdraw|purge|revoke|unlink|disconnect|\\bwipe|\\bkick\\b|stop sharing|leave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)|end (?:membership|subscription|session|plan)|empty (?:trash|bin)|clear (?:all )?(?:history|data|messages|activity|chats?)|factory reset|reset to factory|void (?:transaction|payment|order)';
+const EN_DESTRUCTIVE_INTENT_EXTRA = '\\b(?:forget|discard(?:ed|ing)?|withdraw(?:n|ing)?|purg(?:e|ed|ing)|revok(?:e|ed|ing)|unlink(?:ed|ing)?|disconnect(?:ed|ing)?|wip(?:e|ed|ing)|kick(?:ed|ing)?)\\b|\\bstop sharing\\b|\\bleave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)\\b|\\bend (?:my |the )?(?:membership|subscription|plan)\\b|\\bempty (?:the |my )?(?:trash|bin)\\b|\\bfactory reset\\b';
+const DESTRUCTIVE_INTENT_RE = new RegExp(`\\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\\b|\\bclose (?:my|the) account\\b|\\bcancel (?:my|the) (?:account|subscription)\\b|${EN_DESTRUCTIVE_INTENT_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
+const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)|${EN_DESTRUCTIVE_LABEL_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
 const SUBMIT_LABEL_RE = /submit|save|confirm|pay|checkout|place order|purchase|send/i;
 const NAV_LABEL_RE = /^(go to|view|open|back|next|home|menu)\b|\blink\b/i;
 

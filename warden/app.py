@@ -10,6 +10,7 @@ version, from inside warden/:
 """
 
 import re
+import sys
 import threading
 from typing import Optional
 
@@ -43,21 +44,24 @@ _replay_guard = pairing.ReplayGuard()
 
 @app.middleware("http")
 async def pairing_middleware(request: Request, call_next):
-    """Pairing (pairing.py). Off unless WARDEN_PAIRING_SECRET is set. When on, every POST
-    must carry a valid request proof with a fresh nonce, and every response to a request
-    with a nonce carries X-Dhristi-Proof, so the extension can tell this Warden from
-    anything else listening on the port."""
+    """Pairing (pairing.py), required since 2 October 2026. Every POST must carry a valid
+    request proof with a fresh nonce, and every response to a request with a nonce carries
+    X-Dhristi-Proof, so the extension can tell this Warden from anything else listening on
+    the port. Without a usable secret every POST is refused (config.pairing_state)."""
     state = config.pairing_state()
-    if state == "off" or request.method == "OPTIONS":
+    if state == "disabled" or request.method == "OPTIONS":
         return await call_next(request)
     secret = config.pairing_secret()
     path = request.url.path
     nonce = request.headers.get("x-dhristi-nonce")
     if request.method == "POST":
         if state != "required":
+            problem = ("is not set" if state == "missing"
+                       else f"is shorter than {config.PAIRING_MIN_LEN} characters")
             return JSONResponse(status_code=503, content={
-                "error": f"WARDEN_PAIRING_SECRET is shorter than {config.PAIRING_MIN_LEN} characters; "
-                         "make one with `python pairing.py new`",
+                "error": f"Pairing is required and WARDEN_PAIRING_SECRET {problem}. Make one with "
+                         "`python pairing.py new`, put it in warden/.env, restart the Warden, and paste "
+                         "the same value into the extension's Settings > Pairing code.",
                 "pairing": state, "warden": config.WARDEN_VERSION,
             })
         body = await request.body()
@@ -83,6 +87,11 @@ async def pairing_middleware(request: Request, call_next):
 
 @app.on_event("startup")
 def _start_model_load() -> None:
+    state = config.pairing_state()
+    if state in ("missing", "misconfigured"):
+        # The state and the fix, never the secret.
+        print(f"warden: pairing {state}; every POST is refused until WARDEN_PAIRING_SECRET is set "
+              "(python pairing.py new). See warden/README.md, 'Pairing with the extension'.", file=sys.stderr)
     # Load in a background thread so the server is already answering /health
     # (with loaded: false) while the ~76s cold load runs, rather than
     # blocking the socket from accepting connections until it finishes.

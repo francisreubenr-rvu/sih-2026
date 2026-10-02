@@ -18,8 +18,9 @@
 // call, same convention background.js already uses for other settings), defaulting to
 // config.js's WARDEN_DEFAULT_ORIGIN.
 //
-// Pairing (30 September 2026, warden/pairing.py). When chrome.storage.local holds
-// 'wardenPairing', every request carries a fresh nonce and an HMAC-SHA256 request proof, and
+// Pairing (30 September 2026, warden/pairing.py; required since 2 October). Without a code in
+// chrome.storage.local 'wardenPairing', no POST leaves the browser: request() refuses locally. With
+// one, every request carries a fresh nonce and an HMAC-SHA256 request proof, and
 // every response must carry X-Dhristi-Proof over the same nonce, the path, the status and the
 // exact response bytes, or it is refused with WardenPairingError. The secret never crosses the
 // wire. Anything else on the Warden's port cannot produce a proof, so it cannot pass as the
@@ -56,10 +57,13 @@ export class WardenHTTPError extends Error {
 }
 
 export class WardenPairingError extends Error {
-  constructor(path, reason) {
-    super(`The service on the Warden's port did not prove the pairing code at ${path}: ${reason}. Nothing from it was used.`);
+  constructor(path, reason, { local = false } = {}) {
+    super(local
+      ? `Pairing is required and no pairing code is saved in Settings, so nothing was sent to ${path}.`
+      : `The service on the Warden's port did not prove the pairing code at ${path}: ${reason}. Nothing from it was used.`);
     this.name = 'WardenPairingError';
     this.path = path;
+    this.local = local;
   }
 }
 
@@ -137,6 +141,9 @@ function parseJson(bytes) {
 async function request(path, { method = 'GET', body, timeoutMs } = {}) {
   const origin = await getOrigin();
   const code = await getPairingCode();
+  // Required: an unpaired extension sends no body anywhere. GET /health still goes out unsigned so
+  // the panel can say what is missing.
+  if (!code && method !== 'GET') throw new WardenPairingError(path, 'no pairing code', { local: true });
   const text = body !== undefined ? JSON.stringify(body) : undefined;
   const headers = {};
   if (text !== undefined) headers['Content-Type'] = 'application/json';

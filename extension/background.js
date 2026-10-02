@@ -442,8 +442,9 @@ function destinationFor(health) {
 // with a card naming both fixes. An offline Warden (planner "ollama") needs no key.
 function healthState(health) {
   if (!health || health.reachable !== true) return 'unreachable';
-  // The Warden requires pairing and this extension holds no code: every POST would be refused.
-  if (health.pairing === 'required' && health.paired !== true) return 'pairing-needed';
+  // Pairing is required (2 October 2026): with no code this extension sends no POST at all, so a
+  // run cannot start, whatever the Warden reports.
+  if (health.paired !== true) return 'pairing-needed';
   if (health.loaded !== true) return 'loading';
   if (health.planner === 'groq' && health.groqConfigured !== true) return 'groq-missing';
   return 'ready';
@@ -495,7 +496,7 @@ async function refreshHealthAndSync({ refused = false } = {}) {
         // The failures are reported as what was actually measured, not merged into one claim: a
         // probe that timed out, a refused connection and a failed pairing proof are different.
         text: health.pairingFailed
-          ? "Something answered on the Warden's port but could not prove this extension's pairing code. Nothing is sent to it, and no run can start. If you changed WARDEN_PAIRING_SECRET, paste the new code in Settings."
+          ? "Something answered on the Warden's port but could not prove this extension's pairing code. Nothing is sent to it, and no run can start. Check that the Warden runs with WARDEN_PAIRING_SECRET set to the code saved in Settings."
           : timedOut
             ? 'The Warden did not answer GET /health in time. Nothing is sent while it cannot confirm it is up, and no run can start.'
             : 'The Warden is not running. Nothing is sent to it while it is down, and no run can start.',
@@ -743,13 +744,13 @@ async function startAcceptedTask(task) {
   }
   if (stateName === 'pairing-needed') {
     noteBlocked(BLOCKED_PAIRING_ID, {
-      text: "The Warden requires pairing and this extension has no pairing code, so that task was refused. Copy WARDEN_PAIRING_SECRET from warden/.env into Settings > Pairing code.",
-      reason: 'GET /health reports pairing: required.',
+      text: 'Pairing is required and this extension has no pairing code, so that task was refused. Copy WARDEN_PAIRING_SECRET from warden/.env into Settings > Pairing code. If the Warden has none yet, make one with `python pairing.py new` in warden/.',
+      reason: 'No pairing code is saved in this extension.',
       command: null,
       refused: true,
     });
     noteRunEnd('The task was not sent.', 'refused');
-    return { ok: false, refused: true, reason: 'The Warden requires pairing.', entries: transcript };
+    return { ok: false, refused: true, reason: 'Pairing is required.', entries: transcript };
   }
   if (stateName === 'loading') {
     noteBlocked(BLOCKED_LOADING_ID, {

@@ -1,6 +1,24 @@
 # Dhristi: SIH26171
 
-## Session handoff: start here (updated 1 October 2026, 07:00 UTC)
+## Session handoff: start here (2 October 2026)
+
+**Where the work is.** PR #42 (Laya plan reviewer and release) and PR #41 (fast path, Groq settings, Laya fast-path training, now parked) are merged into `master` (`3314513`). Open: PR #44 on `claude/lucid-fermat-6dkxla`. It adds Hindi and missing-verb destructive rules, and makes extension-Warden pairing required (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). Current review and ordered plan: `PLAN.md`, "Review and next steps (2 October 2026)". Findings: `ROAST.md` rounds 28 and 29. Decision: `Docs/decisions/brain-laya-plan-review.md`.
+
+**Since pairing is required:**
+
+- A Warden with no secret refuses every POST, and an unpaired extension starts no run.
+- Scripted harnesses and the Warden tests use `WARDEN_PAIRING_DISABLED=1`, or sign with the secret.
+- The e2e harness reads `WARDEN_PAIRING_SECRET` and saves it into the loaded extension.
+
+**Checks at the PR #44 head:**
+
+- Warden: 158 passed, 6 skipped.
+- Extension: 134/134 in real Chromium.
+- Prototype: 141/141.
+- G11 harness: 13/13.
+- Ledger: 14 pass / 1 fail / 5 unknown.
+
+## Session handoff, 1 October 2026 (history; superseded by the section above)
 
 **Where the work is.** Branch `claude/determined-babbage-mhi2zj`, draft PR #41 (https://github.com/francisreubenr-rvu/sih-2026/pull/41), head `ba36a0b` or later, CI green, no conflicts with `master` (`8c04ecd`), no review comments. Use `sih-2026`, not the older `sih26171-dhristi` copy. Details: `Docs/decisions/brain-cloud-models-jev.md`, `scripts/laya-finetune/README.md`, `PLAN.md` (top sections), `ROAST.md` Rounds 22 to 25.
 

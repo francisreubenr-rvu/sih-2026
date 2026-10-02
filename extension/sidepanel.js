@@ -698,10 +698,10 @@ function applyHealth(next) {
     text = health.pairingFailed === true
       ? "Something on the Warden's port could not prove the pairing code. No task can start."
       : 'The Warden is not answering. No task can start until it is.';
-  } else if (health.pairing === 'required' && health.paired !== true) {
+  } else if (health.paired !== true) {
     chipState = 'uncertain';
     chipText = 'NOT PAIRED';
-    text = 'The Warden requires pairing. Paste WARDEN_PAIRING_SECRET from warden/.env into Settings > Pairing code.';
+    text = 'Pairing is required. Paste WARDEN_PAIRING_SECRET from warden/.env into Settings > Pairing code.';
   } else if (health.loaded !== true) {
     // Not an error: the model is loading. The elapsed wait is measured from when this panel
     // first saw the loading state, so it is real time, not a progress bar.
@@ -736,7 +736,7 @@ function applyHealth(next) {
     ? 'verified'
     : health.paired === true
       ? (health.pairingFailed === true ? 'proof failed' : 'code saved, not verified')
-      : health.pairing === 'required' ? 'required, no code' : 'off';
+      : 'required, no code saved';
   els.detailModel.textContent = reachable && health.model ? health.model : '-';
   els.detailPlanner.textContent = reachable && health.planner ? health.planner : '-';
   els.detailDestination.textContent = destination === 'cloud' ? 'in the cloud' : destination === 'local' ? 'on this device' : '-';
@@ -759,7 +759,7 @@ async function savePairing() {
     return;
   }
   els.wardenPairingStatus.textContent = !response.paired
-    ? 'Pairing code removed. The Warden\'s answers are not verified.'
+    ? 'Pairing code removed. No task can run until a code is saved.'
     : response.verified
       ? 'Saved. The Warden proved the code.'
       : 'Saved, but the Warden has not proved it yet. Check that it runs with the same WARDEN_PAIRING_SECRET.';

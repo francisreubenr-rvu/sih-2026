@@ -167,8 +167,34 @@ Pairing is opt-in. With no `WARDEN_PAIRING_SECRET`, the Warden behaves as before
 - **Where the code lives.** The pairing code sits in the extension's `chrome.storage.local`.
 - **Unpaired setups.** They remain as trusting as before, minus the release.
 
+## Follow-ups shipped (Francis, 2 October 2026)
+
+### The verbs neither language listed
+
+Francis: add them. English: forget, discard, withdraw, purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leaving a group/team/workspace/channel, ending a membership/subscription, emptying trash, clearing history/data, factory reset, voiding a transaction. Hindi: भूल जाएं (forget), leaving a group (समूह छोड़ें), stop sharing, revoking access, वापस लें (withdraw), unlink, disconnect, factory reset, emptying trash, removing a member.
+
+- **One definition, two files.** `op-tier.js` and `tiers.py` carry the same lists. A new node-backed test, `test_destructive_rules_match_the_extension`, runs the real JS against 36 labels and 9 tasks and fails on any difference.
+- **Kept narrow on purpose.** These must stay non-destructive, and the parity test checks them: "Leave a review", "Swipe to continue", "Clear filters", "Forgot password", "Kickstart", "avoid", bare "छोड़ें" (also the usual Skip button) and "वापस जाएं" (go back).
+- **"Withdraw" now always asks.** That includes "Withdraw cash". This is a deliberate over-ask.
+- **Nukta handling.** The Hindi pattern is NFC-normalised when it is built, because "छोड़" has a nukta that NFC decomposes.
+
+**Measured, but not held-out.** On the test split, every destructive step now tiers destructive: 120/120, including 42/42 Hindi. No navigational or state-changing step tiers destructive. The verbs were chosen after seeing this split's misses, so `extension_gate_after_added_verbs` in the results file carries `held_out: false`. It shows the rules do what was intended on these phrases. It does not show how they do on new wording. That needs a blind set written by someone other than the author.
+
+### Pairing is required
+
+Francis: make pairing required. With no `WARDEN_PAIRING_SECRET`, the Warden reports `pairing: missing` and refuses every POST (503) with the setup steps. It also says so on startup, naming the state, never a secret.
+
+- **Harness escape.** `WARDEN_PAIRING_DISABLED=1` lets scripted harnesses and the Warden test suite through unsigned. The extension never accepts a Warden that cannot prove pairing, so the flag does not apply to real use.
+- **An unpaired extension sends no POST at all.** `warden.js` refuses locally before any body leaves. No run starts, whatever the Warden reports; only an unsigned `GET /health` goes out, so the panel can say what is missing. Tested for every Warden state.
+- **Harnesses updated.** The G11 probe signs its `/plan` request when `WARDEN_PAIRING_SECRET` is set. `scripts/e2e-v5/run.mjs` saves the same value into the loaded extension, and its README shows the setup.
+
+Residual, unchanged from 30 September:
+
+- The code sits in the extension's `chrome.storage.local`.
+- A mid-run port takeover after the real Warden answered can receive one `/strip` body before its unproven response stops the run.
+
 ## Still open
 
-1. A live run of the release and pairing on the loaded extension, real Warden and Laya. So far: unit, fake-Warden, real-Chromium content tests, a real-checkpoint smoke run and the cross-language pairing check.
-2. Destructive verbs missing in both languages (forget, leave, stop sharing, discard, withdraw, purge, revoke), and Hindi submit keywords (भुगतान, भेजें, जमा). Hindi pay/send labels are still `unproven`, so a verified review could release one if Laya misjudged it.
-3. Whether pairing should become mandatory rather than opt-in.
+1. A live run of release and pairing on the loaded extension, real Warden and Laya (`scripts/e2e-v5` with `WARDEN_PAIRING_SECRET` and `WARDEN_REVIEWER=laya`). So far: unit, fake-Warden, real-Chromium content tests, a real-checkpoint smoke run and the cross-language pairing check.
+2. A blind test set for the reviewer and the keyword rules, written by a teammate rather than the author. Every number above is on author-written phrases, and the 2 October verbs were fitted to this split.
+3. Hindi submit keywords (भुगतान, भेजें, जमा). Hindi pay/send labels stay `unproven`, so a verified review could release one if Laya misjudged it as navigational.

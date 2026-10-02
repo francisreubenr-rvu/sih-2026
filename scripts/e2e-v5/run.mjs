@@ -21,6 +21,10 @@ const ctx = await chromium.launchPersistentContext('', {
 });
 let [sw] = ctx.serviceWorkers(); if (!sw) sw = await ctx.waitForEvent('serviceworker');
 const id = new URL(sw.url()).host;
+// Pairing is required (warden/pairing.py): the Warden and this extension must hold the same code.
+const pairing = process.env.WARDEN_PAIRING_SECRET;
+if (!pairing) throw new Error('set WARDEN_PAIRING_SECRET to the value the Warden was started with');
+await sw.evaluate((code) => chrome.storage.local.set({ wardenPairing: code }), pairing);
 const page = ctx.pages()[0] || await ctx.newPage();
 await page.goto('http://127.0.0.1:8800/');
 const panel = await ctx.newPage();

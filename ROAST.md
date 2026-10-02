@@ -1,3 +1,14 @@
+## Round 29: destructive verbs and required pairing (2 October 2026)
+
+- [x] Verbs neither language listed are now destructive in `op-tier.js` and `tiers.py`. English: forget, discard, withdraw, purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team, end a membership, empty trash, clear history, factory reset, void a transaction. Hindi equivalents too. A node-backed parity test runs the real JS against the Python on 36 labels and 9 tasks.
+- [x] Over-match guarded: "Leave a review", "Swipe", "Clear filters", "Forgot password", "Kickstart", "avoid", bare "छोड़ें" (Skip) and "वापस जाएं" (go back) stay non-destructive. "Withdraw cash" now always asks (accepted).
+- [ ] The test split now reads 120/120 destructive caught, but the verbs were fitted to it (`held_out: false`). A blind set written by someone else is still needed.
+- [x] Pairing is required.
+  - **Warden:** with no secret it refuses every POST (`missing`, 503) and says so on startup. `WARDEN_PAIRING_DISABLED=1` is for harnesses and tests only.
+  - **Extension:** with no code it sends no POST and starts no run, whatever the Warden reports (tested for each state).
+  - **Harnesses:** the G11 probe signs; e2e-v5 pairs the loaded extension.
+- [ ] Not exercised on a loaded extension with a real Warden: the e2e-v5 run with pairing and `WARDEN_REVIEWER=laya` is the next evidence step.
+
 ## Round 28: Laya plan reviewer, PR #42 (work of 30 September 2026, merged 2 October)
 
 - [x] Optional Laya reviewer behind `WARDEN_REVIEWER=laya`; stub tests pin accept → ask only, no tier lowering, SKIPPED on any failure. Warden suite 111 passed / 6 skipped (real-model tests).
