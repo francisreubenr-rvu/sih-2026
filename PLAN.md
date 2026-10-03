@@ -36,7 +36,7 @@ v02 replaces the fixed post-action sleeps with a DOM-quiet wait (same worst case
 1. Merge PR #52 (Francis).
 2. Vision stage: **done 3 October** (UltraFace in an offscreen document, faces masked, fail-closed; `extension-vision-v01.json`). Next for it: a multi-scale pass for faces under about 128 px, and the Hindi-name gap in the text layer (`hindi-names-probe-v01.json`: IndicNER needs Francis to accept its terms on the Hub).
 3. Blind set (3 to 4 October, Gopreeth and Varun): add Hindi label and value rows so the PII rules above get held-out numbers.
-4. Opaque per-scan keys in place of selectors (security review: element ids reach the planner as written).
+4. Opaque per-scan keys: **done 3 October** (ROAST round 30).
 5. G12: re-run Lighthouse on the current Website; G14 and G20 as scheduled.
 
 ## Review and next steps (2 October 2026)

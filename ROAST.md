@@ -20,7 +20,7 @@ Security review, consistency audit, Warden and extension code review, side-panel
 - [x] Tiering: "Link this device", "Link Aadhaar to PAN", "Open a new account" no longer tier navigational; invisible characters (soft hyphen, bidi) and full-width letters can no longer hide a keyword; Hindi pay/send/submit/confirm labels tier submit (destructive still wins).
 - [x] Confirmation questions name the action, the control's label, typed tokens and the site. A run is bound to its starting origin. Only extension pages can control the worker. The Warden origin is `127.0.0.1` only, and a signed `/health` precedes each `/strip`.
 - [x] Regression caught at merge: the sender check also refused the side panel opened in a tab, so no loaded-extension harness could pair. Fixed on `sender.url`; content scripts stay refused.
-- [ ] Element ids and attribute selectors reach the planner as written (`<a id="contact-neha-joshi">`). Fix is opaque per-scan keys in place of selectors; architectural, not done.
+- [x] Element ids and attribute selectors reached the planner as written (`<a id="contact-neha-joshi">`). Keys are now opaque per scan (`e1..eN`), `type` is allow-listed, history names targets by tokenized label. Live: 10/10 frozen-flow runs and the profile task completed with real Groq.
 - [ ] The pairing code sits in `chrome.storage.local`. Nonces are remembered for 600 s in memory only, and requests carry no timestamp, so a captured request replays after a restart.
 - [x] English submit gaps ("transfer", "donate", "subscribe", "apply", "agree" and others) read unproven, so Laya could release them. Added to both rule sets (over-asking accepted: "Apply filters" asks).
 
