@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Run all six requested measurements on the static local site, preserving each report."""
 from pathlib import Path
-import subprocess,json,statistics,datetime,hashlib,platform,argparse
+import subprocess,json,statistics,datetime,hashlib,platform,argparse,os
 p=argparse.ArgumentParser();p.add_argument("--label",default="preparation");a=p.parse_args()
 assert a.label.replace("-", "").isalnum(), "Invalid report label"
 R=Path(__file__).resolve().parents[1];out=R/('Benchmarks/results/lighthouse' if a.label=='preparation' else 'Benchmarks/results/lighthouse-'+a.label);out.mkdir(parents=True,exist_ok=True)
+# LIGHTHOUSE_CHROME_FLAGS: e.g. '--headless --no-sandbox' when Chrome runs as root in a container.
+FLAGS=os.environ.get('LIGHTHOUSE_CHROME_FLAGS','--headless')
 checks=[]
 for profile in ['mobile','desktop']:
  for run in range(1,4):
   name=out/f'{profile}-{run}'
-  cmd=['npm','exec','--yes','--package=lighthouse@12.8.2','--','lighthouse','http://127.0.0.1:4173','--quiet','--chrome-flags=--headless','--output=json','--output=html',f'--output-path={name}']
+  cmd=['npm','exec','--yes','--package=lighthouse@12.8.2','--','lighthouse','http://127.0.0.1:4173','--quiet','--chrome-flags='+FLAGS,'--output=json','--output=html',f'--output-path={name}']
   if profile=='desktop':cmd+=['--preset=desktop']
   subprocess.run(cmd,check=True,cwd=R)
   d=json.loads(Path(str(name)+'.report.json').read_text());scores={k:v['score']*100 for k,v in d['categories'].items()}
@@ -17,5 +19,5 @@ for profile in ['mobile','desktop']:
   print(profile,run,scores,flush=True)
 medians={p:{k:statistics.median(x['scores'][k] for x in checks if x['profile']==p) for k in ['performance','accessibility','best-practices','seo']} for p in ['mobile','desktop']}
 fingerprint=hashlib.sha256(b''.join(x.read_bytes() for x in sorted((R/'Website').rglob('*')) if x.is_file() and 'downloads' not in x.parts and x.suffix in ['.html','.css','.js','.svg'])).hexdigest()
-record={'metric_id':'B09','scope':'local '+a.label+' website only','timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'instrument_version':'Lighthouse 12.8.2','build_or_commit':fingerprint,'environment':{'os':platform.platform(),'url':'http://127.0.0.1:4173','server':'Python static HTTP; loopback','browser':'Chrome launched by Lighthouse in clean temporary profile'},'sample_count':6,'computed_value':medians,'status':'pass' if all(v>90 for p in medians.values() for v in p.values()) else 'fail','runs':checks,'limitations':['Not public deployment evidence','Not domain prototype performance','Automated accessibility is not WCAG conformance','Human evaluation and saturation not established']}
+record={'metric_id':'B09','scope':'local '+a.label+' website only','timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'instrument_version':'Lighthouse 12.8.2','build_or_commit':fingerprint,'environment':{'os':platform.platform(),'url':'http://127.0.0.1:4173','server':'Python static HTTP; loopback','browser':'Chrome launched by Lighthouse in clean temporary profile','chrome_flags':FLAGS,'chrome_path':os.environ.get('CHROME_PATH')},'sample_count':6,'computed_value':medians,'status':'pass' if all(v>90 for p in medians.values() for v in p.values()) else 'fail','runs':checks,'limitations':['Not public deployment evidence','Not domain prototype performance','Automated accessibility is not WCAG conformance','Human evaluation and saturation not established']}
 (R/('Benchmarks/results/lighthouse-summary.json' if a.label=='preparation' else 'Benchmarks/results/lighthouse-'+a.label+'-summary.json')).write_text(json.dumps(record,indent=2)+'\n');print('Medians',medians,flush=True)

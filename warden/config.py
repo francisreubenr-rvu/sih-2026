@@ -76,6 +76,23 @@ def reviewer_mode() -> str:
     return "laya" if raw == "laya" else "ollama"
 
 
+# Laya checkpoints (3 October 2026). WARDEN_LAYA_MODEL used to be read by both
+# laya_review.py and fastpath.py, so naming the reviewer's checkpoint also made it the
+# fast path's decision model. Each now has its own name; WARDEN_LAYA_MODEL stays a
+# fallback for the reviewer only, since the README, the decision record and the e2e-v5
+# harness document it that way.
+def reviewer_model():
+    for name in ("WARDEN_REVIEWER_MODEL", "WARDEN_LAYA_MODEL"):
+        value = os.environ.get(name, "").strip()
+        if value:
+            return value
+    return None
+
+
+def fast_path_laya_model():
+    return os.environ.get("WARDEN_FAST_PATH_LAYA_MODEL", "").strip() or None
+
+
 # Extension <-> Warden pairing secret (pairing.py). Required since 2 October 2026
 # (Francis): with no secret every POST is refused with setup instructions.
 #   required       WARDEN_PAIRING_SECRET set, at least PAIRING_MIN_LEN characters
@@ -101,6 +118,18 @@ def pairing_state() -> str:
 
 
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
+
+# Host header allow-list (3 October 2026). Binding to 127.0.0.1 does not stop DNS
+# rebinding: a web page on a name that later resolves to 127.0.0.1 reaches this port
+# same-origin, and its requests carry that name in Host. Only loopback names are
+# answered (any port, so a harness on another port still works). Tests add their own
+# client host in a fixture; production never does.
+ALLOWED_HOSTNAMES = _LOOPBACK_HOSTS
+
+# Request body cap, enforced from Content-Length before the body is read, verified or
+# parsed (3 October 2026). content.js caps the serialised DOM at 30 KB, so a whole
+# /strip or /plan request is far below this; it only stops an unbounded read.
+MAX_BODY_BYTES = int(os.environ.get("WARDEN_MAX_BODY_BYTES", str(2 * 1024 * 1024)))
 
 
 def is_loopback_base(url: str) -> bool:
@@ -143,9 +172,10 @@ def ollama_model_is_local(model: str) -> bool:
 #
 # So every request paid a failed round trip before succeeding, and the third
 # fallback did not exist, meaning there was effectively no fallback at all.
-# Probed across this account's reachable catalogue the only two usable models
-# are the two below. Re-probe before editing; do not add a model id because it
-# looks plausible, since a dead entry costs a wasted request on every call.
+# Probed that day across this account's reachable catalogue, only two models were
+# usable (the chain then had two entries; the 30 September note below supersedes
+# it). Re-probe before editing; do not add a model id because it looks plausible,
+# since a dead entry costs a wasted request on every call.
 #
 # 30 September 2026 (Francis): qwen/qwen3.8-27b goes first. Re-probed that day,
 # all three answer on this account. On the Warden's own prompt it was correct
@@ -167,7 +197,9 @@ GROQ_TIMEOUT_S = float(os.environ.get("WARDEN_GROQ_TIMEOUT_S", "10"))
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 OLLAMA_MODEL = os.environ.get("WARDEN_OLLAMA_MODEL", "qwythos-9b:latest")
-OLLAMA_TIMEOUT_S = float(os.environ.get("WARDEN_OLLAMA_TIMEOUT_S", "12"))
+# Default 60 s, the floor ollama_client enforces (MIN_TIMEOUT_S, the measured cold start);
+# the old default of 12 s was always raised to it, so it said one thing and did another.
+OLLAMA_TIMEOUT_S = float(os.environ.get("WARDEN_OLLAMA_TIMEOUT_S", "60"))
 
 # CORS: chrome-extension scheme (any extension id, Chrome's real alphabet is
 # a-p, 32 chars) plus http://127.0.0.1 and http://localhost, with or without

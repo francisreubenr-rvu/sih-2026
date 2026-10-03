@@ -2,10 +2,11 @@ import { redactScreenshot, redactText } from './utils/redactor.js';
 import { detectElements } from './utils/omniparser.js';
 import * as wardenClient from './utils/warden.js';
 import { createG11Trace } from './utils/g11-stage-clock.js';
+import { createVisionClient, faceFieldsFromDetections, VisionError } from './utils/vision-client.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
-import { loopbackHttpUrl } from './utils/loopback.js';
+import { loopbackHttpUrl, wardenOriginUrl } from './utils/loopback.js';
 import { expressesDestructiveIntent, findSceneElement, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
-import { decideLocalGate, layaRelease, questionForTier, runPlanChecks } from './utils/plan-check.js';
+import { decideLocalGate, describeStep, layaRelease, questionForTier, runPlanChecks } from './utils/plan-check.js';
 import {
   createPipelineTrace, inboundFromPlan, isVaultToken, jsonByteLength, pngSize, replacedFromStrip, toValueToken, tokenizeWithVault,
 } from './utils/pipeline-trace.js';
@@ -134,14 +135,36 @@ const state = {
 // never pushed into state.steps, never logged, never placed in a transcript entry.
 let currentVault = null;
 
-// Uncertain-PII decisions the user has already made this session, keyed by the exact token id
-// the Warden minted (e.g. "PERSONNAME#1"), and sent back as `resolved` on every later /strip
-// call so the same span is never asked about twice. In-memory only; never persisted.
+// Uncertain-PII decisions the user has already made in this run, keyed by the token id the Warden
+// minted (e.g. "PERSONNAME#1") and sent back as `resolved` on every later /strip call so the same
+// span is not asked about twice: { [token]: { decision: 'strip' | 'keep', value } }. The Warden
+// mints ids per /strip call, so "PERSONNAME#1" can name a different value on the next page; the
+// `value` (the uncertain entry's preview) binds the answer to what the person actually saw, and the
+// Warden applies it only to that value (security review, 3 October 2026). Cleared when a run starts
+// and when it ends. In-memory only; never persisted, never in the trace; goes only to /strip,
+// which already receives the raw page.
 let resolvedAnswers = {};
+
+// Origins this run may act on: the one it started on, plus any a person approved when the task tab
+// moved to another site (security review, 3 October 2026). `stepOrigin` is the origin the current
+// step began on; SET_VAULT and EXECUTE happen only while the tab is still there. Reset per run.
+let runOrigins = null;
+let startOrigin = null;
 
 // Measurement-only clocks for the G11 harness (GET_G11_TRACE). Does not gate
 // execution. Durations are exclusive spans around work this worker performed.
 const g11Trace = createG11Trace();
+
+// The on-device face check (offscreen document, bundled ONNX Runtime Web + UltraFace). See
+// utils/vision-client.js for the contract and the fail-closed policy.
+const visionClient = createVisionClient();
+// Measurement handle for scripts/validate-extension-vision.mjs, which evaluates code inside this
+// worker. A worker global is reachable only by code running in this worker, never by a page or
+// another extension page, and it exposes nothing the step loop does not already do.
+globalThis.dhristiVisionProbe = Object.freeze({
+  detect: (dataUrl) => visionClient.detect(dataUrl),
+  stats: () => visionClient.stats(),
+});
 
 // ============================================================================
 // Session transcript
@@ -562,7 +585,7 @@ function plannerFromHealth(health) {
 // to a sender that is this extension, not a tab, at exactly the side panel page. Never logged,
 // never stored, never added to the transcript or the trace.
 function isSidePanelSender(sender) {
-  if (!sender || sender.id !== chrome.runtime.id || sender.tab) return false;
+  if (!sender || sender.id !== chrome.runtime.id) return false;
   const url = typeof sender.url === 'string' ? sender.url.split(/[?#]/)[0] : '';
   return url === chrome.runtime.getURL('sidepanel.html');
 }
@@ -584,9 +607,24 @@ function respondWith(promise, sendResponse, fallback) {
   return true;
 }
 
+// Every message this worker answers comes from an extension page: the side panel, or a harness
+// evaluating inside the extension. content.js never messages the worker, so a sender whose URL is
+// outside this extension is a page's renderer speaking and gets no answer at all: it must not answer
+// a prompt, start a run, change the Warden origin or pairing code, or read the transcript (raw task
+// text, uncertain previews), the pending prompt or the trace (security review, 3 October 2026).
+// The URL is what tells them apart: the browser sets sender.url, a content script always reports the
+// web page's URL, and no page can load sidepanel.html (it is not web-accessible). sender.tab is NOT
+// a test: the panel opened in a tab is still this extension's page, and refusing it (as a first cut
+// of this check did) left every loaded-extension harness unable to pair. REVEAL_TOKEN keeps its
+// stricter side-panel-only check below.
+function isExtensionPageSender(sender) {
+  if (!sender || sender.id !== chrome.runtime.id) return false;
+  return typeof sender.url === 'string' && sender.url.startsWith(chrome.runtime.getURL(''));
+}
+
 // ---- Message routing: the frozen contract, exactly --------------------------
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (sender.id !== chrome.runtime.id) return false;
+  if (!isExtensionPageSender(sender) || !message || typeof message !== 'object') return false;
   switch (message.type) {
     case 'START_TASK':
       return respondWith(startTask(message), sendResponse, { entries: transcript });
@@ -635,10 +673,10 @@ async function setWardenOrigin(origin) {
     const health = await refreshHealthAndSync();
     return { ok: true, origin: null, state: healthState(health) };
   }
-  if (!loopbackHttpUrl(value)) {
+  if (!wardenOriginUrl(value)) {
     return {
       ok: false,
-      error: 'Warden origin must be http or https on 127.0.0.1, localhost, or ::1.',
+      error: 'Warden origin must be http://127.0.0.1:<port>. localhost and ::1 are refused: localhost can resolve to ::1, where another process can hold the port.',
       origin: null,
     };
   }
@@ -686,12 +724,16 @@ async function failStart(task, message) {
 // refused. Without it, two sends in quick succession (a double-click on Send) both pass the status
 // check below, because status only becomes 'running' after several awaits, and both start a run.
 let startInFlight = false;
+// A Stop pressed while a START_TASK is still being checked. The panel shows Stop from the moment the
+// task is accepted, so it must not be a no-op until the run loop exists.
+let stopBeforeStart = false;
 
 async function startTask(message) {
   if (startInFlight || state.status === 'running' || state.status === 'waiting') {
     return { ok: false, reason: 'A run is already in progress.', entries: transcript };
   }
   startInFlight = true;
+  stopBeforeStart = false;
   try {
     return await startTaskChecked(message);
   } finally {
@@ -725,11 +767,19 @@ async function startAcceptedTask(task) {
   const tabId = tab?.id ?? null;
   const windowId = tab?.windowId ?? null;
   if (!tabId) return failStart(task, 'No active tab to work on.');
+  // Start the face detector now, while the health check runs, so the first step rarely waits on
+  // the one-time model load. A failure here is retried by the step's own face check.
+  visionClient.warm().catch(() => {});
 
   const siteAccess = await chrome.permissions.contains({ origins: SITE_ACCESS_ORIGINS });
   if (!siteAccess) {
     return failStart(task, 'Page scan needs site access. Allow it from the side panel when you send the task. Nothing was sent.');
   }
+  // After the site-access check (code review, 3 October 2026): without the "tabs" permission,
+  // tab.url is readable only once site access is granted, so checking it first answered a missing
+  // grant with the wrong reason.
+  const origin = originKey(tab?.url);
+  if (!origin) return failStart(task, 'The active tab has no address this extension can read, so the run cannot be bound to a site. Nothing was sent.');
   await ensureScanRegistration();
 
   // v4 gate (frozen spec, "Degraded modes"): the Warden must be reachable and its model loaded
@@ -782,6 +832,13 @@ async function startAcceptedTask(task) {
     stored = await chrome.storage.local.get(['omniparserUrl', 'useOmniparser']);
   } catch { /* storage unavailable; proceed with defaults */ }
 
+  if (stopBeforeStart) {
+    Object.assign(state, { status: 'stopped', task, stepNumber: 0, steps: [], redactionLog: [], startedAt: Date.now(), finishedAt: Date.now(), stopRequested: false });
+    await persistState();
+    noteRunEnd('You stopped the run before it started. Nothing was scanned or sent.', 'stopped');
+    return { ok: false, stopped: true, entries: transcript };
+  }
+
   state.runId += 1;
   const runId = state.runId;
 
@@ -805,6 +862,10 @@ async function startAcceptedTask(task) {
     stopRequested: false,
   });
   await persistState();
+  // Remembered uncertain-PII answers belong to one run (see resolvedAnswers).
+  resolvedAnswers = {};
+  startOrigin = origin;
+  runOrigins = new Set([origin]);
   // The previous run's trace (its masked screenshot, its /plan body) ends with that run.
   pipeline.clear();
   emitTrace();
@@ -813,6 +874,7 @@ async function startAcceptedTask(task) {
 }
 
 async function stopTask() {
+  if (startInFlight) stopBeforeStart = true;
   if (state.status === 'running' || state.status === 'waiting') {
     state.stopRequested = true;
     state.status = 'stopped';
@@ -898,6 +960,14 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
   let asked = 0;
   for (;;) {
     if (aborted(runId)) throw new Error('Stopped');
+    // /strip carries the raw page. Before every one, the Warden must prove the pairing code on a
+    // body-less GET /health (utils/warden.js throws when the proof is missing or wrong), so a process
+    // that took over the port mid-run receives no page (security review, 3 October 2026; ROAST round
+    // 28). A takeover between this check and the POST is still possible; it is detected by the
+    // /strip response's own proof, as before. The extra loopback round trip counts in the strip time.
+    const proven = await wardenClient.health();
+    if (!wardenClient.isPairingVerified(proven)) throw new Error('The Warden did not prove the pairing code before /strip, so the page was not sent.');
+    if (aborted(runId)) throw new Error('Stopped');
     const resp = await wardenClient.strip({ task, dom, elements, resolved: resolvedAnswers });
     if (!resp || typeof resp !== 'object') throw new Error('warden: /strip returned no object');
     if (!Array.isArray(resp.uncertain) || resp.uncertain.length === 0) return { resp, asked };
@@ -921,7 +991,7 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
     );
     if (aborted(runId)) throw new Error('Stopped');
     for (const item of items) {
-      resolvedAnswers[item.token] = answers[item.id] === 'keep' ? 'keep' : 'strip';
+      resolvedAnswers[item.token] = { decision: answers[item.id] === 'keep' ? 'keep' : 'strip', value: String(item.preview ?? '') };
     }
     // Loop back and re-strip with the updated `resolved` map. The same raw input plus the
     // same decisions is deterministic, so every previously-uncertain span now resolves
@@ -950,6 +1020,13 @@ async function refreshVault(tokens) {
 // every vault value is replaced with its token first; then the local regex pass runs ONCE per
 // distinct label (labels repeat, e.g. a column of "Edit" links). Computed once per step and reused
 // by every re-plan attempt.
+// The label the planner saw for a plan's target, from the same tokenized element list.
+function planLabelOf(planElements, key) {
+  if (!key) return null;
+  const el = (planElements || []).find((e) => e.selector === key);
+  return el && typeof el.label === 'string' && el.label ? el.label : null;
+}
+
 function planElementsFrom(elements, tokens) {
   const cache = new Map();
   return (elements || []).map((el) => {
@@ -1157,10 +1234,13 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
 
     if (gate.path === 'ask' || gate.path === 'confirm') {
       // Destructive always asks a human (the rule the Warden's ALWAYS_ASK_TIERS carried); any
-      // other tier that is not unattended-safe stops for the extension's own confirmation.
+      // other tier that is not unattended-safe stops for the extension's own confirmation. The
+      // question names what will happen, from local sources only (stepContext).
+      const context = await stepContext(plan, localScene);
+      if (aborted(runId)) throw new Error('Stopped');
       const text = gate.path === 'ask'
-        ? questionForTier(gate.finalTier, plan)
-        : `This action is tier '${gate.finalTier}' and requires local confirmation before it runs.`;
+        ? questionForTier(gate.finalTier, plan, context)
+        : `This action is tier '${gate.finalTier}' and requires local confirmation before it runs: ${describeStep(plan, context)}.`;
       const choice = await requestValidationQuestion(text, STANDARD_VALIDATION_OPTIONS, attempt, gate.reasons, stepNumber);
       if (aborted(runId)) throw new Error('Stopped');
       pipeline.patch('check', { choice });
@@ -1174,6 +1254,75 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
   }
   // Unreachable: every branch inside the loop returns by attempt === WARDEN_VALIDATE_MAX_ATTEMPTS at the latest.
   throw new Error('check: retry loop exited without a decision');
+}
+
+// The label and origin a confirmation names. The label comes from the extension's own scan, never
+// from the Warden's element list, with this run's vault values replaced by their tokens and the
+// local regex pass applied, as planElementsFrom() does for the wire. The origin is read from the
+// task tab now; null when the tab cannot be read.
+async function stepContext(plan, localScene) {
+  let label = null;
+  try {
+    const raw = findSceneElement(plan?.target_selector, localScene).label;
+    if (typeof raw === 'string' && raw) label = redactText(tokenizeWithVault(raw, currentVault)).text;
+  } catch { label = null; }
+  return { label, origin: await tabOrigin(state.tabId) };
+}
+
+// The site a URL belongs to: its origin, or for an opaque-origin URL (file:) the URL without its
+// fragment, so two local files are not one site. Null when there is no readable URL.
+function originKey(url) {
+  if (typeof url !== 'string' || !url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.origin !== 'null') return parsed.origin;
+    parsed.hash = '';
+    return parsed.href;
+  } catch {
+    return null;
+  }
+}
+
+async function tabOrigin(tabId) {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    return originKey(tab?.url);
+  } catch {
+    return null;
+  }
+}
+
+const ORIGIN_CHANGE_OPTIONS = [
+  { id: 'proceed', label: 'Continue on this site' },
+  { id: 'stop', label: 'Stop the run' },
+];
+
+// Called at the start of every step, before the page is scanned. Returns the origin the step runs
+// on, or null when the person stopped the run (the caller returns).
+async function confirmStepOrigin(runId, stepNumber) {
+  const here = await tabOrigin(state.tabId);
+  if (aborted(runId)) throw new Error('Stopped');
+  if (here && runOrigins?.has(here)) return here;
+  const choice = await requestValidationQuestion(
+    here
+      ? `The task tab is now on ${here}, not ${startOrigin} where this run started. Nothing from the new site has been read or sent. Continue the task there?`
+      : `The task tab is now on a page whose address cannot be read, not ${startOrigin} where this run started. Nothing from it has been read or sent.`,
+    here ? ORIGIN_CHANGE_OPTIONS : ORIGIN_CHANGE_OPTIONS.slice(1), null, [], stepNumber,
+  );
+  if (aborted(runId)) throw new Error('Stopped');
+  if (choice !== 'proceed' || !here) return null;
+  runOrigins.add(here);
+  noteActivity(`You allowed this run to continue on ${here}.`, stepNumber);
+  return here;
+}
+
+// SET_VAULT and EXECUTE only while the tab is still on the origin the step was scanned on.
+async function assertStepOrigin(runId, stepOrigin, what) {
+  const here = await tabOrigin(state.tabId);
+  if (aborted(runId)) throw new Error('Stopped');
+  if (here !== stepOrigin) {
+    throw new Error(`The task tab moved to ${here ?? 'an unreadable address'} during this step (it was scanned on ${stepOrigin}), so ${what} was stopped.`);
+  }
 }
 
 // ---- Agent loop ------------------------------------------------------------
@@ -1254,9 +1403,24 @@ async function runLoop(runId, secrets) {
       let wireElements;
       let redacted;
       let omni = { available: false, status: 'disabled', elements: [] };
+      let stepOrigin;
+      // The face check's span, kept out of perceive so the G11 stage spans stay exclusive.
+      let visionSpan = 0;
+      let visionError = null;
       try {
       await pingContentScript(runId);
       if (aborted(runId)) return;
+
+      // The run is bound to its site: a tab that moved elsewhere is not scanned until a person
+      // allows the new origin.
+      stepOrigin = await confirmStepOrigin(runId, stepNumber);
+      if (stepOrigin === null) {
+        state.status = 'stopped';
+        state.finishedAt = Date.now();
+        noteActivity('You stopped the run when the task tab moved to another site.', stepNumber);
+        g11Trace.setTerminal('blocked');
+        return;
+      }
 
       // PAGE_SCAN also removes the previous step's redaction overlay (content.js), so neither the
       // scan nor the capture below sees it.
@@ -1278,21 +1442,56 @@ async function runLoop(runId, secrets) {
         throw new Error('Task tab is not the visible tab; bring it to the front.');
       }
 
-      // One capture per step. It feeds the local mask below, the optional local detector, and
-      // the panel's view of what the agent saw; it never goes to the Warden.
+      // One capture per step. It feeds the local face check and mask below, the optional local
+      // detector, and the panel's view of what the agent saw; it never goes to the Warden.
       const screenshot = await chrome.tabs.captureVisibleTab(state.windowId, { format: 'png' });
       if (aborted(runId)) return;
 
-      // PRIVACY: redact PII from the screenshot before it goes anywhere, including the local
-      // OmniParser detector below and the panel. Fails CLOSED: a masking failure returns
-      // dataUrl: null, never the original unmasked capture.
-      redacted = await redactScreenshot(screenshot, scan.piiFields || [], scan.viewport);
+      // VISION: find faces on the capture with the bundled detector in the offscreen document
+      // (utils/vision-client.js). Raw pixels go only to that document; boxes come back. Capped at
+      // VISION_DETECT_TIMEOUT_MS. Fails CLOSED: if the check fails or times out, this step's
+      // capture is discarded below, so neither the panel nor OmniParser gets an image whose faces
+      // were not checked. The run continues: the planner never sees pixels.
+      const visionT0 = performance.now();
+      let faces = null;
+      try {
+        faces = await visionClient.detect(screenshot);
+      } catch (error) {
+        visionError = error instanceof VisionError ? error : new VisionError('failed', String(error?.message || error));
+      } finally {
+        visionSpan = performance.now() - visionT0;
+        g11Trace.add('vision', visionSpan);
+      }
+      if (aborted(runId)) return;
+      const faceFields = faces ? faceFieldsFromDetections(faces.detections, faces, scan.viewport) : [];
+      pipeline.set('vision', faces
+        ? {
+          status: 'done',
+          faces: faceFields.length,
+          ms: Math.round(visionSpan * 10) / 10,
+          inferenceMs: faces.inferenceMs == null ? null : Math.round(faces.inferenceMs * 10) / 10,
+          waitInitMs: Math.round(faces.waitInitMs * 10) / 10,
+          reason: null,
+          model: faces.model,
+        }
+        : { status: 'error', faces: null, ms: Math.round(visionSpan * 10) / 10, inferenceMs: null, waitInitMs: null, reason: visionError.message, model: null });
+
+      // PRIVACY: redact PII fields and faces from the screenshot before it goes anywhere,
+      // including the local OmniParser detector below and the panel. Fails CLOSED: a masking
+      // failure, or a failed face check, leaves dataUrl: null, never the unmasked capture.
+      redacted = faces
+        ? await redactScreenshot(screenshot, [...(scan.piiFields || []), ...faceFields], scan.viewport)
+        : { dataUrl: null, maskedCount: 0, decisions: [], error: `face check failed: ${visionError.message}` };
       if (aborted(runId)) return;
       pipeline.set('screenshot', { dataUrl: redacted.dataUrl || null, ...pngSize(redacted.dataUrl) });
       pipeline.patch('redaction', { screenMasked: redacted.maskedCount });
-      noteActivity(redacted.dataUrl
-        ? `Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}.`
-        : 'The screen capture could not be masked, so it was discarded.', stepNumber);
+      if (faces) {
+        noteActivity(redacted.dataUrl
+          ? `Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}, ${faceFields.length} face${faceFields.length === 1 ? '' : 's'} found on this device.`
+          : 'The screen capture could not be masked, so it was discarded.', stepNumber);
+      } else {
+        noteActivity(`The on-device face check failed (${visionError.message}), so this step's screen capture was discarded. The run continues without it.`, stepNumber);
+      }
 
       if (secrets.useOmniparser) {
         if (redacted.dataUrl) {
@@ -1304,10 +1503,14 @@ async function runLoop(runId, secrets) {
       }
       state.omniStatus = omni.status;
       } finally {
-        g11Trace.add('perceive', performance.now() - perceiveT0);
+        g11Trace.add('perceive', performance.now() - perceiveT0 - visionSpan);
       }
       if (aborted(runId)) return;
-      traceStage('perceive', 'done', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'}, ${redacted.maskedCount} screen region${redacted.maskedCount === 1 ? '' : 's'} masked`);
+      const visionTrace = pipeline.current()?.vision;
+      const visionText = visionTrace?.status === 'done'
+        ? `, ${visionTrace.faces} face${visionTrace.faces === 1 ? '' : 's'} in ${Math.round(visionTrace.ms)} ms`
+        : ', face check failed, capture discarded';
+      traceStage('perceive', 'done', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'}, ${redacted.maskedCount} screen region${redacted.maskedCount === 1 ? '' : 's'} masked${visionText}`);
 
       // 2. STRIP: the Warden is the sole stripping authority for the wire from here on. Raw
       //    `state.task`, raw `scan.dom` and the wire elements go to this ONE loopback call and
@@ -1346,6 +1549,7 @@ async function runLoop(runId, secrets) {
       // Defense in depth beyond the wire contract: see planElementsFrom().
       const planElements = planElementsFrom(stripResp.elements, stripResp.tokens);
 
+      await assertStepOrigin(runId, stepOrigin, 'loading this step\'s values into the page');
       await refreshVault(stripResp.tokens);
       if (aborted(runId)) return;
       if (tokenCount > 0) {
@@ -1416,7 +1620,7 @@ async function runLoop(runId, secrets) {
 
       if (outcome.choice === 'skip') {
         state.steps.push({
-          stepNumber, action: outcome.plan.action, target: outcome.plan.target_selector, status: 'ok',
+          stepNumber, action: outcome.plan.action, target: outcome.plan.target_selector, targetLabel: planLabelOf(planElements, outcome.plan.target_selector), status: 'ok',
           reasoningToken: 'Step skipped by user at a validation prompt.',
           piiMaskedCount: redacted.maskedCount, latencyMs: outcome.planResp?.latencyMs ?? 0,
           elements: planElements, elementCount: planElements.length,
@@ -1447,6 +1651,7 @@ async function runLoop(runId, secrets) {
       let result;
       let navigated = false;
       let executeChoice = null;
+      await assertStepOrigin(runId, stepOrigin, 'the action');
       const executeT0 = performance.now();
       try {
         const executed = await executeWithLiveTierCheck(runId, action, outcome, localScene, stepNumber);
@@ -1476,7 +1681,7 @@ async function runLoop(runId, secrets) {
       if (failed) noteError(`The page refused that step: ${result.error}`, stepNumber);
 
       state.steps.push({
-        stepNumber, action: action.action, target: action.target_selector,
+        stepNumber, action: action.action, target: action.target_selector, targetLabel: planLabelOf(planElements, action.target_selector),
         status: failed ? 'error' : 'ok', navigated,
         reasoningToken: action.reasoning_token,
         piiMaskedCount: redacted.maskedCount, latencyMs: outcome.planResp?.latencyMs ?? 0,
@@ -1497,9 +1702,11 @@ async function runLoop(runId, secrets) {
         return;
       }
 
-      // Settle delay before the next scan.
+      // Settle before the next scan. In-page actions already waited in content.js until the DOM
+      // went quiet (settleDom); a navigation needs the extra margin for the new page to render
+      // (its content script readiness is then checked by the next step's ping).
       state.status = 'waiting';
-      await sleep(SETTLE_MS);
+      if (navigated) await sleep(SETTLE_MS);
     }
 
     // Loop exited because the step limit was reached without a stop or a finish action. This
@@ -1550,6 +1757,8 @@ async function runLoop(runId, secrets) {
       chrome.tabs.sendMessage(state.tabId, { type: 'CLEAR_HIGHLIGHTS' }).catch(() => {});
       chrome.tabs.sendMessage(state.tabId, { type: 'END_TASK' }).catch(() => {});
       currentVault = null; // hygiene: the vault must not outlive its run.
+      resolvedAnswers = {}; // nor the answers, which hold the values they were given for.
+      runOrigins = null;
     }
   }
 }
@@ -1576,10 +1785,13 @@ async function executeWithLiveTierCheck(runId, action, outcome, localScene, step
     }
     if (!result || result.tierEscalated !== true) return { result, navigated: false, choice: null };
     if (aborted(runId)) return { result, navigated: false, choice: 'stop' };
+    const step = describeStep(action, await stepContext(action, localScene));
+    if (aborted(runId)) return { result, navigated: false, choice: 'stop' };
     const choice = await requestValidationQuestion(
-      result.releaseRevoked === true
+      (result.releaseRevoked === true
         ? `The page changed the target after Laya released it: it now matches a rule for tier '${result.liveTier}', so the release no longer holds. Nothing was clicked.`
-        : `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`,
+        : `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`)
+        + ` The step was: ${step}.`,
       STANDARD_VALIDATION_OPTIONS, null, [], stepNumber,
     );
     if (choice !== 'proceed') {
@@ -1620,7 +1832,9 @@ function buildHistory(steps) {
     .filter((step) => step.action !== 'PAGE_SCAN')
     .slice(-HISTORY_LIMIT)
     .map((step) => {
-      const entry = { stepNumber: step.stepNumber, action: step.action, target: step.target ?? null, status: step.status };
+      // The control's planner-visible label (already tokenized), not its key: keys are per scan
+      // (e1, e2, ...) since 3 October 2026, so last step's "e3" names a different control now.
+      const entry = { stepNumber: step.stepNumber, action: step.action, target: step.targetLabel ?? null, status: step.status };
       // A vault token names a PII type and slot, not content, so the planner may see which value was
       // typed. Without it the first real-Groq run retyped EMAIL#1 twice before saving. A masked
       // free-text value is left out: its asterisks would only leak its length.

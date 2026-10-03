@@ -1,0 +1,560 @@
+{
+  "harness": "scripts/validate-extension-vision.mjs",
+  "generatedAt": "2026-10-03T23:29:33.530Z",
+  "status": "diagnostic",
+  "claim": "The root extension runs a face detector on this device: UltraFace RFB-320 on ONNX Runtime Web (WASM, single thread) in an MV3 offscreen document, called by the service worker on every step capture; detected faces are painted over before the capture is put in the panel trace (checked here by sampling the masked capture). That the optional OmniParser receives only the masked capture, and nothing when the face check fails, is covered by unit tests (extension/tests/background-vision.test.mjs), not by this run.",
+  "scope": [
+    "One machine, one Chromium build, headless (--headless=new); numbers are this container, not a judge laptop.",
+    "Synthetic fixture pages; every face is the same attributed public-domain photograph (NASA portrait, the scikit-image \"astronaut\" test image; Prototype/models/manifest.json) drawn at one-512px, one-256px, one-128px, one-64px, four-256px. This is not a face-detection accuracy benchmark and gives no recall or precision for real pages or real populations.",
+    "Viewport 1280x800 CSS px at devicePixelRatio 1. The detector resizes the whole capture to 320x240, so a face's size in the capture decides detection; small faces in a full-viewport capture are missed (see per-fixture rows).",
+    "The extension copy adds <all_urls> to host_permissions so captureVisibleTab runs without a toolbar click (harness-only, as scripts/e2e-v5/run.mjs does). Nothing else in the package is changed.",
+    "Timed calls reuse one capture per fixture (captureVisibleTab is rate-limited to 2 per second); captureVisibleTab time is reported once per fixture, separately.",
+    "The step-loop rows use a fake paired Warden on loopback that always plans finish; they prove the wiring (detect, mask, trace, panel caption), not planner behaviour.",
+    "G11 stays fail; submission_ready stays false. This file does not move any gate."
+  ],
+  "environment": {
+    "chromium": "Chromium 141.0.7390.37",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz x4",
+    "memoryTotalMb": 16095,
+    "platform": "linux"
+  },
+  "model": {
+    "name": "UltraFace RFB-320 (Linzaer/Ultra-Light-Fast-Generic-Face-Detector-1MB, MIT)",
+    "runtime": "onnxruntime-web 1.23.2 (MIT), WASM execution provider, numThreads 1, proxy off",
+    "input": "1x3x240x320, whole capture resized (aspect not preserved), score threshold 0.7, NMS IoU 0.3",
+    "files": [
+      {
+        "path": "extension/models/ORT-LICENSE.txt",
+        "bytes": 1073,
+        "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+      },
+      {
+        "path": "extension/models/ULTRAFACE-LICENSE.txt",
+        "bytes": 1063,
+        "sha256": "21f0df2b54c9fef1b4f4061dd0b153bc72f071b5ce9fc04234f13ebfd093b44c"
+      },
+      {
+        "path": "extension/models/ultraface-rfb320.onnx",
+        "bytes": 1257907,
+        "sha256": "22bd2fbe053a8e54d54b44b25901f0f6260059ac9ae7d3cc8720f5f7c0d936fa"
+      },
+      {
+        "path": "extension/models/ort/ort-wasm-simd-threaded.mjs",
+        "bytes": 20321,
+        "sha256": "90a557d15c02bac4504d95b67f431d8594635ed2a0a62a7f2cd83d090ff91d3e"
+      },
+      {
+        "path": "extension/models/ort/ort-wasm-simd-threaded.wasm",
+        "bytes": 11905541,
+        "sha256": "45eaee27761ad883742a8d4b8fce1538d60ce43b51adf1726fafccc59b8c1a15"
+      },
+      {
+        "path": "extension/models/ort/ort.wasm.min.mjs",
+        "bytes": 49856,
+        "sha256": "69751720f611e37d1ce2fa3c6ebaa80f949014752636c5f8887a63d40feadcc7"
+      }
+    ],
+    "bytesTotal": 13235761,
+    "bytesModelOnly": 1257907
+  },
+  "coldStart": {
+    "note": "First face check after the worker started: creates the offscreen document, compiles the WASM runtime and loads the model, then runs one detection.",
+    "waitForDetectorMs": 374.7,
+    "hostModelLoadMs": 345,
+    "firstDetectRoundTripMs": 88.7,
+    "captureVisibleTabMs": 28.7
+  },
+  "perCapture": {
+    "note": "Worker-side round trip per face check (port message with the PNG data URL, decode to ImageBitmap, resize, inference, decode boxes, reply), n=30 per fixture after 5 warm-ups, all fixtures pooled.",
+    "detectRoundTripMs": {
+      "n": 180,
+      "p50Ms": 26.5,
+      "p95Ms": 43.3,
+      "minMs": 22.1,
+      "maxMs": 48.3
+    },
+    "inferenceOnlyMs": {
+      "n": 180,
+      "p50Ms": 11.8,
+      "p95Ms": 19.7,
+      "minMs": 10.2,
+      "maxMs": 21.7
+    },
+    "capBudgetMs": 1500,
+    "overCap": 0
+  },
+  "detection": {
+    "facesExpectedTotal": 8,
+    "imagesWithAFaceDetectedTotal": 6,
+    "detectionsOutsideImagesTotal": 0,
+    "rule": "An image counts as found when at least one detection centre lies inside its on-page rectangle; a detection whose centre lies outside every image is counted as outside (a false positive on these pages)."
+  },
+  "fixtures": [
+    {
+      "fixture": "no-image",
+      "imageDisplayPx": null,
+      "capturePx": {
+        "width": 1280,
+        "height": 800
+      },
+      "devicePixelRatio": 1,
+      "facesExpected": 0,
+      "detections": 0,
+      "detectionCountStableAcrossRuns": true,
+      "imagesWithAFaceDetected": 0,
+      "detectionsOutsideImages": 0,
+      "confidences": [],
+      "detectedBoxesCssPx": [],
+      "captureVisibleTabMs": 25.1,
+      "captureDataUrlChars": 30738,
+      "detectRoundTripMs": {
+        "n": 30,
+        "p50Ms": 25.3,
+        "p95Ms": 34.3,
+        "minMs": 22.9,
+        "maxMs": 35.7
+      },
+      "inferenceMs": {
+        "n": 30,
+        "p50Ms": 12.3,
+        "p95Ms": 14,
+        "minMs": 11.4,
+        "maxMs": 14.6
+      },
+      "decodeMs": {
+        "n": 30,
+        "p50Ms": 9.8,
+        "p95Ms": 16.3,
+        "minMs": 8.3,
+        "maxMs": 16.7
+      }
+    },
+    {
+      "fixture": "one-512px",
+      "imageDisplayPx": 512,
+      "capturePx": {
+        "width": 1280,
+        "height": 800
+      },
+      "devicePixelRatio": 1,
+      "facesExpected": 1,
+      "detections": 1,
+      "detectionCountStableAcrossRuns": true,
+      "imagesWithAFaceDetected": 1,
+      "detectionsOutsideImages": 0,
+      "confidences": [
+        1
+      ],
+      "detectedBoxesCssPx": [
+        [
+          95,
+          107
+        ]
+      ],
+      "captureVisibleTabMs": 62.8,
+      "captureDataUrlChars": 656550,
+      "detectRoundTripMs": {
+        "n": 30,
+        "p50Ms": 39.9,
+        "p95Ms": 47.5,
+        "minMs": 36,
+        "maxMs": 48.3
+      },
+      "inferenceMs": {
+        "n": 30,
+        "p50Ms": 12.1,
+        "p95Ms": 19.3,
+        "minMs": 11.4,
+        "maxMs": 19.7
+      },
+      "decodeMs": {
+        "n": 30,
+        "p50Ms": 16.8,
+        "p95Ms": 21.5,
+        "minMs": 14.5,
+        "maxMs": 22.5
+      }
+    },
+    {
+      "fixture": "one-256px",
+      "imageDisplayPx": 256,
+      "capturePx": {
+        "width": 1280,
+        "height": 800
+      },
+      "devicePixelRatio": 1,
+      "facesExpected": 1,
+      "detections": 1,
+      "detectionCountStableAcrossRuns": true,
+      "imagesWithAFaceDetected": 1,
+      "detectionsOutsideImages": 0,
+      "confidences": [
+        0.987
+      ],
+      "detectedBoxesCssPx": [
+        [
+          46,
+          52
+        ]
+      ],
+      "captureVisibleTabMs": 40.4,
+      "captureDataUrlChars": 193170,
+      "detectRoundTripMs": {
+        "n": 30,
+        "p50Ms": 27,
+        "p95Ms": 34.7,
+        "minMs": 24.5,
+        "maxMs": 37.6
+      },
+      "inferenceMs": {
+        "n": 30,
+        "p50Ms": 11.6,
+        "p95Ms": 16.2,
+        "minMs": 10.8,
+        "maxMs": 20
+      },
+      "decodeMs": {
+        "n": 30,
+        "p50Ms": 10.8,
+        "p95Ms": 13.3,
+        "minMs": 9.9,
+        "maxMs": 20.3
+      }
+    },
+    {
+      "fixture": "one-128px",
+      "imageDisplayPx": 128,
+      "capturePx": {
+        "width": 1280,
+        "height": 800
+      },
+      "devicePixelRatio": 1,
+      "facesExpected": 1,
+      "detections": 0,
+      "detectionCountStableAcrossRuns": true,
+      "imagesWithAFaceDetected": 0,
+      "detectionsOutsideImages": 0,
+      "confidences": [],
+      "detectedBoxesCssPx": [],
+      "captureVisibleTabMs": 28.6,
+      "captureDataUrlChars": 73058,
+      "detectRoundTripMs": {
+        "n": 30,
+        "p50Ms": 25.3,
+        "p95Ms": 33.7,
+        "minMs": 23,
+        "maxMs": 34.3
+      },
+      "inferenceMs": {
+        "n": 30,
+        "p50Ms": 12,
+        "p95Ms": 19.8,
+        "minMs": 11.2,
+        "maxMs": 20.6
+      },
+      "decodeMs": {
+        "n": 30,
+        "p50Ms": 9.3,
+        "p95Ms": 10.8,
+        "minMs": 8.2,
+        "maxMs": 11.5
+      }
+    },
+    {
+      "fixture": "one-64px",
+      "imageDisplayPx": 64,
+      "capturePx": {
+        "width": 1280,
+        "height": 800
+      },
+      "devicePixelRatio": 1,
+      "facesExpected": 1,
+      "detections": 0,
+      "detectionCountStableAcrossRuns": true,
+      "imagesWithAFaceDetected": 0,
+      "detectionsOutsideImages": 0,
+      "confidences": [],
+      "detectedBoxesCssPx": [],
+      "captureVisibleTabMs": 33.4,
+      "captureDataUrlChars": 40606,
+      "detectRoundTripMs": {
+        "n": 30,
+        "p50Ms": 23.7,
+        "p95Ms": 35.2,
+        "minMs": 22.1,
+        "maxMs": 35.9
+      },
+      "inferenceMs": {
+        "n": 30,
+        "p50Ms": 11.5,
+        "p95Ms": 20.5,
+        "minMs": 10.7,
+        "maxMs": 21.7
+      },
+      "decodeMs": {
+        "n": 30,
+        "p50Ms": 9.2,
+        "p95Ms": 10.6,
+        "minMs": 8.2,
+        "maxMs": 14
+      }
+    },
+    {
+      "fixture": "four-256px",
+      "imageDisplayPx": 256,
+      "capturePx": {
+        "width": 1280,
+        "height": 800
+      },
+      "devicePixelRatio": 1,
+      "facesExpected": 4,
+      "detections": 4,
+      "detectionCountStableAcrossRuns": true,
+      "imagesWithAFaceDetected": 4,
+      "detectionsOutsideImages": 0,
+      "confidences": [
+        0.991,
+        0.984,
+        0.965,
+        0.954
+      ],
+      "detectedBoxesCssPx": [
+        [
+          45,
+          53
+        ],
+        [
+          45,
+          52
+        ],
+        [
+          46,
+          50
+        ],
+        [
+          45,
+          49
+        ]
+      ],
+      "captureVisibleTabMs": 40.3,
+      "captureDataUrlChars": 197354,
+      "detectRoundTripMs": {
+        "n": 30,
+        "p50Ms": 26.3,
+        "p95Ms": 35.4,
+        "minMs": 24.8,
+        "maxMs": 37.1
+      },
+      "inferenceMs": {
+        "n": 30,
+        "p50Ms": 11.7,
+        "p95Ms": 19.1,
+        "minMs": 10.2,
+        "maxMs": 19.4
+      },
+      "decodeMs": {
+        "n": 30,
+        "p50Ms": 10.5,
+        "p95Ms": 13.2,
+        "minMs": 9.4,
+        "maxMs": 14.1
+      }
+    }
+  ],
+  "memory": {
+    "jsHeapOffscreen": {
+      "source": "performance.memory in the offscreen document (Chromium, --enable-precise-memory-info). JS heap only; WebAssembly memory and decoded images are not included. The later reading can include capture data URLs (about 1 to 2 MB each) received and not yet garbage-collected.",
+      "afterModelLoad": {
+        "usedJSHeapSize": 5389860,
+        "totalJSHeapSize": 7629520,
+        "jsHeapSizeLimit": 4294705152
+      },
+      "afterAllChecks": {
+        "usedJSHeapSize": 60328081,
+        "totalJSHeapSize": 81440061,
+        "jsHeapSizeLimit": 4294705152
+      }
+    },
+    "extensionProcessRss": {
+      "source": "VmRSS / VmHWM from /proc for renderer processes of this browser started with --extension-process. In Chromium the service worker, the offscreen document and any open extension page of one extension share this process, so this is the whole extension renderer, not the offscreen document alone.",
+      "beforeDetectorStart": {
+        "processes": [
+          {
+            "pid": 30539,
+            "rssKb": 99620,
+            "hwmKb": 99620
+          }
+        ],
+        "renderers": [
+          {
+            "pid": 30521,
+            "extensionProcess": false,
+            "rssKb": 68348,
+            "hwmKb": 68348
+          },
+          {
+            "pid": 30523,
+            "extensionProcess": false,
+            "rssKb": 118768,
+            "hwmKb": 118768
+          },
+          {
+            "pid": 30539,
+            "extensionProcess": true,
+            "rssKb": 99620,
+            "hwmKb": 99620
+          }
+        ]
+      },
+      "afterModelLoad": {
+        "processes": [
+          {
+            "pid": 30539,
+            "rssKb": 227796,
+            "hwmKb": 227796
+          }
+        ],
+        "renderers": [
+          {
+            "pid": 30523,
+            "extensionProcess": false,
+            "rssKb": 118768,
+            "hwmKb": 118768
+          },
+          {
+            "pid": 30539,
+            "extensionProcess": true,
+            "rssKb": 227824,
+            "hwmKb": 227824
+          },
+          {
+            "pid": 30553,
+            "extensionProcess": false,
+            "rssKb": 67952,
+            "hwmKb": 67952
+          }
+        ]
+      },
+      "afterAllChecks": {
+        "processes": [
+          {
+            "pid": 30539,
+            "rssKb": 278240,
+            "hwmKb": 284104
+          }
+        ],
+        "renderers": [
+          {
+            "pid": 30523,
+            "extensionProcess": false,
+            "rssKb": 140996,
+            "hwmKb": 140996
+          },
+          {
+            "pid": 30539,
+            "extensionProcess": true,
+            "rssKb": 278240,
+            "hwmKb": 284104
+          },
+          {
+            "pid": 30553,
+            "extensionProcess": false,
+            "rssKb": 67900,
+            "hwmKb": 67900
+          }
+        ]
+      }
+    }
+  },
+  "stepLoop": {
+    "note": "Real START_TASK from the side panel (opened as a tab) on the four-256px fixture, fake paired Warden, one step each (plan = finish).",
+    "runs": [
+      {
+        "fixture": "four-256px",
+        "imagesOnPage": 4,
+        "terminal": "finished",
+        "vision": {
+          "status": "done",
+          "faces": 4,
+          "ms": 29,
+          "inferenceMs": 12.3,
+          "waitInitMs": 0,
+          "reason": null,
+          "model": "UltraFace RFB-320"
+        },
+        "perceiveDetail": "0 controls, 4 screen regions masked, 4 faces in 29 ms",
+        "screenMasked": 4,
+        "maskedCaptureCheck": {
+          "boxes": 4,
+          "pointsSampled": 36,
+          "pointsWithMaskColour": 36
+        },
+        "panelScreenCaption": "The masked capture taken on this device. 4 regions masked. Face check on this device: 4 faces found in 29 ms. It was not sent anywhere."
+      },
+      {
+        "fixture": "four-256px",
+        "imagesOnPage": 4,
+        "terminal": "finished",
+        "vision": {
+          "status": "done",
+          "faces": 4,
+          "ms": 29,
+          "inferenceMs": 12.5,
+          "waitInitMs": 0,
+          "reason": null,
+          "model": "UltraFace RFB-320"
+        },
+        "perceiveDetail": "0 controls, 4 screen regions masked, 4 faces in 29 ms",
+        "screenMasked": 4,
+        "maskedCaptureCheck": {
+          "boxes": 4,
+          "pointsSampled": 36,
+          "pointsWithMaskColour": 36
+        },
+        "panelScreenCaption": "The masked capture taken on this device. 4 regions masked. Face check on this device: 4 faces found in 29 ms. It was not sent anywhere."
+      },
+      {
+        "fixture": "four-256px",
+        "imagesOnPage": 4,
+        "terminal": "finished",
+        "vision": {
+          "status": "done",
+          "faces": 4,
+          "ms": 31.3,
+          "inferenceMs": 12.4,
+          "waitInitMs": 0,
+          "reason": null,
+          "model": "UltraFace RFB-320"
+        },
+        "perceiveDetail": "0 controls, 4 screen regions masked, 4 faces in 31 ms",
+        "screenMasked": 4,
+        "maskedCaptureCheck": {
+          "boxes": 4,
+          "pointsSampled": 36,
+          "pointsWithMaskColour": 36
+        },
+        "panelScreenCaption": "The masked capture taken on this device. 4 regions masked. Face check on this device: 4 faces found in 31 ms. It was not sent anywhere."
+      }
+    ],
+    "g11StagesMsLastRun": {
+      "perceive": 76.3000000002794,
+      "vision": 31.299999999813735,
+      "strip": 6.099999999627471,
+      "plan": 5.7000000001862645,
+      "validate": 0,
+      "f17_local_tier": 0,
+      "execute": 122.70000000018626,
+      "total": 258.39999999990687
+    },
+    "wardenRequests": 11,
+    "wardenRequestsCarryingAnImage": 0
+  },
+  "errors": [],
+  "limits": [
+    "Missed on these pages: one-128px (0/1), one-64px (0/1). The whole 1280x800 capture is resized to 320x240 before detection, so a face that is small in the capture is below the detector's working scale. No tiling or multi-scale pass is implemented; a missed face is not masked.",
+    "One source photograph only; skin tones, poses, occlusion, profiles, illustrations and video frames are untested.",
+    "WebGPU is not used; WASM single thread only.",
+    "Firefox is not exercised; root extension uses chrome.offscreen and side_panel, both Chrome-only.",
+    "Memory figures are diagnostic and depend on what else the extension renderer holds at that moment."
+  ]
+}

@@ -19,6 +19,7 @@ build_prompt() and plan_via_groq()'s assertion.
 """
 
 import json
+import threading
 import time
 from typing import Optional
 
@@ -38,12 +39,6 @@ class GroqError(Exception):
     def __init__(self, message: str, switched: Optional[list] = None):
         super().__init__(message)
         self.switched = switched or []
-
-
-def _retryable(exc_or_status) -> bool:
-    if isinstance(exc_or_status, int):
-        return exc_or_status == 429 or exc_or_status >= 500
-    return True  # timeouts / connection errors / parse errors are all retryable-by-fallback
 
 
 def build_prompt(tokenized_task: str, sanitized_dom: str, elements: list, history: list) -> str:
@@ -74,7 +69,7 @@ def build_prompt(tokenized_task: str, sanitized_dom: str, elements: list, histor
         "ALLOWED ACTIONS (choose exactly one): click, type, scroll, wait, finish",
         "",
         "RESPOND WITH A SINGLE JSON OBJECT, NO OTHER TEXT:",
-        '{"action":"click|type|scroll|wait|finish","target_selector":"CSS selector or null",'
+        '{"action":"click|type|scroll|wait|finish","target_selector":"the element key exactly as listed (e.g. e3) or null",'
         '"coordinates":{"x":0,"y":0},"value":"text or null","reasoning_token":"brief, no PII"}',
         "",
         "RULES:",
@@ -142,8 +137,23 @@ def _is_finite(n) -> bool:
     return isinstance(n, (int, float)) and n == n and n not in (float("inf"), float("-inf"))
 
 
+# One pooled client for the process (3 October 2026). httpx.post() opened a new
+# connection, so a new TLS handshake to Groq, on every plan; a kept-alive connection
+# removes that from each step. httpx.Client is safe to share between threads.
+_client: Optional[httpx.Client] = None
+_client_lock = threading.Lock()
+
+
+def _post(url: str, **kwargs) -> httpx.Response:
+    global _client
+    with _client_lock:
+        if _client is None:
+            _client = httpx.Client()
+    return _client.post(url, **kwargs)
+
+
 def _call_groq_model(model: str, prompt: str) -> str:
-    resp = httpx.post(
+    resp = _post(
         f"{config.GROQ_BASE_URL}/chat/completions",
         headers={
             "Content-Type": "application/json",
@@ -163,9 +173,14 @@ def _call_groq_model(model: str, prompt: str) -> str:
     )
     if resp.status_code != 200:
         raise GroqError(f"HTTP {resp.status_code}: {resp.text[:200]}")
-    data = resp.json()
-    text = (data.get("choices") or [{}])[0].get("message", {}).get("content")
-    if not text:
+    # A 200 whose body is not the expected shape is an unparseable body like any other and moves
+    # down the chain. Before 3 October 2026 a ValueError or AttributeError here escaped the
+    # chain's except clauses and /plan answered 500.
+    try:
+        text = resp.json()["choices"][0]["message"]["content"]
+    except (ValueError, KeyError, IndexError, TypeError) as exc:
+        raise GroqError(f"Groq returned an unparseable body ({type(exc).__name__})") from exc
+    if not isinstance(text, str) or not text:
         raise GroqError("Groq returned no content")
     return text
 

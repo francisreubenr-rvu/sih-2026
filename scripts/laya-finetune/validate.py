@@ -105,7 +105,7 @@ def main():
     a = ap.parse_args()
 
     os.environ["WARDEN_FAST_PATH"] = "laya"
-    os.environ["WARDEN_LAYA_MODEL"] = a.checkpoint
+    os.environ["WARDEN_FAST_PATH_LAYA_MODEL"] = a.checkpoint
     os.environ["WARDEN_FAST_PATH_MIN_CONFIDENCE"] = "0"
     seen = {body_key(json.loads(l)["body"]) for l in open(a.train)} if a.train else set()
     val = [json.loads(l) for l in open(a.val)]

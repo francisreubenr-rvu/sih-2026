@@ -13,10 +13,19 @@ The two labels keep a request proof from being reflected as a response proof.
 The nonce binds each response to the request that asked for it, so an old
 response cannot be replayed; the Warden also refuses a nonce it has already seen.
 
-The secret comes from WARDEN_PAIRING_SECRET (warden/.env, gitignored). Unset
-means pairing is off and the Warden behaves as before. Make one with:
+The secret comes from WARDEN_PAIRING_SECRET (warden/.env, gitignored). Since
+2 October 2026 pairing is required: with no secret (or one shorter than
+config.PAIRING_MIN_LEN) the Warden refuses every POST with 503.
+WARDEN_PAIRING_DISABLED=1 lets scripted harnesses and the tests in unsigned; the
+extension never accepts an unpaired Warden. See config.pairing_state. Make a
+secret with:
 
     python pairing.py new
+
+Known limit: a nonce is remembered for REPLAY_WINDOW_S and only in memory, and
+the request proof carries no timestamp, so a captured request could be replayed
+after that window or after a restart. Closing it needs a signed timestamp from
+the extension (a wire change).
 """
 
 import base64
@@ -80,7 +89,9 @@ class ReplayGuard:
 
 
 def verify_request(secret: str, method: str, path: str, nonce, auth, body: bytes) -> bool:
-    if not valid_nonce(nonce) or not isinstance(auth, str):
+    # hmac.compare_digest raises TypeError on a str holding non-ASCII characters, and
+    # header values arrive latin-1 decoded, so such a header was a 500, not a 401.
+    if not valid_nonce(nonce) or not isinstance(auth, str) or not auth.isascii():
         return False
     return hmac.compare_digest(request_mac(secret, method, path, nonce, body), auth)
 

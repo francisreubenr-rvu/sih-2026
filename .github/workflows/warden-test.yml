@@ -8,12 +8,28 @@ on:
     paths:
       - 'warden/**'
       - 'extension/utils/redactor.js'
+      # Parity tests in test_warden.py run the real op-tier.js and plan-check.js.
+      - 'extension/utils/op-tier.js'
+      - 'extension/utils/plan-check.js'
+      - 'scripts/tests/**'
+      - 'scripts/check_release.py'
+      - 'scripts/score-*.py'
+      - 'Guardrails/**'
+      - 'Benchmarks/release-status.json'
       - '.github/workflows/warden-test.yml'
   push:
     branches: [master, 'brain/**', 'feat/**', 'cursor/**']
     paths:
       - 'warden/**'
       - 'extension/utils/redactor.js'
+      # Parity tests in test_warden.py run the real op-tier.js and plan-check.js.
+      - 'extension/utils/op-tier.js'
+      - 'extension/utils/plan-check.js'
+      - 'scripts/tests/**'
+      - 'scripts/check_release.py'
+      - 'scripts/score-*.py'
+      - 'Guardrails/**'
+      - 'Benchmarks/release-status.json'
       - '.github/workflows/warden-test.yml'
   workflow_dispatch:
 
@@ -54,9 +70,20 @@ jobs:
         run: |
           set -o pipefail
           node --version
-          python -m pytest -rs test_warden.py | tee pytest.log
+          python -m pytest -rs test_warden.py test_pii_layers.py | tee pytest.log
           # A missing node would turn the regex-parity tests into silent skips.
           if grep -E '^SKIPPED.*node is not on PATH' pytest.log; then
             echo "::error::regex-parity tests skipped: node is not on PATH"
             exit 1
           fi
+
+      - name: Script tests
+        run: python -m pytest -q scripts/tests
+
+      - name: Ledger matches the committed release-status.json
+        shell: bash
+        run: |
+          # check_release.py exits 1 while any gate fails or is unknown; that is
+          # expected. What must hold is that the committed ledger is current.
+          python scripts/check_release.py --dry-run > ledger.json || true
+          python -c "import json,sys; d=json.load(open('ledger.json')); sys.exit(0 if d.get('committed_ledger_matches') else 1)"

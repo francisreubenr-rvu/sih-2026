@@ -149,7 +149,7 @@ The remaining misses use verbs neither list has, in either language: forget (भ
 - A paired extension refuses any unproven response. A refused `/health` stops the run before any page text is sent.
 - `layaRelease` now also requires that the `/plan` response verified. Verification is tracked outside the response object, so a server cannot claim it with a JSON field.
 
-Pairing is opt-in. With no `WARDEN_PAIRING_SECRET`, the Warden behaves as before, and an unpaired extension can never skip a confirmation. Setup: `python warden/pairing.py new`, put the value in `warden/.env`, and paste it into Settings > Pairing code.
+Pairing was opt-in when this was written. **Superseded 2 October 2026 (ROAST round 29): pairing is required.** With no `WARDEN_PAIRING_SECRET` the Warden refuses every POST (503), and an extension with no pairing code sends nothing; `WARDEN_PAIRING_DISABLED=1` is for harnesses and tests only. Setup: `python warden/pairing.py new`, put the value in `warden/.env`, and paste it into Settings > Pairing code.
 
 **Evidence:**
 

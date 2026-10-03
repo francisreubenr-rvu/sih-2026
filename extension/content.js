@@ -77,17 +77,6 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     scanPage().then(respond).catch((error) => respond({ error: error.message }));
     return true;
   }
-  if (message.type === 'MOVE_MOUSE') {
-    const target = message.selector ? document.querySelector(message.selector) : null;
-    if (target) {
-      const rect = rectOf(target);
-      visualizer?.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
-    } else if (message.coordinates) {
-      visualizer?.move(message.coordinates.x, message.coordinates.y);
-    }
-    respond({ ok: true });
-    return false;
-  }
   if (message.type === 'EXECUTE_ACTION') {
     executeAction(message.action).then((result) => respond(result)).catch((error) => respond({ error: error.message }));
     return true;
@@ -130,8 +119,11 @@ async function scanPage() {
     handles.set(handle, new WeakRef(element));
     elements.push({
       tag: element.tagName.toLowerCase(),
-      type: element.getAttribute('type') || element.tagName.toLowerCase(),
-      selector: uniqueSelector(element, redactText),
+      type: controlType(element),
+      // An opaque per-scan key, not a CSS selector (security review, 3 October 2026): an id or
+      // name is page-authored text ("contact-neha-joshi") that no PII layer reads, and this key is
+      // sent to the planner verbatim. It is only a display key: execute resolves the handle.
+      selector: `e${elements.length + 1}`,
       handle,
       // Click tier computed here, from the live element, by the extension's own rules. The
       // background gate reads this, never a tier or element list the Warden returns.
@@ -416,48 +408,12 @@ function labelFor(element) {
   return wrap ? (wrap.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120) : '';
 }
 
-// Display key for the planner: the short id/name selector when it matches exactly this one
-// element in the document, else the structural path. Never used to find the element again.
-//
-// An id or name that itself matches a PII pattern (an email-shaped id, a passport-shaped
-// "a1234567") is never used: the selector is sent to the planner verbatim, so it would carry
-// that value off the device, and the Warden's egress guard would (correctly) refuse the whole
-// planning request. The structural path carries no page-authored text, so it is used instead.
-function uniqueSelector(element, redactText) {
-  const short = cssSelector(element);
-  // Tested on the raw attribute values: CSS.escape turns "a@b.co" into "a\\@b\\.co", which no
-  // pattern would match.
-  const authored = [element.getAttribute('id'), element.getAttribute('name')].filter(Boolean).join(' ');
-  if (redactText && authored && redactText(authored).count > 0) return structuralPath(element);
-  try {
-    const matches = document.querySelectorAll(short);
-    if (matches.length === 1 && matches[0] === element) return short;
-  } catch { /* fall through to the structural path */ }
-  return structuralPath(element);
-}
-
-function cssSelector(element) {
-  const id = element.getAttribute('id');
-  if (id && !/\s/.test(id)) return `#${CSS.escape(id)}`;
-  const name = element.getAttribute('name');
-  if (name) return `${element.tagName.toLowerCase()}[name="${CSS.escape(name)}"]`;
-  return structuralPath(element);
-}
-
-function structuralPath(element) {
-  const path = [];
-  let node = element;
-  while (node && node.nodeType === Node.ELEMENT_NODE && node !== document.documentElement) {
-    let part = node.tagName.toLowerCase();
-    const parent = node.parentElement;
-    if (parent) {
-      const same = Array.from(parent.children).filter((child) => child.tagName === node.tagName);
-      if (same.length > 1) part += `:nth-of-type(${same.indexOf(node) + 1})`;
-    }
-    path.unshift(part);
-    node = parent;
-  }
-  return path.join(' > ');
+// The type attribute is page-authored too: only a known input type is passed on, else the tag.
+const KNOWN_TYPES = new Set(['button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image',
+  'month', 'number', 'password', 'radio', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week']);
+function controlType(element) {
+  const raw = (element.getAttribute('type') || '').trim().toLowerCase();
+  return KNOWN_TYPES.has(raw) ? raw : element.tagName.toLowerCase();
 }
 
 // Visible text of live regions (role=status/alert, aria-live, <output>). Without it the planner
@@ -557,7 +513,15 @@ async function executeAction(action) {
   } else {
     throw new Error(`Unsupported action: ${action.action}`);
   }
-  await new Promise((resolve) => setTimeout(resolve, action.action === 'click' ? 250 : 120));
+  // Wait for the page to stop changing instead of a fixed sleep (3 October 2026). The loop used to
+  // sleep 250 ms after a click and 120 ms after anything else, then the worker slept another 400 ms
+  // before the next scan: about 770 ms of a 2 s run on the G11 flow
+  // (Benchmarks/results/core-latency-v5-live-v01.json). Now: done once the DOM has been quiet for
+  // SETTLE_QUIET_MS, never longer than SETTLE_MAX_MS (the old 250 + 400 ms), and no wait after
+  // finish, which changes nothing on the page. Accepted trade: a page that updates later than
+  // SETTLE_QUIET_MS after the action, with no DOM change in between, is scanned before the update;
+  // the next plan then sees the old state, and F17 still guards anything state-changing.
+  if (action.action !== 'finish') await settleDom(SETTLE_QUIET_MS, SETTLE_MAX_MS);
   return { digest: digest(document.body?.innerText || ''), elementCount: document.querySelectorAll('button,input,select,textarea,a[href],[role="button"]').length, changed: true };
 }
 
@@ -649,6 +613,37 @@ let overlayLayer = null;
 let overlayMatches = []; // [{ token, range } | { token, element }], found once per HIGHLIGHT_REDACTIONS
 let overlayRaf = 0;
 let overlayListening = false;
+
+const SETTLE_QUIET_MS = 100;
+const SETTLE_MAX_MS = 650;
+
+// Resolves once the page's DOM has gone quietMs without a mutation, or after maxMs at the latest.
+// Changes made by DHRISTI's own overlay and visualizer do not count as the page changing.
+function settleDom(quietMs, maxMs) {
+  return new Promise((resolve) => {
+    let quietTimer = null;
+    let capTimer = null;
+    let observer = null;
+    const done = () => {
+      clearTimeout(quietTimer);
+      clearTimeout(capTimer);
+      observer?.disconnect();
+      resolve();
+    };
+    observer = new MutationObserver((records) => {
+      const pageChanged = records.some((r) => {
+        const node = r.target.nodeType === Node.ELEMENT_NODE ? r.target : r.target.parentElement;
+        return !isDhristiOverlay(node);
+      });
+      if (!pageChanged) return;
+      clearTimeout(quietTimer);
+      quietTimer = setTimeout(done, quietMs);
+    });
+    observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+    quietTimer = setTimeout(done, quietMs);
+    capTimer = setTimeout(done, maxMs);
+  });
+}
 
 function isDhristiOverlay(element) {
   return Boolean(element && element.closest && element.closest(`[${OVERLAY_ATTR}], [data-dhristi-visualizer]`));

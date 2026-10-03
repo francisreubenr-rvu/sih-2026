@@ -1,9 +1,15 @@
 // Exclusive wall spans for the G11 Option C harness.
 // Records only intervals this service worker actually ran. A stage that did
 // not run stays null plus a reason. Never fills a guessed duration.
+//
+// 'vision' (added 3 October 2026) is the on-device face check on the capture. It runs inside the
+// perceive step, and background.js subtracts it from perceive, so the spans stay exclusive:
+// perceive + vision is the old perceive. The G11 harness (scripts/g11-warden-option-c-lib.mjs)
+// reads only its own keys; it still gets perceive, and total is unchanged.
 
 const STAGE_KEYS = [
   'perceive',
+  'vision',
   'strip',
   'plan',
   'validate',
@@ -15,6 +21,7 @@ const STAGE_KEYS = [
 function emptyStages() {
   return {
     perceive: null,
+    vision: null,
     strip: null,
     plan: null,
     validate: null,

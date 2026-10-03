@@ -15,6 +15,8 @@ const auditOut = join(root, 'Benchmarks/results/dependency-audit.json');
 const SKIP_DIRS = new Set([
   'node_modules', '.git', 'extension-build', 'extension-build-firefox', 'dist',
   'data', '__pycache__', '.tools-venv', 'models', 'webpii-test100', 'bench-assets',
+  // Agent worktrees are full copies of the repo; scanning them multiplies findings.
+  '.claude',
 ]);
 
 const PATTERNS = [
