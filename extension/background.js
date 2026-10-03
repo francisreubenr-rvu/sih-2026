@@ -2,6 +2,7 @@ import { redactScreenshot, redactText } from './utils/redactor.js';
 import { detectElements } from './utils/omniparser.js';
 import * as wardenClient from './utils/warden.js';
 import { createG11Trace } from './utils/g11-stage-clock.js';
+import { createVisionClient, faceFieldsFromDetections, VisionError } from './utils/vision-client.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
 import { loopbackHttpUrl } from './utils/loopback.js';
 import { expressesDestructiveIntent, findSceneElement, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
@@ -142,6 +143,17 @@ let resolvedAnswers = {};
 // Measurement-only clocks for the G11 harness (GET_G11_TRACE). Does not gate
 // execution. Durations are exclusive spans around work this worker performed.
 const g11Trace = createG11Trace();
+
+// The on-device face check (offscreen document, bundled ONNX Runtime Web + UltraFace). See
+// utils/vision-client.js for the contract and the fail-closed policy.
+const visionClient = createVisionClient();
+// Measurement handle for scripts/validate-extension-vision.mjs, which evaluates code inside this
+// worker. A worker global is reachable only by code running in this worker, never by a page or
+// another extension page, and it exposes nothing the step loop does not already do.
+globalThis.dhristiVisionProbe = Object.freeze({
+  detect: (dataUrl) => visionClient.detect(dataUrl),
+  stats: () => visionClient.stats(),
+});
 
 // ============================================================================
 // Session transcript
@@ -725,6 +737,9 @@ async function startAcceptedTask(task) {
   const tabId = tab?.id ?? null;
   const windowId = tab?.windowId ?? null;
   if (!tabId) return failStart(task, 'No active tab to work on.');
+  // Start the face detector now, while the health check runs, so the first step rarely waits on
+  // the one-time model load. A failure here is retried by the step's own face check.
+  visionClient.warm().catch(() => {});
 
   const siteAccess = await chrome.permissions.contains({ origins: SITE_ACCESS_ORIGINS });
   if (!siteAccess) {
@@ -1254,6 +1269,9 @@ async function runLoop(runId, secrets) {
       let wireElements;
       let redacted;
       let omni = { available: false, status: 'disabled', elements: [] };
+      // The face check's span, kept out of perceive so the G11 stage spans stay exclusive.
+      let visionSpan = 0;
+      let visionError = null;
       try {
       await pingContentScript(runId);
       if (aborted(runId)) return;
@@ -1278,21 +1296,56 @@ async function runLoop(runId, secrets) {
         throw new Error('Task tab is not the visible tab; bring it to the front.');
       }
 
-      // One capture per step. It feeds the local mask below, the optional local detector, and
-      // the panel's view of what the agent saw; it never goes to the Warden.
+      // One capture per step. It feeds the local face check and mask below, the optional local
+      // detector, and the panel's view of what the agent saw; it never goes to the Warden.
       const screenshot = await chrome.tabs.captureVisibleTab(state.windowId, { format: 'png' });
       if (aborted(runId)) return;
 
-      // PRIVACY: redact PII from the screenshot before it goes anywhere, including the local
-      // OmniParser detector below and the panel. Fails CLOSED: a masking failure returns
-      // dataUrl: null, never the original unmasked capture.
-      redacted = await redactScreenshot(screenshot, scan.piiFields || [], scan.viewport);
+      // VISION: find faces on the capture with the bundled detector in the offscreen document
+      // (utils/vision-client.js). Raw pixels go only to that document; boxes come back. Capped at
+      // VISION_DETECT_TIMEOUT_MS. Fails CLOSED: if the check fails or times out, this step's
+      // capture is discarded below, so neither the panel nor OmniParser gets an image whose faces
+      // were not checked. The run continues: the planner never sees pixels.
+      const visionT0 = performance.now();
+      let faces = null;
+      try {
+        faces = await visionClient.detect(screenshot);
+      } catch (error) {
+        visionError = error instanceof VisionError ? error : new VisionError('failed', String(error?.message || error));
+      } finally {
+        visionSpan = performance.now() - visionT0;
+        g11Trace.add('vision', visionSpan);
+      }
+      if (aborted(runId)) return;
+      const faceFields = faces ? faceFieldsFromDetections(faces.detections, faces, scan.viewport) : [];
+      pipeline.set('vision', faces
+        ? {
+          status: 'done',
+          faces: faceFields.length,
+          ms: Math.round(visionSpan * 10) / 10,
+          inferenceMs: faces.inferenceMs == null ? null : Math.round(faces.inferenceMs * 10) / 10,
+          waitInitMs: Math.round(faces.waitInitMs * 10) / 10,
+          reason: null,
+          model: faces.model,
+        }
+        : { status: 'error', faces: null, ms: Math.round(visionSpan * 10) / 10, inferenceMs: null, waitInitMs: null, reason: visionError.message, model: null });
+
+      // PRIVACY: redact PII fields and faces from the screenshot before it goes anywhere,
+      // including the local OmniParser detector below and the panel. Fails CLOSED: a masking
+      // failure, or a failed face check, leaves dataUrl: null, never the unmasked capture.
+      redacted = faces
+        ? await redactScreenshot(screenshot, [...(scan.piiFields || []), ...faceFields], scan.viewport)
+        : { dataUrl: null, maskedCount: 0, decisions: [], error: `face check failed: ${visionError.message}` };
       if (aborted(runId)) return;
       pipeline.set('screenshot', { dataUrl: redacted.dataUrl || null, ...pngSize(redacted.dataUrl) });
       pipeline.patch('redaction', { screenMasked: redacted.maskedCount });
-      noteActivity(redacted.dataUrl
-        ? `Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}.`
-        : 'The screen capture could not be masked, so it was discarded.', stepNumber);
+      if (faces) {
+        noteActivity(redacted.dataUrl
+          ? `Screen masked before anything else saw it: ${redacted.maskedCount} region${redacted.maskedCount === 1 ? '' : 's'}, ${faceFields.length} face${faceFields.length === 1 ? '' : 's'} found on this device.`
+          : 'The screen capture could not be masked, so it was discarded.', stepNumber);
+      } else {
+        noteActivity(`The on-device face check failed (${visionError.message}), so this step's screen capture was discarded. The run continues without it.`, stepNumber);
+      }
 
       if (secrets.useOmniparser) {
         if (redacted.dataUrl) {
@@ -1304,10 +1357,14 @@ async function runLoop(runId, secrets) {
       }
       state.omniStatus = omni.status;
       } finally {
-        g11Trace.add('perceive', performance.now() - perceiveT0);
+        g11Trace.add('perceive', performance.now() - perceiveT0 - visionSpan);
       }
       if (aborted(runId)) return;
-      traceStage('perceive', 'done', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'}, ${redacted.maskedCount} screen region${redacted.maskedCount === 1 ? '' : 's'} masked`);
+      const visionTrace = pipeline.current()?.vision;
+      const visionText = visionTrace?.status === 'done'
+        ? `, ${visionTrace.faces} face${visionTrace.faces === 1 ? '' : 's'} in ${Math.round(visionTrace.ms)} ms`
+        : ', face check failed, capture discarded';
+      traceStage('perceive', 'done', `${scan.elements.length} control${scan.elements.length === 1 ? '' : 's'}, ${redacted.maskedCount} screen region${redacted.maskedCount === 1 ? '' : 's'} masked${visionText}`);
 
       // 2. STRIP: the Warden is the sole stripping authority for the wire from here on. Raw
       //    `state.task`, raw `scan.dom` and the wire elements go to this ONE loopback call and

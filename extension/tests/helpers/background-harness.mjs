@@ -28,10 +28,62 @@ export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhris
 // Pairing is required (2 October 2026), so runs are paired by default; pass pairingCode: null to
 // test an unpaired extension.
 export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
+// vision:    optional (request) -> result for the offscreen face detector's Port protocol
+//            (utils/vision-client.js). `request` is { id, type: 'init' | 'detect' | 'stats', ... }.
+//            Throw to send an error reply; return VISION_HANG to never answer; return
+//            VISION_DROP to close the port without answering. Default: ready, no faces.
+// offscreen: false removes chrome.offscreen (a browser without the API).
+// storage:   extra chrome.storage.local items (e.g. { useOmniparser: true }).
+export const VISION_HANG = Symbol('vision-hang');
+export const VISION_DROP = Symbol('vision-drop');
+export function defaultVision(request) {
+  if (request.type === 'init') return { ready: true, initMs: 1 };
+  if (request.type === 'detect') return { detections: [], width: 1, height: 1, inferenceMs: 1, decodeMs: 0, model: 'fake-face', backend: 'fake' };
+  return {};
+}
+
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE, vision = defaultVision, offscreen = true, storage = {} } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];
+  const visionRequests = [];
+  const offscreenCreates = [];
+  let offscreenOpen = false;
+  // A runtime Port as the worker sees it, answered by the `vision` script on behalf of the
+  // offscreen document.
+  const connect = ({ name } = {}) => {
+    const onMessage = [];
+    const onDisconnect = [];
+    let open = true;
+    const close = () => {
+      if (!open) return;
+      open = false;
+      for (const fn of onDisconnect) fn();
+    };
+    return {
+      name,
+      onMessage: { addListener(fn) { onMessage.push(fn); } },
+      onDisconnect: { addListener(fn) { onDisconnect.push(fn); } },
+      disconnect() { open = false; },
+      postMessage(message) {
+        const copy = structuredClone(message);
+        visionRequests.push(copy);
+        queueMicrotask(() => {
+          if (!offscreenOpen || name !== 'dhristi-vision') { close(); return; }
+          let reply;
+          try {
+            const result = vision(copy);
+            if (result === VISION_HANG) return;
+            if (result === VISION_DROP) { close(); return; }
+            reply = { id: copy.id, ok: true, result };
+          } catch (error) {
+            reply = { id: copy.id, ok: false, error: error?.message || String(error) };
+          }
+          if (open) for (const fn of onMessage) fn(reply);
+        });
+      },
+    };
+  };
   const prompts = [];
   const hookResults = [];
   let listener = null;
@@ -51,6 +103,11 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
       onMessage: { addListener(fn) { listener = fn; } },
       onInstalled: noop,
       onStartup: noop,
+      lastError: undefined,
+      connect,
+      getContexts: async ({ contextTypes } = {}) => (offscreenOpen && contextTypes?.includes('OFFSCREEN_DOCUMENT')
+        ? [{ contextType: 'OFFSCREEN_DOCUMENT', documentUrl: 'chrome-extension://dhristi-test/offscreen.html' }]
+        : []),
       sendMessage: async (message) => {
         runtimeMessages.push(message);
         if (message.type === 'PROMPT_REQUEST') {
@@ -73,7 +130,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
       executeScript: async () => [],
     },
     storage: {
-      local: { get: async () => (pairingCode ? { wardenPairing: pairingCode } : {}), set: async () => {}, remove: async () => {} },
+      local: { get: async () => ({ ...(pairingCode ? { wardenPairing: pairingCode } : {}), ...storage }), set: async () => {}, remove: async () => {} },
       session: { get: async () => ({}), set: async () => {} },
     },
     tabs: {
@@ -93,6 +150,15 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     },
     sidePanel: { setPanelBehavior: async () => {} },
   };
+  if (offscreen) {
+    globalThis.chrome.offscreen = {
+      createDocument: async (options) => {
+        offscreenCreates.push(structuredClone(options));
+        if (offscreenOpen) throw new Error('Only a single offscreen document may be created.');
+        offscreenOpen = true;
+      },
+    };
+  }
 
   globalThis.fetch = async (url, init = {}) => {
     const path = new URL(url).pathname;
@@ -127,6 +193,8 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     if (path === '/strip') return answer(() => (warden.strip ? warden.strip(body) : defaultStrip(body)));
     if (path === '/plan') { planCalls += 1; return answer(() => warden.plan(body, planCalls)); }
     if (path === '/validate') { validateCalls += 1; return answer(() => (warden.validate ? warden.validate(body, validateCalls) : null)); }
+    // The optional local OmniParser detector (utils/omniparser.js), on with storage { useOmniparser: true }.
+    if (path === '/parse/') return { ok: true, status: 200, json: async () => ({ parsed_content_list: [] }) };
     throw new TypeError(`unexpected fetch ${path}`);
   };
 
@@ -155,6 +223,8 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     traceUpdates: runtimeMessages.filter((m) => m.type === 'TRACE_UPDATE').map((m) => m.trace),
     healthUpdates: runtimeMessages.filter((m) => m.type === 'HEALTH_UPDATE'),
     runtimeMessages,
+    visionRequests,
+    offscreenCreates,
     tabMessages,
     hookResults,
     validateCalls,
