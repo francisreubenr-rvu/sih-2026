@@ -1126,8 +1126,10 @@ class _WindowedFakeModel:
             return []
         out = []
         for name in self.names:
-            i = text.find(name)
-            if i != -1:
+            # Whole words only, as GLiNER's spans are: it never reports "Ravi" inside "Ravishankar".
+            m = re.search(r"(?<!\w)" + re.escape(name) + r"(?!\w)", text)
+            if m:
+                i = m.start()
                 out.append({"start": i, "end": i + len(name), "text": name, "label": "person name", "score": self.score})
         return out
 
@@ -1216,9 +1218,13 @@ def test_kept_value_stays_in_labels(monkeypatch):
     assert [u["token"] for u in first["uncertain"]] == ["PERSONNAME#1"]
     assert first["elements"][0]["label"] == f"Welcome back {name}"  # undecided: not minted yet
 
-    kept = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "keep"})
+    kept = strip_module.strip(task="", dom=dom, elements=elements,
+                              resolved={"PERSONNAME#1": {"decision": "keep", "value": name}})
     assert kept["elements"][0]["label"] == f"Welcome back {name}"
     assert kept["uncertain"] == []
+    # A bare "keep" names no value, so since 3 October 2026 it is not applied: asked again.
+    legacy = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "keep"})
+    assert [u["token"] for u in legacy["uncertain"]] == ["PERSONNAME#1"]
 
     stripped = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "strip"})
     assert stripped["elements"][0]["label"] == "Welcome back PERSONNAME#1"
@@ -2231,3 +2237,95 @@ def test_fast_path_type_keeps_a_selector_that_contains_spaces(monkeypatch):
     result = warden_app.dispatch_plan(body)
     assert calls["fast"] == 1 and calls["groq"] == 0
     assert result["plan"]["target_selector"] == "form #email" and result["plan"]["value"] == "EMAIL#1"
+
+
+class _AccountNumberModel:
+    """Scores every listed string as an account number in the uncertain band."""
+
+    def __init__(self, values, score=0.42):
+        self.values = values
+        self.score = score
+
+    def predict_entities(self, text, labels, threshold):
+        out = []
+        for v in self.values:
+            i = text.find(v)
+            if i != -1:
+                out.append({"start": i, "end": i + len(v), "text": v, "label": "account number", "score": self.score})
+        return out
+
+
+def test_a_keep_answer_cannot_carry_over_to_a_different_value(monkeypatch):
+    """Step 1 asks about "Account statements" and the user keeps it. Step 2 is a new page where
+    ACCOUNTNUMBER#1 is a real account number. The old contract keyed the answer by position
+    token only, so step 2's number went to the planner in plaintext without a question."""
+    label, number = "Account statements", "Acct 50100234567812"
+    monkeypatch.setattr(entities.STATE, "model", _AccountNumberModel([label, number]))
+    step1 = strip_module.strip(task="", dom=f'1. A label="{label}"', elements=[], resolved={})
+    assert [(u["token"], u["preview"]) for u in step1["uncertain"]] == [("ACCOUNTNUMBER#1", label)]
+
+    kept = strip_module.strip(task="", dom=f'1. A label="{label}"', elements=[],
+                              resolved={"ACCOUNTNUMBER#1": {"decision": "keep", "value": label}})
+    assert kept["uncertain"] == [] and label in kept["sanitizedDom"]
+
+    for answer in ({"decision": "keep", "value": label}, "keep"):  # new contract, and a legacy bare keep
+        step2 = strip_module.strip(task="", dom=f'1. P label="{number}"', elements=[],
+                                   resolved={"ACCOUNTNUMBER#1": answer})
+        assert [(u["token"], u["preview"]) for u in step2["uncertain"]] == [("ACCOUNTNUMBER#1", number)], answer
+
+
+def test_a_strip_answer_applies_to_its_value_and_legacy_strip_still_strips(monkeypatch):
+    number = "Acct 50100234567812"
+    monkeypatch.setattr(entities.STATE, "model", _AccountNumberModel([number]))
+    dom = f'1. P label="{number}"'
+    for answer in ({"decision": "strip", "value": number}, "strip"):
+        out = strip_module.strip(task="", dom=dom, elements=[], resolved={"ACCOUNTNUMBER#1": answer})
+        assert number not in out["sanitizedDom"] and out["tokens"] == {"ACCOUNTNUMBER#1": number}
+    mismatched = strip_module.strip(task="", dom=dom, elements=[],
+                                    resolved={"ACCOUNTNUMBER#1": {"decision": "strip", "value": "other"}})
+    assert [u["token"] for u in mismatched["uncertain"]] == ["ACCOUNTNUMBER#1"]
+
+
+def _long_page_elements(n, last_label):
+    elements = []
+    for i in range(1, n + 1):
+        label = last_label if i == n else f"Item {i}"
+        sel = f"#catalogue > div.grid-row:nth-of-type({i}) > div.cell > a.product-link-{i:04d}-" + "x" * 120
+        elements.append({"selector": sel, "label": label, "fieldType": "link", "filled": False, "x": 1, "y": i})
+    return elements
+
+
+def _serialize_truncated(elements, limit=30 * 1024):
+    text = "\n".join(f'{i}. A type=link selector={e["selector"]} label="{e["label"]}" position=1,{i}'
+                     for i, e in enumerate(elements, 1))
+    return text[:limit] + "\n[TRUNCATED]" if len(text) > limit else text
+
+
+@pytest.mark.parametrize("score,expect", [(0.9, "stripped"), (0.4, "asked")])
+def test_a_name_in_a_label_past_the_dom_cut_is_scored(monkeypatch, score, expect):
+    name = "Arjun Mehta"
+    elements = _long_page_elements(180, f"Signed in as {name}")
+    dom = _serialize_truncated(elements)
+    assert name not in dom, "the fixture must put the name past the 30 KB cut"
+    monkeypatch.setattr(entities.STATE, "model", _BatchedFakeModel([name], score=score))
+    out = strip_module.strip(task="", dom=dom, elements=elements, resolved={})
+    if expect == "stripped":
+        assert out["elements"][-1]["label"] == "Signed in as PERSONNAME#1"
+        assert out["tokens"] == {"PERSONNAME#1": name}
+        assert ("PERSONNAME#1", "label") in {(d["token"], d["source"]) for d in out["decisions"]}
+    else:
+        assert [(u["token"], u["preview"], u["source"]) for u in out["uncertain"]] == [("PERSONNAME#1", name, "label")]
+        stripped = strip_module.strip(task="", dom=dom, elements=elements,
+                                      resolved={"PERSONNAME#1": {"decision": "strip", "value": name}})
+        assert stripped["elements"][-1]["label"] == "Signed in as PERSONNAME#1"
+    assert out["elements"][0]["label"] == "Item 1"
+
+
+def test_a_label_scored_in_the_dom_is_not_scored_twice(monkeypatch):
+    name = "Priya Raghunathan"
+    dom = _page(3, {2: f"Welcome back {name}"})
+    fake = _WindowedFakeModel([name], score=0.9)
+    monkeypatch.setattr(entities.STATE, "model", fake)
+    elements = [{"selector": "#nav-2", "label": f"Welcome back {name}", "fieldType": "link", "x": 1, "y": 2}]
+    strip_module.strip(task="", dom=dom, elements=elements, resolved={})
+    assert f"Welcome back {name}" not in fake.calls
