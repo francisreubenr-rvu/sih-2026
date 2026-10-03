@@ -38,8 +38,6 @@ LABEL_TO_TYPE = {
 
 MODEL_ID = "urchade/gliner_multi_pii-v1"
 
-_DEV_HF_HOME = "/Volumes/1TB SSD/LM/hub"
-
 STRIP_THRESHOLD = 0.60
 UNCERTAIN_FLOOR = 0.35
 # Ask GLiNER for anything down to the uncertain floor; below that the spec
@@ -67,21 +65,18 @@ STATE = ModelState()
 
 def load_model() -> None:
     """Load GLiNER once. Safe to call from a background thread: sets
-    STATE.model on success, STATE.load_error on failure. Never re-downloads
-    on this machine because HF_HOME already holds the cached weights.
+    STATE.model on success, STATE.load_error on failure. The weights come
+    from the Hugging Face cache: HF_HOME when it is set, otherwise the
+    library's own default.
     """
     with STATE._lock:
         if STATE.model is not None or STATE.loading:
             return
         STATE.loading = True
     try:
-        # The development machine keeps its Hugging Face cache on an external
-        # volume. Defaulting to it unconditionally broke the load on every other
-        # machine (the path does not exist, so from_pretrained fails there), so
-        # it is only a default where it exists; otherwise HF_HOME, or the
-        # library's own default cache, decides.
-        if os.path.isdir(_DEV_HF_HOME):
-            os.environ.setdefault("HF_HOME", _DEV_HF_HOME)
+        # HF_HOME is left to the environment (3 October 2026). It used to default
+        # to one development Mac's external volume whenever that path existed;
+        # warden/README.md's run command exports HF_HOME for that machine.
         from gliner import GLiNER  # imported here so a missing/broken torch
         # install fails inside the background thread, not at module import.
 
@@ -280,9 +275,18 @@ def _chunk_spans(text: str) -> list:
 _CHUNK_CACHE: "OrderedDict[str, list]" = OrderedDict()
 _CHUNK_CACHE_MAX = 4096
 _CHUNK_CACHE_OWNER = None
+# /strip runs in the server's threadpool since 3 October 2026, so two requests can arrive
+# together. The lock keeps the OrderedDict consistent and runs one inference at a time
+# (on CPU a second concurrent batch only competes for the same cores).
+_PREDICT_LOCK = threading.Lock()
 
 
 def _cached_predict(model, texts: list) -> list:
+    with _PREDICT_LOCK:
+        return _cached_predict_locked(model, texts)
+
+
+def _cached_predict_locked(model, texts: list) -> list:
     global _CHUNK_CACHE_OWNER
     if model is not _CHUNK_CACHE_OWNER:
         _CHUNK_CACHE.clear()

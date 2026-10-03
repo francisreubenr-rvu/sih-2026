@@ -27,6 +27,12 @@ Jev is disabled (Francis, 2 October 2026: "disabled, but not deleted"). The code
 stays and its tests still run, but WARDEN_FAST_PATH=jev resolves to off and no
 body is sent to Jev. Re-enabling it is a code change to JEV_ENABLED, recorded
 with a decision, not an environment variable.
+
+The Laya fast path is gated the same way (LAYA_FASTPATH_ENABLED, 3 October 2026):
+Laya fast-path training was parked on 2 October and no checkpoint passed the bar,
+so WARDEN_FAST_PATH=laya resolves to off until a decision flips the constant. Its
+checkpoint is WARDEN_FAST_PATH_LAYA_MODEL (config.fast_path_laya_model), separate
+from the reviewer's.
 """
 
 import os
@@ -37,6 +43,7 @@ from typing import Optional
 
 import httpx
 
+import config
 import groq_client
 
 ESCAPE = "none of these"
@@ -56,8 +63,9 @@ class FastPathError(Exception):
     pass
 
 
-# See the module docstring. Only a code change flips this; tests set it to keep coverage.
+# See the module docstring. Only a code change flips these; tests set them to keep coverage.
 JEV_ENABLED = False
+LAYA_FASTPATH_ENABLED = False
 
 
 def requested() -> str:
@@ -69,11 +77,18 @@ def jev_disabled_request() -> bool:
     return requested() == "jev" and not JEV_ENABLED
 
 
+def laya_disabled_request() -> bool:
+    """WARDEN_FAST_PATH=laya was set while the Laya fast path is disabled (reported by /health)."""
+    return requested() == "laya" and not LAYA_FASTPATH_ENABLED
+
+
 def mode() -> str:
     raw = requested()
     if raw in ("", "off", "0", "false", "none"):
         return "off"
     if raw == "jev" and not JEV_ENABLED:
+        return "off"
+    if raw == "laya" and not LAYA_FASTPATH_ENABLED:
         return "off"
     if raw in ("jev", "laya"):
         return raw
@@ -183,13 +198,13 @@ _LAYA = {"router": None, "lock": threading.Lock()}
 
 
 def _laya_router():
-    """The stock Laya Router, or, when WARDEN_LAYA_MODEL names a local checkpoint directory (for
-    example one made by scripts/laya-finetune/train_cpu.py), a laya.Agent on that checkpoint."""
+    """The stock Laya Router, or, when WARDEN_FAST_PATH_LAYA_MODEL names a local checkpoint
+    directory (for example one made by scripts/laya-finetune/train_cpu.py), a laya.Agent on it."""
     with _LAYA["lock"]:
         if _LAYA["router"] is None:
             import laya  # optional dependency, imported only when selected
 
-            path = os.environ.get("WARDEN_LAYA_MODEL", "").strip()
+            path = config.fast_path_laya_model() or ""
             device = os.environ.get("WARDEN_LAYA_DEVICE", "cpu")
             _LAYA["router"] = laya.Agent(path, device=device) if path else laya.Router()
             _LAYA["name"] = "laya:" + os.path.basename(path.rstrip("/")) if path else None
@@ -271,8 +286,14 @@ def _plan_from_choice(choice: str, elements: list) -> dict:
     if choice == "finish":
         return {"action": "finish", "target_selector": None, "coordinates": {"x": 0, "y": 0},
                 "value": None, "reasoning_token": "fast path: task complete"}
+    # "click <selector>" or "type <selector> <TOKEN>". A selector may contain spaces ("#nav a",
+    # "form #email"); a token never does. Splitting at the first space (before 3 October 2026)
+    # turned "click #nav a" into a click on "#nav" with value "a", a different element.
     verb, _, rest = choice.partition(" ")
-    selector, _, value = rest.partition(" ")
+    if verb == "type":
+        selector, _, value = rest.rpartition(" ")
+    else:
+        selector, value = rest, ""
     el = next((e for e in elements if e.get("selector") == selector), {})
     coords = {"x": el.get("x", 0) or 0, "y": el.get("y", 0) or 0}
     return {"action": verb, "target_selector": selector, "coordinates": coords,

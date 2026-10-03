@@ -43,8 +43,9 @@ class OllamaPlanError(Exception):
     """
 
 
-# config.OLLAMA_TIMEOUT_S defaults to 12 s, and config.py is not this file's
-# to edit, so the floor is enforced here instead.
+# config.OLLAMA_TIMEOUT_S defaulted to 12 s, so a floor is enforced here; since
+# 3 October 2026 the config default is the floor itself, and a smaller configured
+# value is still raised to it.
 #
 # Measured 13 September 2026 with the real model and the real prompt:
 #   cold call, model unloaded:  26.8 s wall, of which 15.0 s was model load
@@ -123,6 +124,12 @@ def review(tokenized_task: str, plan: dict, tier: str) -> dict:
     """Returns {"downgrade_to_ask": bool, "question": str|None}. Raises
     OllamaSkipped on any failure to get a usable answer.
     """
+    # The same locality rules as plan_via_ollama (3 October 2026): the review sends the
+    # tokenized task and the plan, and "local reasoning" must not leave the machine.
+    if not config.is_loopback_base(config.OLLAMA_HOST):
+        raise OllamaSkipped("OLLAMA_HOST is not a loopback address; local reasoning was not called")
+    if not config.ollama_model_is_local(config.OLLAMA_MODEL):
+        raise OllamaSkipped("WARDEN_OLLAMA_MODEL is a :cloud tag, not a local model; local reasoning was not called")
     prompt = _build_prompt(tokenized_task, plan, tier)
     try:
         resp = httpx.post(

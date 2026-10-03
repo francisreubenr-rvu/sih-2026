@@ -1,7 +1,9 @@
 """tiers.py: operation-tier classification and the intent-coherence override.
 
-Adapted from Prototype/shared/op-tier.mjs (the v3 reference implementation,
-referenced by ROAST.md F17 and F8). Not a straight port: v3's scene carried a
+Adapted from the v3 op-tier reference implementation (referenced by ROAST.md
+F17 and F8; that file is no longer in the tree). The live counterpart, which
+these rules must agree with, is extension/utils/op-tier.js (test_warden.py runs
+it under node for parity). Not a straight port: v3's scene carried a
 closed-vocabulary `role` per control (from a 62-role taxonomy); the frozen v4
 /strip and /plan contract's `elements` carry only `selector`, `label`,
 `fieldType`, `filled`, `x`, `y` -- there is no role field on the wire. This
