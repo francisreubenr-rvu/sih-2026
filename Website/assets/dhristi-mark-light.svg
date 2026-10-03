@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Dhristi">
+  <!-- Hybrid C viewfinder bug, Signal light edition (design/signal-tokens.css): same geometry.
+       Outer frame ink, inner frame cobalt-tinted strong line, core cobalt, corner brackets teal:
+       one cool family, readable on white and on the void. -->
+  <path fill="#12162b" fill-rule="evenodd" d="M10 14h4V10h36v4h4v36h-4v4H14v-4h-4V14zm6 2h32v32H16V16z"/>
+  <path fill="#7f87a3" fill-rule="evenodd" d="M18 22h4v-4h20v4h4v20h-4v4H22v-4h-4V22zm6 2h16v16H24V24z"/>
+  <rect x="28" y="28" width="8" height="8" fill="#1f36d6"/>
+  <path fill="#0a6b78" d="M12 12h8v3h-5v5h-3V12zm32 0h8v8h-3v-5h-5V12zM12 44h3v5h5v3h-8V44zm40 0v8h-8v-3h5v-5h3z"/>
+</svg>

@@ -26,12 +26,12 @@ Francis, 29 September 2026: follow the design playbook (`Docs/design/design-play
 
 | Item | Decision |
 |---|---|
-| Goal | Build trust: show the world what Dhristi does and that it works |
+| Goal | Explain the prototype and invite visitors to inspect the recorded demo |
 | Category | Marketing / showcase, for SIH26171 judges and the public |
 | Primary action | Watch the 25-second demo. One filled button per view; everything else is outline or text |
-| Target emotion | Calm confidence: your details are safe, and you can see why |
-| Style | "Virgil Abloh": one unmistakable element, the Anton condensed headline, repeated in section heads and numerals |
-| Proof | Real, scoped measurements from the team's own runs, placed under the hero and after the demo. None invented |
+| Target emotion | Calm curiosity: understand the boundary and its limitations |
+| Style | Light editorial composition: oversized Anton headlines, cobalt emphasis, generous space and a synthetic browser illustration |
+| Proof | The existing recorded Prototype demo, explicitly scoped; engineering measurements stay in the repository |
 
 **Palette roles (playbook colour steps 4–8)**
 
@@ -55,8 +55,9 @@ The product carries two status hues beyond the playbook's five-colour cap. They 
 | `--line` | `#d6d9d2` | Hairlines |
 | `--cobalt` | `#1f36d6` | Links, primary buttons (white text 8.2:1) |
 
-- **Type:** Anton (display headings, uppercase), Open Sans 600/700 (subheadings, labels, buttons), Glacial Indifference (paragraphs). All are OFL and self-hosted in `Website/assets/fonts/`.
+- **Type:** Anton (display headings, uppercase), Geist variable (subheadings, labels, buttons and paragraphs). All are OFL and self-hosted in `Website/assets/fonts/`.
 - **Content rule:** public key information only (what Dhristi is, the problem, how it works, the demo, the privacy boundary, SIH26171 context, the team). Engineering evidence (waves, gates, benchmarks) lives in the repository, not on the landing page.
+- **Illustration:** a labelled HTML/CSS browser schematic with synthetic values and an optional sample/token toggle. It is not a live scan. See `Docs/design/website-redesign-2026-10-03.md`.
 - **Imagery:** real prototype screenshots and footage recorded from the local build with synthetic data, plus public-domain NASA Earth photography, credited on the page. No third-party copyrighted images (e.g. Pinterest pins).
 
 # Signal (product surfaces)

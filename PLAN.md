@@ -1,3 +1,10 @@
+## Website redesign checkpoint (3 October 2026)
+
+- Completed on a topic branch for PR review: light editorial landing page, synthetic interactive hero, responsive native navigation, scoped demo and clearer privacy boundary.
+- Verified locally at five widths with zero axe findings or horizontal overflow; sample toggle, keyboard mobile menu, playback and no-JavaScript fallback passed. Mobile Lighthouse: 99 performance; 100 accessibility, best practices and SEO.
+- Design and evidence: `Docs/design/website-redesign-2026-10-03.md`. No merge or deployment; master was not edited. Remote protection remains blocked by the integration's HTTP 403.
+- Runtime work and release gates retain their existing status; this website validation does not clear G09/G10 for the extension, G11 or G20.
+
 ## Review and next steps (2 October 2026)
 
 Francis asked for a review of the current state and a plan. Facts first, then the plan, then the decisions only Francis can make.
