@@ -1,3 +1,40 @@
+## Round 30: review sweep (3 October 2026)
+
+Security review, consistency audit, Warden and extension code review, side-panel accessibility, PII measurement. Branch `claude/epic-mayer-7cyi4z`, PR francisreubenr-rvu/sih-2026#52.
+
+**Privacy (measured, `scripts/gliner-label-fp/measure.py`, 94 ordinary EN/HI labels and tasks, 19 synthetic values, real GLiNER, end to end through `strip()`):**
+
+- [x] HIGH, leaks: "खाता संख्या 50100234567812", the same number in Devanagari digits, and a keyed Hindi date of birth reached the planner unasked. The regex layer had no account pattern, and GLiNER finds account numbers only next to English words. Fixed in `redactor.py` and `redactor.js` (parity kept): one-for-one match copy (Indian-script and full-width digits, NBSP, zero-width, soft hyphen), IBAN with mod-97, bare 9 to 18 digit account numbers, dates on a line that names a date of birth, leading-0 mobiles. Leaks 4 -> 1 (`gliner-label-fp-v01.json` -> `-v02.json`).
+- [x] Aadhaar took 12 digits out of a longer grouped number ("3920 1188 2201 76" left "76"; inside an IBAN it left "GB29 NWBK"). Fixed.
+- [x] Ordinary labels silently replaced by tokens: 9 -> 0, among them the Hindi destructive label for closing an account, stripped as a PASSWORD (the planner could not see the control). Model hits must look like their type: an account number or date of birth has a digit, a password has no space. Our own tag word (`BUTTON`) is neutralised before scoring.
+- [x] Hindi UI words are field names (`gliner-label-fp-v03.json`): lines asked about 31 -> 14 -> 7 of 94, values caught unchanged.
+- [ ] A Devanagari person name ("प्रिया शर्मा") is missed by `gliner_multi_pii-v1` (tuned on European languages). No regex can fix it. Needs an Indic NER or a Hindi-capable PII model (`Docs/research/how-to-build-dhristi.md` section 8.1).
+- [ ] The strings are author-written and the rules were designed with them in view: not held-out evidence. The blind set (PLAN, 3 to 4 October) should add Hindi label and value rows.
+
+**Security review (PoC-backed findings fixed by the Warden and extension agents):**
+
+- [x] HIGH: a "keep" answer was keyed by position token and reused for a different value on a later page. Answers are now `{decision, value}` and end with the run (Warden and extension).
+- [x] HIGH: labels past the 30 KB DOM cut were never scored by GLiNER. They are now scored and decided with the page.
+- [x] Egress guard: token-shaped prefixes, dict keys, numbers and Devanagari digits no longer slip past.
+- [x] Warden request boundary: Host allow-list (421), JSON only (415), Content-Length (411), 2 MiB cap (413), 400 without echo, no docs routes, `/plan` no longer blocks `/health` (threadpool). Evidence: `warden-hardening-v01.json`, 17/17 against a real uvicorn Warden.
+- [x] Tiering: "Link this device", "Link Aadhaar to PAN", "Open a new account" no longer tier navigational; invisible characters (soft hyphen, bidi) and full-width letters can no longer hide a keyword; Hindi pay/send/submit/confirm labels tier submit (destructive still wins).
+- [x] Confirmation questions name the action, the control's label, typed tokens and the site. A run is bound to its starting origin. Only extension pages can control the worker. The Warden origin is `127.0.0.1` only, and a signed `/health` precedes each `/strip`.
+- [x] Regression caught at merge: the sender check also refused the side panel opened in a tab, so no loaded-extension harness could pair. Fixed on `sender.url`; content scripts stay refused.
+- [ ] Element ids and attribute selectors reach the planner as written (`<a id="contact-neha-joshi">`). Fix is opaque per-scan keys in place of selectors; architectural, not done.
+- [ ] The pairing code sits in `chrome.storage.local`. Nonces are remembered for 600 s in memory only, and requests carry no timestamp, so a captured request replays after a restart.
+- [ ] English submit gaps ("transfer", "donate", "subscribe", "apply", "agree") stay unproven, so Laya could release them. Left for the blind set and a decision.
+
+**Evidence and ledger:**
+
+- [x] G05/G06/G08 scripts re-run at HEAD; the secret scanner no longer scans agent worktrees (2,672 -> 668 files).
+- [x] Gate reasons now state that G06/G07/G08/G13 passes covered the Prototype server and add Warden evidence beside it. No status changed.
+- [x] `check_release.py` reports commits to each gate's code `subjects` since its evidence (G12: 25 Website commits since its Lighthouse run; G13: 49) and evidence files whose `status` contradicts their gate. `demo-rehearsal.json` said pass while G14 is unknown; aligned.
+- [x] `scripts/check-all.sh`: every local suite from the repo root, with a run record (8/8).
+- [x] Side panel and pages: axe 0 violations in 21 panel states and 11 pages (from 1); a keyboard trap while a card was pending, fields not tied to their status, Hindi not marked `lang="hi"`, 200% zoom overflow, fixed. The three round-21 findings were already gone at `7c35778`. Evidence: `accessibility-v5-sidepanel.json`. G09/G10 stay unknown (no screen reader, no user).
+- [x] Website: the "305 ms" figure had no results file; replaced with a backed one.
+- [ ] One run of `warden-hardening-evidence.py` (the first in this container) hit an httpx ReadTimeout before writing its record; it did not reproduce in four reruns and the failing call was not captured. Health polling during the cold load is now tolerant and recorded (0 timeouts since).
+- [ ] G12 is stale against the current Website (Lighthouse not re-run). Committed extension zips still package the September popup.
+
 ## Round 29: destructive verbs and required pairing (2 October 2026)
 
 - [x] Verbs neither language listed are now destructive in `op-tier.js` and `tiers.py`. English: forget, discard, withdraw, purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team, end a membership, empty trash, clear history, factory reset, void a transaction. Hindi equivalents too. A node-backed parity test runs the real JS against the Python on 36 labels and 9 tasks.
@@ -87,7 +124,7 @@
 - [x] One design system (Signal) across Website, side panel, Prototype operator pages and popup; canonical tokens in `design/signal-tokens.css`, CI check for drift and WCAG AA contrast. Decision: `Docs/decisions/brain-signal-redesign.md`. Resolves the ARCH-002 vs side-panel palette conflict.
 - [x] axe-core: 0 violations on Website, Prototype pages and popup. Behaviour, IDs and harness selectors unchanged; tests 141/58/13 pass.
 - [ ] Mobile Lighthouse 97–98 vs master 99 on the same machine (LCP +0.25 s from the serif hero face). Desktop 100.
-- [ ] Side panel carries three axe findings that also exist on master (list, region, aria-allowed-role in `sidepanel.js` markup); not fixed here.
+- [x] Side panel carries three axe findings that also exist on master (list, region, aria-allowed-role in `sidepanel.js` markup). Closed 3 October 2026: already gone at `7c35778` (fixed by the v5 panel); axe 0 in 21 states (`accessibility-v5-sidepanel.json`).
 - [x] Website redirected by Francis the same day: light landing page, key information only, Anton / Open Sans / Glacial Indifference, real prototype footage replacing the explain video, NASA public-domain imagery. No Pinterest images (copyright).
 - [ ] Committed extension zips still package the earlier interface. Demo footage shows the dark Signal Prototype.
 

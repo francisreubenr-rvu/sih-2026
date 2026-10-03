@@ -1,3 +1,34 @@
+## Review sweep (3 October 2026)
+
+Francis asked for a professional sweep: inconsistencies, failures, incomplete code, inefficiencies, security, research on how Dhristi should be built, and parallel agents. Work is on `claude/epic-mayer-7cyi4z`, draft PR francisreubenr-rvu/sih-2026#52. Findings are in `ROAST.md` round 30; the research note is `Docs/research/how-to-build-dhristi.md`.
+
+**Done.**
+
+- Hindi-page PII leaks closed in both redaction layers; UI labels no longer stripped or asked about as personal data (`gliner-label-fp-v01` to `-v03`).
+- Security review: two HIGH findings (answers reused across values, labels past the DOM cut) and the medium ones fixed with tests; Warden request boundary hardened; extension runs bound to their origin; readable confirmations; Hindi submit keywords (PLAN item 8 of 2 October).
+- Evidence: Warden hardening 17/17 against a real Warden; G05/G06/G08 scripts re-run at HEAD; ledger reasons state Prototype vs Warden scope; freshness by code subjects; `demo-rehearsal.json` aligned with G14.
+- G09/G10 work (PLAN slot 7 to 8 October, done early): axe 0 in 21 side-panel states and 11 pages; gates stay unknown.
+- G03 entry point: `scripts/check-all.sh` (8/8 suites).
+- G11 measured live for the first time (see below).
+
+**G11 (PLAN slot 4 to 6 October, done early).** A live 110-run measurement of the frozen flow on `3370443` is in progress (`scripts/e2e-v5/g11-live.mjs`); results and the settle change measured against it follow in the next checkpoint. G11 stays fail.
+
+**Decided by Claude under Francis's "decide on your own" (3 October), reversible:**
+
+- The frozen G11 flow runs in the demo configuration (Laya reviewer on), because without it every `unproven` click asks and no run is unattended. The fixture was not relabelled to dodge F17.
+- Fixed post-action sleeps replaced by a DOM-quiet wait (100 ms quiet, capped at the old 650 ms); a page that updates later than that with no DOM change in between is scanned before the update.
+- Hindi UI vocabulary joins the descriptor guard (same all-words rule as English).
+- `/validate`, `tiers.py` and the Ollama review stay until after 16 October (retiring them is cleaner but not worth the churn now).
+- Plan-ahead mode and Jev stay off.
+
+**Next, in order.**
+
+1. Merge PR #52 (Francis).
+2. Vision stage in the root extension (research rank 3): an agent is porting the Prototype's UltraFace stage into an offscreen document; evidence `extension-vision-v01.json`.
+3. Blind set (3 to 4 October, Gopreeth and Varun): add Hindi label and value rows so the PII rules above get held-out numbers.
+4. Opaque per-scan keys in place of selectors (security review: element ids reach the planner as written).
+5. G12: re-run Lighthouse on the current Website; G14 and G20 as scheduled.
+
 ## Review and next steps (2 October 2026)
 
 Francis asked for a review of the current state and a plan. Facts first, then the plan, then the decisions only Francis can make.
