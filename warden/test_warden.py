@@ -1577,7 +1577,18 @@ def test_a_link_is_not_navigational_because_it_is_a_link(label):
     assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
 
 
-@pytest.mark.parametrize("label,field_type", [("View statement", "link"), ("Go to settings", "button"), ("  Home", "link")])
+@pytest.mark.parametrize("label", [
+    "Link this device", "Link account", "Link Aadhaar to PAN", "Open new fixed deposit", "Open a new account",
+    "Open an account", "Open account", "Terms link",
+])
+def test_link_verbs_and_opening_an_account_are_not_navigational(label):
+    # Security review, 3 October 2026: "\blink\b" anywhere and a bare "open" tiered these navigational.
+    elements = [{"selector": "#t", "label": label, "fieldType": "button", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
+    assert _py_label_basis(label) == "unproven"
+
+
+@pytest.mark.parametrize("label,field_type", [("View statement", "link"), ("Go to settings", "button"), ("  Home", "link"), ("Open settings", "button")])
 def test_navigation_labels_still_tier_navigational(label, field_type):
     elements = [{"selector": "#t", "label": label, "fieldType": field_type, "filled": False, "x": 1, "y": 2}]
     assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "navigational"
@@ -1982,6 +1993,19 @@ _HI_SUBMIT_NOT = [
     "जमा राशि देखें", "भेजे गए संदेश", "ग्राहक सेवा", "मेरे ऑर्डर", "खरीदारी जारी रखें", "पेज 2", "सावधि जमा",
     "सहेजे गए आइटम", "सहायता केंद्र", "स्कोप करें",
 ]
+# Navigation labels (security review, 3 October 2026), compared in the same node run.
+_NAV_PARITY = [
+    "Link this device", "Link account", "Link Aadhaar to PAN", "Open new fixed deposit", "Open a new account",
+    "Open an account", "Open account", "Terms link", "Open settings", "View statement", "Go to home", "Next page",
+    "Back", "Menu", "Opening hours",
+]
+# Soft hyphens, bidi controls and fullwidth letters must not hide a keyword (security review,
+# 3 October 2026): op-tier.js canonical() and tiers._canonical() strip and NFKC-normalise alike.
+_HIDDEN_DESTRUCTIVE = [
+    "Del\u00adete account", "Re\u200emove card", "De\u202elete", "Era\u2066se all",
+    "\uff24\uff45\uff4c\uff45\uff54\uff45 account", "ह\u00adटाएं", "खाता\u200f हटाएं",
+]
+_HIDDEN_SUBMIT = ["Pa\u00ady now", "\uff30\uff41\uff59", "भु\u00adगतान करें", "Se\u2069nd"]
 _HI_SUBMIT_BUT_DESTRUCTIVE = ["भुगतान विधि हटाएं", "खाता हटाने की पुष्टि करें", "सदस्यता रद्द करें और भेजें", "कार्ड डिलीट करें और सहेजें"]
 
 
@@ -2001,7 +2025,7 @@ def _py_label_basis(label):
 def test_hindi_submit_rules_match_the_extension():
     if which("node") is None:
         pytest.skip("node is not on PATH; cannot run extension/utils/op-tier.js")
-    labels = _HI_SUBMIT_LABELS + _HI_SUBMIT_NOT + _HI_SUBMIT_BUT_DESTRUCTIVE
+    labels = _HI_SUBMIT_LABELS + _HI_SUBMIT_NOT + _HI_SUBMIT_BUT_DESTRUCTIVE + _NAV_PARITY + _HIDDEN_DESTRUCTIVE + _HIDDEN_SUBMIT
     script = (
         "const m = await import(process.argv[1]);"
         "const labels = JSON.parse(process.argv[2]);"
@@ -2018,6 +2042,8 @@ def test_hindi_submit_rules_match_the_extension():
     assert {label for label in _HI_SUBMIT_LABELS if py[label] != "submit-keyword"} == set()
     assert {label for label in _HI_SUBMIT_NOT if py[label] != "unproven"} == set()
     assert {label for label in _HI_SUBMIT_BUT_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
+    assert {label for label in _HIDDEN_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
+    assert {label for label in _HIDDEN_SUBMIT if py[label] != "submit-keyword"} == set()
     # The legacy /validate tier agrees: Hindi submit is state-changing, destructive still wins.
     for label in _HI_SUBMIT_LABELS:
         assert tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": label, "fieldType": "button"}]) == "state-changing"

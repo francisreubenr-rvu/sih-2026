@@ -24,10 +24,10 @@ export const TIERS = Object.freeze(['reversible', 'navigational', 'state-changin
 // Hindi भूल जाएं (forget), leaving a group (समूह छोड़ें; bare "छोड़ें" is also the usual Skip button
 // and is left out), stop sharing, revoke access, वापस लें (withdraw), unlink, disconnect, factory
 // reset, empty trash, removing a member. Kept narrow on purpose: "Leave a review", "Swipe", "Clear
-// filters" and "avoid" must not read destructive. The pattern is NFC-normalised because "छोड़"
-// carries a nukta that NFC decomposes, and matched text is canonicalised the same way.
+// filters" and "avoid" must not read destructive. The pattern is NFKC-normalised because "छोड़"
+// carries a nukta that NFC/NFKC decompose, and matched text is canonicalised the same way.
 const HI_DESTRUCTIVE = ('हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)|'
-  + 'भूल जा|(?:समूह|ग्रुप|टीम|संगठन|चैनल|चैट|परिवार) (?:को )?छोड़|(?:साझा|शेयर) करना बंद|(?:पहुँच|पहुंच|एक्सेस|अनुमति) (?:रद्द|हटा|वापस)|वापस ले|अनलिंक|डिस्कनेक्ट|(?:फ़ैक्टरी|फैक्टरी) रीसेट|(?:ट्रैश|कचरा|रीसायकल बिन|बिन) खाली|बाहर निकाल|सदस्य(?:ों)? (?:को )?निकाल').normalize('NFC');
+  + 'भूल जा|(?:समूह|ग्रुप|टीम|संगठन|चैनल|चैट|परिवार) (?:को )?छोड़|(?:साझा|शेयर) करना बंद|(?:पहुँच|पहुंच|एक्सेस|अनुमति) (?:रद्द|हटा|वापस)|वापस ले|अनलिंक|डिस्कनेक्ट|(?:फ़ैक्टरी|फैक्टरी) रीसेट|(?:ट्रैश|कचरा|रीसायकल बिन|बिन) खाली|बाहर निकाल|सदस्य(?:ों)? (?:को )?निकाल').normalize('NFKC');
 const EN_DESTRUCTIVE_LABEL_EXTRA = 'forget|discard|withdraw|purge|revoke|unlink|disconnect|\\bwipe|\\bkick\\b|stop sharing|leave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)|end (?:membership|subscription|session|plan)|empty (?:trash|bin)|clear (?:all )?(?:history|data|messages|activity|chats?)|factory reset|reset to factory|void (?:transaction|payment|order)';
 const EN_DESTRUCTIVE_INTENT_EXTRA = '\\b(?:forget|discard(?:ed|ing)?|withdraw(?:n|ing)?|purg(?:e|ed|ing)|revok(?:e|ed|ing)|unlink(?:ed|ing)?|disconnect(?:ed|ing)?|wip(?:e|ed|ing)|kick(?:ed|ing)?)\\b|\\bstop sharing\\b|\\bleave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)\\b|\\bend (?:my |the )?(?:membership|subscription|plan)\\b|\\bempty (?:the |my )?(?:trash|bin)\\b|\\bfactory reset\\b';
 const DESTRUCTIVE_INTENT_RE = new RegExp(`\\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\\b|\\bclose (?:my|the) account\\b|\\bcancel (?:my|the) (?:account|subscription)\\b|${EN_DESTRUCTIVE_INTENT_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
@@ -45,13 +45,17 @@ const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|d
 // जारी रखें" (continue shopping), "ग्राहक सेवा" (सेवा contains सेव) and "पेज 2" (पेज starts with पे)
 // stay unproven. Accepted over-match: "भुगतान इतिहास" (payment history) reads submit, as "Payment
 // history" already does in English; it costs a prompt, never an unattended click. Destructive is
-// checked first, so "भुगतान विधि हटाएं" stays destructive. NFC-normalised like HI_DESTRUCTIVE (फ़ and ख़
+// checked first, so "भुगतान विधि हटाएं" stays destructive. NFKC-normalised like HI_DESTRUCTIVE (फ़ and ख़
 // decompose under NFC). Mirrored in warden/tiers.py; test_warden.py runs both.
 const HI_SUBMIT = ('भुगतान|पेमेंट|(?:^|\\s)पे कर|अदा कर|भेज(?:ें|ो|िए|िये| दें| दो| दीजिए)|(?:सेंड|ट्रांसफ़र|ट्रांसफर|ट्रान्सफ़र|ट्रान्सफर) कर|'
   + 'जमा (?:कर|कीजिए)|सबमिट|प्रस्तुत (?:कर|कीजिए)|(?:दाखिल|दाख़िल) (?:कर|कीजिए)|पुष्टि|कन्फ़र्म|कन्फर्म|(?:ऑर्डर|आर्डर) (?:कर|दें|दो|दीजिए|प्लेस)|'
-  + '(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर').normalize('NFC');
+  + '(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर').normalize('NFKC');
 const SUBMIT_LABEL_RE = new RegExp(`submit|save|confirm|pay|checkout|place order|purchase|send|${HI_SUBMIT}`, 'i');
-const NAV_LABEL_RE = /^(go to|view|open|back|next|home|menu)\b|\blink\b/i;
+// Navigational needs the label to START with a navigation verb. "\blink\b" anywhere is gone: it made
+// "Link Aadhaar to PAN" and "Link this device" navigational, so they clicked unattended. "Open" does
+// not count when it opens a new account or deposit ("Open a new account", "Open new fixed deposit",
+// "Open account"); those stay unproven (security review, 3 October 2026). Mirrored in tiers.py.
+const NAV_LABEL_RE = /^(go to|view|open(?! (?:new|an?|account)\b)|back|next|home|menu)\b/i;
 
 export function isKnownTier(tier) {
   return TIERS.includes(tier);
@@ -76,10 +80,13 @@ export function expressesDestructiveIntent(task) {
 }
 
 // URL paths and slugs ("/account/close-account", "cancel_subscription") are matched as words.
-// NFC, and zero-width characters removed: a page must not hide "हटाएं" from the rules with a
-// joiner that renders identically.
+// Invisible characters removed, then NFKC: a page must not hide "हटाएं" or "Delete" from the rules
+// with a joiner, a soft hyphen (U+00AD), a bidi control (U+200E/F, U+202A-E, U+2066-9), or
+// fullwidth letters, all of which render as the same word (security review, 3 October 2026). The
+// patterns above are NFKC-normalised the same way. Mirrored in tiers.py _canonical().
+const INVISIBLE_RE = /[\u00ad\u034f\u061c\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u2069\ufeff]/g;
 function canonical(text) {
-  return String(text || '').normalize('NFC').replace(/[\u200b-\u200d\u2060\ufeff]/g, '');
+  return String(text || '').replace(INVISIBLE_RE, '').normalize('NFKC');
 }
 
 function normalise(text) {
