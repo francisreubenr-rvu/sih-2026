@@ -1,0 +1,18 @@
+# Runtime dependencies of the Warden. Pinned to the versions importable together in the
+# Linux CPU container on 3 October 2026 (Python 3.11); test-only extras are in
+# requirements-test.txt.
+#
+# torch: on a CPU-only machine install the CPU wheel first, so pip does not pull CUDA:
+#   pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
+fastapi==0.141.1
+uvicorn==0.50.2
+httpx==0.28.1
+gliner==0.2.29
+torch==2.14.1
+transformers==5.16.1
+# Without protobuf the mdeberta tokenizer cannot load its SentencePiece model and the GLiNER load fails.
+protobuf==7.36.2
+sentencepiece==0.2.2
+
+# Optional: the Laya plan reviewer (WARDEN_REVIEWER=laya). Not needed for the default reviewer.
+# laya==0.3.22

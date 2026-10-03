@@ -1409,15 +1409,16 @@ def test_groq_base_url_is_read_from_the_environment():
     assert out.stdout.strip() == "https://api.groq.com/openai/v1"
 
 
-@pytest.mark.parametrize("exists", [True, False])
-def test_hf_home_defaults_to_the_dev_volume_only_when_it_exists(monkeypatch, tmp_path, exists):
+@pytest.mark.parametrize("preset", [None, "/custom/hf-cache"])
+def test_load_model_leaves_hf_home_to_the_environment(monkeypatch, preset):
+    """The Warden used to default HF_HOME to one development Mac's external volume. It now
+    never sets HF_HOME: an exported value wins, otherwise the library's own default cache."""
     import types
 
-    dev = tmp_path / "hub"
-    if exists:
-        dev.mkdir()
-    monkeypatch.setattr(entities, "_DEV_HF_HOME", str(dev))
-    monkeypatch.delenv("HF_HOME", raising=False)
+    if preset is None:
+        monkeypatch.delenv("HF_HOME", raising=False)
+    else:
+        monkeypatch.setenv("HF_HOME", preset)
     monkeypatch.setattr(entities, "STATE", entities.ModelState())
 
     class _NoLoad:
@@ -1428,7 +1429,8 @@ def test_hf_home_defaults_to_the_dev_volume_only_when_it_exists(monkeypatch, tmp
     monkeypatch.setitem(sys.modules, "gliner", types.SimpleNamespace(GLiNER=_NoLoad))
     entities.load_model()
     assert "synthetic" in entities.STATE.load_error
-    assert os.environ.get("HF_HOME") == (str(dev) if exists else None)
+    assert os.environ.get("HF_HOME") == preset
+    assert not hasattr(entities, "_DEV_HF_HOME")
 
 
 def test_chunk_cache_scores_an_unchanged_control_once_across_steps(monkeypatch):
@@ -1561,6 +1563,7 @@ def test_laya_failure_is_a_skipped_check_and_the_tier_rule_still_speaks(monkeypa
 def test_laya_unconfigured_is_skipped_not_an_error(monkeypatch):
     monkeypatch.setenv("WARDEN_REVIEWER", "laya")
     monkeypatch.delenv("WARDEN_LAYA_MODEL", raising=False)
+    monkeypatch.delenv("WARDEN_REVIEWER_MODEL", raising=False)
     monkeypatch.setattr(laya_review, "_agent", None)
     monkeypatch.setattr(laya_review, "_agent_error", None)
     out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), "navigational", _LAYA_ELEMENTS)
@@ -1688,8 +1691,10 @@ def _fp_env(monkeypatch, backend, answers=None, raises=None):
     monkeypatch.setattr(groq_client, "plan_via_groq", fake_groq)
     monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
     monkeypatch.setenv("WARDEN_FAST_PATH", backend)
-    # Jev is disabled in code (Francis, 2 October 2026); its tests flip the constant to keep coverage.
+    # Jev is disabled in code (Francis, 2 October 2026), and the parked Laya fast path the same
+    # way since 3 October; their tests flip the constants to keep coverage.
     monkeypatch.setattr(fastpath, "JEV_ENABLED", True)
+    monkeypatch.setattr(fastpath, "LAYA_FASTPATH_ENABLED", True)
     monkeypatch.delenv("WARDEN_PLANNER", raising=False)
     monkeypatch.delenv("WARDEN_FAST_PATH_MIN_CONFIDENCE", raising=False)
     return calls
@@ -1790,12 +1795,12 @@ def test_laya_backend_loads_a_local_checkpoint_when_named(monkeypatch):
 
     monkeypatch.setitem(sys.modules, "laya", types.SimpleNamespace(Agent=FakeAgent, Router=FakeRouter))
     monkeypatch.setitem(fastpath._LAYA, "router", None)
-    monkeypatch.setenv("WARDEN_LAYA_MODEL", "/models/laya-dhristi/")
+    monkeypatch.setenv("WARDEN_FAST_PATH_LAYA_MODEL", "/models/laya-dhristi/")
     answers, name = fastpath._ask_laya({}, {})
     assert made == {"agent": ("/models/laya-dhristi/", "cpu")} and name == "laya:laya-dhristi"
     monkeypatch.setitem(fastpath._LAYA, "router", None)
     monkeypatch.setitem(fastpath._LAYA, "name", None)
-    monkeypatch.delenv("WARDEN_LAYA_MODEL")
+    monkeypatch.delenv("WARDEN_FAST_PATH_LAYA_MODEL")
     fastpath._ask_laya({}, {})
     assert made.get("router") is True
 
@@ -2356,6 +2361,90 @@ def test_validate_review_refuses_a_non_local_ollama(monkeypatch, host, model):
     monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
     with pytest.raises(ollama_client.OllamaSkipped):
         ollama_client.review("Open EMAIL#1", {"action": "click", "target_selector": "#go"}, "navigational")
+
+
+def test_reviewer_and_fast_path_read_separate_checkpoint_names(monkeypatch):
+    """WARDEN_LAYA_MODEL used to feed both the reviewer and the fast path, so pointing the
+    reviewer at its checkpoint also loaded that checkpoint as the fast-path decision model."""
+    for name in ("WARDEN_REVIEWER_MODEL", "WARDEN_LAYA_MODEL", "WARDEN_FAST_PATH_LAYA_MODEL"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("WARDEN_LAYA_MODEL", "org/review-checkpoint")
+    assert config.reviewer_model() == "org/review-checkpoint"  # documented fallback, reviewer only
+    assert config.fast_path_laya_model() is None
+    monkeypatch.setenv("WARDEN_REVIEWER_MODEL", "org/reviewer-v2")
+    monkeypatch.setenv("WARDEN_FAST_PATH_LAYA_MODEL", "/models/fast")
+    assert config.reviewer_model() == "org/reviewer-v2"
+    assert config.fast_path_laya_model() == "/models/fast"
+
+
+def test_laya_fast_path_is_disabled_but_kept(monkeypatch):
+    calls = _fp_env(monkeypatch, "laya", _fp_answers("o1"))
+    monkeypatch.setattr(fastpath, "LAYA_FASTPATH_ENABLED", False)
+    assert fastpath.mode() == "off" and fastpath.laya_disabled_request() is True
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 0 and calls["groq"] == 1 and "fastPath" not in result
+    assert TestClient(warden_app.app).get("/health").json()["fastPath"]["layaDisabled"] is True
+
+
+def test_laya_review_load_failure_is_retried_after_a_backoff(monkeypatch):
+    import types
+
+    attempts = []
+
+    def flaky_load(model, device=None, subfolder=None):
+        attempts.append(model)
+        if len(attempts) == 1:
+            raise OSError("synthetic: hub unreachable")
+        return _StubLaya()
+
+    monkeypatch.setitem(sys.modules, "laya", types.SimpleNamespace(load=flaky_load))
+    monkeypatch.setenv("WARDEN_REVIEWER_MODEL", "org/reviewer")
+    monkeypatch.setattr(laya_review, "_agent", None)
+    monkeypatch.setattr(laya_review, "_agent_error", None)
+    clock = {"t": 1000.0}
+    monkeypatch.setattr(laya_review, "_agent_error_at", None)
+    monkeypatch.setattr(laya_review, "_clock", lambda: clock["t"])
+    with pytest.raises(laya_review.LayaSkipped):
+        laya_review._load_agent()
+    with pytest.raises(laya_review.LayaSkipped):  # inside the backoff: no new attempt
+        laya_review._load_agent()
+    assert len(attempts) == 1
+    assert laya_review.status() == {"loaded": False, "error": laya_review._agent_error}
+    clock["t"] += laya_review.RETRY_AFTER_S + 1
+    assert isinstance(laya_review._load_agent(), _StubLaya)
+    assert len(attempts) == 2 and laya_review.status() == {"loaded": True, "error": None}
+
+
+@pytest.mark.parametrize("mode", ["ollama", "laya"])
+def test_health_reports_the_reviewer(monkeypatch, mode):
+    monkeypatch.setenv("WARDEN_REVIEWER", mode)
+    monkeypatch.setattr(laya_review, "_agent", None)
+    monkeypatch.setattr(laya_review, "_agent_error", "synthetic: not loaded")
+    reviewer = TestClient(warden_app.app).get("/health").json()["reviewer"]
+    assert reviewer["mode"] == mode
+    if mode == "laya":
+        assert reviewer["loaded"] is False and reviewer["error"] == "synthetic: not loaded"
+
+
+def test_startup_runs_through_lifespan_and_warms_the_reviewer(monkeypatch):
+    called = []
+    monkeypatch.setattr(entities, "load_model", lambda: called.append("gliner"))
+    monkeypatch.setattr(fastpath, "warm", lambda: called.append("fastpath"))
+    monkeypatch.setattr(laya_review, "warm", lambda: called.append("reviewer"))
+    assert not warden_app.app.router.on_startup, "use a lifespan handler, not the deprecated on_event"
+    with TestClient(warden_app.app):
+        deadline = time.monotonic() + 2
+        while len(called) < 3 and time.monotonic() < deadline:
+            time.sleep(0.01)
+    assert sorted(called) == ["fastpath", "gliner", "reviewer"]
+
+
+def test_ollama_timeout_default_agrees_with_its_floor():
+    code = "import config, ollama_client; print(config.OLLAMA_TIMEOUT_S, ollama_client.MIN_TIMEOUT_S)"
+    env = {k: v for k, v in os.environ.items() if k != "WARDEN_OLLAMA_TIMEOUT_S"}
+    out = subprocess.run([sys.executable, "-c", code], cwd=WARDEN_DIR, env=env, capture_output=True, text=True, check=True)
+    configured, floor = (float(x) for x in out.stdout.split())
+    assert configured >= floor
 
 
 def test_a_label_scored_in_the_dom_is_not_scored_twice(monkeypatch):

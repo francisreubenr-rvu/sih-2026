@@ -1,6 +1,8 @@
 """app.py: the Warden. FastAPI server exposing GET /health, POST /strip,
-POST /plan, POST /validate exactly as Docs/specs/2026-09-13-dhristi-v4-warden.md
-defines them. Binds to 127.0.0.1 only (see __main__ below) -- this is a
+POST /plan, POST /validate as Docs/specs/2026-09-13-dhristi-v4-warden.md
+defines them, with the additive wire changes of
+Docs/specs/2026-09-29-dhristi-v5-local-redaction-cloud-planner.md (destination,
+egress guard, element labels, decisions) and pairing (pairing.py). Binds to 127.0.0.1 only (see __main__ below) -- this is a
 local-only service and binding wider would expose a PII oracle to the
 network.
 
@@ -14,6 +16,7 @@ import re
 import sys
 import threading
 import unicodedata
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, Request
@@ -32,9 +35,28 @@ import redactor
 import strip as strip_module
 import validate as validate_module
 
+
+@asynccontextmanager
+async def _lifespan(_app):
+    """Startup work (a lifespan handler since 3 October 2026; @app.on_event is deprecated)."""
+    state = config.pairing_state()
+    if state in ("missing", "misconfigured"):
+        # The state and the fix, never the secret.
+        print(f"warden: pairing {state}; every POST is refused until WARDEN_PAIRING_SECRET is set "
+              "(python pairing.py new). See warden/README.md, 'Pairing with the extension'.", file=sys.stderr)
+    # Load in background threads so the server is already answering /health
+    # (with loaded: false) while the ~76s cold load runs, rather than
+    # blocking the socket from accepting connections until it finishes.
+    threading.Thread(target=entities.load_model, daemon=True).start()
+    threading.Thread(target=fastpath.warm, daemon=True).start()
+    threading.Thread(target=laya_review.warm, daemon=True).start()
+    yield
+
+
 # No /docs, /redoc or /openapi.json: a local PII service has no reason to describe itself
 # to whatever can reach the port (3 October 2026).
-app = FastAPI(title="Warden", version=config.WARDEN_VERSION, docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title="Warden", version=config.WARDEN_VERSION, docs_url=None, redoc_url=None, openapi_url=None,
+              lifespan=_lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -127,18 +149,12 @@ async def pairing_middleware(request: Request, call_next):
     return Response(content=body, status_code=response.status_code, headers=headers, media_type=response.media_type)
 
 
-@app.on_event("startup")
-def _start_model_load() -> None:
-    state = config.pairing_state()
-    if state in ("missing", "misconfigured"):
-        # The state and the fix, never the secret.
-        print(f"warden: pairing {state}; every POST is refused until WARDEN_PAIRING_SECRET is set "
-              "(python pairing.py new). See warden/README.md, 'Pairing with the extension'.", file=sys.stderr)
-    # Load in a background thread so the server is already answering /health
-    # (with loaded: false) while the ~76s cold load runs, rather than
-    # blocking the socket from accepting connections until it finishes.
-    threading.Thread(target=entities.load_model, daemon=True).start()
-    threading.Thread(target=fastpath.warm, daemon=True).start()
+def _reviewer_health() -> dict:
+    """The /validate and /plan reviewer. Ollama is not probed here, so its loaded is null."""
+    mode = config.reviewer_mode()
+    if mode == "laya":
+        return {"mode": mode, **laya_review.status()}
+    return {"mode": mode, "loaded": None, "error": None}
 
 
 @app.get("/health")
@@ -154,7 +170,9 @@ def health():
         "groqConfigured": config.groq_configured(),
         "fastPath": {"mode": fastpath.mode(), "destination": fastpath.destination(fastpath.mode()),
                      "minConfidence": fastpath.min_confidence(),
-                     "jevDisabled": fastpath.jev_disabled_request()},
+                     "jevDisabled": fastpath.jev_disabled_request(),
+                     "layaDisabled": fastpath.laya_disabled_request()},
+        "reviewer": _reviewer_health(),
         "pairing": config.pairing_state(),
         "warden": config.WARDEN_VERSION,
     }

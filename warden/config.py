@@ -76,6 +76,23 @@ def reviewer_mode() -> str:
     return "laya" if raw == "laya" else "ollama"
 
 
+# Laya checkpoints (3 October 2026). WARDEN_LAYA_MODEL used to be read by both
+# laya_review.py and fastpath.py, so naming the reviewer's checkpoint also made it the
+# fast path's decision model. Each now has its own name; WARDEN_LAYA_MODEL stays a
+# fallback for the reviewer only, since the README, the decision record and the e2e-v5
+# harness document it that way.
+def reviewer_model():
+    for name in ("WARDEN_REVIEWER_MODEL", "WARDEN_LAYA_MODEL"):
+        value = os.environ.get(name, "").strip()
+        if value:
+            return value
+    return None
+
+
+def fast_path_laya_model():
+    return os.environ.get("WARDEN_FAST_PATH_LAYA_MODEL", "").strip() or None
+
+
 # Extension <-> Warden pairing secret (pairing.py). Required since 2 October 2026
 # (Francis): with no secret every POST is refused with setup instructions.
 #   required       WARDEN_PAIRING_SECRET set, at least PAIRING_MIN_LEN characters
@@ -180,7 +197,9 @@ GROQ_TIMEOUT_S = float(os.environ.get("WARDEN_GROQ_TIMEOUT_S", "10"))
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
 OLLAMA_MODEL = os.environ.get("WARDEN_OLLAMA_MODEL", "qwythos-9b:latest")
-OLLAMA_TIMEOUT_S = float(os.environ.get("WARDEN_OLLAMA_TIMEOUT_S", "12"))
+# Default 60 s, the floor ollama_client enforces (MIN_TIMEOUT_S, the measured cold start);
+# the old default of 12 s was always raised to it, so it said one thing and did another.
+OLLAMA_TIMEOUT_S = float(os.environ.get("WARDEN_OLLAMA_TIMEOUT_S", "60"))
 
 # CORS: chrome-extension scheme (any extension id, Chrome's real alphabet is
 # a-p, 32 chars) plus http://127.0.0.1 and http://localhost, with or without

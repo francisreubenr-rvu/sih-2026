@@ -43,8 +43,9 @@ class OllamaPlanError(Exception):
     """
 
 
-# config.OLLAMA_TIMEOUT_S defaults to 12 s, and config.py is not this file's
-# to edit, so the floor is enforced here instead.
+# config.OLLAMA_TIMEOUT_S defaulted to 12 s, so a floor is enforced here; since
+# 3 October 2026 the config default is the floor itself, and a smaller configured
+# value is still raised to it.
 #
 # Measured 13 September 2026 with the real model and the real prompt:
 #   cold call, model unloaded:  26.8 s wall, of which 15.0 s was model load
