@@ -18,6 +18,7 @@ a GLiNER score at all).
 """
 
 import re
+import unicodedata
 
 
 # ---------------------------------------------------------------------------
@@ -105,8 +106,14 @@ AADHAAR_BARE_RE = re.compile(r"(?<!\d)\d{12}(?!\d)")
 #    soft-hyphen characters to "-" (a separator the patterns accept), and
 #    full-width ASCII (＠, full-width digits) to ASCII, so "98765\u200b43210" and
 #    "ravi＠example.com" cannot slip past (security review, 3 October 2026).
-_INDIC_DIGIT_ZEROS = (0x0966, 0x09E6, 0x0A66, 0x0AE6, 0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66)
-MATCH_MAP = {zero + i: ord("0") + i for zero in _INDIC_DIGIT_ZEROS for i in range(10)}
+#    Every decimal digit in the Basic Multilingual Plane is mapped, not only the
+#    Indian scripts: the egress guard reads all of them, so a form /strip missed
+#    (Arabic-Indic, say) turned into a refused /plan instead of a token
+#    (code review, 3 October 2026). Digits outside the BMP are two UTF-16 units in
+#    the extension and cannot map one for one; the egress guard still refuses them.
+MATCH_MAP = {cp: ord("0") + unicodedata.decimal(chr(cp))
+             for cp in range(0x80, 0x10000)
+             if unicodedata.decimal(chr(cp), None) is not None}
 MATCH_MAP.update({cp: cp - 0xFEE0 for cp in range(0xFF01, 0xFF5F)})
 MATCH_MAP.update({cp: ord(" ") for cp in (0x00A0, 0x2007, 0x202F)})
 MATCH_MAP.update({cp: ord("-") for cp in (0x00AD, 0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF)})
@@ -156,54 +163,25 @@ def _dob_line_spans(norm: str) -> list:
 
 
 def regex_strip(text: str, minter) -> str:
-    """Apply the full regex pass list to `text` in order, minting a TYPE#n
-    token (via `minter`) for every match that is not vetoed by its
-    `validate` predicate. Returns the working (tokenized) text.
+    """Tokenize `text` with the regex layer: every span regex_spans() finds is
+    replaced by a TYPE#n token minted through `minter`, in pass order (so
+    numbering matches the extension's tokenizeText), and the result is built
+    from the ORIGINAL text, never from the match copy (code review, 3 October
+    2026: a zero-width joiner in a Hindi conjunct used to come out as "-").
 
     `minter` is a minter.TokenMinter; every mint call records a
     {"pattern": name, "score": 1.0, "layer": "regex"} decision.
     """
     if not isinstance(text, str) or text == "":
         return text or ""
-
-    working = match_copy(text)
-
-    for name, pattern, validate in PASSES:
-        def _sub(m: "re.Match[str]", _name=name, _validate=validate) -> str:
-            matched = m.group(0)
-            if _validate is not None and not _validate(matched):
-                return matched  # veto: leave intact
-            return minter.mint(_name.upper(), matched, score=1.0, layer="regex", pattern=_name)
-
-        working = pattern.sub(_sub, working)
-
-    # Aadhaar keyword-proximity heuristic: checked against the ORIGINAL text,
-    # not `working`, so a keyword elsewhere in the passage still triggers it.
-    if AADHAAR_KEYWORD_RE.search(text):
-        def _sub_aadhaar(m: "re.Match[str]") -> str:
-            return minter.mint("AADHAAR", m.group(0), score=1.0, layer="regex", pattern="aadhaar")
-
-        working = AADHAAR_BARE_RE.sub(_sub_aadhaar, working)
-
-    for name, pattern, validate in LATE_PASSES:
-        def _sub_late(m: "re.Match[str]", _name=name, _validate=validate) -> str:
-            matched = m.group(0)
-            if _validate is not None and not _validate(matched):
-                return matched
-            return minter.mint(_name.upper(), matched, score=1.0, layer="regex", pattern=_name)
-
-        working = pattern.sub(_sub_late, working)
-
-    if DOB_KEYWORD_RE.search(working):
-        def _sub_dob_line(line: str) -> str:
-            if not DOB_KEYWORD_RE.search(line):
-                return line
-            return DATE_RE.sub(lambda m: minter.mint("DATEOFBIRTH", m.group(0), score=1.0, layer="regex",
-                                                     pattern="dateofbirth"), line)
-
-        working = "\n".join(_sub_dob_line(line) for line in working.split("\n"))
-
-    return working
+    planned = []
+    for span in _collect_spans(text):
+        token = minter.mint(span["type"], span["value"], score=1.0, layer="regex", pattern=span["pattern"])
+        planned.append((span["start"], span["end"], token))
+    out = text
+    for start, end, token in sorted(planned, reverse=True):
+        out = out[:start] + token + out[end:]
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -219,7 +197,7 @@ def regex_strip(text: str, minter) -> str:
 # both layers can run independently on the raw string and have their spans
 # merged afterwards. See strip.py for the merge, which resolves overlaps in
 # favour of the deterministic layer.
-def regex_spans(text: str) -> list:
+def _collect_spans(text: str) -> list:
     """Return every regex PII match as {start, end, type, pattern, value},
     in offsets into `text` itself. Order of PASSES is preserved and an
     earlier (more specific) pass claims a span before a looser later one:
@@ -277,5 +255,11 @@ def regex_spans(text: str) -> list:
         spans.append({"start": start, "end": end, "type": "DATEOFBIRTH",
                       "pattern": "dateofbirth", "value": text[start:end]})
 
-    spans.sort(key=lambda s: s["start"])
     return spans
+
+
+def regex_spans(text: str) -> list:
+    """Every regex PII match as {start, end, type, pattern, value}, in offsets
+    into `text` itself, sorted by start. An earlier (more specific) pass claims
+    a span before a looser later one; a later overlapping match is discarded."""
+    return sorted(_collect_spans(text), key=lambda s: s["start"])

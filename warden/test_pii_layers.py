@@ -164,3 +164,36 @@ def test_hindi_ui_labels_are_descriptors(label):
 @pytest.mark.parametrize("value", ["प्रिया शर्मा", "खाता धारक प्रिया शर्मा", "Neha Joshi", "राहुल"])
 def test_names_are_never_descriptors(value):
     assert not entities._is_structural_descriptor(value)
+
+
+# Code review, 3 October 2026: output is rendered from the original text (a zero-width joiner in
+# a Hindi conjunct used to come out as "-"), and every BMP decimal digit is read, so /strip agrees
+# with the egress guard instead of a refused /plan.
+_RENDER_CASES = [
+    ("क्‍ष 9845012345", "क्‍ष PHONE#1"),
+    ("प्रश्न‌ ९", "प्रश्न‌ ९"),
+    ("Call ٩٨٧٦٥٤٣٢١٠ now", "Call PHONE#1 now"),
+    ("a@b.co and a@b.co", "EMAIL#1 and EMAIL#1"),
+]
+
+
+@pytest.mark.parametrize("text, expected", _RENDER_CASES)
+def test_regex_strip_renders_from_the_original_text(text, expected):
+    from minter import TokenMinter
+    assert redactor.regex_strip(text, TokenMinter()) == expected
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node is not on PATH")
+def test_js_tokenize_renders_from_the_original_text():
+    script = (
+        "import(process.argv[1]).then(m => {"
+        " const cases = JSON.parse(process.argv[2]);"
+        " console.log(JSON.stringify(cases.map(t => [m.tokenizeText(t).text, m.redactText(t).text])));"
+        "});"
+    )
+    url = (REPO_ROOT / "extension" / "utils" / "redactor.js").as_uri()
+    cases = [t for t, _ in _RENDER_CASES]
+    out = json.loads(subprocess.run(["node", "-e", script, url, json.dumps(cases)],
+                                    capture_output=True, text=True, check=True).stdout)
+    assert [tok for tok, _ in out] == [e for _, e in _RENDER_CASES]
+    assert out[0][1] == "क्‍ष <mask-pii/>"
