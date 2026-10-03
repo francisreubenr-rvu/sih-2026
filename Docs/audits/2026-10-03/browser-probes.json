@@ -1,0 +1,50 @@
+{
+  "disabledClick": {
+    "result": {
+      "digest": "4:24ff13",
+      "elementCount": 1,
+      "changed": true
+    },
+    "clicks": 0
+  },
+  "readOnlyType": {
+    "result": {
+      "digest": "0:0",
+      "elementCount": 1,
+      "changed": true
+    },
+    "value": "synthetic replacement"
+  },
+  "focusDetach": {
+    "result": {
+      "digest": "0:0",
+      "elementCount": 0,
+      "changed": true
+    },
+    "state": {
+      "connected": false,
+      "value": "synthetic replacement"
+    }
+  },
+  "regionLimit": {
+    "input": 201,
+    "output": 200
+  },
+  "latencyBoundary": {
+    "metric": "task-latency",
+    "elapsedMs": 200,
+    "budgetMs": 200,
+    "status": "pass",
+    "observed": 200,
+    "note": "Within 200 ms budget."
+  },
+  "prototypeConcurrency": {
+    "configuredCap": 2,
+    "peak": 3,
+    "statuses": [
+      200,
+      200,
+      200
+    ]
+  }
+}

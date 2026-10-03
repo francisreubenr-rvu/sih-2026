@@ -1,3 +1,15 @@
+## Round 30: code audit and master protection (3 October 2026)
+
+- [x] Audit report and reproducible synthetic probes prepared on `codex/full-code-audit-2026-10-03`, for delivery through a draft PR. [Report and coverage](Docs/audits/2026-10-03/README.md).
+- [ ] P1 A01: `resolvedAnswers` uses per-scan token numbers across changing values and runs. A prior `keep` silently permits a different synthetic name.
+- [ ] P1 A02: descriptor filtering ignores digits/symbols, dropping confident detections for synthetic credentials and numbered addresses.
+- [ ] P1 A03: the browser executor overwrites read-only inputs through the native setter. A04/A05 also reproduce disabled-click false success and focus-time target detachment.
+- [ ] P2 A06-A12: invalid optional fast-path probabilities, blocking async routes, malformed-request 500s, remote legacy review, discarded legacy mask regions, a raced legacy concurrency limit and inconsistent latency boundary. Synthetic observations are attached to the report.
+- [ ] P2 A13-A16: fresh-profile G11 setup lacks extension pairing, planner finish lacks a verified task postcondition, older raster scoring accepts inconsistent identities, and human-evaluation counting accepts duplicate IDs.
+- [ ] Master remains unprotected (`protected: false`); ruleset creation/access failed with HTTP 403. Owner administration access is required to apply and verify the proposed PR-only protection. Repository agent policy alone is insufficient.
+- [ ] Remaining source files need deeper manual review. All 207 maintained source files received automated line checks; focused manual review covered 100 files. This is not exhaustive manual semantic coverage.
+- [x] Existing suites checked without real provider/model calls: Prototype 141, Warden 159 plus 6 skips, extension 134, G11 harness 13, Python scorers 19. No release evidence was rewritten and no defect is closed by this documentation.
+
 ## Round 29: destructive verbs and required pairing (2 October 2026)
 
 - [x] Verbs neither language listed are now destructive in `op-tier.js` and `tiers.py`. English: forget, discard, withdraw, purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team, end a membership, empty trash, clear history, factory reset, void a transaction. Hindi equivalents too. A node-backed parity test runs the real JS against the Python on 36 labels and 9 tasks.

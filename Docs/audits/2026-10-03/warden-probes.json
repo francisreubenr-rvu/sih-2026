@@ -1,0 +1,112 @@
+{
+  "staleKeep": {
+    "firstUncertain": [
+      {
+        "id": "PERSONNAME#1",
+        "token": "PERSONNAME#1",
+        "label": "person name",
+        "score": 0.4,
+        "preview": "Priya Example",
+        "source": "dom"
+      }
+    ],
+    "secondSanitizedDom": "Arjun Sample",
+    "secondUncertain": []
+  },
+  "descriptorSuppression": {
+    "secret123!": {
+      "tokenizedTask": "",
+      "sanitizedDom": "secret123!",
+      "tokens": {},
+      "elements": [],
+      "uncertain": [],
+      "decisions": []
+    },
+    "123 street": {
+      "tokenizedTask": "",
+      "sanitizedDom": "123 street",
+      "tokens": {},
+      "elements": [],
+      "uncertain": [],
+      "decisions": []
+    }
+  },
+  "fastpath": [
+    {
+      "confidence": "0.99",
+      "free": "None",
+      "used": true,
+      "plan": {
+        "action": "finish",
+        "target_selector": null,
+        "coordinates": {
+          "x": 0,
+          "y": 0
+        },
+        "value": null,
+        "reasoning_token": "fast path: task complete"
+      }
+    },
+    {
+      "confidence": "nan",
+      "free": "0.1",
+      "used": true,
+      "plan": {
+        "action": "finish",
+        "target_selector": null,
+        "coordinates": {
+          "x": 0,
+          "y": 0
+        },
+        "value": null,
+        "reasoning_token": "fast path: task complete"
+      }
+    },
+    {
+      "confidence": "0.99",
+      "free": "nan",
+      "used": true,
+      "plan": {
+        "action": "finish",
+        "target_selector": null,
+        "coordinates": {
+          "x": 0,
+          "y": 0
+        },
+        "value": null,
+        "reasoning_token": "fast path: task complete"
+      }
+    }
+  ],
+  "malformedValidate": [
+    {
+      "body": [],
+      "status": 500
+    },
+    {
+      "body": "invalid",
+      "status": 500
+    }
+  ],
+  "invalidJsonStatus": 500,
+  "blockingPlan": {
+    "statuses": [
+      200,
+      200
+    ],
+    "elapsedMs": 503.4,
+    "perCallStubMs": 250
+  },
+  "reviewRemoteHost": {
+    "transportInvoked": [
+      "https://synthetic.invalid/api/generate"
+    ]
+  },
+  "g20DuplicateIdentity": {
+    "acceptedParticipantRows": 5,
+    "uniqueParticipantIds": 1,
+    "acceptedReviewerRows": 3,
+    "uniqueReviewerIds": 1,
+    "ledgerWritten": false
+  }
+}
