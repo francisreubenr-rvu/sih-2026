@@ -72,7 +72,8 @@ HI_SUBMIT = unicodedata.normalize("NFKC", (
     r"(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर"
 ))
 SUBMIT_LABEL_RE = re.compile(
-    r"submit|save|confirm|pay|checkout|place order|purchase|send|" + HI_SUBMIT,
+    # English verbs added 3 October 2026; same list and reasoning as op-tier.js SUBMIT_LABEL_RE.
+    r"submit|save|confirm|pay|checkout|place order|purchase|send|transfer|donate|subscribe|accept|agree|apply|recharge|buy|book now|book a|sign up|register|enrol|upgrade|renew|" + HI_SUBMIT,
     re.IGNORECASE,
 )
 # Starts with a navigation verb; "\blink\b" anywhere and "open" a new account or deposit no longer

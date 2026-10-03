@@ -2019,6 +2019,11 @@ _HIDDEN_DESTRUCTIVE = [
     "Del\u00adete account", "Re\u200emove card", "De\u202elete", "Era\u2066se all",
     "\uff24\uff45\uff4c\uff45\uff54\uff45 account", "ह\u00adटाएं", "खाता\u200f हटाएं",
 ]
+# State-changing English verbs that used to read unproven (3 October 2026).
+_EN_SUBMIT_ADDED = [
+    "Transfer funds", "Donate now", "Subscribe", "Accept offer", "I agree", "Apply now", "Recharge mobile",
+    "Buy now", "Book now", "Book a ticket", "Sign up", "Register", "Enroll", "Enrol now", "Upgrade plan", "Renew policy",
+]
 _HIDDEN_SUBMIT = ["Pa\u00ady now", "\uff30\uff41\uff59", "भु\u00adगतान करें", "Se\u2069nd"]
 _HI_SUBMIT_BUT_DESTRUCTIVE = ["भुगतान विधि हटाएं", "खाता हटाने की पुष्टि करें", "सदस्यता रद्द करें और भेजें", "कार्ड डिलीट करें और सहेजें"]
 
@@ -2039,7 +2044,8 @@ def _py_label_basis(label):
 def test_hindi_submit_rules_match_the_extension():
     if which("node") is None:
         pytest.skip("node is not on PATH; cannot run extension/utils/op-tier.js")
-    labels = _HI_SUBMIT_LABELS + _HI_SUBMIT_NOT + _HI_SUBMIT_BUT_DESTRUCTIVE + _NAV_PARITY + _HIDDEN_DESTRUCTIVE + _HIDDEN_SUBMIT
+    labels = (_HI_SUBMIT_LABELS + _HI_SUBMIT_NOT + _HI_SUBMIT_BUT_DESTRUCTIVE + _NAV_PARITY + _HIDDEN_DESTRUCTIVE
+              + _HIDDEN_SUBMIT + _EN_SUBMIT_ADDED)
     script = (
         "const m = await import(process.argv[1]);"
         "const labels = JSON.parse(process.argv[2]);"
@@ -2058,6 +2064,7 @@ def test_hindi_submit_rules_match_the_extension():
     assert {label for label in _HI_SUBMIT_BUT_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
     assert {label for label in _HIDDEN_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
     assert {label for label in _HIDDEN_SUBMIT if py[label] != "submit-keyword"} == set()
+    assert {label for label in _EN_SUBMIT_ADDED if py[label] != "submit-keyword"} == set()
     # The legacy /validate tier agrees: Hindi submit is state-changing, destructive still wins.
     for label in _HI_SUBMIT_LABELS:
         assert tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": label, "fieldType": "button"}]) == "state-changing"

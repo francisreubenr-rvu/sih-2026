@@ -50,7 +50,11 @@ const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|d
 const HI_SUBMIT = ('भुगतान|पेमेंट|(?:^|\\s)पे कर|अदा कर|भेज(?:ें|ो|िए|िये| दें| दो| दीजिए)|(?:सेंड|ट्रांसफ़र|ट्रांसफर|ट्रान्सफ़र|ट्रान्सफर) कर|'
   + 'जमा (?:कर|कीजिए)|सबमिट|प्रस्तुत (?:कर|कीजिए)|(?:दाखिल|दाख़िल) (?:कर|कीजिए)|पुष्टि|कन्फ़र्म|कन्फर्म|(?:ऑर्डर|आर्डर) (?:कर|दें|दो|दीजिए|प्लेस)|'
   + '(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर').normalize('NFKC');
-const SUBMIT_LABEL_RE = new RegExp(`submit|save|confirm|pay|checkout|place order|purchase|send|${HI_SUBMIT}`, 'i');
+// English verbs added 3 October 2026 (security review): transfer, donate, subscribe, accept, agree,
+// apply, recharge, buy, book, sign up, register, enrol (enroll), upgrade and renew change state but
+// read unproven, so a confident Laya review could release them unasked. Substring match, like the
+// rest of this list: "Apply filters" or "Accepted cards" now ask (over-asking, never under-asking).
+const SUBMIT_LABEL_RE = new RegExp(`submit|save|confirm|pay|checkout|place order|purchase|send|transfer|donate|subscribe|accept|agree|apply|recharge|buy|book now|book a|sign up|register|enrol|upgrade|renew|${HI_SUBMIT}`, 'i');
 // Navigational needs the label to START with a navigation verb. "\blink\b" anywhere is gone: it made
 // "Link Aadhaar to PAN" and "Link this device" navigational, so they clicked unattended. "Open" does
 // not count when it opens a new account or deposit ("Open a new account", "Open new fixed deposit",
