@@ -134,9 +134,14 @@ const state = {
 // never pushed into state.steps, never logged, never placed in a transcript entry.
 let currentVault = null;
 
-// Uncertain-PII decisions the user has already made this session, keyed by the exact token id
-// the Warden minted (e.g. "PERSONNAME#1"), and sent back as `resolved` on every later /strip
-// call so the same span is never asked about twice. In-memory only; never persisted.
+// Uncertain-PII decisions the user has already made in this run, keyed by the token id the Warden
+// minted (e.g. "PERSONNAME#1") and sent back as `resolved` on every later /strip call so the same
+// span is not asked about twice: { [token]: { decision: 'strip' | 'keep', value } }. The Warden
+// mints ids per /strip call, so "PERSONNAME#1" can name a different value on the next page; the
+// `value` (the uncertain entry's preview) binds the answer to what the person actually saw, and the
+// Warden applies it only to that value (security review, 3 October 2026). Cleared when a run starts
+// and when it ends. In-memory only; never persisted, never in the trace; goes only to /strip,
+// which already receives the raw page.
 let resolvedAnswers = {};
 
 // Measurement-only clocks for the G11 harness (GET_G11_TRACE). Does not gate
@@ -805,6 +810,8 @@ async function startAcceptedTask(task) {
     stopRequested: false,
   });
   await persistState();
+  // Remembered uncertain-PII answers belong to one run (see resolvedAnswers).
+  resolvedAnswers = {};
   // The previous run's trace (its masked screenshot, its /plan body) ends with that run.
   pipeline.clear();
   emitTrace();
@@ -921,7 +928,7 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
     );
     if (aborted(runId)) throw new Error('Stopped');
     for (const item of items) {
-      resolvedAnswers[item.token] = answers[item.id] === 'keep' ? 'keep' : 'strip';
+      resolvedAnswers[item.token] = { decision: answers[item.id] === 'keep' ? 'keep' : 'strip', value: String(item.preview ?? '') };
     }
     // Loop back and re-strip with the updated `resolved` map. The same raw input plus the
     // same decisions is deterministic, so every previously-uncertain span now resolves
@@ -1550,6 +1557,7 @@ async function runLoop(runId, secrets) {
       chrome.tabs.sendMessage(state.tabId, { type: 'CLEAR_HIGHLIGHTS' }).catch(() => {});
       chrome.tabs.sendMessage(state.tabId, { type: 'END_TASK' }).catch(() => {});
       currentVault = null; // hygiene: the vault must not outlive its run.
+      resolvedAnswers = {}; // nor the answers, which hold the values they were given for.
     }
   }
 }

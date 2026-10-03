@@ -193,9 +193,11 @@ export async function health() {
   return request('/health', { timeoutMs: TIMEOUT_MS.health });
 }
 
-// resolved: { [tokenId]: 'strip' | 'keep' }, decisions already made this session for
-// previously uncertain spans, keyed by the exact token id the Warden minted (e.g.
-// "PERSONNAME#1"), so the same question is never asked twice.
+// resolved: { [tokenId]: { decision: 'strip' | 'keep', value } }, decisions already made in this
+// run for previously uncertain spans, keyed by the token id the Warden minted (e.g.
+// "PERSONNAME#1") and bound to the value the person was shown, because ids are minted per call and
+// can name a different value on another page (security review, 3 October 2026). A Warden that
+// predates the object shape ignores it and asks again, which is the safe direction.
 export async function strip({ task, dom, elements, resolved }) {
   return request('/strip', {
     method: 'POST',

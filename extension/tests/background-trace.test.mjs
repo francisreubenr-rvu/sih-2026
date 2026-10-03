@@ -216,6 +216,32 @@ test('a user-stripped uncertain span is reported with layer user', async () => {
   for (const u of run.traceUpdates) assert.equal(JSON.stringify(u).includes('Ravi'), false);
 });
 
+// Security review, 3 October 2026 (HIGH): the Warden mints token ids per /strip call, so
+// "PERSONNAME#1" names a different value on another page. A remembered 'keep' keyed by the id alone
+// kept a value nobody was asked about. Each answer now carries the value it was given for, and the
+// remembered answers end with the run.
+test('an uncertain-PII answer is bound to its value and does not outlive the run', async () => {
+  const stripBodies = [];
+  const strip = (body) => {
+    stripBodies.push(structuredClone(body));
+    const resp = seededStrip(body);
+    const decided = body.resolved['PERSONNAME#1'];
+    if (!decided) resp.uncertain = [{ id: 'PERSONNAME#1', token: 'PERSONNAME#1', label: 'person', score: 0.5, preview: 'Ravi', source: 'dom' }];
+    return resp;
+  };
+  const run = await runSeeded({
+    warden: { strip, plan: planSeq(FINISH) },
+    choices: [{ 'PERSONNAME#1': 'keep' }, { 'PERSONNAME#1': 'keep' }],
+    again: ['second task'],
+  });
+  assert.equal(run.laterStarts[0].ok, true);
+  assert.deepEqual(stripBodies[0].resolved, {});
+  assert.deepEqual(stripBodies[1].resolved, { 'PERSONNAME#1': { decision: 'keep', value: 'Ravi' } });
+  const secondRunFirst = stripBodies[2];
+  assert.deepEqual(secondRunFirst.resolved, {}, 'a new run starts with no remembered answers');
+  assert.equal(run.prompts.filter((p) => p.kind === 'uncertain-pii').length, 2, 'the second run asked again');
+});
+
 test('plan history carries a typed vault token, never a literal value', async () => {
   const run = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(TYPE_TOKEN, FINISH) } });
   const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;

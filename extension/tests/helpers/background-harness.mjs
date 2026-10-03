@@ -28,7 +28,10 @@ export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhris
 // Pairing is required (2 October 2026), so runs are paired by default; pass pairingCode: null to
 // test an unpaired extension.
 export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
+// `again`:   further tasks started one after another in the SAME worker once the previous run
+//            ended, as a person sending a second task would; each waits for its own terminal entry.
+// `tabs`:    optional (n) -> the tab object chrome.tabs.query/get returns on its n-th call.
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tabs, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];
@@ -43,6 +46,11 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     if (keepOpen === false) resolve(undefined);
   });
 
+  let tabCalls = 0;
+  const tabFor = () => {
+    tabCalls += 1;
+    return tabs ? tabs(tabCalls) : { id: 7, windowId: 3, url: 'https://bank.example/home' };
+  };
   const noop = { addListener() {} };
   globalThis.chrome = {
     runtime: {
@@ -56,7 +64,10 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
         if (message.type === 'PROMPT_REQUEST') {
           prompts.push(message.prompt);
           const choice = choices[prompts.length - 1] || 'stop';
-          const answer = () => listener({ type: 'PROMPT_RESPONSE', id: message.prompt.id, answers: { choice } }, PANEL_SENDER, () => {});
+          // A string is a question's choice; an object is sent as the answers themselves (an
+          // uncertain-PII prompt's { [itemId]: 'strip' | 'keep' }).
+          const answers = choice && typeof choice === 'object' ? choice : { choice };
+          const answer = () => listener({ type: 'PROMPT_RESPONSE', id: message.prompt.id, answers }, PANEL_SENDER, () => {});
           if (onPrompt) {
             Promise.resolve(onPrompt(message.prompt, { send })).then((r) => { hookResults.push(r); answer(); });
           } else {
@@ -77,7 +88,8 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
       session: { get: async () => ({}), set: async () => {} },
     },
     tabs: {
-      query: async () => [{ id: 7, windowId: 3 }],
+      query: async () => [tabFor()],
+      get: async () => tabFor(),
       captureVisibleTab: async () => capture || 'data:image/png;base64,iVBORw0KGgo=',
       sendMessage: async (tabId, message) => {
         tabMessages.push(message);
@@ -136,11 +148,21 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
   // `starts` > 1 sends START_TASK that many times without waiting, as a double-click would.
   const [start, ...extraStarts] = await Promise.all(Array.from({ length: starts }, () => send({ type: 'START_TASK', task })));
   let entries = start?.entries || [];
-  const deadline = Date.now() + 15000;
-  while (start?.ok && !entries.some((e) => e.terminal === true)) {
-    if (Date.now() > deadline) throw new Error('run did not reach a terminal entry');
-    await new Promise((resolve) => setTimeout(resolve, 20));
-    entries = (await send({ type: 'GET_SESSION' })).entries;
+  const waitTerminals = async (count, ok) => {
+    const deadline = Date.now() + 15000;
+    while (ok && entries.filter((e) => e.terminal === true).length < count) {
+      if (Date.now() > deadline) throw new Error('run did not reach a terminal entry');
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      entries = (await send({ type: 'GET_SESSION' })).entries;
+    }
+  };
+  await waitTerminals(1, start?.ok);
+  const laterStarts = [];
+  for (const [i, next] of again.entries()) {
+    const reply = await send({ type: 'START_TASK', task: next });
+    laterStarts.push(reply);
+    entries = reply?.entries || entries;
+    await waitTerminals(i + 2, reply?.ok);
   }
   const trace = await send({ type: 'GET_G11_TRACE' });
   const pipelineTrace = await send({ type: 'GET_TRACE' });
@@ -148,6 +170,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
   return {
     start,
     extraStarts,
+    laterStarts,
     entries,
     prompts,
     trace,
