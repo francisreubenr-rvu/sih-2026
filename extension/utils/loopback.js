@@ -31,3 +31,13 @@ export function wardenOriginUrl(value) {
   const url = new URL(value.trim());
   return url.protocol === 'http:' && url.hostname === '127.0.0.1';
 }
+
+// An origin saved before 3 October 2026 may be http://localhost:<port>, which the Warden origin no
+// longer accepts. It names the same Warden, so it is rewritten to http://127.0.0.1:<port> rather
+// than leaving every call refused (code review, 3 October 2026). Anything else is returned as is.
+export function migrateWardenOrigin(value) {
+  if (typeof value !== 'string' || !loopbackHttpUrl(value)) return value;
+  const url = new URL(value.trim());
+  if (url.protocol !== 'http:' || url.hostname !== 'localhost') return value;
+  return `http://127.0.0.1${url.port ? `:${url.port}` : ''}`;
+}

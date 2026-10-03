@@ -40,6 +40,7 @@ export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
 //            VISION_DROP to close the port without answering. Default: ready, no faces.
 // offscreen: false removes chrome.offscreen (a browser without the API).
 // storage:   extra chrome.storage.local items (e.g. { useOmniparser: true }).
+// siteAccess: false makes chrome.permissions.contains answer no (the optional grant not given).
 export const VISION_HANG = Symbol('vision-hang');
 export const VISION_DROP = Symbol('vision-drop');
 export function defaultVision(request) {
@@ -48,7 +49,7 @@ export function defaultVision(request) {
   return {};
 }
 
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tab, signs, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE, vision = defaultVision, offscreen = true, storage = {} } = {}) {
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tab, signs, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE, vision = defaultVision, offscreen = true, storage = {}, siteAccess = true } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];
@@ -133,7 +134,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
         return undefined;
       },
     },
-    permissions: { contains: async () => true, onAdded: noop },
+    permissions: { contains: async () => siteAccess, onAdded: noop },
     scripting: {
       getRegisteredContentScripts: async () => [{ id: 'dhristi-scan' }],
       registerContentScripts: async () => {},

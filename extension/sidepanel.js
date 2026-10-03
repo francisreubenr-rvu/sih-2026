@@ -12,7 +12,7 @@
 // never has to replay a stream of events it may have missed while the panel was closed.
 
 import { WARDEN_DEFAULT_ORIGIN } from './config.js';
-import { loopbackHttpUrl } from './utils/loopback.js';
+import { migrateWardenOrigin, wardenOriginUrl } from './utils/loopback.js';
 
 const els = {
   healthChip: document.getElementById('health-chip'),
@@ -123,13 +123,15 @@ async function restore() {
   const settings = await chrome.storage.local.get(['wardenOrigin', 'wardenPairing']).catch(() => ({}));
   // Presence only: the saved code is never put back into the page.
   if (settings.wardenPairing) els.wardenPairingStatus.textContent = 'A pairing code is saved. Save an empty field to remove it.';
-  const storedOrigin = settings.wardenOrigin && String(settings.wardenOrigin).trim();
-  if (storedOrigin && !loopbackHttpUrl(storedOrigin)) {
+  // The same rule the worker applies (utils/loopback.js wardenOriginUrl); a localhost origin saved
+  // before 3 October 2026 is shown as the 127.0.0.1 origin the worker now uses for it.
+  const storedOrigin = settings.wardenOrigin && migrateWardenOrigin(String(settings.wardenOrigin).trim());
+  if (storedOrigin && !wardenOriginUrl(storedOrigin)) {
     els.wardenOrigin.value = DEFAULT_WARDEN_ORIGIN;
-    els.wardenOriginStatus.textContent = 'Stored origin was not loopback and is not used. Save 127.0.0.1 or localhost.';
+    els.wardenOriginStatus.textContent = 'The stored origin is not http://127.0.0.1 and is not used. Save http://127.0.0.1:<port>.';
   } else {
     els.wardenOrigin.value = storedOrigin || DEFAULT_WARDEN_ORIGIN;
-    els.wardenOriginStatus.textContent = `Default: ${DEFAULT_WARDEN_ORIGIN}. Loopback only.`;
+    els.wardenOriginStatus.textContent = `Default: ${DEFAULT_WARDEN_ORIGIN}. Only http://127.0.0.1 is accepted.`;
   }
 
   // One transcript, one source. GET_SESSION is the same array SESSION_UPDATE carries.
@@ -796,11 +798,11 @@ async function savePairing() {
 }
 
 async function saveOrigin() {
-  const value = els.wardenOrigin.value.trim() || DEFAULT_WARDEN_ORIGIN;
+  const value = migrateWardenOrigin(els.wardenOrigin.value.trim() || DEFAULT_WARDEN_ORIGIN);
   els.wardenOrigin.value = value;
-  if (!loopbackHttpUrl(value)) {
+  if (!wardenOriginUrl(value)) {
     els.wardenOrigin.setAttribute('aria-invalid', 'true');
-    els.wardenOriginStatus.textContent = 'Refused. The Warden origin must be http or https on 127.0.0.1, localhost, or ::1.';
+    els.wardenOriginStatus.textContent = 'Refused. The Warden origin must be http://127.0.0.1:<port> (not localhost, ::1 or https).';
     return;
   }
   const response = await send({ type: 'SET_WARDEN_ORIGIN', origin: value });

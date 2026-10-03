@@ -28,7 +28,7 @@
 // and only such a response may release a local confirmation (plan-check.js layaRelease).
 
 import { WARDEN_DEFAULT_ORIGIN } from '../config.js';
-import { wardenOriginUrl } from './loopback.js';
+import { wardenOriginUrl, migrateWardenOrigin } from './loopback.js';
 
 const TIMEOUT_MS = {
   health: 3000,
@@ -114,8 +114,13 @@ async function hmacKey(code) {
 async function getOrigin() {
   try {
     const stored = await chrome.storage.local.get(['wardenOrigin']);
-    const origin = stored.wardenOrigin && String(stored.wardenOrigin).trim();
+    let origin = stored.wardenOrigin && String(stored.wardenOrigin).trim();
     if (!origin) return WARDEN_DEFAULT_ORIGIN;
+    const migrated = migrateWardenOrigin(origin);
+    if (migrated !== origin && wardenOriginUrl(migrated)) {
+      origin = migrated;
+      await chrome.storage.local.set({ wardenOrigin: origin }).catch(() => {});
+    }
     if (!wardenOriginUrl(origin)) {
       throw new WardenUnreachableError(
         origin,

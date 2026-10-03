@@ -527,3 +527,21 @@ test('Stop pressed while the run is still starting stops it before anything is s
   const terminals = run.entries.filter((e) => e.terminal === true);
   assert.deepEqual(terminals.map((e) => e.status), ['stopped']);
 });
+
+
+// Code review, 3 October 2026: without the optional grant the tab's url is unreadable, and the
+// origin check used to run first, answering a missing grant with "no address this extension can
+// read". The site-access message must win.
+test('without site access the refusal names site access, not the tab address', async () => {
+  const run = await runTask({ siteAccess: false, tab: { id: 7, windowId: 3 }, scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(FINISH) } });
+  const text = JSON.stringify(run.entries);
+  assert.match(text, /needs site access/);
+  assert.doesNotMatch(text, /no address this extension can read/);
+  assert.equal(run.fetchBodies.length, 0, 'nothing was sent');
+});
+
+test('a stored localhost Warden origin is used as 127.0.0.1, not refused', async () => {
+  const run = await runTask({ storage: { wardenOrigin: 'http://localhost:8756' }, scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(FINISH) } });
+  assert.equal(run.terminal.status, 'finished');
+  assert.ok(run.fetchBodies.length > 0, 'the Warden was reached');
+});

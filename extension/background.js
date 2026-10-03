@@ -767,8 +767,6 @@ async function startAcceptedTask(task) {
   const tabId = tab?.id ?? null;
   const windowId = tab?.windowId ?? null;
   if (!tabId) return failStart(task, 'No active tab to work on.');
-  const origin = originKey(tab?.url);
-  if (!origin) return failStart(task, 'The active tab has no address this extension can read, so the run cannot be bound to a site. Nothing was sent.');
   // Start the face detector now, while the health check runs, so the first step rarely waits on
   // the one-time model load. A failure here is retried by the step's own face check.
   visionClient.warm().catch(() => {});
@@ -777,6 +775,11 @@ async function startAcceptedTask(task) {
   if (!siteAccess) {
     return failStart(task, 'Page scan needs site access. Allow it from the side panel when you send the task. Nothing was sent.');
   }
+  // After the site-access check (code review, 3 October 2026): without the "tabs" permission,
+  // tab.url is readable only once site access is granted, so checking it first answered a missing
+  // grant with the wrong reason.
+  const origin = originKey(tab?.url);
+  if (!origin) return failStart(task, 'The active tab has no address this extension can read, so the run cannot be bound to a site. Nothing was sent.');
   await ensureScanRegistration();
 
   // v4 gate (frozen spec, "Degraded modes"): the Warden must be reachable and its model loaded
