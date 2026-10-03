@@ -95,7 +95,10 @@
         "Benchmarks/results/load.json"
       ],
       "status": "pass",
-      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale."
+      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale.",
+      "subjects": [
+        "Prototype/server/"
+      ]
     },
     {
       "id": "G06",
@@ -108,7 +111,13 @@
         "Benchmarks/results/security.json"
       ],
       "status": "pass",
-      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production."
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production.",
+      "subjects": [
+        "Prototype/server/",
+        "Prototype/shared/",
+        "warden/",
+        "extension/"
+      ]
     },
     {
       "id": "G07",
@@ -122,7 +131,13 @@
         "Benchmarks/results/security.json"
       ],
       "status": "pass",
-      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope."
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope.",
+      "subjects": [
+        "Prototype/server/",
+        "Prototype/shared/",
+        "warden/",
+        "extension/"
+      ]
     },
     {
       "id": "G08",
@@ -136,7 +151,13 @@
         "Benchmarks/results/dependency-audit.json"
       ],
       "status": "pass",
-      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification."
+      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification.",
+      "subjects": [
+        "Prototype/server/",
+        "warden/app.py",
+        "warden/config.py",
+        "warden/pairing.py"
+      ]
     },
     {
       "id": "G09",
@@ -189,7 +210,10 @@
         "Benchmarks/results/lighthouse-dhristi-v02-summary.json"
       ],
       "status": "pass",
-      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance."
+      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance.",
+      "subjects": [
+        "Website/"
+      ]
     },
     {
       "id": "G13",
@@ -202,7 +226,12 @@
         "Benchmarks/results/recovery.json"
       ],
       "status": "pass",
-      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json."
+      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json.",
+      "subjects": [
+        "Prototype/",
+        "extension/",
+        "warden/"
+      ]
     },
     {
       "id": "G14",
@@ -280,7 +309,12 @@
         "Docs/deployment-verification.md"
       ],
       "status": "pass",
-      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API."
+      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API.",
+      "subjects": [
+        "Prototype/README.md",
+        "warden/README.md",
+        "extension/README.md"
+      ]
     },
     {
       "id": "G19",
