@@ -22,7 +22,7 @@ Security review, consistency audit, Warden and extension code review, side-panel
 - [x] Regression caught at merge: the sender check also refused the side panel opened in a tab, so no loaded-extension harness could pair. Fixed on `sender.url`; content scripts stay refused.
 - [ ] Element ids and attribute selectors reach the planner as written (`<a id="contact-neha-joshi">`). Fix is opaque per-scan keys in place of selectors; architectural, not done.
 - [ ] The pairing code sits in `chrome.storage.local`. Nonces are remembered for 600 s in memory only, and requests carry no timestamp, so a captured request replays after a restart.
-- [ ] English submit gaps ("transfer", "donate", "subscribe", "apply", "agree") stay unproven, so Laya could release them. Left for the blind set and a decision.
+- [x] English submit gaps ("transfer", "donate", "subscribe", "apply", "agree" and others) read unproven, so Laya could release them. Added to both rule sets (over-asking accepted: "Apply filters" asks).
 
 **G11 (first live measurement):**
 
