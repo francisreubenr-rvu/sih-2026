@@ -30,9 +30,19 @@ Francis asked for a review of the current state and a plan. Facts first, then th
 7. **G14.** Re-record the fallback video on the current side panel, after #44 and step 2.
 8. **Small and cheap:** Hindi submit keywords (भुगतान, भेजें, जमा), so Hindi pay/send labels are never `unproven`.
 
+**Correction, 3 October (Francis).** The final submission date is **today, 3 October 2026**, and the submission is a **pitch PPTX** and a **YouTube demo video**, not the prototype. The two-week schedule below is kept as history; it no longer applies.
+
+| # | Work today | Evidence or limit |
+|---|---|---|
+| 1 | Pitch PPTX on the v5 architecture (extension side panel, Warden with GLiNER on the device, pairing, Laya review, Groq planning behind the egress guard) | Claims only from results files; G11 fail and the unknown gates on a "limits" slide |
+| 2 | **Recorded 3 Oct.** Demo video of the real stack on the synthetic fixtures (pairing, redaction prompt, Sent view, released navigation step, destructive step asking); 1:54, captions burned in, voiceover script for Francis. 29 cloud requests, 0 personal values | `Benchmarks/results/demo-video-v01.json`; `scripts/e2e-v5/record-demo.mjs`, `compose-demo.py`. The video file is not in git |
+| 3 | Upload to YouTube (team; needs a team account) | |
+
+Out of reach before the deadline: the blind test results (due 4 Oct), G20 sessions, the G11 re-measurement and refreshing stale passes.
+
 **Decided by Francis (2 October).**
 
-- **Deadline:** 16 October 2026, two weeks; a working date, not a verified SIH date.
+- **Deadline:** 16 October 2026, two weeks; a working date, not a verified SIH date. *Superseded 3 October: the submission is today.*
 - **G20:** unpaused. Its status stays `unknown` until real sessions are logged.
 - **Jev fast path:** disabled in code but kept (`warden/fastpath.py` `JEV_ENABLED = False`).
 - **Installs:** packages and models this work needs are approved, provided nothing destructive happens in the container.

@@ -1,12 +1,20 @@
 # Dhristi: SIH26171
 
-## Session handoff: start here (2 October 2026)
+## Correction, 3 October 2026 (Francis)
+
+**The final submission date is today, 3 October 2026.** What is submitted is a **PPTX explaining the pitch** and a **YouTube video demonstrating it**, not the prototype. This replaces the 16 October working deadline below, and the two-week schedule in `PLAN.md` no longer applies.
+
+- The gates still bound what the deck and video may say. G11 (fail) and the unknown gates (G03, G09, G10, G14, G20) ship as an honest gap list; `submission_ready` stays false.
+- The blind test set (due 4 Oct) and the G20 sessions (5 to 10 Oct) fall after the deadline. Neither can be cited in the submission.
+- The existing decks in `Docs/` (`pitch-deck.pptx`, `submission-blueprint.pptx`, `expanded-pitch-blueprint.pptx`) date from 15 September and describe the older Prototype popup, not the v5 side panel and Warden.
+
+## Session handoff (2 October 2026; deadline superseded by the correction above)
 
 **Where the work is.** PR #42 (Laya plan reviewer and release) and PR #41 (fast path, Groq settings, Laya fast-path training, now parked) are merged into `master` (`3314513`). Open: PR #44 on `claude/lucid-fermat-6dkxla`. It adds Hindi and missing-verb destructive rules, and makes extension-Warden pairing required (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). Current review and ordered plan: `PLAN.md`, "Review and next steps (2 October 2026)". Findings: `ROAST.md` rounds 28 and 29. Decision: `Docs/decisions/brain-laya-plan-review.md`.
 
 **Decided by Francis (2 October):**
 
-- Working deadline 16 October 2026.
+- Working deadline 16 October 2026 (superseded 3 October: submission is today).
 - G20 unpaused, with the protocol and forms refreshed for the v5 side panel; still `unknown`, zero sessions.
 - Jev fast path disabled in code but kept.
 - Installs approved, provided nothing destructive happens in the container.

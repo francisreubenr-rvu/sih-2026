@@ -3,14 +3,29 @@
   "created_at": "2026-09-08T18:18:59.042063+00:00",
   "scope": "SIH26171 privacy-preserving visual browser agent; prototype v0.1 in validation",
   "deadline": {
-    "date": "2026-10-16",
+    "date": "2026-10-03",
     "timezone": "Asia/Kolkata",
-    "source": "Francis, 2 October 2026: two weeks to complete. User instruction; not verified as an official SIH date.",
-    "previous": {
-      "date": "2026-09-11",
-      "timezone": "Asia/Kolkata",
-      "source": "user instruction; not verified as official SIH deadline"
-    }
+    "source": "Francis, 3 October 2026: the final submission date is today. User instruction; not separately verified against an SIH notice.",
+    "submission": {
+      "deliverables": [
+        "a PPTX explaining the pitch",
+        "a YouTube video demonstrating it"
+      ],
+      "not_submitted": "the prototype itself",
+      "gate_status_at_deadline": "deadline_policy applies: failed and unknown gates keep their status and ship as an honest gap list in the deck and video; submission_ready stays false"
+    },
+    "previous": [
+      {
+        "date": "2026-10-16",
+        "timezone": "Asia/Kolkata",
+        "source": "Francis, 2 October 2026: two weeks to complete. User instruction; not verified as an official SIH date."
+      },
+      {
+        "date": "2026-09-11",
+        "timezone": "Asia/Kolkata",
+        "source": "user instruction; not verified as official SIH deadline"
+      }
+    ]
   },
   "status_vocabulary": [
     "pass",

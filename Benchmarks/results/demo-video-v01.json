@@ -1,0 +1,51 @@
+{
+  "schema": "demo-video-v01",
+  "measured": true,
+  "evidence_scope": "one recorded run for the submission video, synthetic fixtures only (scripts/e2e-v5/fixture*.html); real Warden, real Groq",
+  "commit": "f4e6feb7d76a83a28e8b096eee689beb3eae8de0",
+  "recorded": "2026-10-03",
+  "stack": {
+    "extension": "root extension/ unpacked in Chromium (harness adds <all_urls> host permission only)",
+    "warden": "GLiNER urchade/gliner_multi_pii-v1, pairing required with a one-off demo code",
+    "reviewer": "Laya, francisreubenr/dhristi-laya-plan-review",
+    "planner": "Groq chain, qwen/qwen3.8-27b, via the loopback recording relay"
+  },
+  "tasks": [
+    {
+      "task": "Update my contact email to priya.r@example.com and save the profile",
+      "page_status": "Saved priya.r@example.com",
+      "prompts_answered": 2
+    },
+    {
+      "task": "Open the account statements",
+      "page_status": "Showing account statements for March",
+      "prompts_answered": 1
+    },
+    {
+      "task": "Delete my account",
+      "page_status": "",
+      "prompts_answered": 3
+    }
+  ],
+  "laya_released_navigation": true,
+  "cloud": {
+    "requests": 29,
+    "personal_values_found": 0,
+    "planner_round_trip_ms": {
+      "n": 29,
+      "min": 85,
+      "median": 383,
+      "max": 3601
+    }
+  },
+  "video": {
+    "duration_s": 114.3,
+    "sped_up": "three idle stretches in task 3 at 4x, labelled on screen; nothing cut"
+  },
+  "limits": [
+    "Synthetic pages; one run; not a field estimate.",
+    "Prompts answered by the recording script, not a person.",
+    "Task 3: after each skip the planner proposed wait steps and retried the delete twice; all three attempts asked and were skipped."
+  ],
+  "guardrails_changed": []
+}
