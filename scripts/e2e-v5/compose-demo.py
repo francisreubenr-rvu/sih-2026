@@ -113,6 +113,9 @@ def main():
     ap.add_argument("--fonts", required=True)
     ap.add_argument("--facts", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--title-s", type=float, default=5.0, help="title card length")
+    ap.add_argument("--end-s", type=float, default=10.0, help="end card length")
+    ap.add_argument("--audio", help="voiceover track laid under the whole video (optional)")
     a = ap.parse_args()
     demo, out = Path(a.demo), Path(a.out)
     work = out / "work"
@@ -201,7 +204,7 @@ def main():
     ], work / "end.png")
 
     parts = []
-    for name, dur in (("title", 5), ("end", 10)):
+    for name, dur in (("title", a.title_s), ("end", a.end_s)):
         run(["ffmpeg", "-v", "error", "-y", "-loop", "1", "-framerate", str(FPS), "-i", str(work / f"{name}.png"),
              "-vf", f"fade=in:0:12,fade=out:st={dur - 0.5}:d=0.5", "-t", str(dur), "-r", str(FPS),
              "-c:v", "libx264", "-crf", "16", "-pix_fmt", "yuv420p", str(work / f"{name}.mp4")])
@@ -218,8 +221,9 @@ def main():
         parts.append(seg)
     parts.append(work / "end.mp4")
     (work / "parts.txt").write_text("".join(f"file '{p}'\n" for p in parts))
+    audio = ["-i", a.audio] if a.audio else ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
     run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(work / "parts.txt"),
-         "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-shortest", "-c:v", "libx264", "-crf", "18",
+         *audio, "-map", "0:v", "-map", "1:a", "-shortest", "-c:v", "libx264", "-crf", "18",
          "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(out / "dhristi-demo.mp4")])
 
     # Captions and timeline on the final clock (title card first).
@@ -228,14 +232,14 @@ def main():
         return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
     srt, timeline = [], [{"start": 0.0, "scene": "TITLE", "text": "title card"}]
     for i, c in enumerate(cues, start=1):
-        s, e = 5 + out_time(c["start"]), 5 + out_time(c["end"])
+        s, e = a.title_s + out_time(c["start"]), a.title_s + out_time(c["end"])
         srt.append(f"{i}\n{stamp(s)} --> {stamp(e)}\n{c['text']}\n")
         timeline.append({"start": round(s, 1), "end": round(e, 1), "scene": c["scene"], "text": c["text"]})
-    end_at = 5 + out_time(total)
-    timeline.append({"start": round(end_at, 1), "end": round(end_at + 10, 1), "scene": "END", "text": "end card"})
+    end_at = a.title_s + out_time(total)
+    timeline.append({"start": round(end_at, 1), "end": round(end_at + a.end_s, 1), "scene": "END", "text": "end card"})
     (out / "dhristi-demo.srt").write_text("\n".join(srt), encoding="utf-8")
     (out / "timeline.json").write_text(json.dumps({"segments": segs, "timeline": timeline}, indent=2), encoding="utf-8")
-    print(f"duration {end_at + 10:.1f}s, segments {segs}")
+    print(f"duration {end_at + a.end_s:.1f}s, segments {segs}")
 
 
 if __name__ == "__main__":
