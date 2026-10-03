@@ -1,0 +1,2082 @@
+{
+  "name": "gliner-label-fp-v01",
+  "date": "2026-10-03",
+  "model": "urchade/gliner_multi_pii-v1",
+  "thresholds": {
+    "strip": 0.6,
+    "uncertain_floor": 0.35,
+    "per_label": {
+      "person name": 0.12
+    }
+  },
+  "runtime": {
+    "python": "3.11.15",
+    "cpu_only": true,
+    "model_load_s": 17.2
+  },
+  "scope": "Author-written synthetic EN/HI UI labels and tasks (negatives) and synthetic personal values (positives), scored one line at a time through entities.gliner_spans as the Warden ships it. Not a blind set; Hindi not native-reviewed. Measures these strings only.",
+  "summary": {
+    "shipped": {
+      "negative_lines_with_a_span": "31/94",
+      "negative_spans": 32,
+      "positive_values_caught": "15/19"
+    },
+    "account_needs_digit": {
+      "negative_lines_with_a_span": "20/94",
+      "negative_spans": 21,
+      "positive_values_caught": "15/19"
+    },
+    "account_and_dob_need_digit": {
+      "negative_lines_with_a_span": "20/94",
+      "negative_spans": 20,
+      "positive_values_caught": "15/19"
+    },
+    "end_to_end_strip": {
+      "positive_values_leaked_unasked": [
+        "50100234567812",
+        "५०१००२३४५६७८",
+        "प्रिया शर्मा",
+        "12-01-2001"
+      ],
+      "negative_labels_altered": [
+        "My accounts",
+        "Account settings",
+        "Account details",
+        "Savings account",
+        "Change password",
+        "Date of birth",
+        "Saved addresses",
+        "खाता बंद करें",
+        "पासवर्ड बदलें"
+      ],
+      "negative_lines_asked": 23,
+      "negatives": 94,
+      "positives": 19
+    }
+  },
+  "cases": [
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "1. A type=link selector=#c1 label=\"Account statements\" position=10,20",
+      "expect": null,
+      "strip": {
+        "sent": "1. A type=link selector=#c1 label=\"Account statements\" position=10,20",
+        "asked": [
+          "Account statements"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Account statements",
+          "score": 0.397,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "2. BUTTON type=button selector=#c2 label=\"Account summary\" position=10,40",
+      "expect": null,
+      "strip": {
+        "sent": "2. BUTTON type=button selector=#c2 label=\"Account summary\" position=10,40",
+        "asked": [
+          "Account summary"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Account summary",
+          "score": 0.4942,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "3. A type=link selector=#c3 label=\"My accounts\" position=10,60",
+      "expect": null,
+      "strip": {
+        "sent": "3. A type=link selector=#c3 label=\"ACCOUNTNUMBER#1\" position=10,60",
+        "asked": [],
+        "tokens": [
+          "ACCOUNTNUMBER#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "My accounts",
+          "score": 0.6429,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "4. BUTTON type=button selector=#c4 label=\"Account settings\" position=10,80",
+      "expect": null,
+      "strip": {
+        "sent": "4. BUTTON type=button selector=#c4 label=\"ACCOUNTNUMBER#1\" position=10,80",
+        "asked": [],
+        "tokens": [
+          "ACCOUNTNUMBER#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Account settings",
+          "score": 0.6267,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "5. A type=link selector=#c5 label=\"Account details\" position=10,100",
+      "expect": null,
+      "strip": {
+        "sent": "5. A type=link selector=#c5 label=\"ACCOUNTNUMBER#1\" position=10,100",
+        "asked": [],
+        "tokens": [
+          "ACCOUNTNUMBER#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Account details",
+          "score": 0.717,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "6. BUTTON type=button selector=#c6 label=\"Open a new account\" position=10,120",
+      "expect": null,
+      "strip": {
+        "sent": "6. BUTTON type=button selector=#c6 label=\"Open a new account\" position=10,120",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "7. A type=link selector=#c7 label=\"Close account\" position=10,140",
+      "expect": null,
+      "strip": {
+        "sent": "7. A type=link selector=#c7 label=\"Close account\" position=10,140",
+        "asked": [
+          "Close account"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Close account",
+          "score": 0.4283,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "8. BUTTON type=button selector=#c8 label=\"Delete my account\" position=10,160",
+      "expect": null,
+      "strip": {
+        "sent": "8. BUTTON type=button selector=#c8 label=\"Delete my account\" position=10,160",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "9. A type=link selector=#c9 label=\"Account overview\" position=10,180",
+      "expect": null,
+      "strip": {
+        "sent": "9. A type=link selector=#c9 label=\"Account overview\" position=10,180",
+        "asked": [
+          "Account overview"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Account overview",
+          "score": 0.4713,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "10. BUTTON type=button selector=#c10 label=\"Savings account\" position=10,200",
+      "expect": null,
+      "strip": {
+        "sent": "10. BUTTON type=button selector=#c10 label=\"ACCOUNTNUMBER#1\" position=10,200",
+        "asked": [],
+        "tokens": [
+          "ACCOUNTNUMBER#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Savings account",
+          "score": 0.8167,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "11. A type=link selector=#c11 label=\"Current account\" position=10,220",
+      "expect": null,
+      "strip": {
+        "sent": "11. A type=link selector=#c11 label=\"Current account\" position=10,220",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "12. BUTTON type=button selector=#c12 label=\"Account services\" position=10,240",
+      "expect": null,
+      "strip": {
+        "sent": "12. BUTTON type=button selector=#c12 label=\"Account services\" position=10,240",
+        "asked": [
+          "Account services"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Account services",
+          "score": 0.4062,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "13. A type=link selector=#c13 label=\"Download statement\" position=10,260",
+      "expect": null,
+      "strip": {
+        "sent": "13. A type=link selector=#c13 label=\"Download statement\" position=10,260",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "14. BUTTON type=button selector=#c14 label=\"Mini statement\" position=10,280",
+      "expect": null,
+      "strip": {
+        "sent": "14. BUTTON type=button selector=#c14 label=\"Mini statement\" position=10,280",
+        "asked": [
+          "BUTTON"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "BUTTON",
+          "score": 0.1796,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "15. A type=link selector=#c15 label=\"Transaction history\" position=10,300",
+      "expect": null,
+      "strip": {
+        "sent": "15. A type=link selector=#c15 label=\"Transaction history\" position=10,300",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "16. BUTTON type=button selector=#c16 label=\"Fund transfer\" position=10,320",
+      "expect": null,
+      "strip": {
+        "sent": "16. BUTTON type=button selector=#c16 label=\"Fund transfer\" position=10,320",
+        "asked": [
+          "BUTTON"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "BUTTON",
+          "score": 0.1238,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "17. A type=link selector=#c17 label=\"Add beneficiary\" position=10,340",
+      "expect": null,
+      "strip": {
+        "sent": "17. A type=link selector=#c17 label=\"Add beneficiary\" position=10,340",
+        "asked": [
+          "Add beneficiary"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Add beneficiary",
+          "score": 0.2262,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "18. BUTTON type=button selector=#c18 label=\"Manage payees\" position=10,360",
+      "expect": null,
+      "strip": {
+        "sent": "18. BUTTON type=button selector=#c18 label=\"Manage payees\" position=10,360",
+        "asked": [
+          "Manage payees"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Manage payees",
+          "score": 0.1574,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "19. A type=link selector=#c19 label=\"Pay bills\" position=10,380",
+      "expect": null,
+      "strip": {
+        "sent": "19. A type=link selector=#c19 label=\"Pay bills\" position=10,380",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "20. BUTTON type=button selector=#c20 label=\"Recharge\" position=10,400",
+      "expect": null,
+      "strip": {
+        "sent": "20. BUTTON type=button selector=#c20 label=\"Recharge\" position=10,400",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "21. A type=link selector=#c21 label=\"Card services\" position=10,420",
+      "expect": null,
+      "strip": {
+        "sent": "21. A type=link selector=#c21 label=\"Card services\" position=10,420",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "22. BUTTON type=button selector=#c22 label=\"Block card\" position=10,440",
+      "expect": null,
+      "strip": {
+        "sent": "22. BUTTON type=button selector=#c22 label=\"Block card\" position=10,440",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "23. A type=link selector=#c23 label=\"Debit card\" position=10,460",
+      "expect": null,
+      "strip": {
+        "sent": "23. A type=link selector=#c23 label=\"Debit card\" position=10,460",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "24. BUTTON type=button selector=#c24 label=\"Credit card offers\" position=10,480",
+      "expect": null,
+      "strip": {
+        "sent": "24. BUTTON type=button selector=#c24 label=\"Credit card offers\" position=10,480",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "25. A type=link selector=#c25 label=\"Loan accounts\" position=10,500",
+      "expect": null,
+      "strip": {
+        "sent": "25. A type=link selector=#c25 label=\"Loan accounts\" position=10,500",
+        "asked": [
+          "Loan accounts"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Loan accounts",
+          "score": 0.4559,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "26. BUTTON type=button selector=#c26 label=\"Fixed deposits\" position=10,520",
+      "expect": null,
+      "strip": {
+        "sent": "26. BUTTON type=button selector=#c26 label=\"Fixed deposits\" position=10,520",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "27. A type=link selector=#c27 label=\"Profile\" position=10,540",
+      "expect": null,
+      "strip": {
+        "sent": "27. A type=link selector=#c27 label=\"Profile\" position=10,540",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "28. BUTTON type=button selector=#c28 label=\"Edit profile\" position=10,560",
+      "expect": null,
+      "strip": {
+        "sent": "28. BUTTON type=button selector=#c28 label=\"Edit profile\" position=10,560",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "29. A type=link selector=#c29 label=\"Change password\" position=10,580",
+      "expect": null,
+      "strip": {
+        "sent": "29. A type=link selector=#c29 label=\"PASSWORD#1\" position=10,580",
+        "asked": [],
+        "tokens": [
+          "PASSWORD#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PASSWORD",
+          "value": "Change password",
+          "score": 0.8785,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "30. BUTTON type=button selector=#c30 label=\"Update mobile number\" position=10,600",
+      "expect": null,
+      "strip": {
+        "sent": "30. BUTTON type=button selector=#c30 label=\"Update mobile number\" position=10,600",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "31. A type=link selector=#c31 label=\"Personal details\" position=10,620",
+      "expect": null,
+      "strip": {
+        "sent": "31. A type=link selector=#c31 label=\"Personal details\" position=10,620",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "32. BUTTON type=button selector=#c32 label=\"Contact us\" position=10,640",
+      "expect": null,
+      "strip": {
+        "sent": "32. BUTTON type=button selector=#c32 label=\"Contact us\" position=10,640",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "33. A type=link selector=#c33 label=\"Customer service\" position=10,660",
+      "expect": null,
+      "strip": {
+        "sent": "33. A type=link selector=#c33 label=\"Customer service\" position=10,660",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "34. BUTTON type=button selector=#c34 label=\"Help centre\" position=10,680",
+      "expect": null,
+      "strip": {
+        "sent": "34. BUTTON type=button selector=#c34 label=\"Help centre\" position=10,680",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "35. A type=link selector=#c35 label=\"Sign out\" position=10,700",
+      "expect": null,
+      "strip": {
+        "sent": "35. A type=link selector=#c35 label=\"Sign out\" position=10,700",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "36. BUTTON type=button selector=#c36 label=\"Log in\" position=10,720",
+      "expect": null,
+      "strip": {
+        "sent": "36. BUTTON type=button selector=#c36 label=\"Log in\" position=10,720",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "37. A type=link selector=#c37 label=\"Register\" position=10,740",
+      "expect": null,
+      "strip": {
+        "sent": "37. A type=link selector=#c37 label=\"Register\" position=10,740",
+        "asked": [
+          "Register"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Register",
+          "score": 0.1316,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "38. BUTTON type=button selector=#c38 label=\"Date of birth\" position=10,760",
+      "expect": null,
+      "strip": {
+        "sent": "38. BUTTON type=button selector=#c38 label=\"DATEOFBIRTH#1\" position=10,760",
+        "asked": [
+          "BUTTON"
+        ],
+        "tokens": [
+          "DATEOFBIRTH#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "BUTTON",
+          "score": 0.1581,
+          "band": "ask"
+        },
+        {
+          "type": "DATEOFBIRTH",
+          "value": "Date of birth",
+          "score": 0.944,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "39. A type=link selector=#c39 label=\"Name as per PAN\" position=10,780",
+      "expect": null,
+      "strip": {
+        "sent": "39. A type=link selector=#c39 label=\"Name as per PAN\" position=10,780",
+        "asked": [
+          "Name as per PAN"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Name as per PAN",
+          "score": 0.5495,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "40. BUTTON type=button selector=#c40 label=\"Address proof\" position=10,800",
+      "expect": null,
+      "strip": {
+        "sent": "40. BUTTON type=button selector=#c40 label=\"Address proof\" position=10,800",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "41. A type=link selector=#c41 label=\"Upload documents\" position=10,820",
+      "expect": null,
+      "strip": {
+        "sent": "41. A type=link selector=#c41 label=\"Upload documents\" position=10,820",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "42. BUTTON type=button selector=#c42 label=\"Verify email\" position=10,840",
+      "expect": null,
+      "strip": {
+        "sent": "42. BUTTON type=button selector=#c42 label=\"Verify email\" position=10,840",
+        "asked": [
+          "Verify email"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PASSWORD",
+          "value": "Verify email",
+          "score": 0.4701,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "43. A type=link selector=#c43 label=\"Issued documents\" position=10,860",
+      "expect": null,
+      "strip": {
+        "sent": "43. A type=link selector=#c43 label=\"Issued documents\" position=10,860",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "44. BUTTON type=button selector=#c44 label=\"Search documents\" position=10,880",
+      "expect": null,
+      "strip": {
+        "sent": "44. BUTTON type=button selector=#c44 label=\"Search documents\" position=10,880",
+        "asked": [
+          "BUTTON"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "BUTTON",
+          "score": 0.1374,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "45. A type=link selector=#c45 label=\"Aadhaar services\" position=10,900",
+      "expect": null,
+      "strip": {
+        "sent": "45. A type=link selector=#c45 label=\"Aadhaar services\" position=10,900",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "46. BUTTON type=button selector=#c46 label=\"Driving licence\" position=10,920",
+      "expect": null,
+      "strip": {
+        "sent": "46. BUTTON type=button selector=#c46 label=\"Driving licence\" position=10,920",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "47. A type=link selector=#c47 label=\"Vehicle registration\" position=10,940",
+      "expect": null,
+      "strip": {
+        "sent": "47. A type=link selector=#c47 label=\"Vehicle registration\" position=10,940",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "48. BUTTON type=button selector=#c48 label=\"Income certificate\" position=10,960",
+      "expect": null,
+      "strip": {
+        "sent": "48. BUTTON type=button selector=#c48 label=\"Income certificate\" position=10,960",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "49. A type=link selector=#c49 label=\"Caste certificate\" position=10,980",
+      "expect": null,
+      "strip": {
+        "sent": "49. A type=link selector=#c49 label=\"Caste certificate\" position=10,980",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "50. BUTTON type=button selector=#c50 label=\"Birth certificate\" position=10,1000",
+      "expect": null,
+      "strip": {
+        "sent": "50. BUTTON type=button selector=#c50 label=\"Birth certificate\" position=10,1000",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "51. A type=link selector=#c51 label=\"Apply for passport\" position=10,1020",
+      "expect": null,
+      "strip": {
+        "sent": "51. A type=link selector=#c51 label=\"Apply for passport\" position=10,1020",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "52. BUTTON type=button selector=#c52 label=\"Track application\" position=10,1040",
+      "expect": null,
+      "strip": {
+        "sent": "52. BUTTON type=button selector=#c52 label=\"Track application\" position=10,1040",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "53. A type=link selector=#c53 label=\"Grievance\" position=10,1060",
+      "expect": null,
+      "strip": {
+        "sent": "53. A type=link selector=#c53 label=\"Grievance\" position=10,1060",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "54. BUTTON type=button selector=#c54 label=\"Dashboard\" position=10,1080",
+      "expect": null,
+      "strip": {
+        "sent": "54. BUTTON type=button selector=#c54 label=\"Dashboard\" position=10,1080",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "55. A type=link selector=#c55 label=\"Notifications\" position=10,1100",
+      "expect": null,
+      "strip": {
+        "sent": "55. A type=link selector=#c55 label=\"Notifications\" position=10,1100",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "56. BUTTON type=button selector=#c56 label=\"Settings\" position=10,1120",
+      "expect": null,
+      "strip": {
+        "sent": "56. BUTTON type=button selector=#c56 label=\"Settings\" position=10,1120",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "57. A type=link selector=#c57 label=\"Language\" position=10,1140",
+      "expect": null,
+      "strip": {
+        "sent": "57. A type=link selector=#c57 label=\"Language\" position=10,1140",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "58. BUTTON type=button selector=#c58 label=\"Accessibility\" position=10,1160",
+      "expect": null,
+      "strip": {
+        "sent": "58. BUTTON type=button selector=#c58 label=\"Accessibility\" position=10,1160",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "59. A type=link selector=#c59 label=\"Your orders\" position=10,1180",
+      "expect": null,
+      "strip": {
+        "sent": "59. A type=link selector=#c59 label=\"Your orders\" position=10,1180",
+        "asked": [
+          "Your orders"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Your orders",
+          "score": 0.1946,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "60. BUTTON type=button selector=#c60 label=\"Returns\" position=10,1200",
+      "expect": null,
+      "strip": {
+        "sent": "60. BUTTON type=button selector=#c60 label=\"Returns\" position=10,1200",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "61. A type=link selector=#c61 label=\"Track order\" position=10,1220",
+      "expect": null,
+      "strip": {
+        "sent": "61. A type=link selector=#c61 label=\"Track order\" position=10,1220",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "62. BUTTON type=button selector=#c62 label=\"Saved addresses\" position=10,1240",
+      "expect": null,
+      "strip": {
+        "sent": "62. BUTTON type=button selector=#c62 label=\"ADDRESS#1\" position=10,1240",
+        "asked": [],
+        "tokens": [
+          "ADDRESS#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ADDRESS",
+          "value": "Saved addresses",
+          "score": 0.6677,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "63. A type=link selector=#c63 label=\"Payment methods\" position=10,1260",
+      "expect": null,
+      "strip": {
+        "sent": "63. A type=link selector=#c63 label=\"Payment methods\" position=10,1260",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "64. BUTTON type=button selector=#c64 label=\"Wishlist\" position=10,1280",
+      "expect": null,
+      "strip": {
+        "sent": "64. BUTTON type=button selector=#c64 label=\"Wishlist\" position=10,1280",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "65. A type=link selector=#c65 label=\"Add to cart\" position=10,1300",
+      "expect": null,
+      "strip": {
+        "sent": "65. A type=link selector=#c65 label=\"Add to cart\" position=10,1300",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "66. BUTTON type=button selector=#c66 label=\"Buy now\" position=10,1320",
+      "expect": null,
+      "strip": {
+        "sent": "66. BUTTON type=button selector=#c66 label=\"Buy now\" position=10,1320",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "67. A type=link selector=#c67 label=\"Checkout\" position=10,1340",
+      "expect": null,
+      "strip": {
+        "sent": "67. A type=link selector=#c67 label=\"Checkout\" position=10,1340",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "68. BUTTON type=button selector=#c68 label=\"Continue shopping\" position=10,1360",
+      "expect": null,
+      "strip": {
+        "sent": "68. BUTTON type=button selector=#c68 label=\"Continue shopping\" position=10,1360",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "69. A type=link selector=#c69 label=\"Apply coupon\" position=10,1380",
+      "expect": null,
+      "strip": {
+        "sent": "69. A type=link selector=#c69 label=\"Apply coupon\" position=10,1380",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "70. BUTTON type=button selector=#c70 label=\"खाता विवरण\" position=10,1400",
+      "expect": null,
+      "strip": {
+        "sent": "70. BUTTON type=button selector=#c70 label=\"खाता विवरण\" position=10,1400",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "71. A type=link selector=#c71 label=\"मेरे खाते\" position=10,1420",
+      "expect": null,
+      "strip": {
+        "sent": "71. A type=link selector=#c71 label=\"मेरे खाते\" position=10,1420",
+        "asked": [
+          "मेरे खाते"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "मेरे खाते",
+          "score": 0.5262,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "72. BUTTON type=button selector=#c72 label=\"खाता हटाएं\" position=10,1440",
+      "expect": null,
+      "strip": {
+        "sent": "72. BUTTON type=button selector=#c72 label=\"खाता हटाएं\" position=10,1440",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "73. A type=link selector=#c73 label=\"खाता बंद करें\" position=10,1460",
+      "expect": null,
+      "strip": {
+        "sent": "73. A type=link selector=#c73 label=\"PASSWORD#1\" position=10,1460",
+        "asked": [],
+        "tokens": [
+          "PASSWORD#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PASSWORD",
+          "value": "खाता बंद करें",
+          "score": 0.6503,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "74. BUTTON type=button selector=#c74 label=\"पासवर्ड बदलें\" position=10,1480",
+      "expect": null,
+      "strip": {
+        "sent": "74. BUTTON type=button selector=#c74 label=\"PASSWORD#1\" position=10,1480",
+        "asked": [],
+        "tokens": [
+          "PASSWORD#1"
+        ],
+        "label_intact": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PASSWORD",
+          "value": "पासवर्ड बदलें",
+          "score": 0.8077,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "75. A type=link selector=#c75 label=\"प्रोफ़ाइल\" position=10,1500",
+      "expect": null,
+      "strip": {
+        "sent": "75. A type=link selector=#c75 label=\"प्रोफ़ाइल\" position=10,1500",
+        "asked": [
+          "प्रोफ़ाइल"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PASSWORD",
+          "value": "प्रोफ़ाइल",
+          "score": 0.468,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "76. BUTTON type=button selector=#c76 label=\"जन्म तिथि\" position=10,1520",
+      "expect": null,
+      "strip": {
+        "sent": "76. BUTTON type=button selector=#c76 label=\"जन्म तिथि\" position=10,1520",
+        "asked": [
+          "जन्म तिथि"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "जन्म तिथि",
+          "score": 0.2831,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "77. A type=link selector=#c77 label=\"पता बदलें\" position=10,1540",
+      "expect": null,
+      "strip": {
+        "sent": "77. A type=link selector=#c77 label=\"पता बदलें\" position=10,1540",
+        "asked": [
+          "पता बदलें"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "पता बदलें",
+          "score": 0.1601,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "78. BUTTON type=button selector=#c78 label=\"लॉग आउट\" position=10,1560",
+      "expect": null,
+      "strip": {
+        "sent": "78. BUTTON type=button selector=#c78 label=\"लॉग आउट\" position=10,1560",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "79. A type=link selector=#c79 label=\"सहायता\" position=10,1580",
+      "expect": null,
+      "strip": {
+        "sent": "79. A type=link selector=#c79 label=\"सहायता\" position=10,1580",
+        "asked": [
+          "सहायता"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "सहायता",
+          "score": 0.157,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "80. BUTTON type=button selector=#c80 label=\"दस्तावेज़ खोजें\" position=10,1600",
+      "expect": null,
+      "strip": {
+        "sent": "80. BUTTON type=button selector=#c80 label=\"दस्तावेज़ खोजें\" position=10,1600",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "label",
+      "text": "81. A type=link selector=#c81 label=\"भुगतान करें\" position=10,1620",
+      "expect": null,
+      "strip": {
+        "sent": "81. A type=link selector=#c81 label=\"भुगतान करें\" position=10,1620",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Delete my account",
+      "expect": null,
+      "strip": {
+        "sent": "Delete my account",
+        "asked": [
+          "Delete my account"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Delete my account",
+          "score": 0.3549,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Download my account statement for March",
+      "expect": null,
+      "strip": {
+        "sent": "Download my account statement for March",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Show my account summary",
+      "expect": null,
+      "strip": {
+        "sent": "Show my account summary",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Close my savings account",
+      "expect": null,
+      "strip": {
+        "sent": "Close my savings account",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Change my password",
+      "expect": null,
+      "strip": {
+        "sent": "Change my password",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Update my address",
+      "expect": null,
+      "strip": {
+        "sent": "Update my address",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Find my driving licence",
+      "expect": null,
+      "strip": {
+        "sent": "Find my driving licence",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Track my order",
+      "expect": null,
+      "strip": {
+        "sent": "Track my order",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Open account settings",
+      "expect": null,
+      "strip": {
+        "sent": "Open account settings",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "Log out of my account",
+      "expect": null,
+      "strip": {
+        "sent": "Log out of my account",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "मेरा खाता हटाएं",
+      "expect": null,
+      "strip": {
+        "sent": "मेरा खाता हटाएं",
+        "asked": [
+          "मेरा खाता हटाएं"
+        ],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "मेरा खाता हटाएं",
+          "score": 0.1465,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "मेरा खाता विवरण दिखाएं",
+      "expect": null,
+      "strip": {
+        "sent": "मेरा खाता विवरण दिखाएं",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "negative",
+      "kind": "task",
+      "text": "मेरा पासवर्ड बदलें",
+      "expect": null,
+      "strip": {
+        "sent": "मेरा पासवर्ड बदलें",
+        "asked": [],
+        "tokens": [],
+        "label_intact": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "1. SPAN type=text selector=#c1 label=\"Account number 50100234567812\" position=10,20",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 0,
+      "strip": {
+        "sent": "1. SPAN type=text selector=#c1 label=\"Account number ACCOUNTNUMBER#1\" position=10,20",
+        "asked": [],
+        "tokens": [
+          "ACCOUNTNUMBER#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "50100234567812",
+          "score": 0.972,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "2. SPAN type=text selector=#c2 label=\"Savings account 0123 4567 8901\" position=10,40",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 1,
+      "strip": {
+        "sent": "2. SPAN type=text selector=#c2 label=\"Savings account AADHAAR#1\" position=10,40",
+        "asked": [],
+        "tokens": [
+          "AADHAAR#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "0123 4567 8901",
+          "score": 0.8445,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "3. SPAN type=text selector=#c3 label=\"A/c XXXX4521\" position=10,60",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 2,
+      "strip": {
+        "sent": "3. SPAN type=text selector=#c3 label=\"A/c XXXX4521\" position=10,60",
+        "asked": [
+          "A/c XXXX4521"
+        ],
+        "tokens": [],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "A/c XXXX4521",
+          "score": 0.3603,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "4. SPAN type=text selector=#c4 label=\"Account no. 3920 1188 2201 76\" position=10,80",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 3,
+      "strip": {
+        "sent": "4. SPAN type=text selector=#c4 label=\"Account no. AADHAAR#1 76\" position=10,80",
+        "asked": [],
+        "tokens": [
+          "AADHAAR#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "3920 1188 2201 76",
+          "score": 0.8286,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "5. SPAN type=text selector=#c5 label=\"खाता संख्या 50100234567812\" position=10,100",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 4,
+      "strip": {
+        "sent": "5. SPAN type=text selector=#c5 label=\"खाता संख्या 50100234567812\" position=10,100",
+        "asked": [],
+        "tokens": [],
+        "value_leaked": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "6. SPAN type=text selector=#c6 label=\"खाता संख्या ५०१००२३४५६७८\" position=10,120",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 5,
+      "strip": {
+        "sent": "6. SPAN type=text selector=#c6 label=\"खाता संख्या ५०१००२३४५६७८\" position=10,120",
+        "asked": [],
+        "tokens": [],
+        "value_leaked": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "7. SPAN type=text selector=#c7 label=\"Beneficiary account 778899001122\" position=10,140",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 6,
+      "strip": {
+        "sent": "7. SPAN type=text selector=#c7 label=\"ACCOUNTNUMBER#1\" position=10,140",
+        "asked": [],
+        "tokens": [
+          "ACCOUNTNUMBER#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "Beneficiary account 778899001122",
+          "score": 0.8157,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "8. SPAN type=text selector=#c8 label=\"IBAN GB29 NWBK 6016 1331 9268 19\" position=10,160",
+      "expect": "ACCOUNTNUMBER",
+      "text_index": 7,
+      "strip": {
+        "sent": "8. SPAN type=text selector=#c8 label=\"IBAN GB29 NWBK AADHAAR#1 19\" position=10,160",
+        "asked": [],
+        "tokens": [
+          "AADHAAR#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ACCOUNTNUMBER",
+          "value": "IBAN GB29 NWBK 6016 1331 9268 19",
+          "score": 0.6279,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "9. SPAN type=text selector=#c9 label=\"Signed in as Ananya Krishnan\" position=10,180",
+      "expect": "PERSONNAME",
+      "text_index": 8,
+      "strip": {
+        "sent": "9. SPAN type=text selector=#c9 label=\"Signed in as PERSONNAME#1\" position=10,180",
+        "asked": [],
+        "tokens": [
+          "PERSONNAME#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Ananya Krishnan",
+          "score": 0.6902,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "10. SPAN type=text selector=#c10 label=\"Welcome back, Rohit Mehra\" position=10,200",
+      "expect": "PERSONNAME",
+      "text_index": 9,
+      "strip": {
+        "sent": "10. SPAN type=text selector=#c10 label=\"Welcome back, PERSONNAME#1\" position=10,200",
+        "asked": [],
+        "tokens": [
+          "PERSONNAME#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Rohit Mehra",
+          "score": 0.6194,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "11. SPAN type=text selector=#c11 label=\"Account holder Neha Joshi\" position=10,220",
+      "expect": "PERSONNAME",
+      "text_index": 10,
+      "strip": {
+        "sent": "11. SPAN type=text selector=#c11 label=\"Account holder PERSONNAME#1\" position=10,220",
+        "asked": [],
+        "tokens": [
+          "PERSONNAME#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Neha Joshi",
+          "score": 0.9416,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "12. SPAN type=text selector=#c12 label=\"Pay Suresh Iyer\" position=10,240",
+      "expect": "PERSONNAME",
+      "text_index": 11,
+      "strip": {
+        "sent": "12. SPAN type=text selector=#c12 label=\"Pay Suresh Iyer\" position=10,240",
+        "asked": [
+          "Pay Suresh Iyer"
+        ],
+        "tokens": [],
+        "value_leaked": false
+      },
+      "ms": 0.2,
+      "spans": [
+        {
+          "type": "PERSONNAME",
+          "value": "Pay Suresh Iyer",
+          "score": 0.4584,
+          "band": "ask"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "13. SPAN type=text selector=#c13 label=\"नमस्ते, प्रिया शर्मा\" position=10,260",
+      "expect": "PERSONNAME",
+      "text_index": 12,
+      "strip": {
+        "sent": "13. SPAN type=text selector=#c13 label=\"नमस्ते, प्रिया शर्मा\" position=10,260",
+        "asked": [],
+        "tokens": [],
+        "value_leaked": true
+      },
+      "ms": 0.1,
+      "spans": []
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "14. SPAN type=text selector=#c14 label=\"Date of birth 14/08/1996\" position=10,280",
+      "expect": "DATEOFBIRTH",
+      "text_index": 13,
+      "strip": {
+        "sent": "14. SPAN type=text selector=#c14 label=\"Date of birth DATEOFBIRTH#1\" position=10,280",
+        "asked": [],
+        "tokens": [
+          "DATEOFBIRTH#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "DATEOFBIRTH",
+          "value": "14/08/1996",
+          "score": 0.9894,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "15. SPAN type=text selector=#c15 label=\"DOB: 3 March 1988\" position=10,300",
+      "expect": "DATEOFBIRTH",
+      "text_index": 14,
+      "strip": {
+        "sent": "15. SPAN type=text selector=#c15 label=\"DOB: DATEOFBIRTH#1\" position=10,300",
+        "asked": [],
+        "tokens": [
+          "DATEOFBIRTH#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "DATEOFBIRTH",
+          "value": "3 March 1988",
+          "score": 0.8898,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "16. SPAN type=text selector=#c16 label=\"जन्म तिथि 12-01-2001\" position=10,320",
+      "expect": "DATEOFBIRTH",
+      "text_index": 15,
+      "strip": {
+        "sent": "16. SPAN type=text selector=#c16 label=\"जन्म तिथि 12-01-2001\" position=10,320",
+        "asked": [],
+        "tokens": [],
+        "value_leaked": true
+      },
+      "ms": 4.3,
+      "spans": []
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "17. SPAN type=text selector=#c17 label=\"Ship to 42 MG Road, Bengaluru 560001\" position=10,340",
+      "expect": "ADDRESS",
+      "text_index": 16,
+      "strip": {
+        "sent": "17. SPAN type=text selector=#c17 label=\"Ship to ADDRESS#1\" position=10,340",
+        "asked": [],
+        "tokens": [
+          "ADDRESS#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.0,
+      "spans": [
+        {
+          "type": "ADDRESS",
+          "value": "42 MG Road, Bengaluru 560001",
+          "score": 0.6891,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "18. SPAN type=text selector=#c18 label=\"Flat 3B, Lake View Apartments, Pune\" position=10,360",
+      "expect": "ADDRESS",
+      "text_index": 17,
+      "strip": {
+        "sent": "18. SPAN type=text selector=#c18 label=\"ADDRESS#1\" position=10,360",
+        "asked": [],
+        "tokens": [
+          "ADDRESS#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "ADDRESS",
+          "value": "Flat 3B, Lake View Apartments, Pune",
+          "score": 0.9777,
+          "band": "strip"
+        }
+      ]
+    },
+    {
+      "set": "positive",
+      "kind": "label",
+      "text": "19. SPAN type=text selector=#c19 label=\"Temporary password Xk9!rT2q\" position=10,380",
+      "expect": "PASSWORD",
+      "text_index": 18,
+      "strip": {
+        "sent": "19. SPAN type=text selector=#c19 label=\"Temporary password PASSWORD#1\" position=10,380",
+        "asked": [],
+        "tokens": [
+          "PASSWORD#1"
+        ],
+        "value_leaked": false
+      },
+      "ms": 0.1,
+      "spans": [
+        {
+          "type": "PASSWORD",
+          "value": "Xk9!rT2q",
+          "score": 0.8805,
+          "band": "strip"
+        }
+      ]
+    }
+  ]
+}

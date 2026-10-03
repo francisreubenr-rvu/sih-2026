@@ -167,6 +167,8 @@ def gliner_spans(text: str) -> list:
             # what the form calls the box; it is not somebody's address.
             if _is_structural_descriptor(value):
                 continue
+            if not _plausible_value(LABEL_TO_TYPE[label], value):
+                continue
             spans.append({
                 "start": start,
                 "end": end,
@@ -363,7 +365,15 @@ def _predict_chunks(model, texts: list) -> list:
 # metadata too, and is neutralised since 29 September 2026: scored one line at
 # a time, "99. A type=link ... label=\"Account holder Neha Joshi\"" returned the
 # index "99" as an account number at 0.381, a question about a line number.
-_SCAFFOLDING_RE = re.compile(r"\b(type|selector|position)=[^\s]+|^\d+\.(?= )", re.MULTILINE)
+#
+# The tag word after the index ("12. BUTTON", "3. A") and the STATUS line prefix
+# are our metadata too (3 October 2026): scored one line at a time, "BUTTON" came
+# back as a person name at 0.12 to 0.18 on 4 of 94 ordinary labels
+# (Benchmarks/results/gliner-label-fp-v01.json), each a question about our own markup.
+_SCAFFOLDING_RE = re.compile(
+    r"\b(type|selector|position)=[^\s]+|^\d+\. [A-Z][A-Z0-9-]*(?= )|^\d+\.(?= )|^STATUS(?= )",
+    re.MULTILINE,
+)
 
 _DESCRIPTOR_WORDS = {
     "password", "passwd", "pwd", "passcode", "passphrase", "secret",
@@ -398,3 +408,35 @@ def _is_structural_descriptor(value: str) -> bool:
     if not words:
         return False
     return all(w in _DESCRIPTOR_WORDS for w in words)
+
+
+# ---------------------------------------------------------------------------
+# Type plausibility (added 3 October 2026)
+# ---------------------------------------------------------------------------
+# Measured on 94 ordinary EN/HI labels and tasks (gliner-label-fp-v01.json):
+# "Account statements" 0.40 and "Delete my account" 0.35 were questions, and
+# "My accounts", "Account details", "Savings account" (0.62 to 0.82) were
+# silently replaced by ACCOUNTNUMBER tokens, so the planner could not choose
+# those links. "Change password" (0.88) and the Hindi destructive label
+# "खाता बंद करें" (0.65) were stripped as passwords, the latter hiding a
+# destructive control's name from the planner.
+#
+# Rules, each true of the type itself and not fitted to a label list:
+# - an account number or a date of birth contains a digit (any script; Python's
+#   \d matches Devanagari digits). Spelled-out dates of birth are no longer
+#   model hits; a keyed numeric one is caught by the regex layer as well.
+# - a password is one token: a span with whitespace is a phrase. Trade
+#   accepted and recorded: a passphrase with spaces shown in page text is no
+#   longer a model hit; password inputs stay covered by the fieldType flag and
+#   the screenshot mask.
+# Person names and addresses are untouched: they have no such structural test,
+# and a missed name is the failure this layer exists to prevent.
+_HAS_DIGIT_RE = re.compile(r"\d")
+
+
+def _plausible_value(span_type: str, value: str) -> bool:
+    if span_type in ("ACCOUNTNUMBER", "DATEOFBIRTH"):
+        return bool(_HAS_DIGIT_RE.search(value))
+    if span_type == "PASSWORD":
+        return not re.search(r"\s", value.strip())
+    return True

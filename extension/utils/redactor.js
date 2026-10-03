@@ -34,6 +34,57 @@ function luhnValid(digits) {
   return sum % 10 === 0;
 }
 
+// IBAN mod-97 check, digit by digit so no BigInt is needed.
+function ibanValid(m) {
+  const compact = m.replace(/ /g, '').toUpperCase();
+  if (compact.length < 15 || compact.length > 34) return false;
+  const rearranged = compact.slice(4) + compact.slice(0, 4);
+  let rem = 0;
+  for (const ch of rearranged) {
+    const v = parseInt(ch, 36);
+    for (const d of String(v)) rem = (rem * 10 + Number(d)) % 97;
+  }
+  return rem === 1;
+}
+
+// ---------------------------------------------------------------------------
+// Match copy (added 3 October 2026, mirrors warden/redactor.py match_copy)
+// ---------------------------------------------------------------------------
+// Every pass matches on a copy where Indian-script digits and full-width ASCII
+// map to ASCII, non-breaking spaces to a space, and zero-width and soft-hyphen
+// characters to "-". Each mapping is one UTF-16 unit for one, so offsets into
+// the copy index the original. Measured leaks it closes: "खाता संख्या
+// 50100234567812" and its Devanagari-digit form, "98765\u200b43210", "ravi＠example.com".
+const INDIC_DIGIT_ZEROS = [0x0966, 0x09e6, 0x0a66, 0x0ae6, 0x0b66, 0x0be6, 0x0c66, 0x0ce6, 0x0d66];
+function mapMatchChar(code) {
+  for (const zero of INDIC_DIGIT_ZEROS) if (code >= zero && code <= zero + 9) return 48 + code - zero;
+  if (code >= 0xff01 && code <= 0xff5e) return code - 0xfee0;
+  if (code === 0x00a0 || code === 0x2007 || code === 0x202f) return 32;
+  if (code === 0x00ad || (code >= 0x200b && code <= 0x200d) || code === 0x2060 || code === 0xfeff) return 45;
+  return code;
+}
+export function matchCopy(text) {
+  let out = '';
+  for (let i = 0; i < text.length; i += 1) out += String.fromCharCode(mapMatchChar(text.charCodeAt(i)));
+  return out;
+}
+
+// Any other run of 9 to 18 digits is an account number. Groups need 3+ digits
+// except a final group of 2, so pagination ("10 11 12 13 14") and timestamps
+// ("2026-10-03 18:01") cannot add up to one. Runs after the Aadhaar heuristic.
+const ACCOUNT_RE = /(?<![0-9])[0-9]{3,}(?:[ -][0-9]{3,})*(?:[ -][0-9]{2})?(?![0-9])/g;
+const accountValid = (m) => {
+  const n = m.replace(/[ -]/g, '').length;
+  return n >= 9 && n <= 18;
+};
+// A date on a line that names a date of birth (EN or HI) is a date of birth.
+const DOB_KEYWORD_RE = /date of birth|\bdob\b|\bbirth|\bborn\b|जन्म/i;
+const DATE_RE = /(?<![0-9])(?:[0-9]{1,2}[-/.][0-9]{1,2}[-/.][0-9]{2,4}|[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2} (?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* [0-9]{4})(?![0-9])/gi;
+function replaceDobLines(working, replacer) {
+  if (!DOB_KEYWORD_RE.test(working)) return working;
+  return working.split('\n').map((line) => (DOB_KEYWORD_RE.test(line) ? line.replace(DATE_RE, replacer) : line)).join('\n');
+}
+
 // ---------------------------------------------------------------------------
 // Pattern set (single source of truth)
 // ---------------------------------------------------------------------------
@@ -50,6 +101,14 @@ const passes = [
     name: 'email',
     re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
     confidence: 'regex-exact'
+  },
+  {
+    // Before the digit passes, so Aadhaar or card cannot take the digits out of
+    // an IBAN. Validated by the IBAN mod-97 check.
+    name: 'iban',
+    re: /\b[A-Z]{2}[0-9]{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,3})?\b/g,
+    confidence: 'regex-exact',
+    validate: ibanValid
   },
   {
     name: 'pan',
@@ -71,8 +130,10 @@ const passes = [
     }
   },
   {
+    // Not part of a longer grouped number: "3920 1188 2201 76" is one account
+    // number, and taking its first 12 digits as Aadhaar used to leave "76".
     name: 'aadhaar',
-    re: /(?<!\d)\d{4}[ -]\d{4}[ -]\d{4}(?!\d)/g,
+    re: /(?<!\d)(?<!\d[ -])\d{4}[ -]\d{4}[ -]\d{4}(?![ -]?\d)/g,
     confidence: 'regex-exact'
   },
   {
@@ -87,12 +148,12 @@ const passes = [
   },
   {
     name: 'phone',
-    re: /(?<!\d)[6-9]\d{4}[ -]\d{5}(?!\d)/g,
+    re: /(?<!\d)0?[6-9]\d{4}[ -]\d{5}(?!\d)/g,
     confidence: 'regex-exact'
   },
   {
     name: 'phone',
-    re: /(?<!\d)[6-9]\d{9}(?!\d)/g,
+    re: /(?<!\d)0?[6-9]\d{9}(?!\d)/g,
     confidence: 'regex-exact'
   },
   {
@@ -147,7 +208,7 @@ export function redactText(text) {
 
   const decisions = [];
   let count = 0;
-  let working = text;
+  let working = matchCopy(text);
 
   for (const pass of passes) {
     const result = applyPattern(working, pass.re, pass.name, pass.confidence, pass.validate);
@@ -165,6 +226,17 @@ export function redactText(text) {
     decisions.push(...result.decisions);
   }
 
+  const account = applyPattern(working, ACCOUNT_RE, 'accountnumber', 'regex-exact', accountValid);
+  working = account.text;
+  count += account.count;
+  decisions.push(...account.decisions);
+
+  working = replaceDobLines(working, (match) => {
+    count += 1;
+    decisions.push({ pattern: 'dateofbirth', matchedLength: match.length, confidence: 'heuristic-label' });
+    return MASK_TOKEN;
+  });
+
   return { text: working, count, decisions };
 }
 
@@ -181,6 +253,10 @@ export function redactText(text) {
 // AADHAAR#1, PAN#1, CARD#1, PASSPORT#1, ...), numbered per type starting at
 // 1. A match that fails a pass's `validate` predicate is left alone, exactly
 // as in redactText().
+// Values are cut from the match copy, so a value that held Indian-script digits
+// or a zero-width character is minted in ASCII digits with "-" (the Warden's
+// regex_spans keeps the page's own characters; warden/redactor.py regex_strip
+// matches this function for the parity test).
 export function tokenizeText(text) {
   if (typeof text !== 'string' || text.length === 0) {
     return { text: text ?? '', tokens: {} };
@@ -188,7 +264,7 @@ export function tokenizeText(text) {
 
   const tokens = {};
   const counts = {};
-  let working = text;
+  let working = matchCopy(text);
 
   const mint = (match, patternName) => {
     const type = patternName.toUpperCase();
@@ -209,6 +285,9 @@ export function tokenizeText(text) {
   if (AADHAAR_KEYWORD_RE.test(text)) {
     working = working.replace(AADHAAR_BARE_RE, (match) => mint(match, 'aadhaar'));
   }
+
+  working = working.replace(ACCOUNT_RE, (match) => (accountValid(match) ? mint(match, 'accountnumber') : match));
+  working = replaceDobLines(working, (match) => mint(match, 'dateofbirth'));
 
   return { text: working, tokens };
 }
