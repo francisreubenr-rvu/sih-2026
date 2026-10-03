@@ -204,7 +204,17 @@ export function createVisionClient({
       const t0 = performance.now();
       await warm();
       const t1 = performance.now();
-      const result = checkDetectReply(await request('detect', { dataUrl }, detectTimeoutMs));
+      let reply;
+      try {
+        reply = await request('detect', { dataUrl }, detectTimeoutMs);
+      } catch (error) {
+        // The offscreen host went away (crash, OOM, closed). Forget the finished warm-up so the next
+        // step recreates the document instead of failing for the rest of the worker's life (code
+        // review, 3 October 2026). This step's capture is still discarded by the caller.
+        if (error instanceof VisionError && error.reason === 'host') { warming = null; initInfo = null; }
+        throw error;
+      }
+      const result = checkDetectReply(reply);
       return { ...result, waitInitMs: t1 - t0, detectMs: performance.now() - t1 };
     },
     // Measurement only: the host's JS heap (performance.memory, Chromium) and its start time.

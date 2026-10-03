@@ -131,14 +131,22 @@ export async function createVisionDetector({ runtimeUrl, modelUrl }) {
   }
 
   return {
+    // Requests queue behind a running one instead of failing "busy" (code review, 3 October 2026):
+    // a detect the worker abandoned at its 1.5 s cap keeps running here, and refusing the next
+    // step's request made one slow capture fail several steps in a row.
     async detect(bitmap) {
       if (disposed) throw new Error('Detector disposed');
-      if (active) throw new Error('Detector busy');
-      active = infer(bitmap);
+      const previous = active;
+      const run = (async () => {
+        if (previous) { try { await previous; } catch { /* that request's caller saw it */ } }
+        if (disposed) throw new Error('Detector disposed');
+        return infer(bitmap);
+      })();
+      active = run;
       try {
-        return await active;
+        return await run;
       } finally {
-        active = null;
+        if (active === run) active = null;
       }
     },
     async dispose() {

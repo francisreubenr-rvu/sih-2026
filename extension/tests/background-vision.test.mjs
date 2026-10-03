@@ -146,3 +146,21 @@ test('the detector starts once per worker: one offscreen document, warmed at STA
   assert.equal(run.pipelineTrace.vision.faces, 0);
   assert.equal(run.pipelineTrace.screenshot.dataUrl, RAW);
 });
+
+// Code review, 3 October 2026: a host that went away (crash, OOM) left the finished warm-up
+// memoised, so every later step failed with no attempt to recreate the document.
+test('after the host goes away, the next step starts the detector again instead of failing for good', async () => {
+  let detects = 0;
+  const vision = (r) => {
+    if (r.type === 'detect') { detects += 1; if (detects === 1) return VISION_DROP; }
+    return defaultVision(r);
+  };
+  const nextPlan = { action: 'click', target_selector: '#next', coordinates: { x: 10, y: 10 }, value: null, reasoning_token: 'next' };
+  let plans = 0;
+  const plan = () => ({ model: 'groq/fake-70b', destination: 'cloud', latencyMs: 5, switched: [], plan: (plans += 1) === 1 ? nextPlan : FINISH });
+  const run = await runTask({ scan: scan(), capture: RAW, vision, warden: { plan } });
+  assert.equal(run.terminal.status, 'finished');
+  assert.equal(detects, 2, 'the second step asked for a face check');
+  assert.ok(run.visionRequests.filter((r) => r.type === 'init').length >= 2, 'the detector was started again');
+  assert.equal(run.pipelineTrace.vision.status, 'done', 'the second step\'s face check succeeded');
+});
