@@ -4,6 +4,8 @@
 
 **Window:** sessions 5 to 10 October 2026, logging by 11 October, so the result can enter the ledger before the 16 October working deadline.
 
+**Correction, 3 October 2026:** the submission is today (pitch PPTX and YouTube video), so no G20 session can be cited in it. The protocol stays for any later round.
+
 **Guardrail G20:** at least **5** representative **non-author** participants perform the frozen tasks, and at least **3** **non-author** reviewers score the narrative with the anchored rubric. Below that, the status stays `unknown`, with no claim of benchmark saturation.
 
 **Forms:** `Docs/human-evaluation-forms.md`. **Log:** `Benchmarks/results/human-evaluation.json`. **Check:** `python3 scripts/g20_summarize.py` reports whether the logged sessions meet the bar. It never edits the ledger; moving G20 needs Francis's confirmation.
