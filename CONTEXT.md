@@ -1,6 +1,24 @@
 # Dhristi: SIH26171
 
-## Session handoff: start here (2 October 2026)
+## Session handoff: start here (3 October 2026)
+
+**Where the work is.** PR #44 and #47 are merged into `master`. Open: draft PR francisreubenr-rvu/sih-2026#52 on `claude/epic-mayer-7cyi4z`, the review sweep Francis asked for on 3 October (security review, consistency audit, Warden and extension code review, side-panel accessibility, cited research, first live G11 measurement). Findings: `ROAST.md` round 30. Plan and decisions taken under "decide on your own": `PLAN.md`, "Review sweep (3 October 2026)". Research: `Docs/research/how-to-build-dhristi.md`.
+
+**What changed that a new session must know.**
+
+- `/strip`'s `resolved` is now `{token: {decision, value}}`; a bare "keep" is ignored (asked again).
+- The Warden refuses non-loopback `Host` (421), non-JSON POSTs (415), missing `Content-Length` (411) and bodies over 2 MiB (413). Reviewer checkpoint: `WARDEN_REVIEWER_MODEL` (`WARDEN_LAYA_MODEL` still read as a fallback); fast path: `WARDEN_FAST_PATH_LAYA_MODEL`, and both fast-path backends are off in code.
+- The extension accepts only `http://127.0.0.1:<port>` as the Warden origin, checks a signed `/health` before each `/strip`, binds a run to its starting origin, and answers only its own pages (the panel opened in a tab counts; content scripts do not).
+- Redaction catches account numbers after Hindi words, Indian-script digits, IBAN and keyed dates of birth; Hindi UI words are not asked about as names. A Devanagari person name is still missed (open).
+- One command runs every local check: `scripts/check-all.sh --install`.
+
+**Checks at the PR #52 head (3 October):** all eight suites in `scripts/check-all.sh` pass (record: `Benchmarks/results/setup-run-2026-10-03.json`). Ledger: 14 pass / 1 fail / 5 unknown, unchanged; G11 fail, G20 unknown (zero sessions), `submission_ready` false.
+
+**G11, first live run** (`core-latency-v5-live-v01.json`, frozen flow, 100 runs after 10 warm-ups, demo configuration with the Laya reviewer): p50 2404 ms, p95 3713 ms against 200 ms. The planner's two cloud calls are about half; fixed sleeps were about 764 ms (replaced since by a DOM-quiet wait, measured in `-v02.json`).
+
+**Environment (cloud container).** Keys in env: `GROQ_API_KEY`, `HF_TOKEN`, `JEV_API_KEY`, `OPENROUTER_API_KEY` (others in the environment belong to other projects; leave them). CPU torch, GLiNER, laya 0.3.22 and the Warden requirements install with `pip install -r warden/requirements.txt` (torch from the CPU index). Live harnesses: start the Warden with a fresh `python warden/pairing.py new` secret and pass the same `WARDEN_PAIRING_SECRET` to `scripts/e2e-v5/run.mjs` or `g11-live.mjs`; never print it.
+
+## Session handoff, 2 October 2026 (history; superseded by the section above)
 
 **Where the work is.** PR #42 (Laya plan reviewer and release) and PR #41 (fast path, Groq settings, Laya fast-path training, now parked) are merged into `master` (`3314513`). Open: PR #44 on `claude/lucid-fermat-6dkxla`. It adds Hindi and missing-verb destructive rules, and makes extension-Warden pairing required (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). Current review and ordered plan: `PLAN.md`, "Review and next steps (2 October 2026)". Findings: `ROAST.md` rounds 28 and 29. Decision: `Docs/decisions/brain-laya-plan-review.md`.
 
