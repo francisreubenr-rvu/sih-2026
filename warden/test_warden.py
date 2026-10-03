@@ -82,6 +82,9 @@ def _pairing_disabled_for_logic_tests(monkeypatch):
     tests below clear it to exercise the real default."""
     monkeypatch.setenv("WARDEN_PAIRING_DISABLED", "1")
     monkeypatch.delenv("WARDEN_PAIRING_SECRET", raising=False)
+    # TestClient sends Host: testserver. Production answers loopback names only
+    # (config.ALLOWED_HOSTNAMES); the test host is added here, never in config.
+    monkeypatch.setattr(config, "ALLOWED_HOSTNAMES", config.ALLOWED_HOSTNAMES | {"testserver"})
 
 REPO_ROOT = WARDEN_DIR.parent
 REDACTOR_JS_PATH = REPO_ROOT / "extension" / "utils" / "redactor.js"
@@ -1978,3 +1981,253 @@ def test_jev_fast_path_is_disabled_but_kept(monkeypatch):
     assert calls["groq"] == 1 and "fastPath" not in result
     assert TestClient(warden_app.app).get("/health").json()["fastPath"]["jevDisabled"] is True
     assert callable(fastpath.plan_or_none), "the code is kept"
+
+
+# ---------------------------------------------------------------------------
+# Code review, 3 October 2026. Each test pins one defect found in review.
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("smuggled", [
+    "Pay with X#4111111111111111",   # token-shaped prefix: the whole number was blanked
+    "Pay with A4111111111111111#1",  # digits inside the token's type part
+    "Call PHONE#9876543210",
+])
+def test_egress_guard_is_not_bypassed_by_a_token_shaped_prefix(smuggled):
+    body = _plan_body()
+    body["tokenizedTask"] = smuggled
+    hit = warden_app.egress_guard(body)
+    assert hit is not None and hit["field"] == "tokenizedTask"
+
+
+@pytest.mark.parametrize("mutate,expected", [
+    (lambda b: b["elements"][0].update(x=4111111111111111), {"pattern": "card", "field": "elements[0].x"}),
+    (lambda b: b.update(history=[{"stepNumber": 1, "action": "type", "value": 9876543210}]),
+     {"pattern": "phone", "field": "history[0].value"}),
+])
+def test_egress_guard_scans_numbers(mutate, expected):
+    body = _plan_body()
+    mutate(body)
+    assert warden_app.egress_guard(body) == expected
+
+
+def test_egress_guard_scans_dict_keys_and_never_echoes_them(monkeypatch):
+    _refuse_every_planner(monkeypatch)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    body = _plan_body()
+    body["history"] = [{"jordan.test@example.org": "typed"}]
+    resp = TestClient(warden_app.app).post("/plan", json=body)
+    assert resp.status_code == 422
+    assert resp.json()["egressGuard"]["pattern"] == "email"
+    assert "jordan.test@example.org" not in resp.text
+
+
+@pytest.mark.parametrize("text,pattern", [
+    ("Card ４１１１ １１１１ １１１１ １１１１", "card"),  # full-width
+    ("Call ९८७६५४३२१०", "phone"),  # Devanagari 9876543210
+])
+def test_egress_guard_reads_non_ascii_digits(text, pattern):
+    body = _plan_body()
+    body["sanitizedDom"] = text
+    assert warden_app.egress_guard(body) == {"pattern": pattern, "field": "sanitizedDom"}
+
+
+def test_paired_warden_answers_401_not_500_for_a_non_ascii_auth_header(monkeypatch):
+    client = _paired_client(monkeypatch)
+    raw = json.dumps(_plan_body()).encode()
+    res = TestClient(warden_app.app, raise_server_exceptions=False).post("/plan", content=raw, headers={
+        "Content-Type": "application/json", "X-Dhristi-Nonce": "n" * 24,
+        "X-Dhristi-Auth": "é".encode("latin-1") * 43,
+    })
+    assert res.status_code == 401
+
+
+_BAD_COMMON = [b"{not json", b"[1, 2]", b'"text"', b'{"elements": [1, 2]}', b'{"elements": "x"}',
+               b'{"elements": [{"selector": "#a", "label": 7}]}', b'{"elements": [{"selector": 3}]}']
+_BAD_BODIES = (
+    [("/strip", raw) for raw in _BAD_COMMON + [b'{"task": 5}', b'{"dom": [1]}', b'{"resolved": [1]}']]
+    + [("/plan", raw) for raw in _BAD_COMMON + [b'{"tokenizedTask": 5}', b'{"sanitizedDom": {}}', b'{"history": "x"}']]
+    + [("/validate", raw) for raw in _BAD_COMMON + [b'{"tokenizedTask": 5}', b'{"plan": [1]}']]
+)
+
+
+@pytest.mark.parametrize("path,raw", _BAD_BODIES)
+def test_malformed_bodies_are_400_not_500(monkeypatch, path, raw):
+    monkeypatch.setattr(entities.STATE, "model", _StubGlinerModel([]))
+    _refuse_every_planner(monkeypatch)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    _ollama_unavailable(monkeypatch)
+    res = TestClient(warden_app.app, raise_server_exceptions=False).post(
+        path, content=raw, headers={"Content-Type": "application/json"})
+    assert res.status_code == 400, res.text
+    assert "error" in res.json()
+
+
+def test_oversized_body_is_413_before_pairing_or_parsing(monkeypatch):
+    client = _paired_client(monkeypatch)
+    monkeypatch.setattr(config, "MAX_BODY_BYTES", 1024, raising=False)
+    big = json.dumps({"tokenizedTask": "jordan.test@example.org " * 100}).encode()
+    res = client.post("/plan", content=big, headers={"Content-Type": "application/json"})
+    assert res.status_code == 413
+    assert "jordan.test@example.org" not in res.text
+    monkeypatch.delenv("WARDEN_PAIRING_SECRET")
+    assert client.post("/strip", content=big, headers={"Content-Type": "application/json"}).status_code == 413
+
+
+def test_post_without_content_length_is_refused():
+    def chunks():
+        yield b'{"tokenizedTask": '
+        yield b'"x"}'
+
+    res = TestClient(warden_app.app).post("/plan", content=chunks(), headers={"Content-Type": "application/json"})
+    assert res.status_code == 411
+
+
+def test_default_body_cap_fits_a_real_extension_request():
+    # content.js caps the DOM at 30 KB; the cap must sit well above a whole request.
+    assert getattr(config, "MAX_BODY_BYTES", 0) >= 1024 * 1024
+
+
+@pytest.mark.parametrize("host,ok", [
+    ("127.0.0.1:8756", True), ("localhost:8756", True), ("[::1]:8756", True), ("LOCALHOST:8756", True),
+    ("127.0.0.1", True),
+    ("evil.example:8756", False), ("127.0.0.1.evil.example:8756", False), ("testserver", False),
+])
+def test_host_header_allow_list_blocks_dns_rebinding(monkeypatch, host, ok):
+    monkeypatch.setattr(config, "ALLOWED_HOSTNAMES", frozenset({"127.0.0.1", "localhost", "::1"}), raising=False)
+    res = TestClient(warden_app.app).get("/health", headers={"Host": host})
+    if ok:
+        assert res.status_code == 200 and res.json()["ok"] is True
+    else:
+        assert res.status_code == 421 and "planner" not in res.text
+
+
+def test_production_host_allow_list_is_loopback_only():
+    code = "import config; print(sorted(config.ALLOWED_HOSTNAMES))"
+    out = subprocess.run([sys.executable, "-c", code], cwd=WARDEN_DIR, capture_output=True, text=True, check=True)
+    assert out.stdout.strip() == "['127.0.0.1', '::1', 'localhost']"
+
+
+def test_a_slow_plan_does_not_block_health(monkeypatch):
+    import asyncio
+    import threading as _threading
+
+    release = _threading.Event()
+    state = {"plan_done": False}
+
+    def slow_plan(body):
+        release.wait(3)
+        state["plan_done"] = True
+        return {"plan": {"action": "finish", "target_selector": None}, "model": "fake"}
+
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
+    monkeypatch.setattr(ollama_client, "plan_via_ollama", slow_plan)
+
+    async def scenario():
+        transport = httpx.ASGITransport(app=warden_app.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:8756") as c:
+            plan_task = asyncio.create_task(c.post("/plan", json=_plan_body()))
+            await asyncio.sleep(0.2)
+            health = await c.get("/health")
+            done_when_health_answered = state["plan_done"]
+            release.set()
+            plan = await plan_task
+            return health, done_when_health_answered, plan
+
+    health, done_first, plan = asyncio.run(scenario())
+    assert health.status_code == 200
+    assert done_first is False, "/health waited for /plan: a blocking call ran on the event loop"
+    assert plan.status_code == 200
+
+
+class _GroqResp:
+    status_code = 200
+    text = "x"
+
+    def __init__(self, data):
+        self._data = data
+
+    def json(self):
+        if self._data == "non-json":
+            raise json.JSONDecodeError("bad", "x", 0)
+        return self._data
+
+
+@pytest.mark.parametrize("first", ["non-json", [1], {"choices": [{"message": None}]}, {"choices": []}])
+def test_groq_unparseable_200_body_moves_down_the_chain(monkeypatch, first):
+    good = {"choices": [{"message": {"content": json.dumps({
+        "action": "click", "target_selector": "#go", "coordinates": {"x": 1, "y": 2},
+        "value": None, "reasoning_token": "synthetic"})}}]}
+    responses = iter([_GroqResp(first), _GroqResp(good)])
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.setattr(config, "GROQ_MODEL_CHAIN", ["m1", "m2"])
+    monkeypatch.setattr(groq_client, "_post", lambda *a, **k: next(responses), raising=False)
+    result = groq_client.plan_via_groq(_plan_body())
+    assert result["model"] == "m2" and result["switched"] == ["m1"]
+
+
+def test_groq_client_reuses_one_connection_across_calls(monkeypatch):
+    import http.server
+    import threading as _threading
+
+    ports = set()
+
+    class _FakeGroq(http.server.BaseHTTPRequestHandler):
+        protocol_version = "HTTP/1.1"
+
+        def do_POST(self):
+            ports.add(self.client_address[1])
+            self.rfile.read(int(self.headers["Content-Length"]))
+            content = json.dumps({"action": "finish", "target_selector": None, "coordinates": {"x": 0, "y": 0},
+                                  "value": None, "reasoning_token": "synthetic"})
+            payload = json.dumps({"choices": [{"message": {"content": content}}]}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+        def log_message(self, *args):
+            pass
+
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _FakeGroq)
+    _threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+        monkeypatch.setattr(config, "GROQ_MODEL_CHAIN", ["fake-model"])
+        monkeypatch.setattr(config, "GROQ_BASE_URL", f"http://127.0.0.1:{server.server_port}/openai/v1")
+        for _ in range(3):
+            groq_client.plan_via_groq(_plan_body())
+    finally:
+        server.shutdown()
+        server.server_close()
+    assert len(ports) == 1, f"each plan opened a new connection: {len(ports)} connections for 3 calls"
+
+
+def test_fast_path_click_keeps_a_selector_that_contains_spaces(monkeypatch):
+    body = {
+        "tokenizedTask": "Open the reports link",
+        "sanitizedDom": "",
+        "elements": [
+            {"selector": "#nav", "label": "Nav", "fieldType": "button", "x": 1, "y": 1},
+            {"selector": "#nav a", "label": "Reports", "fieldType": "link", "x": 5, "y": 6},
+        ],
+        "history": [],
+    }
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #nav a"))
+    result = warden_app.dispatch_plan(body)
+    assert calls["fast"] == 1 and calls["groq"] == 0
+    assert result["plan"]["target_selector"] == "#nav a" and result["plan"]["value"] is None
+    assert result["plan"]["coordinates"] == {"x": 5, "y": 6}
+
+
+def test_fast_path_type_keeps_a_selector_that_contains_spaces(monkeypatch):
+    body = {
+        "tokenizedTask": "Set email to EMAIL#1",
+        "sanitizedDom": "",
+        "elements": [{"selector": "form #email", "label": "Email", "fieldType": "email", "x": 3, "y": 4}],
+        "history": [],
+    }
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("type form #email EMAIL#1"))
+    result = warden_app.dispatch_plan(body)
+    assert calls["fast"] == 1 and calls["groq"] == 0
+    assert result["plan"]["target_selector"] == "form #email" and result["plan"]["value"] == "EMAIL#1"

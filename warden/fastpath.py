@@ -271,8 +271,14 @@ def _plan_from_choice(choice: str, elements: list) -> dict:
     if choice == "finish":
         return {"action": "finish", "target_selector": None, "coordinates": {"x": 0, "y": 0},
                 "value": None, "reasoning_token": "fast path: task complete"}
+    # "click <selector>" or "type <selector> <TOKEN>". A selector may contain spaces ("#nav a",
+    # "form #email"); a token never does. Splitting at the first space (before 3 October 2026)
+    # turned "click #nav a" into a click on "#nav" with value "a", a different element.
     verb, _, rest = choice.partition(" ")
-    selector, _, value = rest.partition(" ")
+    if verb == "type":
+        selector, _, value = rest.rpartition(" ")
+    else:
+        selector, value = rest, ""
     el = next((e for e in elements if e.get("selector") == selector), {})
     coords = {"x": el.get("x", 0) or 0, "y": el.get("y", 0) or 0}
     return {"action": verb, "target_selector": selector, "coordinates": coords,

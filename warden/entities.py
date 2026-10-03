@@ -278,9 +278,18 @@ def _chunk_spans(text: str) -> list:
 _CHUNK_CACHE: "OrderedDict[str, list]" = OrderedDict()
 _CHUNK_CACHE_MAX = 4096
 _CHUNK_CACHE_OWNER = None
+# /strip runs in the server's threadpool since 3 October 2026, so two requests can arrive
+# together. The lock keeps the OrderedDict consistent and runs one inference at a time
+# (on CPU a second concurrent batch only competes for the same cores).
+_PREDICT_LOCK = threading.Lock()
 
 
 def _cached_predict(model, texts: list) -> list:
+    with _PREDICT_LOCK:
+        return _cached_predict_locked(model, texts)
+
+
+def _cached_predict_locked(model, texts: list) -> list:
     global _CHUNK_CACHE_OWNER
     if model is not _CHUNK_CACHE_OWNER:
         _CHUNK_CACHE.clear()

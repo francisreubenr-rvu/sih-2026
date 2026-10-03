@@ -102,6 +102,18 @@ def pairing_state() -> str:
 
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
+# Host header allow-list (3 October 2026). Binding to 127.0.0.1 does not stop DNS
+# rebinding: a web page on a name that later resolves to 127.0.0.1 reaches this port
+# same-origin, and its requests carry that name in Host. Only loopback names are
+# answered (any port, so a harness on another port still works). Tests add their own
+# client host in a fixture; production never does.
+ALLOWED_HOSTNAMES = _LOOPBACK_HOSTS
+
+# Request body cap, enforced from Content-Length before the body is read, verified or
+# parsed (3 October 2026). content.js caps the serialised DOM at 30 KB, so a whole
+# /strip or /plan request is far below this; it only stops an unbounded read.
+MAX_BODY_BYTES = int(os.environ.get("WARDEN_MAX_BODY_BYTES", str(2 * 1024 * 1024)))
+
 
 def is_loopback_base(url: str) -> bool:
     """True for http(s) URLs whose host is loopback and which have no userinfo,
@@ -143,9 +155,10 @@ def ollama_model_is_local(model: str) -> bool:
 #
 # So every request paid a failed round trip before succeeding, and the third
 # fallback did not exist, meaning there was effectively no fallback at all.
-# Probed across this account's reachable catalogue the only two usable models
-# are the two below. Re-probe before editing; do not add a model id because it
-# looks plausible, since a dead entry costs a wasted request on every call.
+# Probed that day across this account's reachable catalogue, only two models were
+# usable (the chain then had two entries; the 30 September note below supersedes
+# it). Re-probe before editing; do not add a model id because it looks plausible,
+# since a dead entry costs a wasted request on every call.
 #
 # 30 September 2026 (Francis): qwen/qwen3.8-27b goes first. Re-probed that day,
 # all three answer on this account. On the Warden's own prompt it was correct

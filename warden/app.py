@@ -9,12 +9,15 @@ version, from inside warden/:
     ~/.venvs/data/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8756
 """
 
+import json
 import re
 import sys
 import threading
+import unicodedata
 from typing import Optional
 
 from fastapi import FastAPI, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 
@@ -42,12 +45,43 @@ app.add_middleware(
 _replay_guard = pairing.ReplayGuard()
 
 
+def _hostname(host_header) -> str:
+    """The host name of a Host header, lower-cased, without the port ("[::1]:8756" -> "::1")."""
+    host = (host_header or "").strip().lower()
+    if host.startswith("["):
+        return host[1:host.find("]")] if "]" in host else ""
+    return host.rsplit(":", 1)[0] if host.count(":") == 1 else host
+
+
+def _refuse(status: int, message: str) -> JSONResponse:
+    return JSONResponse(status_code=status, content={"error": message, "warden": config.WARDEN_VERSION})
+
+
 @app.middleware("http")
 async def pairing_middleware(request: Request, call_next):
-    """Pairing (pairing.py), required since 2 October 2026. Every POST must carry a valid
+    """Host allow-list, body cap, then pairing.
+
+    Host (3 October 2026): only loopback names are answered, so a DNS-rebinding page cannot
+    read /health or reach a route same-origin (config.ALLOWED_HOSTNAMES).
+
+    Body cap (3 October 2026): a POST must declare Content-Length, at most
+    config.MAX_BODY_BYTES, before the body is read for the proof or parsed. The server
+    then reads no more than the declared length.
+
+    Pairing (pairing.py), required since 2 October 2026. Every POST must carry a valid
     request proof with a fresh nonce, and every response to a request with a nonce carries
     X-Dhristi-Proof, so the extension can tell this Warden from anything else listening on
     the port. Without a usable secret every POST is refused (config.pairing_state)."""
+    if _hostname(request.headers.get("host")) not in config.ALLOWED_HOSTNAMES:
+        return _refuse(421, "This Warden answers only on a loopback host name (127.0.0.1, localhost or [::1]).")
+    if request.method == "POST":
+        declared = request.headers.get("content-length")
+        if declared is None:
+            return _refuse(411, "POST requests to the Warden must send Content-Length.")
+        if not declared.isdigit():
+            return _refuse(400, "Content-Length is not a number.")
+        if int(declared) > config.MAX_BODY_BYTES:
+            return _refuse(413, f"Request body is larger than the Warden accepts ({config.MAX_BODY_BYTES} bytes).")
     state = config.pairing_state()
     if state == "disabled" or request.method == "OPTIONS":
         return await call_next(request)
@@ -118,8 +152,53 @@ def health():
     }
 
 
+class BadRequest(Exception):
+    """A request body the routes cannot use. The message names the field, never its value."""
+
+
+_ELEMENT_STRING_KEYS = ("selector", "label", "fieldType")
+
+
+async def _json_object(request: Request, strings=(), lists=(), objects=()) -> dict:
+    """The body as a dict with the shapes the route reads, or BadRequest (400). Before
+    3 October 2026 a malformed body (not JSON, not an object, an element that is not an
+    object, a number where text belongs) escaped as an unhandled 500."""
+    try:
+        body = json.loads(await request.body())
+    except ValueError as exc:  # JSONDecodeError and UnicodeDecodeError are both ValueErrors
+        raise BadRequest("the request body is not valid JSON") from exc
+    if not isinstance(body, dict):
+        raise BadRequest("the request body must be a JSON object")
+    for kind, keys in ((str, strings), (list, lists), (dict, objects)):
+        for key in keys:
+            if body.get(key) is not None and not isinstance(body[key], kind):
+                raise BadRequest(f"{key} must be a {'string' if kind is str else 'list' if kind is list else 'object'}")
+    elements = body.get("elements")
+    if elements is not None:
+        if not isinstance(elements, list):
+            raise BadRequest("elements must be a list")
+        for i, el in enumerate(elements):
+            if not isinstance(el, dict):
+                raise BadRequest(f"elements[{i}] must be an object")
+            for key in _ELEMENT_STRING_KEYS:
+                if el.get(key) is not None and not isinstance(el[key], str):
+                    raise BadRequest(f"elements[{i}].{key} must be a string")
+    return body
+
+
+@app.exception_handler(BadRequest)
+async def _bad_request(_request: Request, exc: BadRequest):
+    return JSONResponse(status_code=400, content={"error": str(exc), "warden": config.WARDEN_VERSION})
+
+
+# The handlers below do seconds of blocking work (GLiNER inference, Groq and Ollama HTTP
+# calls with 10 to 60 s timeouts). They ran on the event loop until 3 October 2026, so one
+# slow step froze every other request, /health included. They now run in the threadpool.
+
+
 @app.post("/strip")
 async def do_strip(request: Request):
+    body = await _json_object(request, strings=("task", "dom"), objects=("resolved",))
     if not entities.STATE.loaded:
         return JSONResponse(
             status_code=503,
@@ -130,8 +209,8 @@ async def do_strip(request: Request):
                 "warden": config.WARDEN_VERSION,
             },
         )
-    body = await request.json()
-    result = strip_module.strip(
+    result = await run_in_threadpool(
+        strip_module.strip,
         task=body.get("task"),
         dom=body.get("dom"),
         elements=body.get("elements"),
@@ -158,26 +237,50 @@ class PlanRouteError(Exception):
 #
 # TYPE#n tokens are blanked (same length, spaces) before the scan: they are
 # the sanctioned replacement for PII, and the digits in a token must not be
-# read as part of a number next to it. The shape is the browser consumer's
-# VAULT_TOKEN_PATTERN (see minter.py).
-_TOKEN_RE = re.compile(r"[A-Z][A-Z0-9]*#[0-9]+")
+# read as part of a number next to it.
+#
+# Narrower than the browser consumer's VAULT_TOKEN_PATTERN (see minter.py) since
+# 3 October 2026. That shape, [A-Z][A-Z0-9]*#[0-9]+, blanked "X#4111111111111111"
+# and "A4111111111111111#1" whole, so any number behind a made-up token prefix
+# crossed the guard. Every type the Warden or the extension mints is letters only,
+# and a per-type count never reaches five digits in one request.
+_TOKEN_RE = re.compile(r"[A-Z]+#[0-9]{1,4}(?![0-9])")
 
 
 def _walk_strings(value, path: str):
+    """Every string the planner prompt can carry, with its field path. Dict keys and
+    numbers are scanned too (3 October 2026): build_prompt renders history entries and
+    element coordinates with str(), so a key or an integer reached the cloud unscanned.
+    A key is scanned before anything under it, so a path in a refusal is always clean."""
     if isinstance(value, str):
         yield path, value
+    elif isinstance(value, (int, float)) and not isinstance(value, bool):
+        yield path, str(value)
     elif isinstance(value, dict):
         for key, item in value.items():
-            yield from _walk_strings(item, f"{path}.{key}" if path else str(key))
+            key = str(key)
+            yield (f"{path}.<key>" if path else "<key>"), key
+            yield from _walk_strings(item, f"{path}.{key}" if path else key)
     elif isinstance(value, list):
         for index, item in enumerate(value):
             yield from _walk_strings(item, f"{path}[{index}]")
 
 
+def _ascii_digits(text: str) -> str:
+    """Full-width, Devanagari and other Unicode decimal digits as ASCII, for the scan only.
+    The regex layer's patterns and Luhn check are ASCII-minded, and a planner reads
+    "４１１１ １１１１ …" or "९८७६५४३२१०" as the number it is."""
+    if text.isascii():
+        return text
+    text = unicodedata.normalize("NFKC", text)
+    return "".join(ch if ch.isascii() or unicodedata.decimal(ch, None) is None else str(unicodedata.decimal(ch))
+                   for ch in text)
+
+
 def egress_guard(body: dict) -> Optional[dict]:
     """First regex hit in the body as {pattern, field}, or None if clean."""
     for field, text in _walk_strings(body, ""):
-        blanked = _TOKEN_RE.sub(lambda m: " " * len(m.group(0)), text)
+        blanked = _TOKEN_RE.sub(lambda m: " " * len(m.group(0)), _ascii_digits(text))
         spans = redactor.regex_spans(blanked)
         if spans:
             return {"pattern": spans[0]["pattern"], "field": field}
@@ -279,9 +382,9 @@ def _dispatch_planner(mode: str, body: dict, fast_record: Optional[dict] = None)
 
 @app.post("/plan")
 async def do_plan(request: Request):
-    body = await request.json()
+    body = await _json_object(request, strings=("tokenizedTask", "sanitizedDom"), lists=("history",))
     try:
-        result = dispatch_plan(body)
+        result = await run_in_threadpool(dispatch_plan, body)
     except PlanRouteError as exc:
         content = {
             "error": str(exc),
@@ -300,7 +403,11 @@ async def do_plan(request: Request):
 
 @app.post("/validate")
 async def do_validate(request: Request):
-    body = await request.json()
+    body = await _json_object(request, strings=("tokenizedTask",), objects=("plan",))
+    return await run_in_threadpool(_validate, body)
+
+
+def _validate(body: dict) -> dict:
     plan = body.get("plan") or {}
     elements = body.get("elements") or []
     tokenized_task = body.get("tokenizedTask") or ""
