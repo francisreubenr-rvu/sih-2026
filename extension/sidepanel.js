@@ -1093,7 +1093,10 @@ const BY = { regex: 'by pattern', gliner: 'by local model', user: 'by you' };
 function renderKept(t) {
   const stepKey = t ? `${t.runId ?? ''}:${t.step ?? ''}` : '';
   const redaction = t && t.redaction && typeof t.redaction === 'object' ? t.redaction : null;
-  const sig = `${stepKey}|${JSON.stringify(redaction)}`;
+  // Faces are counted only when the masked capture exists, i.e. when they are among the regions.
+  const masked = Boolean(t && t.screenshot && t.screenshot.dataUrl);
+  const faces = masked && t.vision && t.vision.status === 'done' && isCount(t.vision.faces) ? t.vision.faces : null;
+  const sig = `${stepKey}|${JSON.stringify(redaction)}|${faces}`;
   if (sig === sectionSig.kept) return;
   sectionSig.kept = sig;
   // Rebuilding drops every revealed value with the old rows: a value lives only in the DOM of the
@@ -1106,6 +1109,7 @@ function renderKept(t) {
   if (redaction) {
     addCount(els.keptCounts, replaced.length, 'value replaced', 'values replaced');
     if (isCount(redaction.screenMasked)) addCount(els.keptCounts, redaction.screenMasked, 'region masked on screen', 'regions masked on screen');
+    if (faces !== null) addCount(els.keptCounts, faces, 'face among them', 'faces among them');
     if (isCount(redaction.uncertainAsked)) addCount(els.keptCounts, redaction.uncertainAsked, 'asked', 'asked');
   }
   els.keptCounts.hidden = !redaction;
@@ -1205,13 +1209,18 @@ function renderScreen(t) {
   const shot = t && t.screenshot && typeof t.screenshot === 'object' ? t.screenshot : null;
   const dataUrl = shot && typeof shot.dataUrl === 'string' && /^data:image\//.test(shot.dataUrl) ? shot.dataUrl : null;
   const masked = t && t.redaction && isCount(t.redaction.screenMasked) ? t.redaction.screenMasked : null;
-  const sig = `${dataUrl ? dataUrl.length : 0}|${dataUrl ? dataUrl.slice(-64) : ''}|${masked}|${t ? t.step : ''}`;
+  const vision = t && t.vision && typeof t.vision === 'object' ? t.vision : null;
+  const visionText = faceCheckText(vision);
+  const sig = `${dataUrl ? dataUrl.length : 0}|${dataUrl ? dataUrl.slice(-64) : ''}|${masked}|${t ? t.step : ''}|${visionText}`;
   if (sig === sectionSig.screen) return;
   sectionSig.screen = sig;
   if (!dataUrl) {
     els.screenFigure.hidden = true;
     els.screenImg.removeAttribute('src');
     els.screenEmpty.hidden = false;
+    els.screenEmpty.textContent = vision && vision.status === 'error'
+      ? `No masked capture this step. ${visionText} The capture was discarded.`
+      : 'No masked capture this step.';
     return;
   }
   els.screenEmpty.hidden = true;
@@ -1223,7 +1232,21 @@ function renderScreen(t) {
   els.screenImg.src = dataUrl;
   const maskedText = masked !== null ? ` ${masked} region${masked === 1 ? '' : 's'} masked.` : '';
   els.screenImg.alt = `Masked capture of the page${t && isCount(t.step) ? `, step ${t.step}` : ''}.${maskedText}`;
-  els.screenCaption.textContent = `The masked capture taken on this device.${maskedText} It was not sent anywhere.`;
+  els.screenCaption.textContent = `The masked capture taken on this device.${maskedText}${visionText ? ` ${visionText}` : ''} It was not sent anywhere.`;
+}
+
+// The on-device face check for this step, in words: count and measured time, or why it failed.
+// Nothing when the trace has no vision field (an older background).
+function faceCheckText(vision) {
+  if (!vision) return '';
+  const ms = fmtMs(vision.ms);
+  if (vision.status === 'done' && isCount(vision.faces)) {
+    return `Face check on this device: ${vision.faces} face${vision.faces === 1 ? '' : 's'} found${ms ? ` in ${ms}` : ''}.`;
+  }
+  if (vision.status === 'error') {
+    return `Face check failed${typeof vision.reason === 'string' && vision.reason ? `: ${vision.reason}` : ''}.`;
+  }
+  return '';
 }
 
 // ---- Decision ---------------------------------------------------------------------

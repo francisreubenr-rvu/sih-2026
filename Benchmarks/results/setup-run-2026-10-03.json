@@ -1,8 +1,8 @@
 {
   "name": "setup-run",
-  "generated_at": "2026-10-03T23:06:37.142261+00:00",
-  "commit": "678f2c6eed27aef86c4ca15453d759a1260be9af",
-  "dirty": false,
+  "generated_at": "2026-10-03T23:33:12.554815+00:00",
+  "commit": "b8da630c32a624fbd6d11cf41b8707147f419b49",
+  "dirty": true,
   "tools": {
     "node": "v22.22.0",
     "python": "3.11.15",
@@ -37,8 +37,10 @@
       "name": "extension",
       "status": "pass",
       "summary": [
-        "# tests 153",
-        "# pass 153",
+        "# Subtest: decodeFaces treats a malformed tensor as a failed inference, never as no faces",
+        "ok 168 - decodeFaces treats a malformed tensor as a failed inference, never as no faces",
+        "# tests 178",
+        "# pass 178",
         "# fail 0",
         "# skipped 0"
       ]
@@ -47,14 +49,14 @@
       "name": "warden",
       "status": "pass",
       "summary": [
-        "285 passed, 4 skipped, 3 warnings in 19.93s"
+        "294 passed, 4 skipped, 3 warnings in 13.53s"
       ]
     },
     {
       "name": "script-tests",
       "status": "pass",
       "summary": [
-        "22 passed, 7 subtests passed in 0.03s"
+        "22 passed, 7 subtests passed in 0.04s"
       ]
     },
     {
@@ -66,7 +68,7 @@
       "name": "no-em-dash",
       "status": "pass",
       "summary": [
-        "em dash check: 999 tracked files, 0 violations, 63 allowlisted files still contain the character"
+        "em dash check: 1033 tracked files, 0 violations, 63 allowlisted files still contain the character"
       ]
     },
     {

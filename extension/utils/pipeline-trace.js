@@ -46,6 +46,10 @@ export function emptyTrace(runId, step) {
     planner: { destination: null, provider: null, model: null },
     scene: { controls: 0 },
     redaction: { replaced: [], uncertainAsked: 0, screenMasked: 0 },
+    // The on-device face check on this step's capture (utils/vision-client.js), or null before it
+    // ran: { status: 'done' | 'error', faces, ms, inferenceMs, waitInitMs, reason, model }. Boxes
+    // and pixels are never put here; `faces` is a count.
+    vision: null,
     screenshot: null,
     outbound: null,
     inbound: null,

@@ -60,6 +60,27 @@ requests). Iframes and shadow DOM are not covered. Tests: `node --test extension
 (needs `Prototype/node_modules` and a Chromium). This surface is not connected to the Prototype
 server on 9041.
 
+Since 3 October 2026 the extension runs a vision model on this device. Each step's capture goes
+to an offscreen document (`offscreen.html`, `offscreen.js`, `utils/vision.js`) that runs the
+bundled UltraFace RFB-320 face detector on ONNX Runtime Web (WASM, single thread). The service
+worker cannot load ONNX Runtime (no dynamic `import()` in service workers), which is why it runs in
+the offscreen document. The worker asks for faces over a runtime Port that only the offscreen document
+listens on and that answers only the worker (`utils/vision-client.js`). Face boxes are padded and
+added to the masked regions, so the masked capture in the panel, and the only image OmniParser may
+see, has detected faces painted over. A failed or late check (cap 1500 ms; the one-time model load
+has its own 10 s cap and starts at START_TASK) discards that step's capture: the panel shows none
+and OmniParser gets nothing. The run continues, because the planner never sees pixels. Nothing new
+goes to the Warden or the cloud. The manifest gains the `offscreen` permission and an
+`extension_pages` CSP of `script-src 'self' 'wasm-unsafe-eval'; object-src 'self'`. Without it the
+offscreen document cannot compile the WASM runtime. The step trace carries `vision` (faces,
+measured ms, or the failure reason), and the G11 clock has a `vision` span kept out of `perceive`.
+Model and runtime files with their MIT licences are in `models/` (same bytes as
+`Prototype/models/`; provenance in `Prototype/models/manifest.json`). `dhristiVisionProbe` is a
+worker-only global used by `scripts/validate-extension-vision.mjs`. Evidence is in
+`Benchmarks/results/extension-vision-v01.json`, from one container on synthetic pages with one
+public-domain test portrait. It is not a face-detection accuracy benchmark, and small faces are
+missed (see its `limits`).
+
 G11 timing for this surface is `scripts/g11-warden-option-c-harness.mjs`. Run notes:
 `Docs/decisions/g11-warden-option-c-harness.md`. A dry run writes a fail artifact and
 does not call the Warden. A live L2 run needs this extension loaded, Warden on
