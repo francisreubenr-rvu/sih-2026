@@ -35,7 +35,7 @@ Francis asked for a review of the current state and a plan. Facts first, then th
 | # | Work today | Evidence or limit |
 |---|---|---|
 | 1 | Pitch PPTX on the v5 architecture (extension side panel, Warden with GLiNER on the device, pairing, Laya review, Groq planning behind the egress guard) | Claims only from results files; G11 fail and the unknown gates on a "limits" slide |
-| 2 | Demo video of the real stack on the synthetic fixtures (pairing, redaction prompt, Sent view, released navigation step, destructive step asking) | Synthetic pages only; no real accounts or screens |
+| 2 | **Recorded 3 Oct.** Demo video of the real stack on the synthetic fixtures (pairing, redaction prompt, Sent view, released navigation step, destructive step asking); 1:54, captions burned in, voiceover script for Francis. 29 cloud requests, 0 personal values | `Benchmarks/results/demo-video-v01.json`; `scripts/e2e-v5/record-demo.mjs`, `compose-demo.py`. The video file is not in git |
 | 3 | Upload to YouTube (team; needs a team account) | |
 
 Out of reach before the deadline: the blind test results (due 4 Oct), G20 sessions, the G11 re-measurement and refreshing stale passes.

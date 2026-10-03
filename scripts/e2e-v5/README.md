@@ -52,3 +52,7 @@ Start the relay as above. Then start the Warden with `WARDEN_PAIRING_SECRET`, `W
 the results file and counts the fixtures' synthetic values in what reached the cloud.
 
 Result: `Benchmarks/results/e2e-v5-boundary-v04.json`.
+
+## Submission demo video
+
+`record-demo.mjs` records the page and side-panel tabs through pairing, a protected run, a released navigation step and a destructive step that asks. It writes the two videos and `marks.json` (caption cues). `compose-demo.py` lays them side by side with captions, a title card and an end card, and speeds up idle stretches 4x with an on-screen label. Use a one-off pairing code for recordings. Record of the 3 October run: `Benchmarks/results/demo-video-v01.json`.
