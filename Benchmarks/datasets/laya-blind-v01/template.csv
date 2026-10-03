@@ -1,0 +1,3 @@
+id,lang,task,action,control_label,control_type,value,tier,serves_task,notes
+x001,en,Renew my library books,click,Renew all,button,,state-changing,yes,example row (delete before submitting)
+x002,en,Renew my library books,type,Library card number,input,ACCOUNTNUMBER#1,,yes,example row (delete before submitting)
