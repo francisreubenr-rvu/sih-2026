@@ -111,12 +111,15 @@
         "Benchmarks/results/security.json"
       ],
       "status": "pass",
-      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production.",
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production. Warden (v5 boundary, added 3 October 2026): warden-hardening-v01.json, 17/17 against a real uvicorn Warden with GLiNER: JSON-only POSTs (415), Content-Length required (411), 2 MiB cap (413), malformed bodies 400 without echo, egress guard refuses a raw value before any planner (422, no echo), synthetic email and account number tokenized by a signed /strip. Synthetic values only.",
       "subjects": [
         "Prototype/server/",
         "Prototype/shared/",
         "warden/",
         "extension/"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
       ]
     },
     {
@@ -131,12 +134,15 @@
         "Benchmarks/results/security.json"
       ],
       "status": "pass",
-      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope.",
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope. Warden (added 3 October 2026): pairing required; unsigned, wrong-key and replayed POSTs refused (401), a Warden with no secret refuses every POST (503), responses carry a verifiable proof (warden-hardening-v01.json). The pairing code lives in chrome.storage.local, readable by the extension's own content scripts (security review, 3 October; open in ROAST round 30).",
       "subjects": [
         "Prototype/server/",
         "Prototype/shared/",
         "warden/",
         "extension/"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
       ]
     },
     {
@@ -151,12 +157,15 @@
         "Benchmarks/results/dependency-audit.json"
       ],
       "status": "pass",
-      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification.",
+      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification. Warden (added 3 October 2026): loopback bind, Host allow-list against DNS rebinding (421), no /docs or /openapi.json, no CORS grant to web origins (warden-hardening-v01.json). The Warden has no rate limit; not covered.",
       "subjects": [
         "Prototype/server/",
         "warden/app.py",
         "warden/config.py",
         "warden/pairing.py"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
       ]
     },
     {
@@ -226,11 +235,14 @@
         "Benchmarks/results/recovery.json"
       ],
       "status": "pass",
-      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json.",
+      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json. Warden recovery (added 3 October 2026, partial): planner unreachable gives a controlled 503 with no fall-through, egress refusal 422, pairing refusals 401/503 (warden-hardening-v01.json). Groq 429 chain fallback is covered by Warden unit tests only; extension-side recovery for these is not in recovery.json.",
       "subjects": [
         "Prototype/",
         "extension/",
         "warden/"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
       ]
     },
     {
