@@ -24,6 +24,13 @@ Security review, consistency audit, Warden and extension code review, side-panel
 - [ ] The pairing code sits in `chrome.storage.local`. Nonces are remembered for 600 s in memory only, and requests carry no timestamp, so a captured request replays after a restart.
 - [ ] English submit gaps ("transfer", "donate", "subscribe", "apply", "agree") stay unproven, so Laya could release them. Left for the blind set and a decision.
 
+**G11 (first live measurement):**
+
+- [x] Every G11 artifact so far was a dry run: the extension had stage clocks (`GET_G11_TRACE`) but no harness read them. `scripts/e2e-v5/g11-live.mjs` now does, 100 runs after 10 warm-ups. Total p50 2404 ms, p95 3713 ms (v01).
+- [x] About 770 ms per run was fixed sleeps (250 ms after a click, 120 ms after finish, 400 ms before the next scan). Replaced by a DOM-quiet wait capped at the old maximum: total p50 1737 ms, p95 2270 ms (v02). A background agent's tests ran during part of v02, which can only have slowed it.
+- [ ] Remaining: two cloud planner round trips (about 1.1 s), the 380 ms cursor animation (kept on purpose), about 80 ms capture and scan. G11 stays fail; the budget is unchanged.
+- [ ] Without the Laya reviewer the frozen flow asks before every "Account statements" click (F17 over-asking, round 28), so no run is unattended. The measurement uses the demo configuration with the reviewer on.
+
 **Evidence and ledger:**
 
 - [x] G05/G06/G08 scripts re-run at HEAD; the secret scanner no longer scans agent worktrees (2,672 -> 668 files).

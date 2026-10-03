@@ -11,7 +11,17 @@ Francis asked for a professional sweep: inconsistencies, failures, incomplete co
 - G03 entry point: `scripts/check-all.sh` (8/8 suites).
 - G11 measured live for the first time (see below).
 
-**G11 (PLAN slot 4 to 6 October, done early).** A live 110-run measurement of the frozen flow on `3370443` is in progress (`scripts/e2e-v5/g11-live.mjs`); results and the settle change measured against it follow in the next checkpoint. G11 stays fail.
+**G11 (PLAN slot 4 to 6 October, done early).** First live measurement (`scripts/e2e-v5/g11-live.mjs`): the frozen flow ("Open my account statements" on the synthetic bank page, one navigational click then finish) in the loaded extension with a real Warden (GLiNER, pairing, Laya reviewer) and real Groq, 100 runs after 10 warm-ups, timed by the extension's own stage clocks. Every run finished with no question.
+
+| Stage, per run (2 steps) | v01 p50 / p95 | v02 p50 / p95 |
+|---|---|---|
+| perceive | 76 / 96 ms | 82 / 106 ms |
+| strip (page cached) | 27 / 32 ms | 26 / 37 ms |
+| plan (two cloud calls, Laya review on the click) | 1075 / 2412 ms | 1103 / 1562 ms |
+| execute | 764 / 772 ms | 494 / 502 ms |
+| **total** | **2404 / 3713 ms** | **1737 / 2270 ms** |
+
+v02 replaces the fixed post-action sleeps with a DOM-quiet wait (same worst case). What remains, ranked: the planner's two cloud round trips (about 1.1 s, network-bound; one round trip alone exceeds the 200 ms budget), the 380 ms cursor animation before each click (kept on purpose so a person sees the target before the agent acts; zero under reduced motion), and about 80 ms of capture and scan. **G11 stays fail and cannot pass with a cloud call inside each decision**; the research note's levers (plan-ahead, a local planner for rule-identified steps) are the only ones that could change that, and both need Francis's decision. Files: `core-latency-v5-live-v01.json`, `-v02.json`.
 
 **Decided by Claude under Francis's "decide on your own" (3 October), reversible:**
 
