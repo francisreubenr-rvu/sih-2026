@@ -708,12 +708,16 @@ async function failStart(task, message) {
 // refused. Without it, two sends in quick succession (a double-click on Send) both pass the status
 // check below, because status only becomes 'running' after several awaits, and both start a run.
 let startInFlight = false;
+// A Stop pressed while a START_TASK is still being checked. The panel shows Stop from the moment the
+// task is accepted, so it must not be a no-op until the run loop exists.
+let stopBeforeStart = false;
 
 async function startTask(message) {
   if (startInFlight || state.status === 'running' || state.status === 'waiting') {
     return { ok: false, reason: 'A run is already in progress.', entries: transcript };
   }
   startInFlight = true;
+  stopBeforeStart = false;
   try {
     return await startTaskChecked(message);
   } finally {
@@ -806,6 +810,13 @@ async function startAcceptedTask(task) {
     stored = await chrome.storage.local.get(['omniparserUrl', 'useOmniparser']);
   } catch { /* storage unavailable; proceed with defaults */ }
 
+  if (stopBeforeStart) {
+    Object.assign(state, { status: 'stopped', task, stepNumber: 0, steps: [], redactionLog: [], startedAt: Date.now(), finishedAt: Date.now(), stopRequested: false });
+    await persistState();
+    noteRunEnd('You stopped the run before it started. Nothing was scanned or sent.', 'stopped');
+    return { ok: false, stopped: true, entries: transcript };
+  }
+
   state.runId += 1;
   const runId = state.runId;
 
@@ -841,6 +852,7 @@ async function startAcceptedTask(task) {
 }
 
 async function stopTask() {
+  if (startInFlight) stopBeforeStart = true;
   if (state.status === 'running' || state.status === 'waiting') {
     state.stopRequested = true;
     state.status = 'stopped';

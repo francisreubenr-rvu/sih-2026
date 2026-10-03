@@ -137,7 +137,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
         throw error;
       }
     };
-    if (path === '/health') return answer(() => (warden.health ? warden.health() : DEFAULT_HEALTH));
+    if (path === '/health') return answer(() => (warden.health ? warden.health({ send, runtimeMessages }) : DEFAULT_HEALTH));
     if (path === '/strip') return answer(() => (warden.strip ? warden.strip(body) : defaultStrip(body)));
     if (path === '/plan') { planCalls += 1; return answer(() => warden.plan(body, planCalls)); }
     if (path === '/validate') { validateCalls += 1; return answer(() => (warden.validate ? warden.validate(body, validateCalls) : null)); }

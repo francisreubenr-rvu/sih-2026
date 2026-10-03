@@ -503,3 +503,27 @@ test('each /strip is preceded by a verified /health; a takeover after step 1 rec
   assert.equal(run.terminal.status, 'error');
   assert.ok(run.entries.some((e) => e.kind === 'error' && /pairing/i.test(e.text)));
 });
+
+// The panel shows Stop as soon as the task is accepted (a user entry with no terminal marker), but a
+// Stop pressed during the start checks (health, site access) was a no-op and the run started anyway.
+test('Stop pressed while the run is still starting stops it before anything is scanned or sent', async () => {
+  let stopped = false;
+  const run = await runTask({
+    scan: scanOf([NEXT_LINK]),
+    warden: {
+      plan: planSeq(click('body > a')),
+      health: ({ send, runtimeMessages }) => {
+        const accepted = runtimeMessages.some((m) => m.type === 'SESSION_UPDATE' && m.entries.some((e) => e.kind === 'user'));
+        if (accepted && !stopped) { stopped = true; send({ type: 'STOP_TASK' }); }
+        return DEFAULT_HEALTH;
+      },
+    },
+  });
+  assert.equal(stopped, true);
+  assert.equal(run.start.ok, false);
+  assert.equal(run.scans, 0);
+  assert.equal(run.fetchBodies.some((b) => b.path === '/strip' || b.path === '/plan'), false);
+  assert.equal(run.executed.length, 0);
+  const terminals = run.entries.filter((e) => e.terminal === true);
+  assert.deepEqual(terminals.map((e) => e.status), ['stopped']);
+});
