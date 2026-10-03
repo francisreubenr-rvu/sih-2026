@@ -178,11 +178,12 @@ test('REVEAL_TOKEN answers the side panel only, from the live vault only', async
   const r = run.hookResults[0];
   assert.deepEqual(r.panel, { token: 'EMAIL#1', value: SECRET });
   assert.deepEqual(r.panelWithQuery, { token: 'EMAIL#1', value: SECRET });
-  for (const key of ['contentScript', 'panelUrlInTab', 'otherPage', 'lookalike', 'unknown', 'malformed']) {
+  for (const key of ['otherPage', 'lookalike', 'unknown', 'malformed']) {
     assert.equal(typeof r[key].error, 'string', `${key} was refused`);
     assert.equal('value' in r[key], false, `${key} carries no value`);
   }
-  assert.equal(r.foreign, undefined, 'a foreign sender gets no answer at all');
+  // A foreign extension, and (since 3 October 2026) any content-script sender, gets no answer at all.
+  for (const key of ['foreign', 'contentScript', 'panelUrlInTab']) assert.equal(r[key], undefined, `${key} got an answer`);
   // The vault ends with the run.
   const after = await run.send({ type: 'REVEAL_TOKEN', token: 'EMAIL#1' }, PANEL_SENDER);
   assert.equal(typeof after.error, 'string');
@@ -214,6 +215,42 @@ test('a user-stripped uncertain span is reported with layer user', async () => {
   assert.equal(t.redaction.uncertainAsked, 1);
   assert.deepEqual(t.redaction.replaced.find((row) => row.token === 'PERSONNAME#1'), { token: 'PERSONNAME#1', type: 'PERSONNAME', source: 'dom', layer: 'user', score: 0.5 });
   for (const u of run.traceUpdates) assert.equal(JSON.stringify(u).includes('Ravi'), false);
+});
+
+// Security review, 3 October 2026 (LOW): content.js never messages the worker, so a message from a
+// content script (a tab sender) is a compromised renderer speaking. It must not answer a prompt,
+// start a run, change the Warden origin or pairing, or read the transcript, prompt or trace.
+test('a content-script sender cannot answer a prompt, start a run, change settings or read the session', async () => {
+  const CONTENT = { id: 'dhristi-test', url: 'https://bank.example/home', tab: { id: 7 } };
+  const PANEL_URL_IN_TAB = { ...PANEL_SENDER, tab: { id: 7 } };
+  const run = await runSeeded({
+    choices: ['stop'],
+    onPrompt: async (prompt, { send }) => {
+      const out = {};
+      for (const [name, sender] of [['content', CONTENT], ['panelUrlInTab', PANEL_URL_IN_TAB]]) {
+        out[name] = {
+          answer: await send({ type: 'PROMPT_RESPONSE', id: prompt.id, answers: { choice: 'proceed' } }, sender),
+          start: await send({ type: 'START_TASK', task: 'another task' }, sender),
+          origin: await send({ type: 'SET_WARDEN_ORIGIN', origin: 'http://127.0.0.1:9999' }, sender),
+          pairing: await send({ type: 'SET_WARDEN_PAIRING', code: 'x'.repeat(43) }, sender),
+          session: await send({ type: 'GET_SESSION' }, sender),
+          pending: await send({ type: 'GET_PROMPT' }, sender),
+          trace: await send({ type: 'GET_TRACE' }, sender),
+          outbound: await send({ type: 'GET_OUTBOUND' }, sender),
+        };
+      }
+      out.stillPending = (await send({ type: 'GET_PROMPT' }, PANEL_SENDER))?.id === prompt.id;
+      return out;
+    },
+  });
+  const r = run.hookResults[0];
+  for (const name of ['content', 'panelUrlInTab']) {
+    for (const [key, value] of Object.entries(r[name])) assert.equal(value, undefined, `${name} ${key} was answered`);
+  }
+  assert.equal(r.stillPending, true, 'the prompt was not answered by the content script');
+  assert.equal(run.executed.length, 0, 'the content script could not approve the step');
+  assert.equal(run.terminal.status, 'stopped');
+  assert.equal(run.entries.filter((e) => e.kind === 'user').length, 1, 'no second run started');
 });
 
 // Security review, 3 October 2026 (HIGH): the Warden mints token ids per /strip call, so

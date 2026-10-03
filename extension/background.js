@@ -589,9 +589,20 @@ function respondWith(promise, sendResponse, fallback) {
   return true;
 }
 
+// Every message this worker answers comes from an extension page: the side panel, or a harness
+// evaluating inside the extension. content.js never messages the worker, so a sender with a tab, or
+// with a URL outside this extension, is a page's renderer speaking and gets no answer at all: it
+// must not answer a prompt, start a run, change the Warden origin or pairing code, or read the
+// transcript (raw task text, uncertain previews), the pending prompt or the trace (security review,
+// 3 October 2026). REVEAL_TOKEN keeps its stricter side-panel-only check below.
+function isExtensionPageSender(sender) {
+  if (!sender || sender.id !== chrome.runtime.id || sender.tab) return false;
+  return typeof sender.url === 'string' && sender.url.startsWith(chrome.runtime.getURL(''));
+}
+
 // ---- Message routing: the frozen contract, exactly --------------------------
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (sender.id !== chrome.runtime.id) return false;
+  if (!isExtensionPageSender(sender) || !message || typeof message !== 'object') return false;
   switch (message.type) {
     case 'START_TASK':
       return respondWith(startTask(message), sendResponse, { entries: transcript });
