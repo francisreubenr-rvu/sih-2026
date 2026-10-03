@@ -32,7 +32,25 @@ const EN_DESTRUCTIVE_LABEL_EXTRA = 'forget|discard|withdraw|purge|revoke|unlink|
 const EN_DESTRUCTIVE_INTENT_EXTRA = '\\b(?:forget|discard(?:ed|ing)?|withdraw(?:n|ing)?|purg(?:e|ed|ing)|revok(?:e|ed|ing)|unlink(?:ed|ing)?|disconnect(?:ed|ing)?|wip(?:e|ed|ing)|kick(?:ed|ing)?)\\b|\\bstop sharing\\b|\\bleave (?:the |this |my )?(?:group|team|organi[sz]ation|workspace|channel|chat|community|conversation|household|family)\\b|\\bend (?:my |the )?(?:membership|subscription|plan)\\b|\\bempty (?:the |my )?(?:trash|bin)\\b|\\bfactory reset\\b';
 const DESTRUCTIVE_INTENT_RE = new RegExp(`\\b(delete|remove|deactivat(?:e|ing|ed)|terminat(?:e|ing|ed)|eras(?:e|ing|ed)|destroy(?:ing|ed)?)\\b|\\bclose (?:my|the) account\\b|\\bcancel (?:my|the) (?:account|subscription)\\b|${EN_DESTRUCTIVE_INTENT_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
 const DESTRUCTIVE_LABEL_RE = new RegExp(`delete|remove|deactivat|terminat|eras|destroy|unsubscribe|close account|cancel (account|subscription)|${EN_DESTRUCTIVE_LABEL_EXTRA}|${HI_DESTRUCTIVE}`, 'i');
-const SUBMIT_LABEL_RE = /submit|save|confirm|pay|checkout|place order|purchase|send/i;
+// Hindi submit keywords (PLAN item 8, 3 October 2026). Without them every Hindi pay or send label
+// tiered state-changing by the 'unproven' default, the one basis a Laya review can release. Two
+// kinds of entry:
+//   - imperative verb forms: pay (भुगतान करें, पे करें, अदा करें), send (भेजें/भेजो/भेज दें, सेंड,
+//     ट्रांसफ़र करें), submit (जमा करें, सबमिट, प्रस्तुत करें, दाखिल करें), confirm (पुष्टि करें,
+//     कन्फ़र्म), order (ऑर्डर करें/दें), buy (खरीदें), save (सहेजें, सेव करें), recharge.
+//   - a bare noun only where English already counts its equivalent bare: भुगतान/पेमेंट ("pay"),
+//     पुष्टि and कन्फ़र्म ("confirm"), सबमिट ("submit"), चेकआउट ("checkout").
+// Kept narrow on purpose: "जमा राशि देखें" (view deposit amount), "सावधि जमा" (fixed deposit),
+// "भेजे गए संदेश" (sent messages), "सहेजे गए आइटम" (saved items), "मेरे ऑर्डर" (my orders), "खरीदारी
+// जारी रखें" (continue shopping), "ग्राहक सेवा" (सेवा contains सेव) and "पेज 2" (पेज starts with पे)
+// stay unproven. Accepted over-match: "भुगतान इतिहास" (payment history) reads submit, as "Payment
+// history" already does in English; it costs a prompt, never an unattended click. Destructive is
+// checked first, so "भुगतान विधि हटाएं" stays destructive. NFC-normalised like HI_DESTRUCTIVE (फ़ and ख़
+// decompose under NFC). Mirrored in warden/tiers.py; test_warden.py runs both.
+const HI_SUBMIT = ('भुगतान|पेमेंट|(?:^|\\s)पे कर|अदा कर|भेज(?:ें|ो|िए|िये| दें| दो| दीजिए)|(?:सेंड|ट्रांसफ़र|ट्रांसफर|ट्रान्सफ़र|ट्रान्सफर) कर|'
+  + 'जमा (?:कर|कीजिए)|सबमिट|प्रस्तुत (?:कर|कीजिए)|(?:दाखिल|दाख़िल) (?:कर|कीजिए)|पुष्टि|कन्फ़र्म|कन्फर्म|(?:ऑर्डर|आर्डर) (?:कर|दें|दो|दीजिए|प्लेस)|'
+  + '(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर').normalize('NFC');
+const SUBMIT_LABEL_RE = new RegExp(`submit|save|confirm|pay|checkout|place order|purchase|send|${HI_SUBMIT}`, 'i');
 const NAV_LABEL_RE = /^(go to|view|open|back|next|home|menu)\b|\blink\b/i;
 
 export function isKnownTier(tier) {

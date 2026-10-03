@@ -492,3 +492,14 @@ test('Hindi destructive link scans as destructive, so it always asks', async () 
   assert.deepEqual([byLabel(scan, 'सहायता केंद्र').tier, byLabel(scan, 'सहायता केंद्र').tierBasis], ['state-changing', 'unproven']);
   await p.close();
 });
+
+test('Hindi pay and send links scan by the submit rule, so a Laya review can never release them', async () => {
+  const p = await h.open(`<meta charset="utf-8"><a id="pay" href="#pay">भुगतान करें</a><a id="send" href="#send">पैसे भेजें</a>
+    <a id="dep" href="#dep">जमा राशि देखें</a>`);
+  const scan = await p.scan();
+  for (const label of ['भुगतान करें', 'पैसे भेजें']) {
+    assert.deepEqual([byLabel(scan, label).tier, byLabel(scan, label).tierBasis], ['state-changing', 'submit-keyword'], label);
+  }
+  assert.equal(byLabel(scan, 'जमा राशि देखें').tierBasis, 'unproven', 'view deposit amount is not a submit');
+  await p.close();
+});

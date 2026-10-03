@@ -1968,6 +1968,63 @@ def test_destructive_rules_match_the_extension():
     assert {l for l, d in zip(_PARITY_LABELS, py_labels) if d} == expected_destructive
 
 
+# Hindi submit keywords (PLAN item 8, 3 October 2026), and the over-match guards. Same lists in
+# extension/tests/op-tier.test.mjs; this compares the real JS basis against tiers.py.
+_HI_SUBMIT_LABELS = [
+    "भुगतान करें", "अभी भुगतान करें", "भुगतान", "₹500 का भुगतान करें", "पेमेंट करें", "पे करें", "बिल अदा करें",
+    "भेजें", "पैसे भेजें", "संदेश भेजो", "भेज दें", "सेंड करें", "पैसे ट्रांसफ़र करें", "ट्रांसफर करें",
+    "जमा करें", "फ़ॉर्म जमा करें", "आवेदन जमा कीजिए", "सबमिट करें", "सबमिट", "प्रस्तुत करें", "रिटर्न दाखिल करें",
+    "पुष्टि करें", "भुगतान की पुष्टि करें", "कन्फर्म करें", "कन्फ़र्म", "ऑर्डर करें", "ऑर्डर दें", "आर्डर प्लेस करें",
+    "खरीदें", "अभी खरीदें", "ख़रीदें", "चेकआउट", "सहेजें", "बदलाव सहेजें", "सेव करें", "रिचार्ज करें",
+    "भे‍जें", "जमा​ करें", "पु‌ष्टि करें", "भुगतान इतिहास",
+]
+_HI_SUBMIT_NOT = [
+    "जमा राशि देखें", "भेजे गए संदेश", "ग्राहक सेवा", "मेरे ऑर्डर", "खरीदारी जारी रखें", "पेज 2", "सावधि जमा",
+    "सहेजे गए आइटम", "सहायता केंद्र", "स्कोप करें",
+]
+_HI_SUBMIT_BUT_DESTRUCTIVE = ["भुगतान विधि हटाएं", "खाता हटाने की पुष्टि करें", "सदस्यता रद्द करें और भेजें", "कार्ड डिलीट करें और सहेजें"]
+
+
+def _py_label_basis(label):
+    """tiers.py's rules in the order op-tier.js classifyClickTargetBasis applies them to visible text."""
+    text = tiers._canonical(label)
+    words = re.sub(r"[\s\-_/.?=&+#:%]+", " ", text).strip()
+    if tiers.DESTRUCTIVE_LABEL_RE.search(words):
+        return "destructive-keyword"
+    if tiers.SUBMIT_LABEL_RE.search(words):
+        return "submit-keyword"
+    if tiers.NAV_LABEL_RE.search(re.sub(r"\s+", " ", text).strip().lower()):
+        return "navigation-label"
+    return "unproven"
+
+
+def test_hindi_submit_rules_match_the_extension():
+    if which("node") is None:
+        pytest.skip("node is not on PATH; cannot run extension/utils/op-tier.js")
+    labels = _HI_SUBMIT_LABELS + _HI_SUBMIT_NOT + _HI_SUBMIT_BUT_DESTRUCTIVE
+    script = (
+        "const m = await import(process.argv[1]);"
+        "const labels = JSON.parse(process.argv[2]);"
+        "console.log(JSON.stringify(labels.map((t) => m.classifyClickTargetBasis({ visibleText: t }).basis)));"
+    )
+    op_tier_js = (REPO_ROOT / "extension" / "utils" / "op-tier.js").as_uri()
+    out = subprocess.run(
+        ["node", "--input-type=module", "-e", script, op_tier_js, json.dumps(labels)],
+        capture_output=True, text=True, check=True,
+    )
+    js = dict(zip(labels, json.loads(out.stdout)))
+    py = {label: _py_label_basis(label) for label in labels}
+    assert py == js
+    assert {label for label in _HI_SUBMIT_LABELS if py[label] != "submit-keyword"} == set()
+    assert {label for label in _HI_SUBMIT_NOT if py[label] != "unproven"} == set()
+    assert {label for label in _HI_SUBMIT_BUT_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
+    # The legacy /validate tier agrees: Hindi submit is state-changing, destructive still wins.
+    for label in _HI_SUBMIT_LABELS:
+        assert tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": label, "fieldType": "button"}]) == "state-changing"
+    for label in _HI_SUBMIT_BUT_DESTRUCTIVE:
+        assert tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": label, "fieldType": "button"}]) == "destructive"
+
+
 
 def test_jev_fast_path_is_disabled_but_kept(monkeypatch):
     calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))

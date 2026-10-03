@@ -59,8 +59,18 @@ DESTRUCTIVE_LABEL_RE = re.compile(
     + EN_DESTRUCTIVE_LABEL_EXTRA + "|" + HI_DESTRUCTIVE,
     re.IGNORECASE,
 )
+# Hindi submit keywords (PLAN item 8, 3 October 2026): imperative pay/send/submit/confirm/order/
+# buy/save verbs, plus a bare noun only where English counts its equivalent bare (भुगतान/पेमेंट
+# "pay", पुष्टि/कन्फ़र्म "confirm", सबमिट, चेकआउट). Same text and reasoning as HI_SUBMIT in
+# extension/utils/op-tier.js, including the over-match guards ("जमा राशि देखें", "भेजे गए संदेश",
+# "ग्राहक सेवा", "पेज 2" stay unproven); test_warden.py runs both.
+HI_SUBMIT = unicodedata.normalize("NFC", (
+    r"भुगतान|पेमेंट|(?:^|\s)पे कर|अदा कर|भेज(?:ें|ो|िए|िये| दें| दो| दीजिए)|(?:सेंड|ट्रांसफ़र|ट्रांसफर|ट्रान्सफ़र|ट्रान्सफर) कर|"
+    r"जमा (?:कर|कीजिए)|सबमिट|प्रस्तुत (?:कर|कीजिए)|(?:दाखिल|दाख़िल) (?:कर|कीजिए)|पुष्टि|कन्फ़र्म|कन्फर्म|(?:ऑर्डर|आर्डर) (?:कर|दें|दो|दीजिए|प्लेस)|"
+    r"(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर"
+))
 SUBMIT_LABEL_RE = re.compile(
-    r"submit|save|confirm|pay|checkout|place order|purchase|send",
+    r"submit|save|confirm|pay|checkout|place order|purchase|send|" + HI_SUBMIT,
     re.IGNORECASE,
 )
 NAV_LABEL_RE = re.compile(
