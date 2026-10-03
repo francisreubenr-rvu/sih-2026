@@ -40,3 +40,8 @@ test('the screenshot is redacted before any detector sees it, and never goes to 
   // The only Warden request bodies are built in utils/warden.js from named fields; none is a
   // screenshot. The runtime check is in background-gate.test.mjs ("egress").
 });
+
+test('the Warden host permission is 127.0.0.1 only, not localhost', () => {
+  assert.equal(manifest.host_permissions.some((p) => p.includes(':8756') && !p.startsWith('http://127.0.0.1:8756/')), false);
+  assert.ok(manifest.host_permissions.includes('http://127.0.0.1:8756/*'));
+});

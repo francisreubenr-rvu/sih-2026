@@ -3,7 +3,7 @@ import { detectElements } from './utils/omniparser.js';
 import * as wardenClient from './utils/warden.js';
 import { createG11Trace } from './utils/g11-stage-clock.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
-import { loopbackHttpUrl } from './utils/loopback.js';
+import { loopbackHttpUrl, wardenOriginUrl } from './utils/loopback.js';
 import { expressesDestructiveIntent, findSceneElement, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
 import { decideLocalGate, describeStep, layaRelease, questionForTier, runPlanChecks } from './utils/plan-check.js';
 import {
@@ -657,10 +657,10 @@ async function setWardenOrigin(origin) {
     const health = await refreshHealthAndSync();
     return { ok: true, origin: null, state: healthState(health) };
   }
-  if (!loopbackHttpUrl(value)) {
+  if (!wardenOriginUrl(value)) {
     return {
       ok: false,
-      error: 'Warden origin must be http or https on 127.0.0.1, localhost, or ::1.',
+      error: 'Warden origin must be http://127.0.0.1:<port>. localhost and ::1 are refused: localhost can resolve to ::1, where another process can hold the port.',
       origin: null,
     };
   }

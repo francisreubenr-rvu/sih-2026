@@ -28,7 +28,7 @@
 // and only such a response may release a local confirmation (plan-check.js layaRelease).
 
 import { WARDEN_DEFAULT_ORIGIN } from '../config.js';
-import { loopbackHttpUrl } from './loopback.js';
+import { wardenOriginUrl } from './loopback.js';
 
 const TIMEOUT_MS = {
   health: 3000,
@@ -116,11 +116,11 @@ async function getOrigin() {
     const stored = await chrome.storage.local.get(['wardenOrigin']);
     const origin = stored.wardenOrigin && String(stored.wardenOrigin).trim();
     if (!origin) return WARDEN_DEFAULT_ORIGIN;
-    if (!loopbackHttpUrl(origin)) {
+    if (!wardenOriginUrl(origin)) {
       throw new WardenUnreachableError(
         origin,
         '',
-        'refusing non-loopback wardenOrigin; only 127.0.0.1, localhost, and ::1 are allowed',
+        'refusing this wardenOrigin; only http://127.0.0.1:<port> is allowed (not localhost or ::1)',
       );
     }
     return origin.replace(/\/+$/, '');
