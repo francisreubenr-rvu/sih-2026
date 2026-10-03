@@ -224,12 +224,21 @@
       "acceptance": "For both mobile and desktop, median of 3 runs is strictly >90 in performance, accessibility, best-practices and SEO; no category omitted. Record all runs and environment.",
       "verification_method": "Run production build in clean Chrome profile; preserve JSON/HTML reports and exact URL/version. A rounded 90 fails.",
       "required_evidence": [
-        "Benchmarks/results/lighthouse-dhristi-v02-summary.json"
+        "Benchmarks/results/lighthouse-dhristi-v03-summary.json"
       ],
       "status": "pass",
-      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance.",
+      "reason": "Re-measured 3 October 2026 on the current Website (the v02 runs of 9 September predate the 29 September redesign): six local Lighthouse 12.8.2 runs, medians mobile performance 98, desktop 100, accessibility, best-practices and SEO 100 on both. Chrome run as root with --headless=new --no-sandbox (recorded in the file). Automated site scores only; not WCAG conformance or prototype performance.",
       "subjects": [
         "Website/"
+      ],
+      "history": [
+        {
+          "superseded": "2026-10-03",
+          "required_evidence": [
+            "Benchmarks/results/lighthouse-dhristi-v02-summary.json"
+          ],
+          "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance."
+        }
       ]
     },
     {
