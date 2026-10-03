@@ -573,7 +573,7 @@ function plannerFromHealth(health) {
 // to a sender that is this extension, not a tab, at exactly the side panel page. Never logged,
 // never stored, never added to the transcript or the trace.
 function isSidePanelSender(sender) {
-  if (!sender || sender.id !== chrome.runtime.id || sender.tab) return false;
+  if (!sender || sender.id !== chrome.runtime.id) return false;
   const url = typeof sender.url === 'string' ? sender.url.split(/[?#]/)[0] : '';
   return url === chrome.runtime.getURL('sidepanel.html');
 }
@@ -596,13 +596,17 @@ function respondWith(promise, sendResponse, fallback) {
 }
 
 // Every message this worker answers comes from an extension page: the side panel, or a harness
-// evaluating inside the extension. content.js never messages the worker, so a sender with a tab, or
-// with a URL outside this extension, is a page's renderer speaking and gets no answer at all: it
-// must not answer a prompt, start a run, change the Warden origin or pairing code, or read the
-// transcript (raw task text, uncertain previews), the pending prompt or the trace (security review,
-// 3 October 2026). REVEAL_TOKEN keeps its stricter side-panel-only check below.
+// evaluating inside the extension. content.js never messages the worker, so a sender whose URL is
+// outside this extension is a page's renderer speaking and gets no answer at all: it must not answer
+// a prompt, start a run, change the Warden origin or pairing code, or read the transcript (raw task
+// text, uncertain previews), the pending prompt or the trace (security review, 3 October 2026).
+// The URL is what tells them apart: the browser sets sender.url, a content script always reports the
+// web page's URL, and no page can load sidepanel.html (it is not web-accessible). sender.tab is NOT
+// a test: the panel opened in a tab is still this extension's page, and refusing it (as a first cut
+// of this check did) left every loaded-extension harness unable to pair. REVEAL_TOKEN keeps its
+// stricter side-panel-only check below.
 function isExtensionPageSender(sender) {
-  if (!sender || sender.id !== chrome.runtime.id || sender.tab) return false;
+  if (!sender || sender.id !== chrome.runtime.id) return false;
   return typeof sender.url === 'string' && sender.url.startsWith(chrome.runtime.getURL(''));
 }
 

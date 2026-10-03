@@ -183,7 +183,10 @@ test('REVEAL_TOKEN answers the side panel only, from the live vault only', async
     assert.equal('value' in r[key], false, `${key} carries no value`);
   }
   // A foreign extension, and (since 3 October 2026) any content-script sender, gets no answer at all.
-  for (const key of ['foreign', 'contentScript', 'panelUrlInTab']) assert.equal(r[key], undefined, `${key} got an answer`);
+  for (const key of ['foreign', 'contentScript']) assert.equal(r[key], undefined, `${key} got an answer`);
+  // The panel opened in a tab is still the extension's own page (the browser sets sender.url, and no
+  // web page can load sidepanel.html): the loaded-extension harnesses run it that way.
+  assert.deepEqual(r.panelUrlInTab, { token: 'EMAIL#1', value: SECRET });
   // The vault ends with the run.
   const after = await run.send({ type: 'REVEAL_TOKEN', token: 'EMAIL#1' }, PANEL_SENDER);
   assert.equal(typeof after.error, 'string');
@@ -241,7 +244,8 @@ test('a content-script sender cannot answer a prompt, start a run, change settin
     choices: ['stop'],
     onPrompt: async (prompt, { send }) => {
       const out = {};
-      for (const [name, sender] of [['content', CONTENT], ['panelUrlInTab', PANEL_URL_IN_TAB]]) {
+      out.panelUrlInTab = { session: await send({ type: 'GET_SESSION' }, PANEL_URL_IN_TAB) };
+      for (const [name, sender] of [['content', CONTENT]]) {
         out[name] = {
           answer: await send({ type: 'PROMPT_RESPONSE', id: prompt.id, answers: { choice: 'proceed' } }, sender),
           start: await send({ type: 'START_TASK', task: 'another task' }, sender),
@@ -258,9 +262,9 @@ test('a content-script sender cannot answer a prompt, start a run, change settin
     },
   });
   const r = run.hookResults[0];
-  for (const name of ['content', 'panelUrlInTab']) {
-    for (const [key, value] of Object.entries(r[name])) assert.equal(value, undefined, `${name} ${key} was answered`);
-  }
+  for (const [key, value] of Object.entries(r.content)) assert.equal(value, undefined, `content ${key} was answered`);
+  // The panel in a tab is the extension's own page and is answered (GET_SESSION as a witness).
+  assert.notEqual(r.panelUrlInTab.session, undefined, 'the panel opened in a tab was refused');
   assert.equal(r.stillPending, true, 'the prompt was not answered by the content script');
   assert.equal(run.executed.length, 0, 'the content script could not approve the step');
   assert.equal(run.terminal.status, 'stopped');
