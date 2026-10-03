@@ -330,7 +330,7 @@ body {
 /* ---- Controls -----------------------------------------------------------------
  * Every control is at least 44px on its smallest dimension (DESIGN.md standing rule; finding
  * F20 in ROAST.md was a regression of exactly this). */
-textarea, input[type="text"] {
+textarea, input[type="text"], input[type="password"] {
   width: 100%; min-width: 0;
   min-height: 44px;
   padding: 10px;
@@ -501,12 +501,15 @@ body { background: var(--sg-void); color: var(--sg-text); }
 .entry--activity { border-left-color: var(--sg-line-strong); }
 .entry--user { background: var(--sg-panel-2); border-color: var(--sg-line); }
 textarea,
-input[type="text"] { background: var(--sg-panel); border-color: var(--sg-line-strong); }
+input[type="text"],
+input[type="password"] { background: var(--sg-panel); border-color: var(--sg-line-strong); }
 textarea:hover,
-input[type="text"]:hover { border-color: var(--sg-text-2); }
+input[type="text"]:hover,
+input[type="password"]:hover { border-color: var(--sg-text-2); }
 /* Focus on a text field is a focus indicator, so it may take the accent. */
 textarea:focus,
-input[type="text"]:focus { border-color: var(--sg-glow-text); }
+input[type="text"]:focus,
+input[type="password"]:focus { border-color: var(--sg-glow-text); }
 
 /* Secondary button: white, ink label, the 3:1 control outline, so it reads as a button with no
    hover at all. Hover raises the ground one neutral step and darkens the outline to ink-2. */
@@ -858,7 +861,9 @@ body:has(.entry[data-pending="true"]) .node-meta { display: none !important; }
 }
 .inspector[open] > summary::before { transform: rotate(90deg); }
 .inspector-summary-title { flex: none; color: var(--sg-text); font: 600 var(--text-base) var(--font-sans); letter-spacing: 0; white-space: nowrap; }
-.inspector-summary-meta { color: var(--sg-text-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inspector-summary-meta { color: var(--sg-text-3); min-width: 0; overflow-wrap: anywhere; }
+/* The step summary wraps rather than truncating: with WCAG 1.4.12 text spacing it ran past the row
+   and lost its last figure behind an ellipsis. */
 .inspector > summary:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: -2px; }
 
 .tabs {
@@ -947,6 +952,8 @@ body:has(.entry[data-pending="true"]) .node-meta { display: none !important; }
   font: 500 var(--text-sm) var(--font-sans);
 }
 .tab-panel .body-wrap .diag-body { max-height: 260px; }
+/* The raw body scrolls in its own cap, so it is a tab stop (sidepanel.html) with the panel's ring. */
+.diag-body:focus-visible { outline: 2px solid var(--sg-glow-text); outline-offset: 2px; }
 
 .kept-counts { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; color: var(--sg-text-2); font: var(--text-xs) var(--font-mono); }
 .kept-counts[hidden] { display: none; }
@@ -1077,4 +1084,51 @@ body:has(.entry[data-pending="true"]) .node-meta { display: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .node[data-status="active"] .node-glyph { animation: none !important; }
+}
+
+/* ---- 200% zoom ----------------------------------------------------------------
+ * Browser zoom halves the panel in CSS pixels: a 360px panel at 200% lays out at 180px. Below
+ * 260px each field and its button stack, so an input never shrinks to a sliver (measured 15px wide
+ * before this rule), and a status chip may wrap instead of running past the panel's clipped edge.
+ * Value and hue are unchanged; only the arrangement steps down (playbook, Build step 30). */
+@media (max-width: 260px) {
+  .composer-row,
+  .key-row { grid-template-columns: minmax(0, 1fr); }
+  .composer-actions { grid-template-columns: minmax(0, 1fr); }
+  #send,
+  .save-btn { width: 100%; }
+  .pixel-chip { white-space: normal; overflow-wrap: anywhere; }
+  .health-line { flex-wrap: wrap; }
+  .topbar { padding: 6px 8px; }
+  /* At 200% the panel is also half as tall, and a transcript scrolling inside a 120px row hid a
+     pending card behind its own scrollbar. Here the page scrolls as one column instead, and the
+     transcript and empty state take their content height. */
+  body { padding: var(--cell); height: auto; min-height: 100vh; grid-template-rows: none; }
+  .transcript { height: auto; overflow-y: visible; }
+  .empty-state { position: static; }
+  /* Card choices stack one per row: two side by side broke "Stop the run" one letter per line. */
+  .card-actions { grid-template-columns: minmax(0, 1fr); }
+  /* Four inspector tabs in one row were 41px wide; two rows of two keep each at 44px or more. */
+  .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tabs [role="tab"]:nth-child(3) { border-left: 0; }
+  /* Five nodes side by side are 26px each here and clipped their own status ("Active"). The route
+     becomes a list, one node per row with name and status on one line; the cloud's Plan node keeps
+     the cloud lane's neutral hatch so where it ran still reads without the two-lane picture. */
+  .lanes { display: flex; flex-direction: column; gap: 4px; }
+  .lanes-decor { display: none; }
+  .nodes { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; gap: 4px; order: 0; }
+  .lanes .node-slot[data-stage],
+  .lanes[data-destination="cloud"] .node-slot[data-stage="plan"] { grid-column: 1; grid-row: auto; }
+  .node { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 6px; padding: 4px 6px; }
+  .node > span { max-width: none; }
+  .node-meta { flex-basis: 100%; }
+  .node-meta:has(.node-ms:empty + .node-detail:empty) { display: none !important; }
+  .lanes[data-destination="cloud"] .node-slot[data-stage="plan"] .node {
+    border-style: dashed;
+    background:
+      repeating-linear-gradient(135deg, color-mix(in srgb, var(--sg-line) 70%, var(--sg-void)) 0 1px, transparent 1px 6px),
+      var(--sg-void);
+  }
+  .cloud-lane,
+  .cloud-model { order: 1; padding: 0; }
 }
