@@ -1,0 +1,1190 @@
+{
+  "name": "accessibility-v5-sidepanel",
+  "date": "2026-10-03",
+  "measured": true,
+  "evidence_scope": "Automated checks in real headless Chromium on this container. The side panel is driven with synthetic UI fixtures (message payloads the background worker sends; every number in them is a display value, not a measurement) and also loaded as the real unpacked extension with no Warden running. Website, Prototype operator pages and the Prototype popup are checked separately. Not WCAG conformance, not a user test.",
+  "tree": {
+    "before_round21": "71c1ce9 (Signal redesign, where ROAST round 21 recorded the three side panel findings)",
+    "before": "7c35778 (master at the start of this work)",
+    "after": "beb80bd and fb8dcaf on worktree branch worktree-agent-ae8eaf7302e7696fe"
+  },
+  "tools": {
+    "axe_core": "4.10.2",
+    "axe_tags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22aa",
+      "best-practice"
+    ],
+    "playwright_core": "1.62.1",
+    "chromium": "141.0.7390.37",
+    "harness": "scripts/sidepanel-accessibility.mjs (side panel); a scratch page audit with the same axe tags for Website and Prototype (not committed; method below)"
+  },
+  "side_panel": {
+    "method": "sidepanel.html served from loopback behind a recording chrome.* stub; each state built on a fresh page at 360x800 by emitting HEALTH_UPDATE / SESSION_UPDATE / PROMPT_REQUEST / TRACE_UPDATE and by real clicks and typing; axe runs after reveal animations and colour transitions finish. Loaded extension: real unpacked build in a throwaway profile, panel opened as a tab at chrome-extension://<id>/sidepanel.html, real background worker, no Warden.",
+    "states_covered": [
+      "initial-checking",
+      "offline-blocked-card",
+      "pairing-failed",
+      "not-paired-settings-open",
+      "pairing-save-error",
+      "origin-refused",
+      "loading",
+      "no-cloud-key-settings-open",
+      "ready-empty",
+      "ready-local-planner",
+      "ready-task-typed",
+      "running",
+      "uncertain-pii-pending",
+      "uncertain-pii-incomplete-answer",
+      "question-pending-hindi",
+      "prompt-from-get-prompt",
+      "inspector-cloud-saw",
+      "inspector-kept-revealed",
+      "inspector-screen",
+      "inspector-decision",
+      "finished-history",
+      "loaded-offline",
+      "loaded-offline-settings-open"
+    ],
+    "round21_findings": {
+      "finding": "ROAST round 21: list, region, aria-allowed-role in sidepanel.js markup",
+      "reproduced_on_71c1ce9": true,
+      "present_on_7c35778": false,
+      "note": "Already removed before this work by the v5 side panel (e4288a6: blocking cards became a labelled group inside the list item, every region landmarked). Confirmed here with the same harness on both trees; nothing in this change was needed for them."
+    },
+    "axe_violations": {
+      "round21_71c1ce9": {
+        "total_rule_hits": 46,
+        "per_state": {
+          "initial-checking": [
+            "region (moderate, 3 nodes)"
+          ],
+          "offline-blocked-card": [
+            "aria-allowed-role (minor, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "pairing-failed": [
+            "aria-allowed-role (minor, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "not-paired-settings-open": [
+            "region (moderate, 3 nodes)"
+          ],
+          "pairing-save-error": [
+            "region (moderate, 3 nodes)"
+          ],
+          "origin-refused": [
+            "region (moderate, 3 nodes)"
+          ],
+          "loading": [
+            "region (moderate, 3 nodes)"
+          ],
+          "no-cloud-key-settings-open": [
+            "region (moderate, 3 nodes)"
+          ],
+          "ready-empty": [
+            "region (moderate, 3 nodes)"
+          ],
+          "ready-local-planner": [
+            "region (moderate, 3 nodes)"
+          ],
+          "ready-task-typed": [
+            "region (moderate, 3 nodes)"
+          ],
+          "running": [
+            "region (moderate, 3 nodes)"
+          ],
+          "uncertain-pii-pending": [
+            "aria-allowed-role (minor, 1 node)",
+            "color-contrast (serious, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "uncertain-pii-incomplete-answer": [
+            "aria-allowed-role (minor, 1 node)",
+            "color-contrast (serious, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "question-pending-hindi": [
+            "aria-allowed-role (minor, 1 node)",
+            "color-contrast (serious, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "prompt-from-get-prompt": [
+            "aria-allowed-role (minor, 1 node)",
+            "color-contrast (serious, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "inspector-cloud-saw": [
+            "region (moderate, 3 nodes)"
+          ],
+          "inspector-kept-revealed": [
+            "region (moderate, 3 nodes)"
+          ],
+          "inspector-screen": [
+            "region (moderate, 3 nodes)"
+          ],
+          "inspector-decision": [
+            "region (moderate, 3 nodes)"
+          ],
+          "finished-history": [
+            "aria-allowed-role (minor, 3 nodes)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)",
+            "scrollable-region-focusable (serious, 1 node)"
+          ],
+          "loaded-offline": [
+            "aria-allowed-role (minor, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ],
+          "loaded-offline-settings-open": [
+            "aria-allowed-role (minor, 1 node)",
+            "list (serious, 1 node)",
+            "region (moderate, 3 nodes)"
+          ]
+        }
+      },
+      "before_7c35778": {
+        "total_rule_hits": 1,
+        "per_state": {
+          "initial-checking": [],
+          "offline-blocked-card": [],
+          "pairing-failed": [],
+          "not-paired-settings-open": [],
+          "pairing-save-error": [],
+          "origin-refused": [],
+          "loading": [],
+          "no-cloud-key-settings-open": [],
+          "ready-empty": [],
+          "ready-local-planner": [],
+          "ready-task-typed": [],
+          "running": [],
+          "uncertain-pii-pending": [],
+          "uncertain-pii-incomplete-answer": [],
+          "question-pending-hindi": [],
+          "prompt-from-get-prompt": [],
+          "inspector-cloud-saw": [
+            "scrollable-region-focusable (serious, 1 node)"
+          ],
+          "inspector-kept-revealed": [],
+          "inspector-screen": [],
+          "inspector-decision": [],
+          "finished-history": [],
+          "loaded-offline": [],
+          "loaded-offline-settings-open": []
+        }
+      },
+      "after": {
+        "total_rule_hits": 0,
+        "per_state": {
+          "initial-checking": [],
+          "offline-blocked-card": [],
+          "pairing-failed": [],
+          "not-paired-settings-open": [],
+          "pairing-save-error": [],
+          "origin-refused": [],
+          "loading": [],
+          "no-cloud-key-settings-open": [],
+          "ready-empty": [],
+          "ready-local-planner": [],
+          "ready-task-typed": [],
+          "running": [],
+          "uncertain-pii-pending": [],
+          "uncertain-pii-incomplete-answer": [],
+          "question-pending-hindi": [],
+          "prompt-from-get-prompt": [],
+          "inspector-cloud-saw": [],
+          "inspector-kept-revealed": [],
+          "inspector-screen": [],
+          "inspector-decision": [],
+          "finished-history": [],
+          "loaded-offline": [],
+          "loaded-offline-settings-open": []
+        }
+      }
+    },
+    "axe_needs_review": {
+      "after": [
+        "color-contrast"
+      ],
+      "note": "Only color-contrast, on text over the lane bands, the cloud hatch, the transcript and scroll containers, where axe cannot resolve the ground. Each such node was measured instead (manual_contrast)."
+    },
+    "manual_contrast_after": {
+      "nodes_measured": 143,
+      "failing": 0,
+      "lowest_ratio": 5.2,
+      "method": "Colours stacked under the element centre (elementsFromPoint): first opaque background plus every gradient stop above it (the hatch lines); worst text ratio against any of them; 4.5:1 required for text this size."
+    },
+    "token_contrast": "scripts/check-signal-tokens.mjs: 29 pairs, all AA; lowest is the control outline sg-line-strong on sg-void at 3.27:1 (UI component minimum 3:1).",
+    "keyboard_after": {
+      "state": "ready, transcript with one step, Settings open",
+      "tab_stops": 14,
+      "order": [
+        "button \"Perceive, on this device, Done 180 ms42 \"",
+        "button \"Redact, on this device, Done 240 ms2 rep\"",
+        "button \"Plan, in the cloud, Done 700 mstype #ema\"",
+        "button \"Check, on this device, Done 3 msstate-ch\"",
+        "button \"Act, on this device, Active\"",
+        "summary \"Inspect step step 2 · 2 kept here · 1.8 \"",
+        "ol#transcript \"Conversation\"",
+        "textarea#task-input \"\"",
+        "button#stop \"Stop run\"",
+        "summary \"Settings\"",
+        "input#warden-origin \"http://127.0.0.1:8756\"",
+        "button#warden-origin-save \"Save origin\"",
+        "input#warden-pairing \"\"",
+        "button#warden-pairing-save \"Save code\""
+      ],
+      "stops_without_visible_focus_ring": 0,
+      "tabs_widget_keys": [
+        {
+          "key": "ArrowRight",
+          "focused": "tab-kept",
+          "selected": "tab-kept"
+        },
+        {
+          "key": "ArrowRight",
+          "focused": "tab-screen",
+          "selected": "tab-screen"
+        },
+        {
+          "key": "End",
+          "focused": "tab-decision",
+          "selected": "tab-decision"
+        },
+        {
+          "key": "Home",
+          "focused": "tab-sent",
+          "selected": "tab-sent"
+        },
+        {
+          "key": "ArrowLeft",
+          "focused": "tab-decision",
+          "selected": "tab-decision"
+        }
+      ]
+    },
+    "pending_card_focus": {
+      "before": {
+        "uncertain-pii": {
+          "cycle": [
+            "input \"strip\"",
+            "button \"Apply and continue\""
+          ],
+          "stop_button_visible": true,
+          "stop_reachable_by_keyboard": false,
+          "leaves_card": false
+        },
+        "question": {
+          "cycle": [
+            "button \"Run this step\"",
+            "button \"Skip this step\"",
+            "button \"Stop the run\""
+          ],
+          "stop_button_visible": true,
+          "stop_reachable_by_keyboard": false,
+          "leaves_card": false
+        }
+      },
+      "after": {
+        "uncertain-pii": {
+          "cycle": [
+            "button#stop \"Stop run\"",
+            "input \"strip\"",
+            "button \"Apply and continue\""
+          ],
+          "reverse_cycle": [
+            "button#stop \"Stop run\"",
+            "button \"Apply and continue\"",
+            "input \"strip\""
+          ],
+          "stop_button_visible": true,
+          "stop_reachable_by_keyboard": true,
+          "leaves_cycle": false
+        },
+        "question": {
+          "cycle": [
+            "button#stop \"Stop run\"",
+            "button \"Run this step\"",
+            "button \"Skip this step\"",
+            "button \"Stop the run\""
+          ],
+          "reverse_cycle": [
+            "button#stop \"Stop run\"",
+            "button \"Stop the run\"",
+            "button \"Skip this step\"",
+            "button \"Run this step\""
+          ],
+          "stop_button_visible": true,
+          "stop_reachable_by_keyboard": true,
+          "leaves_cycle": false
+        }
+      },
+      "finding_fixed": "Before: while a decision card was pending, Tab cycled only inside the card and Stop run was reachable by pointer only (WCAG 2.1.2 risk, and a keyboard user could not stop the run). After: the cycle is the card controls plus Stop run, both directions."
+    },
+    "settings_fields_pairing_and_origin": {
+      "before": {
+        "before": {
+          "origin": {
+            "label": "Warden origin",
+            "type": "text",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [],
+            "status_live": null,
+            "status_text": "Default: http://127.0.0.1:8756. Loopback only."
+          },
+          "pairing": {
+            "label": "Pairing code",
+            "type": "password",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [],
+            "status_live": null,
+            "status_text": "Not paired. Pairing is required: no task runs until a code is saved and the Warden proves it."
+          }
+        },
+        "after_error": {
+          "origin": {
+            "label": "Warden origin",
+            "type": "text",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [],
+            "status_live": null,
+            "status_text": "Refused. The Warden origin must be http or https on 127.0.0.1, localhost, or ::1."
+          },
+          "pairing": {
+            "label": "Pairing code",
+            "type": "password",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [],
+            "status_live": null,
+            "status_text": "The pairing code must be at least 16 characters."
+          }
+        },
+        "after_fix": {
+          "origin": {
+            "label": "Warden origin",
+            "type": "text",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [],
+            "status_live": null,
+            "status_text": "Saved: http://127.0.0.1:8756"
+          },
+          "pairing": {
+            "label": "Pairing code",
+            "type": "password",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [],
+            "status_live": null,
+            "status_text": "Saved. The Warden proved the code."
+          }
+        }
+      },
+      "after": {
+        "before": {
+          "origin": {
+            "label": "Warden origin",
+            "type": "text",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [
+              "Default: http://127.0.0.1:8756. Loopback only."
+            ],
+            "status_live": "status",
+            "status_text": "Default: http://127.0.0.1:8756. Loopback only."
+          },
+          "pairing": {
+            "label": "Pairing code",
+            "type": "password",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [
+              "Not paired. Pairing is required: no task runs until a code is saved and the Warden proves it."
+            ],
+            "status_live": "status",
+            "status_text": "Not paired. Pairing is required: no task runs until a code is saved and the Warden proves it."
+          }
+        },
+        "after_error": {
+          "origin": {
+            "label": "Warden origin",
+            "type": "text",
+            "autocomplete": "off",
+            "aria_invalid": "true",
+            "described_by_text": [
+              "Refused. The Warden origin must be http or https on 127.0.0.1, localhost, or ::1."
+            ],
+            "status_live": "status",
+            "status_text": "Refused. The Warden origin must be http or https on 127.0.0.1, localhost, or ::1."
+          },
+          "pairing": {
+            "label": "Pairing code",
+            "type": "password",
+            "autocomplete": "off",
+            "aria_invalid": "true",
+            "described_by_text": [
+              "The pairing code must be at least 16 characters."
+            ],
+            "status_live": "status",
+            "status_text": "The pairing code must be at least 16 characters."
+          }
+        },
+        "after_fix": {
+          "origin": {
+            "label": "Warden origin",
+            "type": "text",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [
+              "Saved: http://127.0.0.1:8756"
+            ],
+            "status_live": "status",
+            "status_text": "Saved: http://127.0.0.1:8756"
+          },
+          "pairing": {
+            "label": "Pairing code",
+            "type": "password",
+            "autocomplete": "off",
+            "aria_invalid": null,
+            "described_by_text": [
+              "Saved. The Warden proved the code."
+            ],
+            "status_live": "status",
+            "status_text": "Saved. The Warden proved the code."
+          }
+        }
+      },
+      "finding_fixed": "Before: neither field was described by its status line, the status line was not announced, and a refused or failed save set no aria-invalid. After: aria-describedby to the status line, role=status on it, aria-invalid on refusal or error and removed on success. Pairing input is type=password with autocomplete=off and spellcheck=false; the saved code is never echoed."
+    },
+    "hindi": {
+      "before": {
+        "devanagari_text_nodes_marked_hi": 0,
+        "devanagari_text_nodes_not_marked": 15
+      },
+      "after": {
+        "devanagari_text_nodes_marked_hi": 18,
+        "devanagari_text_nodes_not_marked": 0
+      },
+      "note": "Devanagari runs in task, page-label, planner and card text are wrapped in lang=\"hi\" (WCAG 3.1.2). The panel scope is English and Hindi, so Devanagari is read as Hindi; Marathi or Nepali text would be mislabelled. Glyphs render through the font stack (Geist has no Devanagari; the sans stack names Noto Sans Devanagari, and this container fell back to FreeSans / FreeSerif). Rendering was checked by screenshot only, not by a Hindi reader."
+    },
+    "reflow_and_zoom": {
+      "before": [
+        {
+          "state": "ready-empty",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "uncertain-pii-pending",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "inspector-decision",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "not-paired-settings-open",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "ready-empty",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [
+            "input#warden-origin 22x44",
+            "input#warden-pairing 15x44"
+          ],
+          "controls_under_44px": [
+            "button.node 26x44",
+            "button.node 26x44",
+            "button.node 26x74",
+            "button.node 26x44",
+            "button.node 26x44",
+            "button#tab-sent 37x44",
+            "button#tab-kept 37x44",
+            "button#tab-screen 37x44",
+            "button#tab-decision 37x44",
+            "textarea#task-input 42x60"
+          ]
+        },
+        {
+          "state": "uncertain-pii-pending",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [
+            {
+              "el": "span.pixel-chip",
+              "left": 50,
+              "right": 224
+            }
+          ],
+          "controls_under_24px": [
+            "textarea#task-input 24x44",
+            "input#warden-origin 22x44",
+            "input#warden-pairing 15x44"
+          ],
+          "controls_under_44px": [
+            "button.node 26x44",
+            "button.node 26x44",
+            "button.node 26x74",
+            "button.node 26x44",
+            "button.node 26x44",
+            "button#tab-sent 37x44",
+            "button#tab-kept 37x44",
+            "button#tab-screen 37x44",
+            "button#tab-decision 37x44"
+          ]
+        },
+        {
+          "state": "inspector-cloud-saw",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [
+            "textarea#task-input 24x44",
+            "input#warden-origin 22x44",
+            "input#warden-pairing 15x44"
+          ],
+          "controls_under_44px": [
+            "button.node 26x67",
+            "button.node 26x67",
+            "button.node 26x74",
+            "button.node 26x67",
+            "button.node 26x67",
+            "button#tab-sent 37x44",
+            "button#tab-kept 37x44",
+            "button#tab-screen 37x44",
+            "button#tab-decision 37x44"
+          ]
+        },
+        {
+          "state": "not-paired-settings-open",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [
+            "input#warden-origin 22x44",
+            "input#warden-pairing 15x44"
+          ],
+          "controls_under_44px": [
+            "button.node 26x44",
+            "button.node 26x44",
+            "button.node 26x74",
+            "button.node 26x44",
+            "button.node 26x44",
+            "button#tab-sent 37x44",
+            "button#tab-kept 37x44",
+            "button#tab-screen 37x44",
+            "button#tab-decision 37x44",
+            "textarea#task-input 42x60"
+          ]
+        }
+      ],
+      "after": [
+        {
+          "state": "ready-empty",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "uncertain-pii-pending",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "inspector-decision",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "not-paired-settings-open",
+          "width_css_px": 320,
+          "height_css_px": 800,
+          "meaning": "WCAG 1.4.10 reflow width",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "ready-empty",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "uncertain-pii-pending",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "inspector-cloud-saw",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        },
+        {
+          "state": "not-paired-settings-open",
+          "width_css_px": 180,
+          "height_css_px": 400,
+          "meaning": "200% zoom of a 360x800 panel (CSS px halve)",
+          "horizontal_overflow": false,
+          "elements_cut_off": [],
+          "controls_under_24px": [],
+          "controls_under_44px": []
+        }
+      ],
+      "note": "180x400 CSS px is what browser zoom at 200% gives a 360x800 panel. Before (measured on 7c35778): at 180px the pairing and origin inputs were 15 and 22px wide and the waiting chip ran past the clipped edge. Seen during this work with the same node and card layout (an intermediate run and a screenshot, not a 7c35778 record): node status words overflowed their 26px nodes, a 120px transcript row hid a pending card behind its own scrollbar, and two card choices side by side broke \"Stop the run\" one word per line. After: below 260px fields and buttons stack, the route is a list, the page scrolls as one column, tabs are two by two; no overflow, nothing cut off, every control at least 44px. Chrome can narrow a side panel to about 320 device px, which is 160 CSS px at 200%; 160px was not measured."
+    },
+    "text_spacing_1_4_12": {
+      "before": [
+        {
+          "state": "ready-empty",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": []
+        },
+        {
+          "state": "uncertain-pii-pending",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": [
+            {
+              "el": "span.inspector-summary-meta",
+              "text": "step 2 · 2 kept here · 1.8 KB sent",
+              "x": true,
+              "y": false,
+              "ellipsis": true
+            }
+          ]
+        },
+        {
+          "state": "inspector-decision",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": [
+            {
+              "el": "span.node-meta",
+              "text": "180 ms42 controls",
+              "x": false,
+              "y": true,
+              "ellipsis": true
+            },
+            {
+              "el": "span.node-meta",
+              "text": "240 ms2 replaced",
+              "x": false,
+              "y": true,
+              "ellipsis": true
+            },
+            {
+              "el": "span.node-meta",
+              "text": "700 mstype #email",
+              "x": false,
+              "y": true,
+              "ellipsis": true
+            },
+            {
+              "el": "span.inspector-summary-meta",
+              "text": "step 2 · 2 kept here · 1.8 KB sent",
+              "x": true,
+              "y": false,
+              "ellipsis": true
+            }
+          ]
+        },
+        {
+          "state": "not-paired-settings-open",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": []
+        }
+      ],
+      "after": [
+        {
+          "state": "ready-empty",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": []
+        },
+        {
+          "state": "uncertain-pii-pending",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": []
+        },
+        {
+          "state": "inspector-decision",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": [
+            {
+              "el": "span.node-meta",
+              "text": "180 ms42 controls",
+              "x": false,
+              "y": true,
+              "ellipsis": true
+            },
+            {
+              "el": "span.node-meta",
+              "text": "240 ms2 replaced",
+              "x": false,
+              "y": true,
+              "ellipsis": true
+            },
+            {
+              "el": "span.node-meta",
+              "text": "700 mstype #email",
+              "x": false,
+              "y": true,
+              "ellipsis": true
+            }
+          ]
+        },
+        {
+          "state": "not-paired-settings-open",
+          "horizontal_overflow": false,
+          "cut_off_count": 0,
+          "text_clipped_by_overflow": []
+        }
+      ],
+      "note": "Override: line-height 1.5, letter-spacing .12em, word-spacing .16em, paragraph spacing 2em. After: no overflow; the step summary now wraps. Still clipped by design: the node meta line (time and detail) is clamped to two lines in each pipeline node; its full text is in the button name and the inspector."
+    },
+    "reduced_motion": {
+      "after": {
+        "no-preference": {
+          "running_animations": 14,
+          "sample": [
+            {
+              "name": "CSSTransition",
+              "target": "button.node"
+            },
+            {
+              "name": "CSSTransition",
+              "target": "button.node"
+            },
+            {
+              "name": "CSSTransition",
+              "target": "button.node"
+            },
+            {
+              "name": "CSSTransition",
+              "target": "button.node"
+            },
+            {
+              "name": "CSSTransition",
+              "target": "button.node"
+            },
+            {
+              "name": "CSSTransition",
+              "target": "button.node"
+            }
+          ],
+          "elements_with_transition": 20
+        },
+        "reduce": {
+          "running_animations": 0,
+          "sample": [],
+          "elements_with_transition": 0
+        }
+      },
+      "note": "With prefers-reduced-motion: reduce, no animation or transition runs (0 running, 0 elements with a transition), measured with document.getAnimations() during a pending card."
+    },
+    "target_size_after_360px": "No control under 44x44 CSS px in any of the 21 driven states (WCAG 2.5.8 needs 24).",
+    "page_errors_after": 0
+  },
+  "website_and_prototype": {
+    "method": "Same axe-core and tags. Website served from loopback; Prototype pages from the Prototype server (server/index.mjs); popup from Prototype/extension. Each page at 1280x800 and at 320x800 with prefers-reduced-motion: reduce. Fixture pages (*fixture*.html) are synthetic targets and were not checked or changed.",
+    "before": [
+      {
+        "page": "/index.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": true,
+        "scroll_width_320": 354,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/popup.html",
+        "axe_violations_1280": [
+          "target-size (3): #mode-privacy, #mode-score, #preview-wireframe"
+        ],
+        "axe_violations_320_reduced_motion": [
+          "target-size (2): #mode-privacy, #mode-score"
+        ],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [
+          "BUTTON:हिं"
+        ],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/benchmark.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/face-scale-test.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [
+          "scrollable-region-focusable (1): .table-wrap"
+        ],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/local-reference.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/operations.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/task-loop.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/text-benchmark.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/text-preview.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [
+          "scrollable-region-focusable (1): .table-wrap"
+        ],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/validation.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      }
+    ],
+    "after": [
+      {
+        "page": "/index.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/popup.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/benchmark.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/face-scale-test.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/local-reference.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/operations.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/task-loop.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/text-benchmark.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/text-preview.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      },
+      {
+        "page": "/app/validation.html",
+        "axe_violations_1280": [],
+        "axe_violations_320_reduced_motion": [],
+        "horizontal_overflow_320": false,
+        "scroll_width_320": 320,
+        "running_animations_reduced_motion": 0,
+        "images_missing_width_or_height": 0,
+        "images_far_below_fold_not_lazy": 0,
+        "devanagari_without_lang_hi": [],
+        "html_lang": "en",
+        "viewport_meta": true
+      }
+    ],
+    "fixes": [
+      "Website/style.css: boundary cards overflowed 320px by 34px; single column is minmax(0, 1fr), card padding 20px 16px.",
+      "Prototype/extension/popup.css + popup.html: path checkboxes 24px with 44px label rows (axe target-size); Hindi language button lang=\"hi\".",
+      "Prototype/app/face-scale-test.html, text-preview.html, validation.html: sideways-scrolling tables are focusable named regions (axe scrollable-region-focusable)."
+    ]
+  },
+  "not_covered": [
+    "No screen reader was run (NVDA, JAWS, VoiceOver, TalkBack); announcements of role=status and aria-live are inferred from markup, not heard.",
+    "No human keyboard-only or low-vision user test; no participant took part.",
+    "The side panel was opened as a tab, not in Chrome's native side panel host; browser zoom was emulated by halving the viewport, not by Chrome's zoom control.",
+    "160 CSS px (minimum side panel width at 200% zoom) not measured.",
+    "Windows high contrast / forced-colors mode not checked.",
+    "Firefox not checked.",
+    "Live Warden states (real pairing proof, real uncertain spans from GLiNER) were not driven here; the loaded-extension run covers only the offline state.",
+    "Criterion-by-criterion WCAG 2.2 AA review not done; automated tools find a subset of failures.",
+    "Lighthouse not re-run; earlier Lighthouse and axe records keep their original scope and dates."
+  ],
+  "guardrails": "No guardrail status changed. G09 and G10 stay unknown; this file is evidence for the lead to weigh, not a pass."
+}
