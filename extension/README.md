@@ -22,10 +22,24 @@ Styling is the Signal system (`DESIGN.md`).
 
 The panel expects the Warden on `http://127.0.0.1:8756`. Start commands are in
 `warden/README.md`. `POST /plan` defaults to the cloud planner (Groq, key in `warden/.env`);
-`WARDEN_PLANNER=ollama` is the offline mode. Stored `wardenOrigin` and
-`omniparserUrl` values are refused unless they are loopback.
+`WARDEN_PLANNER=ollama` is the offline mode. A stored `wardenOrigin` must be
+`http://127.0.0.1:<port>` (since 3 October 2026; `localhost` can resolve to `[::1]`, where another
+process could relay); `omniparserUrl` must be loopback.
 
-Install-time host permissions are loopback only (Warden `8756`, OmniParser `7860`).
+**Pairing (required since 2 October 2026).** Make a secret with `python warden/pairing.py new`, put it
+in `warden/.env` as `WARDEN_PAIRING_SECRET`, restart the Warden, and paste the same value into
+Settings > Pairing code. Without a code the extension sends nothing and starts no run. Every request
+carries an HMAC proof and every response must carry one back; the code itself never crosses the
+wire. Before each `/strip` the extension checks a signed `/health`, so a process that takes the port
+mid-run never receives page text.
+
+**Run safety (3 October 2026).** A run is bound to the origin it started on: if the tab moves to
+another site, the next step asks (naming the new site) or stops. Confirmation questions name the
+action, the control's label from the extension's own scan, any typed value as tokens, and the site.
+Answers to "is this personal data?" questions are tied to the exact value and end with the run.
+Only the extension's own pages can control the worker; content scripts cannot.
+
+Install-time host permissions are loopback only (Warden `127.0.0.1:8756`, OmniParser `7860`).
 Page scan uses `optional_host_permissions` `<all_urls>`, requested when you send a
 task. After that grant, the content script is registered for later navigations.
 `web_accessible_resources` still matches `<all_urls>` so the content script can import
