@@ -395,6 +395,21 @@ _DESCRIPTOR_WORDS = {
     "zip", "postcode", "postal", "pincode", "code", "street", "line",
     "first", "last", "middle", "full", "given", "family", "surname",
     "company", "organisation", "organization", "title", "display",
+    # Hindi UI vocabulary (added 3 October 2026). The guard used to read only [a-z]
+    # words, so every Devanagari label could fall in the person-name band (floor 0.12):
+    # in the G11 live run the link "खाता हटाएं" (delete account) was asked about as a
+    # person name at 18% on every run; gliner-label-fp-v01.json records "मेरे खाते"
+    # 0.52, "जन्म तिथि" 0.28, "पता बदलें" 0.16 and "सहायता" 0.16 the same way. Field
+    # and action words only, the Hindi counterparts of the words above; a span is
+    # dropped only when EVERY word is one of them, so a name never is. Derived from
+    # observed false positives, like the English list: not a held-out result.
+    "खाता", "खाते", "खातों", "मेरा", "मेरे", "मेरी", "आपका", "आपके", "आपकी",
+    "हटाएं", "हटाएँ", "हटाये", "बंद", "करें", "करे", "करो", "बदलें", "बदले",
+    "पासवर्ड", "प्रोफ़ाइल", "प्रोफाइल", "जन्म", "तिथि", "तारीख", "तारीख़", "पता", "पते",
+    "नाम", "मोबाइल", "फ़ोन", "फोन", "नंबर", "संख्या", "ईमेल", "विवरण", "सहायता",
+    "केंद्र", "लॉग", "इन", "आउट", "साइन", "दस्तावेज़", "दस्तावेज", "खोजें", "सेवा", "सेवाएं",
+    "ग्राहक", "सेटिंग्स", "सेटिंग", "भाषा", "सूचनाएं", "डैशबोर्ड", "विवरणी", "शहर", "राज्य",
+    "पिन", "कोड", "देखें", "बचत", "चालू", "नया", "नई", "पुराना", "पुष्टि",
 }
 
 
@@ -408,7 +423,8 @@ def _neutralise_scaffolding(text: str) -> str:
 def _is_structural_descriptor(value: str) -> bool:
     """True when every word in `value` is a field-descriptor word, which makes
     it a field name rather than a piece of personal data."""
-    words = re.findall(r"[a-z]+", value.lower())
+    # Latin words, and Devanagari words (letters, vowel signs, nukta and virama).
+    words = re.findall(r"[a-z]+|[\u0900-\u0963\u0971-\u097F]+", value.lower())
     if not words:
         return False
     return all(w in _DESCRIPTOR_WORDS for w in words)

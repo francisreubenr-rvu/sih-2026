@@ -154,3 +154,13 @@ def test_strip_tokenizes_hindi_account_number_end_to_end(stub_model):
     out = strip_module.strip(task="", dom=dom, elements=[], resolved={})
     assert "50100234567812" not in out["sanitizedDom"]
     assert "ACCOUNTNUMBER#1" in out["sanitizedDom"]
+
+
+@pytest.mark.parametrize("label", ["खाता हटाएं", "मेरे खाते", "जन्म तिथि", "पता बदलें", "सहायता केंद्र"])
+def test_hindi_ui_labels_are_descriptors(label):
+    assert entities._is_structural_descriptor(label)
+
+
+@pytest.mark.parametrize("value", ["प्रिया शर्मा", "खाता धारक प्रिया शर्मा", "Neha Joshi", "राहुल"])
+def test_names_are_never_descriptors(value):
+    assert not entities._is_structural_descriptor(value)
