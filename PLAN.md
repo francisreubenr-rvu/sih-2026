@@ -1,3 +1,12 @@
+## Code audit and PR-only policy (3 October 2026)
+
+- Francis requires all edits through PRs and no direct changes on `master`. The proposed persistent rule is in `AGENTS.md`.
+- Audit base: `7c35778`. Report, source coverage, synthetic probes and proposed protection settings: [Docs/audits/2026-10-03/README.md](Docs/audits/2026-10-03/README.md).
+- Automated checks cover 207 maintained source files / 31,468 lines; 100 files received focused manual review. Remaining manual coverage is explicitly recorded, not claimed complete.
+- Prioritize A01/A02: stale token-number `keep` approvals and descriptor suppression of values with digits. Then writable/live-target checks, request validation/scheduling and task completion evidence. Follow-up fixes require focused PRs and relevant regressions.
+- Master protection is **blocked, not complete**: GitHub reports `protected: false`; the integration returned HTTP 403 for protection access and ruleset creation. An owner must apply and verify the attached settings.
+- Fresh checks: Prototype 141 passed; Warden 159 passed / 6 skipped; extension 134 passed; G11 harness 13 passed; Python scorers 19 passed. Existing release ledger remains 14 pass / 1 fail / 5 unknown, with no write. G11 fail, G20 unknown, Jev disabled and submission readiness false remain unchanged.
+
 ## Review and next steps (2 October 2026)
 
 Francis asked for a review of the current state and a plan. Facts first, then the plan, then the decisions only Francis can make.
