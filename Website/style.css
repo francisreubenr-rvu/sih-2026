@@ -151,7 +151,10 @@ figcaption{font:400 14px/1.45 var(--body);color:var(--ink-3)}
   .header-row .button{margin-left:auto}
 }
 @media (max-width:600px){
-  .steps,.compare,.boundary,.team,.proof{grid-template-columns:1fr}
+  .steps,.compare,.boundary,.team,.proof{grid-template-columns:minmax(0,1fr)}
+  /* At 320px the two boundary cards ran 34px past the screen: 28px padding plus a long word left no room. */
+  .side{padding:20px 16px;min-width:0}
+  .side li{overflow-wrap:anywhere}
   .hero-media::before{left:-6px;top:-6px;width:48px;height:48px}
   .hero-media img{box-shadow:10px 10px 0 var(--tint)}
 }
