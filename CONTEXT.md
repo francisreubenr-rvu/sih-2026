@@ -1,5 +1,11 @@
 # Dhristi: SIH26171
 
+## Website redesign handoff (3 October 2026)
+
+The redesigned static landing page is on `codex/website-redesign-2026-10-03` for PR review. It uses the established light paper/cobalt palette, Anton and Geist, a synthetic browser illustration, native mobile navigation and the existing scoped Prototype demo. Design rationale, local verification and screenshots: `Docs/design/website-redesign-2026-10-03.md`.
+
+Only the Website and related documentation changed. Master was not edited, no deployment occurred, and runtime release status is unchanged. Branch protection is still not enforced remotely: the integration's earlier write was denied with HTTP 403. Continue PR-only edits; do not merge without Francis's authorization.
+
 ## Session handoff: start here (2 October 2026)
 
 **Where the work is.** PR #42 (Laya plan reviewer and release) and PR #41 (fast path, Groq settings, Laya fast-path training, now parked) are merged into `master` (`3314513`). Open: PR #44 on `claude/lucid-fermat-6dkxla`. It adds Hindi and missing-verb destructive rules, and makes extension-Warden pairing required (`warden/pairing.py`, `WARDEN_PAIRING_SECRET`, Settings > Pairing code). Current review and ordered plan: `PLAN.md`, "Review and next steps (2 October 2026)". Findings: `ROAST.md` rounds 28 and 29. Decision: `Docs/decisions/brain-laya-plan-review.md`.

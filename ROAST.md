@@ -1,3 +1,12 @@
+## Website redesign review (3 October 2026)
+
+- [x] Replaced the dense landing page with a light editorial hierarchy and a labelled synthetic token illustration.
+- [x] Scoped the legacy Prototype video and removed broad assurances that all personal details are protected. Permitted free text, kept values and missed detections are now explained.
+- [x] Five responsive widths: zero automated WCAG A/AA findings and no horizontal overflow. Keyboard mobile navigation, token toggle, native playback and no-JavaScript fallback verified.
+- [x] Replaced decorative Unicode icons with inline SVG after visual review found missing system glyphs. Made the main skip-link target programmatically focusable and verified focus transfer.
+- [ ] Publication is pending PR review; no deployed redesign is claimed. Master is still unprotected because the integration cannot write branch protection (HTTP 403).
+- Evidence and screenshots: `Docs/design/website-redesign-2026-10-03.md`. Earlier engineering findings and gate failures below remain open where marked.
+
 ## Round 29: destructive verbs and required pairing (2 October 2026)
 
 - [x] Verbs neither language listed are now destructive in `op-tier.js` and `tiers.py`. English: forget, discard, withdraw, purge, revoke, unlink, disconnect, wipe, kick, stop sharing, leave a group/team, end a membership, empty trash, clear history, factory reset, void a transaction. Hindi equivalents too. A node-backed parity test runs the real JS against the Python on 36 labels and 9 tasks.
