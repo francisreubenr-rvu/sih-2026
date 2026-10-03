@@ -503,3 +503,43 @@ test('Hindi pay and send links scan by the submit rule, so a Laya review can nev
   assert.equal(byLabel(scan, 'जमा राशि देखें').tierBasis, 'unproven', 'view deposit amount is not a submit');
   await p.close();
 });
+
+// Settle after an action (3 October 2026): the loop waits until the page's DOM has been quiet for
+// 100 ms instead of sleeping a fixed 250 ms + 400 ms, capped at the old 650 ms.
+test('after a click on a quiet page the action returns once the DOM is quiet, well under the old fixed wait', async () => {
+  const p = await h.open('<button id="b" onclick="document.getElementById(\'s\').textContent=\'done\'">Show</button><p id="s"></p>');
+  const scan = await p.scan();
+  const el = byLabel(scan, 'Show');
+  const t0 = Date.now();
+  const result = await p.execute({ action: 'click', handle: el.handle, plannedTier: el.tier });
+  const ms = Date.now() - t0;
+  assert.equal(result.changed, true);
+  assert.equal(await p.page.textContent('#s'), 'done');
+  assert.ok(ms < 450, `click returned in ${ms} ms`);
+  await p.close();
+});
+
+test('a page that keeps changing is waited for up to the cap, and an update inside the quiet window is seen', async () => {
+  const p = await h.open(`<button id="b" onclick="
+      setTimeout(() => { document.getElementById('s').textContent = 'loaded'; }, 60);
+      window.__tick = setInterval(() => { document.getElementById('t').textContent = Date.now(); }, 30);
+    ">Load</button><p id="s"></p><p id="t"></p>`);
+  const scan = await p.scan();
+  const el = byLabel(scan, 'Load');
+  const t0 = Date.now();
+  await p.execute({ action: 'click', handle: el.handle, plannedTier: el.tier });
+  const ms = Date.now() - t0;
+  assert.equal(await p.page.textContent('#s'), 'loaded', 'an update 60 ms after the click landed before the action returned');
+  assert.ok(ms >= 600, `a page that never goes quiet is waited for up to the cap (${ms} ms)`);
+  assert.ok(ms < 1500, `the cap holds (${ms} ms)`);
+  await p.page.evaluate(() => clearInterval(window.__tick));
+  await p.close();
+});
+
+test('finish does not wait on the page', async () => {
+  const p = await h.open('<p>nothing to do</p>');
+  const t0 = Date.now();
+  await p.execute({ action: 'finish' });
+  assert.ok(Date.now() - t0 < 300, 'finish returned without a settle wait');
+  await p.close();
+});

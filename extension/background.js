@@ -1635,9 +1635,11 @@ async function runLoop(runId, secrets) {
         return;
       }
 
-      // Settle delay before the next scan.
+      // Settle before the next scan. In-page actions already waited in content.js until the DOM
+      // went quiet (settleDom); a navigation needs the extra margin for the new page to render
+      // (its content script readiness is then checked by the next step's ping).
       state.status = 'waiting';
-      await sleep(SETTLE_MS);
+      if (navigated) await sleep(SETTLE_MS);
     }
 
     // Loop exited because the step limit was reached without a stop or a finish action. This

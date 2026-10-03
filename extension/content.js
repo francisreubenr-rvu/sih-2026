@@ -557,7 +557,15 @@ async function executeAction(action) {
   } else {
     throw new Error(`Unsupported action: ${action.action}`);
   }
-  await new Promise((resolve) => setTimeout(resolve, action.action === 'click' ? 250 : 120));
+  // Wait for the page to stop changing instead of a fixed sleep (3 October 2026). The loop used to
+  // sleep 250 ms after a click and 120 ms after anything else, then the worker slept another 400 ms
+  // before the next scan: about 770 ms of a 2 s run on the G11 flow
+  // (Benchmarks/results/core-latency-v5-live-v01.json). Now: done once the DOM has been quiet for
+  // SETTLE_QUIET_MS, never longer than SETTLE_MAX_MS (the old 250 + 400 ms), and no wait after
+  // finish, which changes nothing on the page. Accepted trade: a page that updates later than
+  // SETTLE_QUIET_MS after the action, with no DOM change in between, is scanned before the update;
+  // the next plan then sees the old state, and F17 still guards anything state-changing.
+  if (action.action !== 'finish') await settleDom(SETTLE_QUIET_MS, SETTLE_MAX_MS);
   return { digest: digest(document.body?.innerText || ''), elementCount: document.querySelectorAll('button,input,select,textarea,a[href],[role="button"]').length, changed: true };
 }
 
@@ -649,6 +657,37 @@ let overlayLayer = null;
 let overlayMatches = []; // [{ token, range } | { token, element }], found once per HIGHLIGHT_REDACTIONS
 let overlayRaf = 0;
 let overlayListening = false;
+
+const SETTLE_QUIET_MS = 100;
+const SETTLE_MAX_MS = 650;
+
+// Resolves once the page's DOM has gone quietMs without a mutation, or after maxMs at the latest.
+// Changes made by DHRISTI's own overlay and visualizer do not count as the page changing.
+function settleDom(quietMs, maxMs) {
+  return new Promise((resolve) => {
+    let quietTimer = null;
+    let capTimer = null;
+    let observer = null;
+    const done = () => {
+      clearTimeout(quietTimer);
+      clearTimeout(capTimer);
+      observer?.disconnect();
+      resolve();
+    };
+    observer = new MutationObserver((records) => {
+      const pageChanged = records.some((r) => {
+        const node = r.target.nodeType === Node.ELEMENT_NODE ? r.target : r.target.parentElement;
+        return !isDhristiOverlay(node);
+      });
+      if (!pageChanged) return;
+      clearTimeout(quietTimer);
+      quietTimer = setTimeout(done, quietMs);
+    });
+    observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true });
+    quietTimer = setTimeout(done, quietMs);
+    capTimer = setTimeout(done, maxMs);
+  });
+}
 
 function isDhristiOverlay(element) {
   return Boolean(element && element.closest && element.closest(`[${OVERLAY_ATTR}], [data-dhristi-visualizer]`));
