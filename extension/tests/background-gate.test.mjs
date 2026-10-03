@@ -482,3 +482,24 @@ test('a run does not start when the task tab has no readable origin', async () =
   assert.equal(run.start.ok, false);
   assert.equal(run.fetchBodies.some((b) => b.path === '/strip'), false);
 });
+
+// ---- A signed /health before every /strip (security review, 3 October 2026) --------------------
+// /strip carries the raw page. A process that took over the Warden's port mid-run was detected only
+// by the /strip response's missing proof, after it had the body (ROAST round 28). Each /strip is now
+// preceded by a GET /health whose pairing proof must verify; an unproven answer sends no /strip.
+test('each /strip is preceded by a verified /health; a takeover after step 1 receives no /strip body', async () => {
+  let takenOver = false;
+  const run = await runTask({
+    scan: scanOf([NEXT_LINK]),
+    warden: { plan: planSeq(click('body > a')) },
+    execute: () => { takenOver = true; return { digest: 'd' }; },
+    signs: (path) => !takenOver,
+  });
+  const paths = run.fetchBodies.map((b) => b.path);
+  const firstStrip = paths.indexOf('/strip');
+  assert.equal(paths[firstStrip - 1], '/health', 'the first /strip follows a /health');
+  assert.equal(paths.filter((p) => p === '/strip').length, 1, 'no /strip after the takeover');
+  assert.equal(paths.at(-1), '/health', 'the takeover saw only a body-less /health');
+  assert.equal(run.terminal.status, 'error');
+  assert.ok(run.entries.some((e) => e.kind === 'error' && /pairing/i.test(e.text)));
+});

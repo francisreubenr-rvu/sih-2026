@@ -926,6 +926,14 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
   let asked = 0;
   for (;;) {
     if (aborted(runId)) throw new Error('Stopped');
+    // /strip carries the raw page. Before every one, the Warden must prove the pairing code on a
+    // body-less GET /health (utils/warden.js throws when the proof is missing or wrong), so a process
+    // that took over the port mid-run receives no page (security review, 3 October 2026; ROAST round
+    // 28). A takeover between this check and the POST is still possible; it is detected by the
+    // /strip response's own proof, as before. The extra loopback round trip counts in the strip time.
+    const proven = await wardenClient.health();
+    if (!wardenClient.isPairingVerified(proven)) throw new Error('The Warden did not prove the pairing code before /strip, so the page was not sent.');
+    if (aborted(runId)) throw new Error('Stopped');
     const resp = await wardenClient.strip({ task, dom, elements, resolved: resolvedAnswers });
     if (!resp || typeof resp !== 'object') throw new Error('warden: /strip returned no object');
     if (!Array.isArray(resp.uncertain) || resp.uncertain.length === 0) return { resp, asked };

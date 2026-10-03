@@ -30,9 +30,11 @@ export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhris
 export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
 // `again`:   further tasks started one after another in the SAME worker once the previous run
 //            ended, as a person sending a second task would; each waits for its own terminal entry.
+// `signs`:   optional (path, n) -> false to send the n-th response on `path` with no pairing proof,
+//            as a process that took over the Warden's port would.
 // `tab`:     optional tab object chrome.tabs.query/get return a copy of; a test may change its url
 //            mid-run (from a strip/plan/execute hook) to simulate a navigation.
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tab, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tab, signs, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];
@@ -103,6 +105,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     sidePanel: { setPanelBehavior: async () => {} },
   };
 
+  const pathCalls = {};
   globalThis.fetch = async (url, init = {}) => {
     const path = new URL(url).pathname;
     const body = init.body ? JSON.parse(init.body) : null;
@@ -112,7 +115,9 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     const respond = (status, value) => {
       const bytes = Buffer.from(JSON.stringify(value ?? null));
       const nonce = headers['X-Dhristi-Nonce'];
-      const proof = wardenSecret && nonce
+      pathCalls[path] = (pathCalls[path] || 0) + 1;
+      const signed = !signs || signs(path, pathCalls[path]) !== false;
+      const proof = wardenSecret && nonce && signed
         ? createHmac('sha256', wardenSecret)
           .update(`dhristi-res\n${path}\n${nonce}\n${status}\n${createHash('sha256').update(bytes).digest('hex')}`)
           .digest('base64url')
