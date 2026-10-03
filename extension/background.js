@@ -5,7 +5,7 @@ import { createG11Trace } from './utils/g11-stage-clock.js';
 import { OMNIPARSER_DEFAULT_URL, USE_OMNIPARSER_DEFAULT, MAX_STEPS, WARDEN_VALIDATE_MAX_ATTEMPTS } from './config.js';
 import { loopbackHttpUrl } from './utils/loopback.js';
 import { expressesDestructiveIntent, findSceneElement, hasDestructiveControl, tierForPlan, tierPermitsUnattended } from './utils/op-tier.js';
-import { decideLocalGate, layaRelease, questionForTier, runPlanChecks } from './utils/plan-check.js';
+import { decideLocalGate, describeStep, layaRelease, questionForTier, runPlanChecks } from './utils/plan-check.js';
 import {
   createPipelineTrace, inboundFromPlan, isVaultToken, jsonByteLength, pngSize, replacedFromStrip, toValueToken, tokenizeWithVault,
 } from './utils/pipeline-trace.js';
@@ -1175,10 +1175,13 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
 
     if (gate.path === 'ask' || gate.path === 'confirm') {
       // Destructive always asks a human (the rule the Warden's ALWAYS_ASK_TIERS carried); any
-      // other tier that is not unattended-safe stops for the extension's own confirmation.
+      // other tier that is not unattended-safe stops for the extension's own confirmation. The
+      // question names what will happen, from local sources only (stepContext).
+      const context = await stepContext(plan, localScene);
+      if (aborted(runId)) throw new Error('Stopped');
       const text = gate.path === 'ask'
-        ? questionForTier(gate.finalTier, plan)
-        : `This action is tier '${gate.finalTier}' and requires local confirmation before it runs.`;
+        ? questionForTier(gate.finalTier, plan, context)
+        : `This action is tier '${gate.finalTier}' and requires local confirmation before it runs: ${describeStep(plan, context)}.`;
       const choice = await requestValidationQuestion(text, STANDARD_VALIDATION_OPTIONS, attempt, gate.reasons, stepNumber);
       if (aborted(runId)) throw new Error('Stopped');
       pipeline.patch('check', { choice });
@@ -1192,6 +1195,28 @@ async function planAndCheck(runId, task, tokenizedTask, sanitizedDom, wireElemen
   }
   // Unreachable: every branch inside the loop returns by attempt === WARDEN_VALIDATE_MAX_ATTEMPTS at the latest.
   throw new Error('check: retry loop exited without a decision');
+}
+
+// The label and origin a confirmation names. The label comes from the extension's own scan, never
+// from the Warden's element list, with this run's vault values replaced by their tokens and the
+// local regex pass applied, as planElementsFrom() does for the wire. The origin is read from the
+// task tab now; null when the tab cannot be read.
+async function stepContext(plan, localScene) {
+  let label = null;
+  try {
+    const raw = findSceneElement(plan?.target_selector, localScene).label;
+    if (typeof raw === 'string' && raw) label = redactText(tokenizeWithVault(raw, currentVault)).text;
+  } catch { label = null; }
+  return { label, origin: await tabOrigin(state.tabId) };
+}
+
+async function tabOrigin(tabId) {
+  try {
+    const tab = await chrome.tabs.get(tabId);
+    return tab && typeof tab.url === 'string' ? new URL(tab.url).origin : null;
+  } catch {
+    return null;
+  }
 }
 
 // ---- Agent loop ------------------------------------------------------------
@@ -1595,10 +1620,13 @@ async function executeWithLiveTierCheck(runId, action, outcome, localScene, step
     }
     if (!result || result.tierEscalated !== true) return { result, navigated: false, choice: null };
     if (aborted(runId)) return { result, navigated: false, choice: 'stop' };
+    const step = describeStep(action, await stepContext(action, localScene));
+    if (aborted(runId)) return { result, navigated: false, choice: 'stop' };
     const choice = await requestValidationQuestion(
-      result.releaseRevoked === true
+      (result.releaseRevoked === true
         ? `The page changed the target after Laya released it: it now matches a rule for tier '${result.liveTier}', so the release no longer holds. Nothing was clicked.`
-        : `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`,
+        : `The page changed the target after it was planned: it now reads as tier '${result.liveTier}', not '${result.plannedTier}'. Nothing was clicked.`)
+        + ` The step was: ${step}.`,
       STANDARD_VALIDATION_OPTIONS, null, [], stepNumber,
     );
     if (choice !== 'proceed') {

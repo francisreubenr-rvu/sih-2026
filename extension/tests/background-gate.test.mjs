@@ -65,6 +65,8 @@ test('destructive always asks a human; stop executes nothing', async () => {
   assertNoValidate(run);
   assert.equal(run.prompts.length, 1);
   assert.match(run.prompts[0].text, /classified destructive/);
+  // The label from the local scan and the tab origin, not only a selector (security review, 3 October 2026).
+  assert.match(run.prompts[0].text, /will click "Next" on https:\/\/bank\.example\./);
   assert.deepEqual(run.prompts[0].options.map((o) => o.id), ['proceed', 'skip', 'stop']);
   assert.equal(run.executed.length, 0);
   assert.equal(run.terminal.status, 'stopped');
@@ -253,6 +255,7 @@ test('a live tier escalation reported by the content script prompts; stop clicks
   assert.equal(run.executed.length, 1);
   assert.equal(run.prompts.length, 1);
   assert.match(run.prompts[0].text, /now reads as tier 'destructive'/);
+  assert.match(run.prompts[0].text, /The step was: click "Next page" on https:\/\/bank\.example\./);
   assert.equal(run.terminal.status, 'stopped');
 });
 

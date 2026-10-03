@@ -217,6 +217,20 @@ test('a user-stripped uncertain span is reported with layer user', async () => {
   for (const u of run.traceUpdates) assert.equal(JSON.stringify(u).includes('Ravi'), false);
 });
 
+// Security review, 3 October 2026 (MEDIUM): a confirmation said only the tier, or showed a raw
+// selector. It now names the action, the control's label from the extension's own scan (vault values
+// shown as tokens), the typed value as the planner gave it (tokens, never values) and the tab origin.
+test('a confirmation names the action, the local label, the typed tokens and the tab origin', async () => {
+  const field = { ...FIELD, label: `Mail ${SECRET}` };
+  const run = await runSeeded({ scan: scanOf([field, SEND]), choices: ['stop'] });
+  const text = run.prompts[0].text;
+  assert.match(text, /tier 'state-changing' and requires local confirmation/);
+  assert.match(text, /type "EMAIL#1" into "Mail EMAIL#1"/);
+  assert.match(text, /on https:\/\/bank\.example/);
+  assert.equal(text.includes(SECRET), false, 'no vault value in the question');
+  assert.equal(JSON.stringify(run.runtimeMessages.filter((m) => m.type === 'PROMPT_REQUEST')).includes(SECRET), false);
+});
+
 // Security review, 3 October 2026 (LOW): content.js never messages the worker, so a message from a
 // content script (a tab sender) is a compromised renderer speaking. It must not answer a prompt,
 // start a run, change the Warden origin or pairing, or read the transcript, prompt or trace.
