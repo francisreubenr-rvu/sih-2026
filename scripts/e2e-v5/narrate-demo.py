@@ -1,9 +1,9 @@
 """Narrated demo video with no silent stretches: the footage is fitted to the narration.
 
 Each scene of the real-time composite (compose-demo.py's work/realtime.mp4) is paired with a block of
-narration. The scene is sped up or slowed to the narration's length, so the voice runs from the first
+narration. The scene is sped up or slowed (down to 0.6x) to the narration's length, so the voice runs from the first
 second to the last. A scene sped up 1.5x or more carries an on-screen badge with its factor; a scene
-whose narration would need it slower than 0.8x holds its last frame instead. Title and end cards carry
+whose narration would need it slower than 0.6x holds its last frame instead. Title and end cards carry
 the team's names.
 
 Voices:
@@ -35,7 +35,7 @@ spec.loader.exec_module(cd)
 
 SR = 24000
 GAP = 0.3         # breath between blocks, seconds
-MIN_SPEED = 0.8   # slower than this, hold the last frame instead
+MIN_SPEED = 0.6   # slower than this, hold the last frame instead
 TEAM = ["Francis", "Gopreeth", "Hiranmayi", "Varun", "Koushaik", "Niharika"]
 
 TITLE = ("This is Dhristi, a privacy-preserving browser tool, built for Smart India Hackathon by Francis, "
@@ -146,6 +146,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--engine", choices=["kokoro", "elevenlabs", "files"], default="kokoro")
     ap.add_argument("--clips", help="directory of recorded clips for --engine files")
+    ap.add_argument("--credit", default="Narration: synthetic voice.", help="end card line naming the voice")
     ap.add_argument("--hindi", type=float, default=0.5)
     ap.add_argument("--voice-id")
     ap.add_argument("--model", default="eleven_multilingual_v2")
@@ -178,7 +179,7 @@ def main():
         ("Limits: synthetic test pages only, not real accounts. The 200 ms latency target is not met yet, "
          "and no study with outside users has been run yet.", "Montserrat.ttf", 30, 500, cd.SLATE, 30),
         (f"Team rm -rf /*: {team}", "Montserrat.ttf", 28, 700, cd.NAVY, 16),
-        (f"Recorded {facts['date']}. Narration: synthetic voice.", "Montserrat.ttf", 24, 500, cd.SLATE, 0),
+        (f"Recorded {facts['date']}. {a.credit}", "Montserrat.ttf", 24, 500, cd.SLATE, 0),
     ], work / "end.png")
 
     parts, plan = [], []
