@@ -124,7 +124,10 @@ export function replacedFromStrip(stripResp, resolvedAnswers = {}) {
     if (seen.has(key)) continue;
     seen.add(key);
     let layer = d.layer === 'regex' || d.layer === 'gliner' || d.layer === 'user' ? d.layer : null;
-    if (resolvedAnswers[d.token] === 'strip' && layer !== 'regex') layer = 'user';
+    // { decision, value } since 3 October 2026; a bare string is the older shape. The value is never read here.
+    const answer = resolvedAnswers[d.token];
+    const decision = answer && typeof answer === 'object' ? answer.decision : answer;
+    if (decision === 'strip' && layer !== 'regex') layer = 'user';
     rows.push({
       token: d.token,
       type: d.token.split('#')[0],

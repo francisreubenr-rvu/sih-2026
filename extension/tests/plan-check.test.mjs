@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { ACTION_KEYS, ALLOWED_ACTIONS, decideLocalGate, questionForTier, runPlanChecks } from '../utils/plan-check.js';
+import { ACTION_KEYS, ALLOWED_ACTIONS, decideLocalGate, describeStep, questionForTier, runPlanChecks } from '../utils/plan-check.js';
 import {
   createPipelineTrace, inboundFromPlan, jsonByteLength, pngSize, replacedFromStrip, toValueToken, tokenizeWithVault,
 } from '../utils/pipeline-trace.js';
@@ -116,8 +116,19 @@ test('decideLocalGate: F17 is not weakened', () => {
 });
 
 test('questionForTier names the tier and target', () => {
-  assert.equal(questionForTier('destructive', { target_selector: '#del' }), 'This plan is classified destructive and acts on #del. It changes state that may not be reversible. Proceed?');
+  assert.equal(questionForTier('destructive', { target_selector: '#del' }), 'This plan is classified destructive and will act on #del. It changes state that may not be reversible. Proceed?');
   assert.match(questionForTier('destructive', {}), /the selected element/);
+  assert.equal(
+    questionForTier('destructive', { action: 'click', target_selector: '#del' }, { label: 'Close account', origin: 'https://bank.example' }),
+    'This plan is classified destructive and will click "Close account" on https://bank.example. It changes state that may not be reversible. Proceed?',
+  );
+});
+
+test('describeStep shows a typed value as the planner gave it, labels quoted and clipped', () => {
+  assert.equal(describeStep({ action: 'type', target_selector: '#to', value: 'EMAIL#1' }, { label: 'Recipient' }), 'type "EMAIL#1" into "Recipient"');
+  assert.equal(describeStep({ action: 'type', target_selector: '#to', value: '' }, {}), 'type an empty value into #to');
+  assert.equal(describeStep({ action: 'click', target_selector: '#x' }, { label: 'y'.repeat(200) }).length < 140, true);
+  assert.equal(describeStep({ action: 'scroll' }, { origin: 'https://a.example' }), 'scroll on https://a.example');
 });
 
 test('toValueToken passes tokens and integers, masks anything else', () => {

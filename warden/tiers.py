@@ -33,7 +33,7 @@ TIERS = ("reversible", "navigational", "state-changing", "destructive")
 # (Cancel) and bare "समाप्त" (Finish) are deliberately absent. The 2 October
 # additions (verbs neither language had) are mirrored too; test_warden.py checks
 # the two rule sets agree by running op-tier.js under node.
-HI_DESTRUCTIVE = unicodedata.normalize("NFC", (
+HI_DESTRUCTIVE = unicodedata.normalize("NFKC", (
     r"हटा|मिटा|डिलीट|रिमूव|निष्क्रिय|डीएक्टिवेट|डिएक्टिवेट|नष्ट|अनसब्सक्राइब"
     r"|(?:खाता|अकाउंट|सदस्यता|सब्सक्रिप्शन|सत्र) (?:बंद|रद्द|समाप्त)|"
     r"भूल जा|(?:समूह|ग्रुप|टीम|संगठन|चैनल|चैट|परिवार) (?:को )?छोड़|(?:साझा|शेयर) करना बंद|(?:पहुँच|पहुंच|एक्सेस|अनुमति) (?:रद्द|हटा|वापस)|वापस ले|अनलिंक|डिस्कनेक्ट|(?:फ़ैक्टरी|फैक्टरी) रीसेट|(?:ट्रैश|कचरा|रीसायकल बिन|बिन) खाली|बाहर निकाल|सदस्य(?:ों)? (?:को )?निकाल"
@@ -61,22 +61,36 @@ DESTRUCTIVE_LABEL_RE = re.compile(
     + EN_DESTRUCTIVE_LABEL_EXTRA + "|" + HI_DESTRUCTIVE,
     re.IGNORECASE,
 )
+# Hindi submit keywords (PLAN item 8, 3 October 2026): imperative pay/send/submit/confirm/order/
+# buy/save verbs, plus a bare noun only where English counts its equivalent bare (भुगतान/पेमेंट
+# "pay", पुष्टि/कन्फ़र्म "confirm", सबमिट, चेकआउट). Same text and reasoning as HI_SUBMIT in
+# extension/utils/op-tier.js, including the over-match guards ("जमा राशि देखें", "भेजे गए संदेश",
+# "ग्राहक सेवा", "पेज 2" stay unproven); test_warden.py runs both.
+HI_SUBMIT = unicodedata.normalize("NFKC", (
+    r"भुगतान|पेमेंट|(?:^|\s)पे कर|अदा कर|भेज(?:ें|ो|िए|िये| दें| दो| दीजिए)|(?:सेंड|ट्रांसफ़र|ट्रांसफर|ट्रान्सफ़र|ट्रान्सफर) कर|"
+    r"जमा (?:कर|कीजिए)|सबमिट|प्रस्तुत (?:कर|कीजिए)|(?:दाखिल|दाख़िल) (?:कर|कीजिए)|पुष्टि|कन्फ़र्म|कन्फर्म|(?:ऑर्डर|आर्डर) (?:कर|दें|दो|दीजिए|प्लेस)|"
+    r"(?:खरीद|ख़रीद)(?:ें|ो|िए|िये|ना)|चेकआउट|सहेज(?:ें|ो|िए| लें)|सेव कर|रिचार्ज कर"
+))
 SUBMIT_LABEL_RE = re.compile(
-    r"submit|save|confirm|pay|checkout|place order|purchase|send",
+    r"submit|save|confirm|pay|checkout|place order|purchase|send|" + HI_SUBMIT,
     re.IGNORECASE,
 )
+# Starts with a navigation verb; "\blink\b" anywhere and "open" a new account or deposit no longer
+# count (security review, 3 October 2026; same rule as op-tier.js NAV_LABEL_RE).
 NAV_LABEL_RE = re.compile(
-    r"^(go to|view|open|back|next|home|menu)\b|\blink\b",
+    r"^(go to|view|open(?! (?:new|an?|account)\b)|back|next|home|menu)\b",
     re.IGNORECASE,
 )
 
 
-_ZERO_WIDTH_RE = re.compile("[\u200b-\u200d\u2060\ufeff]")
+# Zero-width joiners, soft hyphen, bidi controls and other invisible characters (security review,
+# 3 October 2026); same set as op-tier.js INVISIBLE_RE.
+_INVISIBLE_RE = re.compile("[\u00ad\u034f\u061c\u180e\u200b-\u200f\u202a-\u202e\u2060-\u2064\u2066-\u2069\ufeff]")
 
 
 def _canonical(text) -> str:
-    """NFC with zero-width characters removed, as op-tier.js canonical()."""
-    return _ZERO_WIDTH_RE.sub("", unicodedata.normalize("NFC", str(text or "")))
+    """Invisible characters removed, then NFKC, as op-tier.js canonical()."""
+    return unicodedata.normalize("NFKC", _INVISIBLE_RE.sub("", str(text or "")))
 
 
 def expresses_destructive_intent(task: str) -> bool:
