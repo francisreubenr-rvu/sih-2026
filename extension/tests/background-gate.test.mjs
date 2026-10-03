@@ -425,3 +425,60 @@ for (const wardenPairing of ['required', 'disabled', 'missing', undefined]) {
     assert.match(run.entries.find((e) => e.kind === 'blocked').text, /Pairing is required/);
   });
 }
+
+// ---- A run is bound to the origin it started on (security review, 3 October 2026) --------------
+// A navigation to another site mid-run used to carry on silently: the new page was scanned, its
+// values went into the vault and the old task acted there. Now the run asks, naming the new origin,
+// before scanning it; and a change between the scan and SET_VAULT or EXECUTE stops the step.
+test('an origin change between steps asks, naming the new origin, before the new page is scanned', async () => {
+  const tab = { id: 7, windowId: 3, url: 'https://bank.example/home' };
+  const run = await runTask({
+    tab,
+    scan: scanOf([NEXT_LINK]),
+    choices: ['stop'],
+    warden: { plan: planSeq(click('body > a'), click('body > a')) },
+    execute: () => { tab.url = 'https://evil.example/landing'; return { digest: 'd' }; },
+  });
+  assert.equal(run.prompts.length, 1);
+  assert.match(run.prompts[0].text, /now on https:\/\/evil\.example, not https:\/\/bank\.example/);
+  assert.equal(run.scans, 1, 'the new page was not scanned');
+  assert.equal(run.fetchBodies.filter((b) => b.path === '/strip').length, 1);
+  assert.equal(run.tabMessages.filter((m) => m.type === 'SET_VAULT').length, 1);
+  assert.equal(run.terminal.status, 'stopped');
+});
+
+test('an approved origin change carries on and is not asked again', async () => {
+  const tab = { id: 7, windowId: 3, url: 'https://bank.example/home' };
+  const run = await runTask({
+    tab,
+    scan: scanOf([NEXT_LINK]),
+    choices: ['proceed'],
+    warden: { plan: planSeq(click('body > a'), click('body > a')) },
+    execute: () => { tab.url = 'https://pay.example/checkout'; return { digest: 'd' }; },
+  });
+  assert.equal(run.prompts.length, 1);
+  assert.equal(run.terminal.status, 'finished');
+  assert.equal(run.scans, 3);
+});
+
+test('an origin change between the scan and SET_VAULT stops the step before the vault is sent', async () => {
+  const tab = { id: 7, windowId: 3, url: 'https://bank.example/home' };
+  const run = await runTask({
+    tab,
+    scan: scanOf([NEXT_LINK]),
+    warden: {
+      strip: (body) => { tab.url = 'https://evil.example/'; return defaultStrip(body); },
+      plan: planSeq(click('body > a')),
+    },
+  });
+  assert.equal(run.tabMessages.some((m) => m.type === 'SET_VAULT'), false);
+  assert.equal(run.executed.length, 0);
+  assert.equal(run.terminal.status, 'error');
+  assert.ok(run.entries.some((e) => e.kind === 'error' && /https:\/\/evil\.example/.test(e.text)));
+});
+
+test('a run does not start when the task tab has no readable origin', async () => {
+  const run = await runTask({ tab: { id: 7, windowId: 3 }, scan: scanOf([NEXT_LINK]), warden: { plan: planSeq(FINISH) } });
+  assert.equal(run.start.ok, false);
+  assert.equal(run.fetchBodies.some((b) => b.path === '/strip'), false);
+});

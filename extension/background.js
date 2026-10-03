@@ -144,6 +144,12 @@ let currentVault = null;
 // which already receives the raw page.
 let resolvedAnswers = {};
 
+// Origins this run may act on: the one it started on, plus any a person approved when the task tab
+// moved to another site (security review, 3 October 2026). `stepOrigin` is the origin the current
+// step began on; SET_VAULT and EXECUTE happen only while the tab is still there. Reset per run.
+let runOrigins = null;
+let startOrigin = null;
+
 // Measurement-only clocks for the G11 harness (GET_G11_TRACE). Does not gate
 // execution. Durations are exclusive spans around work this worker performed.
 const g11Trace = createG11Trace();
@@ -741,6 +747,8 @@ async function startAcceptedTask(task) {
   const tabId = tab?.id ?? null;
   const windowId = tab?.windowId ?? null;
   if (!tabId) return failStart(task, 'No active tab to work on.');
+  const origin = originKey(tab?.url);
+  if (!origin) return failStart(task, 'The active tab has no address this extension can read, so the run cannot be bound to a site. Nothing was sent.');
 
   const siteAccess = await chrome.permissions.contains({ origins: SITE_ACCESS_ORIGINS });
   if (!siteAccess) {
@@ -823,6 +831,8 @@ async function startAcceptedTask(task) {
   await persistState();
   // Remembered uncertain-PII answers belong to one run (see resolvedAnswers).
   resolvedAnswers = {};
+  startOrigin = origin;
+  runOrigins = new Set([origin]);
   // The previous run's trace (its masked screenshot, its /plan body) ends with that run.
   pipeline.clear();
   emitTrace();
@@ -1210,12 +1220,59 @@ async function stepContext(plan, localScene) {
   return { label, origin: await tabOrigin(state.tabId) };
 }
 
+// The site a URL belongs to: its origin, or for an opaque-origin URL (file:) the URL without its
+// fragment, so two local files are not one site. Null when there is no readable URL.
+function originKey(url) {
+  if (typeof url !== 'string' || !url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.origin !== 'null') return parsed.origin;
+    parsed.hash = '';
+    return parsed.href;
+  } catch {
+    return null;
+  }
+}
+
 async function tabOrigin(tabId) {
   try {
     const tab = await chrome.tabs.get(tabId);
-    return tab && typeof tab.url === 'string' ? new URL(tab.url).origin : null;
+    return originKey(tab?.url);
   } catch {
     return null;
+  }
+}
+
+const ORIGIN_CHANGE_OPTIONS = [
+  { id: 'proceed', label: 'Continue on this site' },
+  { id: 'stop', label: 'Stop the run' },
+];
+
+// Called at the start of every step, before the page is scanned. Returns the origin the step runs
+// on, or null when the person stopped the run (the caller returns).
+async function confirmStepOrigin(runId, stepNumber) {
+  const here = await tabOrigin(state.tabId);
+  if (aborted(runId)) throw new Error('Stopped');
+  if (here && runOrigins?.has(here)) return here;
+  const choice = await requestValidationQuestion(
+    here
+      ? `The task tab is now on ${here}, not ${startOrigin} where this run started. Nothing from the new site has been read or sent. Continue the task there?`
+      : `The task tab is now on a page whose address cannot be read, not ${startOrigin} where this run started. Nothing from it has been read or sent.`,
+    here ? ORIGIN_CHANGE_OPTIONS : ORIGIN_CHANGE_OPTIONS.slice(1), null, [], stepNumber,
+  );
+  if (aborted(runId)) throw new Error('Stopped');
+  if (choice !== 'proceed' || !here) return null;
+  runOrigins.add(here);
+  noteActivity(`You allowed this run to continue on ${here}.`, stepNumber);
+  return here;
+}
+
+// SET_VAULT and EXECUTE only while the tab is still on the origin the step was scanned on.
+async function assertStepOrigin(runId, stepOrigin, what) {
+  const here = await tabOrigin(state.tabId);
+  if (aborted(runId)) throw new Error('Stopped');
+  if (here !== stepOrigin) {
+    throw new Error(`The task tab moved to ${here ?? 'an unreadable address'} during this step (it was scanned on ${stepOrigin}), so ${what} was stopped.`);
   }
 }
 
@@ -1297,9 +1354,21 @@ async function runLoop(runId, secrets) {
       let wireElements;
       let redacted;
       let omni = { available: false, status: 'disabled', elements: [] };
+      let stepOrigin;
       try {
       await pingContentScript(runId);
       if (aborted(runId)) return;
+
+      // The run is bound to its site: a tab that moved elsewhere is not scanned until a person
+      // allows the new origin.
+      stepOrigin = await confirmStepOrigin(runId, stepNumber);
+      if (stepOrigin === null) {
+        state.status = 'stopped';
+        state.finishedAt = Date.now();
+        noteActivity('You stopped the run when the task tab moved to another site.', stepNumber);
+        g11Trace.setTerminal('blocked');
+        return;
+      }
 
       // PAGE_SCAN also removes the previous step's redaction overlay (content.js), so neither the
       // scan nor the capture below sees it.
@@ -1389,6 +1458,7 @@ async function runLoop(runId, secrets) {
       // Defense in depth beyond the wire contract: see planElementsFrom().
       const planElements = planElementsFrom(stripResp.elements, stripResp.tokens);
 
+      await assertStepOrigin(runId, stepOrigin, 'loading this step\'s values into the page');
       await refreshVault(stripResp.tokens);
       if (aborted(runId)) return;
       if (tokenCount > 0) {
@@ -1490,6 +1560,7 @@ async function runLoop(runId, secrets) {
       let result;
       let navigated = false;
       let executeChoice = null;
+      await assertStepOrigin(runId, stepOrigin, 'the action');
       const executeT0 = performance.now();
       try {
         const executed = await executeWithLiveTierCheck(runId, action, outcome, localScene, stepNumber);
@@ -1594,6 +1665,7 @@ async function runLoop(runId, secrets) {
       chrome.tabs.sendMessage(state.tabId, { type: 'END_TASK' }).catch(() => {});
       currentVault = null; // hygiene: the vault must not outlive its run.
       resolvedAnswers = {}; // nor the answers, which hold the values they were given for.
+      runOrigins = null;
     }
   }
 }

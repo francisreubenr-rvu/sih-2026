@@ -30,8 +30,9 @@ export const PANEL_SENDER = { id: 'dhristi-test', url: 'chrome-extension://dhris
 export const HARNESS_PAIRING_CODE = 'h'.repeat(43);
 // `again`:   further tasks started one after another in the SAME worker once the previous run
 //            ended, as a person sending a second task would; each waits for its own terminal entry.
-// `tabs`:    optional (n) -> the tab object chrome.tabs.query/get returns on its n-th call.
-export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tabs, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
+// `tab`:     optional tab object chrome.tabs.query/get return a copy of; a test may change its url
+//            mid-run (from a strip/plan/execute hook) to simulate a navigation.
+export async function runTask({ task = 'go to the next page', scan, warden, choices = [], execute, onPrompt, capture, starts = 1, again = [], tab, pairingCode = HARNESS_PAIRING_CODE, wardenSecret = HARNESS_PAIRING_CODE } = {}) {
   const fetchBodies = [];
   const tabMessages = [];
   const runtimeMessages = [];
@@ -46,11 +47,7 @@ export async function runTask({ task = 'go to the next page', scan, warden, choi
     if (keepOpen === false) resolve(undefined);
   });
 
-  let tabCalls = 0;
-  const tabFor = () => {
-    tabCalls += 1;
-    return tabs ? tabs(tabCalls) : { id: 7, windowId: 3, url: 'https://bank.example/home' };
-  };
+  const tabFor = () => ({ ...(tab || { id: 7, windowId: 3, url: 'https://bank.example/home' }) });
   const noop = { addListener() {} };
   globalThis.chrome = {
     runtime: {
