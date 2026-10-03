@@ -2244,8 +2244,13 @@ def test_fast_path_type_keeps_a_selector_that_contains_spaces(monkeypatch):
     assert result["plan"]["target_selector"] == "form #email" and result["plan"]["value"] == "EMAIL#1"
 
 
-class _AccountNumberModel:
-    """Scores every listed string as an account number in the uncertain band."""
+class _PersonNameModel:
+    """Scores every listed string as a person name in the uncertain band.
+
+    The exploit was first written with "Account statements" scored as an account number.
+    Since 3 October an account-number hit needs a digit and a bare digit run is a regex
+    hit, so that pair can no longer reach the uncertain band; a person name, which has no
+    structural test, carries the same exploit."""
 
     def __init__(self, values, score=0.42):
         self.values = values
@@ -2256,39 +2261,39 @@ class _AccountNumberModel:
         for v in self.values:
             i = text.find(v)
             if i != -1:
-                out.append({"start": i, "end": i + len(v), "text": v, "label": "account number", "score": self.score})
+                out.append({"start": i, "end": i + len(v), "text": v, "label": "person name", "score": self.score})
         return out
 
 
 def test_a_keep_answer_cannot_carry_over_to_a_different_value(monkeypatch):
-    """Step 1 asks about "Account statements" and the user keeps it. Step 2 is a new page where
-    ACCOUNTNUMBER#1 is a real account number. The old contract keyed the answer by position
-    token only, so step 2's number went to the planner in plaintext without a question."""
-    label, number = "Account statements", "Acct 50100234567812"
-    monkeypatch.setattr(entities.STATE, "model", _AccountNumberModel([label, number]))
+    """Step 1 asks about "Customer Care" and the user keeps it. Step 2 is a new page where
+    PERSONNAME#1 is a real name. The old contract keyed the answer by position token only,
+    so step 2's name went to the planner in plaintext without a question."""
+    label, name = "Customer Care", "Neha Joshi"
+    monkeypatch.setattr(entities.STATE, "model", _PersonNameModel([label, name]))
     step1 = strip_module.strip(task="", dom=f'1. A label="{label}"', elements=[], resolved={})
-    assert [(u["token"], u["preview"]) for u in step1["uncertain"]] == [("ACCOUNTNUMBER#1", label)]
+    assert [(u["token"], u["preview"]) for u in step1["uncertain"]] == [("PERSONNAME#1", label)]
 
     kept = strip_module.strip(task="", dom=f'1. A label="{label}"', elements=[],
-                              resolved={"ACCOUNTNUMBER#1": {"decision": "keep", "value": label}})
+                              resolved={"PERSONNAME#1": {"decision": "keep", "value": label}})
     assert kept["uncertain"] == [] and label in kept["sanitizedDom"]
 
     for answer in ({"decision": "keep", "value": label}, "keep"):  # new contract, and a legacy bare keep
-        step2 = strip_module.strip(task="", dom=f'1. P label="{number}"', elements=[],
-                                   resolved={"ACCOUNTNUMBER#1": answer})
-        assert [(u["token"], u["preview"]) for u in step2["uncertain"]] == [("ACCOUNTNUMBER#1", number)], answer
+        step2 = strip_module.strip(task="", dom=f'1. P label="{name}"', elements=[],
+                                   resolved={"PERSONNAME#1": answer})
+        assert [(u["token"], u["preview"]) for u in step2["uncertain"]] == [("PERSONNAME#1", name)], answer
 
 
 def test_a_strip_answer_applies_to_its_value_and_legacy_strip_still_strips(monkeypatch):
-    number = "Acct 50100234567812"
-    monkeypatch.setattr(entities.STATE, "model", _AccountNumberModel([number]))
-    dom = f'1. P label="{number}"'
-    for answer in ({"decision": "strip", "value": number}, "strip"):
-        out = strip_module.strip(task="", dom=dom, elements=[], resolved={"ACCOUNTNUMBER#1": answer})
-        assert number not in out["sanitizedDom"] and out["tokens"] == {"ACCOUNTNUMBER#1": number}
+    name = "Neha Joshi"
+    monkeypatch.setattr(entities.STATE, "model", _PersonNameModel([name]))
+    dom = f'1. P label="{name}"'
+    for answer in ({"decision": "strip", "value": name}, "strip"):
+        out = strip_module.strip(task="", dom=dom, elements=[], resolved={"PERSONNAME#1": answer})
+        assert name not in out["sanitizedDom"] and out["tokens"] == {"PERSONNAME#1": name}
     mismatched = strip_module.strip(task="", dom=dom, elements=[],
-                                    resolved={"ACCOUNTNUMBER#1": {"decision": "strip", "value": "other"}})
-    assert [u["token"] for u in mismatched["uncertain"]] == ["ACCOUNTNUMBER#1"]
+                                    resolved={"PERSONNAME#1": {"decision": "strip", "value": "other"}})
+    assert [u["token"] for u in mismatched["uncertain"]] == ["PERSONNAME#1"]
 
 
 def _long_page_elements(n, last_label):
