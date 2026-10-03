@@ -55,10 +55,10 @@ def main():
     ap.add_argument("--sleep", type=float, default=2.5)
     ap.add_argument("--out", default=None)
     ap.add_argument("--llm-from", default=None, help="reuse the LLM rows of an earlier results file instead of calling Groq")
-    ap.add_argument("--laya-model", default=None, help="local Laya checkpoint dir (sets WARDEN_LAYA_MODEL)")
+    ap.add_argument("--laya-model", default=None, help="local Laya checkpoint dir (sets WARDEN_FAST_PATH_LAYA_MODEL)")
     args = ap.parse_args()
     if args.laya_model:
-        os.environ["WARDEN_LAYA_MODEL"] = args.laya_model
+        os.environ["WARDEN_FAST_PATH_LAYA_MODEL"] = args.laya_model
 
     sets = [("design", c) for c in PLAN_CASES] + [("heldout", c) for c in HELDOUT]
     doc = {"backends": {}, "llm": {}}
