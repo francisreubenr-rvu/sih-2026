@@ -69,7 +69,7 @@ def build_prompt(tokenized_task: str, sanitized_dom: str, elements: list, histor
         "ALLOWED ACTIONS (choose exactly one): click, type, scroll, wait, finish",
         "",
         "RESPOND WITH A SINGLE JSON OBJECT, NO OTHER TEXT:",
-        '{"action":"click|type|scroll|wait|finish","target_selector":"CSS selector or null",'
+        '{"action":"click|type|scroll|wait|finish","target_selector":"the element key exactly as listed (e.g. e3) or null",'
         '"coordinates":{"x":0,"y":0},"value":"text or null","reasoning_token":"brief, no PII"}',
         "",
         "RULES:",

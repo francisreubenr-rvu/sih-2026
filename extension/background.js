@@ -1017,6 +1017,13 @@ async function refreshVault(tokens) {
 // every vault value is replaced with its token first; then the local regex pass runs ONCE per
 // distinct label (labels repeat, e.g. a column of "Edit" links). Computed once per step and reused
 // by every re-plan attempt.
+// The label the planner saw for a plan's target, from the same tokenized element list.
+function planLabelOf(planElements, key) {
+  if (!key) return null;
+  const el = (planElements || []).find((e) => e.selector === key);
+  return el && typeof el.label === 'string' && el.label ? el.label : null;
+}
+
 function planElementsFrom(elements, tokens) {
   const cache = new Map();
   return (elements || []).map((el) => {
@@ -1610,7 +1617,7 @@ async function runLoop(runId, secrets) {
 
       if (outcome.choice === 'skip') {
         state.steps.push({
-          stepNumber, action: outcome.plan.action, target: outcome.plan.target_selector, status: 'ok',
+          stepNumber, action: outcome.plan.action, target: outcome.plan.target_selector, targetLabel: planLabelOf(planElements, outcome.plan.target_selector), status: 'ok',
           reasoningToken: 'Step skipped by user at a validation prompt.',
           piiMaskedCount: redacted.maskedCount, latencyMs: outcome.planResp?.latencyMs ?? 0,
           elements: planElements, elementCount: planElements.length,
@@ -1671,7 +1678,7 @@ async function runLoop(runId, secrets) {
       if (failed) noteError(`The page refused that step: ${result.error}`, stepNumber);
 
       state.steps.push({
-        stepNumber, action: action.action, target: action.target_selector,
+        stepNumber, action: action.action, target: action.target_selector, targetLabel: planLabelOf(planElements, action.target_selector),
         status: failed ? 'error' : 'ok', navigated,
         reasoningToken: action.reasoning_token,
         piiMaskedCount: redacted.maskedCount, latencyMs: outcome.planResp?.latencyMs ?? 0,
@@ -1822,7 +1829,9 @@ function buildHistory(steps) {
     .filter((step) => step.action !== 'PAGE_SCAN')
     .slice(-HISTORY_LIMIT)
     .map((step) => {
-      const entry = { stepNumber: step.stepNumber, action: step.action, target: step.target ?? null, status: step.status };
+      // The control's planner-visible label (already tokenized), not its key: keys are per scan
+      // (e1, e2, ...) since 3 October 2026, so last step's "e3" names a different control now.
+      const entry = { stepNumber: step.stepNumber, action: step.action, target: step.targetLabel ?? null, status: step.status };
       // A vault token names a PII type and slot, not content, so the planner may see which value was
       // typed. Without it the first real-Groq run retyped EMAIL#1 twice before saving. A masked
       // free-text value is left out: its asterisks would only leak its length.

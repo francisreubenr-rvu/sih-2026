@@ -300,7 +300,8 @@ test('an uncertain-PII answer is bound to its value and does not outlive the run
 test('plan history carries a typed vault token, never a literal value', async () => {
   const run = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(TYPE_TOKEN, FINISH) } });
   const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;
-  assert.deepEqual(second.history.at(-1), { stepNumber: 1, action: 'type', target: '#to', status: 'ok', value: 'EMAIL#1' });
+  // History names the control by its planner-visible label, not its per-scan key (3 October 2026).
+  assert.deepEqual(second.history.at(-1), { stepNumber: 1, action: 'type', target: 'Recipient', status: 'ok', value: 'EMAIL#1' });
 
   const literal = { ...TYPE_TOKEN, value: 'hunter2' };
   const lit = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(literal, FINISH) } });

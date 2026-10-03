@@ -77,17 +77,6 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     scanPage().then(respond).catch((error) => respond({ error: error.message }));
     return true;
   }
-  if (message.type === 'MOVE_MOUSE') {
-    const target = message.selector ? document.querySelector(message.selector) : null;
-    if (target) {
-      const rect = rectOf(target);
-      visualizer?.move(rect.x + rect.width / 2, rect.y + rect.height / 2);
-    } else if (message.coordinates) {
-      visualizer?.move(message.coordinates.x, message.coordinates.y);
-    }
-    respond({ ok: true });
-    return false;
-  }
   if (message.type === 'EXECUTE_ACTION') {
     executeAction(message.action).then((result) => respond(result)).catch((error) => respond({ error: error.message }));
     return true;
@@ -130,8 +119,11 @@ async function scanPage() {
     handles.set(handle, new WeakRef(element));
     elements.push({
       tag: element.tagName.toLowerCase(),
-      type: element.getAttribute('type') || element.tagName.toLowerCase(),
-      selector: uniqueSelector(element, redactText),
+      type: controlType(element),
+      // An opaque per-scan key, not a CSS selector (security review, 3 October 2026): an id or
+      // name is page-authored text ("contact-neha-joshi") that no PII layer reads, and this key is
+      // sent to the planner verbatim. It is only a display key: execute resolves the handle.
+      selector: `e${elements.length + 1}`,
       handle,
       // Click tier computed here, from the live element, by the extension's own rules. The
       // background gate reads this, never a tier or element list the Warden returns.
@@ -416,48 +408,12 @@ function labelFor(element) {
   return wrap ? (wrap.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 120) : '';
 }
 
-// Display key for the planner: the short id/name selector when it matches exactly this one
-// element in the document, else the structural path. Never used to find the element again.
-//
-// An id or name that itself matches a PII pattern (an email-shaped id, a passport-shaped
-// "a1234567") is never used: the selector is sent to the planner verbatim, so it would carry
-// that value off the device, and the Warden's egress guard would (correctly) refuse the whole
-// planning request. The structural path carries no page-authored text, so it is used instead.
-function uniqueSelector(element, redactText) {
-  const short = cssSelector(element);
-  // Tested on the raw attribute values: CSS.escape turns "a@b.co" into "a\\@b\\.co", which no
-  // pattern would match.
-  const authored = [element.getAttribute('id'), element.getAttribute('name')].filter(Boolean).join(' ');
-  if (redactText && authored && redactText(authored).count > 0) return structuralPath(element);
-  try {
-    const matches = document.querySelectorAll(short);
-    if (matches.length === 1 && matches[0] === element) return short;
-  } catch { /* fall through to the structural path */ }
-  return structuralPath(element);
-}
-
-function cssSelector(element) {
-  const id = element.getAttribute('id');
-  if (id && !/\s/.test(id)) return `#${CSS.escape(id)}`;
-  const name = element.getAttribute('name');
-  if (name) return `${element.tagName.toLowerCase()}[name="${CSS.escape(name)}"]`;
-  return structuralPath(element);
-}
-
-function structuralPath(element) {
-  const path = [];
-  let node = element;
-  while (node && node.nodeType === Node.ELEMENT_NODE && node !== document.documentElement) {
-    let part = node.tagName.toLowerCase();
-    const parent = node.parentElement;
-    if (parent) {
-      const same = Array.from(parent.children).filter((child) => child.tagName === node.tagName);
-      if (same.length > 1) part += `:nth-of-type(${same.indexOf(node) + 1})`;
-    }
-    path.unshift(part);
-    node = parent;
-  }
-  return path.join(' > ');
+// The type attribute is page-authored too: only a known input type is passed on, else the tag.
+const KNOWN_TYPES = new Set(['button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file', 'hidden', 'image',
+  'month', 'number', 'password', 'radio', 'range', 'reset', 'search', 'submit', 'tel', 'text', 'time', 'url', 'week']);
+function controlType(element) {
+  const raw = (element.getAttribute('type') || '').trim().toLowerCase();
+  return KNOWN_TYPES.has(raw) ? raw : element.tagName.toLowerCase();
 }
 
 // Visible text of live regions (role=status/alert, aria-live, <output>). Without it the planner

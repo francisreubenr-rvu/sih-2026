@@ -436,15 +436,21 @@ test('type into a target with no value setter is refused, not reported as done',
   await p.close();
 });
 
-test('scan: an id or name that is itself personal data is never used as the selector', async () => {
+test('scan: element keys are opaque per scan, so no page-authored id, name or type text reaches the planner', async () => {
+  // Security review, 3 October 2026: an id such as "contact-neha-joshi" is a name no PII layer reads,
+  // and the selector went to the planner verbatim. Keys are now e1..eN; execute resolves handles.
   const p = await h.open(`<!doctype html><body>
     <button id="priya.r@example.com" type="button">Profile</button>
     <input name="a1234567" type="text">
+    <a id="contact-neha-joshi" href="#c">Message</a>
+    <input type="neha-joshi-custom" aria-label="Odd field">
     <button id="save" type="button">Save</button></body>`);
   const scan = await p.scan();
   const selectors = scan.elements.map((el) => el.selector);
-  assert.equal(selectors.some((s) => /priya|a1234567/.test(s)), false, selectors.join(' | '));
-  assert.ok(selectors.includes('#save'), 'an ordinary id is still used');
+  assert.deepEqual(selectors, scan.elements.map((_, i) => `e${i + 1}`), selectors.join(' | '));
+  assert.equal(JSON.stringify(scan.elements.map(({ selector, type }) => [selector, type])).match(/priya|a1234567|neha|save/), null);
+  assert.equal(scan.elements.find((el) => el.label === 'Odd field').type, 'input', 'an unknown type attribute falls back to the tag');
+  assert.match(scan.dom, /selector=e1 /);
   await p.close();
 });
 
