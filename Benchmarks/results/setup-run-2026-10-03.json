@@ -1,0 +1,79 @@
+{
+  "name": "setup-run",
+  "generated_at": "2026-10-03T18:20:53.838688+00:00",
+  "commit": "8c016a64f75b57bc639d2da8c8e1590504d8b3d0",
+  "dirty": false,
+  "tools": {
+    "node": "v22.22.0",
+    "python": "3.11.15",
+    "os": "Linux-6.18.44-fc-v64-x86_64-with-glibc2.39"
+  },
+  "scope": "Local suites only: unit tests, real-Chromium extension tests, Warden pytest without model weights unless installed, token and em-dash checks, ledger consistency. No cloud planner, no loaded-extension end-to-end run, no toolbar gesture.",
+  "suites": [
+    {
+      "name": "prototype",
+      "status": "pass",
+      "summary": [
+        "# Subtest: a failed capture revokes earlier exported scene and disposal revokes all use",
+        "ok 56 - a failed capture revokes earlier exported scene and disposal revokes all use",
+        "# tests 141",
+        "# pass 141",
+        "# fail 0",
+        "# skipped 0"
+      ]
+    },
+    {
+      "name": "g11-harness",
+      "status": "pass",
+      "summary": [
+        "# precondition failed: warden down",
+        "# tests 13",
+        "# pass 13",
+        "# fail 0",
+        "# skipped 0"
+      ]
+    },
+    {
+      "name": "extension",
+      "status": "pass",
+      "summary": [
+        "# tests 134",
+        "# pass 134",
+        "# fail 0",
+        "# skipped 0"
+      ]
+    },
+    {
+      "name": "warden",
+      "status": "pass",
+      "summary": [
+        "195 passed, 4 skipped, 5 warnings in 46.12s"
+      ]
+    },
+    {
+      "name": "script-tests",
+      "status": "pass",
+      "summary": [
+        "19 passed, 7 subtests passed in 0.03s"
+      ]
+    },
+    {
+      "name": "signal-tokens",
+      "status": "pass",
+      "summary": []
+    },
+    {
+      "name": "no-em-dash",
+      "status": "pass",
+      "summary": [
+        "em dash check: 991 tracked files, 0 violations, 63 allowlisted files still contain the character"
+      ]
+    },
+    {
+      "name": "ledger",
+      "status": "pass",
+      "summary": []
+    }
+  ],
+  "all_passed": true
+}

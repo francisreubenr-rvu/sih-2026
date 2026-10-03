@@ -79,13 +79,9 @@ The two-week schedule is in `PLAN.md`.
 
 **Laya tools.** `scripts/laya-finetune/`: `gen_data.py` (v4 settings), `train_cpu.py` (CPU or CUDA; `EPOCHS`, `TRAIN_TOP_LAYERS`, `MAX_LEN`, `HEAD_MAX_LEN`, `LR_ENCODER`, `LR_HEAD`, `GRAD_ACCUM`), `diagnose.py` (`DATA=`), `overfit_check.py` (can it fit 64 steps at all), `validate.py` (checkpoint selection on unseen generated steps), `colab_train.ipynb`. Benchmark: `scripts/cloud-models/fastpath_bench.py --backends laya --laya-model <dir> --llm-from Benchmarks/results/fastpath-bench-v01.json`.
 
-**Checks to run first.**
+**Checks to run first** (superseded 3 October: the block that stood here left the shell inside `Prototype/`, so later lines failed when pasted). From the repo root:
 ```sh
-cd Prototype && npm ci && npm run test:ci                        # 141
-node --test scripts/g11-warden-option-c-harness.test.mjs          # 13
-node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs   # 104
-cd warden && python -m pytest -q test_warden.py                   # 114 passed, 6 skipped
-python3 scripts/check_release.py --dry-run                        # 14 pass / 1 fail / 5 unknown
+scripts/check-all.sh --install   # every suite; writes Benchmarks/results/setup-run-<date>.json
 ```
 
 ## Fundamentals restructure (2026-09-23)
