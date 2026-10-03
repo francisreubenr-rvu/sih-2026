@@ -206,7 +206,15 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened."
+      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened. v5 live (3 October 2026): the frozen flow in the loaded extension with a real Warden and real Groq, 100 runs after 10 warm-ups, extension stage clocks: total p95 3713 ms (core-latency-v5-live-v01.json), 2270 ms after replacing fixed sleeps (v02). Two cloud planner round trips dominate; one alone exceeds 200 ms.",
+      "evidence_refs": [
+        "Benchmarks/results/core-latency-v5-live-v01.json",
+        "Benchmarks/results/core-latency-v5-live-v02.json"
+      ],
+      "subjects": [
+        "extension/",
+        "warden/"
+      ]
     },
     {
       "id": "G12",
