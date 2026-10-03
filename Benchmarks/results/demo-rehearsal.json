@@ -2,7 +2,8 @@
   "name": "wave6-demo-rehearsal",
   "schema_version": 2,
   "generatedAt": "2026-09-15T14:29:42.642Z",
-  "status": "pass",
+  "status": "unknown",
+  "status_note": "3 October 2026: aligned with G14 in Guardrails/guardrails.json. The pass recorded on 2026-09-15 (g14_reason below, kept as history) was for build 996e40b and the Prototype surface; the demoed surface is now the root extension side panel with the Warden. Acceptance needs three consecutive rehearsals and a fallback recorded on the current build.",
   "acceptance": "Critical journey succeeds in 3 consecutive rehearsals from reset; offline-safe fallback matches tested version",
   "fallback": {
     "path": "Docs/demo-fallback.webm",
