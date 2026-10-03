@@ -44,10 +44,10 @@
     <div class="wrap" aria-label="What we measured" role="group">
       <ul class="proof">
         <li><b>0</b><span>personal values in 48 requests to a real cloud planner (Groq) across five end-to-end runs</span></li>
-        <li><b>305 ms</b><span>for the local prototype to capture a page, find the face and protect it, in one recorded run</span></li>
-        <li><b>CPU</b><span>is all the redaction model needed in our tests. No graphics card.</span></li>
+        <li><b>0</b><span>requests reached the Warden or the cloud planner when the pairing code was wrong. The task was refused</span></li>
+        <li><b>CPU</b><span>ran the redaction model in these runs, on the processor rather than a graphics card</span></li>
       </ul>
-      <p class="proof-note">Measured on synthetic test pages, 29 September 2026. Evidence: <code>Benchmarks/results/e2e-v5-boundary-v02.json</code>.</p>
+      <p class="proof-note">Measured on synthetic test pages. First and third: <code>Benchmarks/results/e2e-v5-boundary-v02.json</code> (29 September 2026; the record notes the model loaded on CPU). Second: the wrong-code negative check in <code>Benchmarks/results/e2e-v5-boundary-v04.json</code> (2 October 2026).</p>
     </div>
   </section>
 
