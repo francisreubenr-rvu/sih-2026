@@ -31,6 +31,13 @@ Security review, consistency audit, Warden and extension code review, side-panel
 - [ ] Remaining: two cloud planner round trips (about 1.1 s), the 380 ms cursor animation (kept on purpose), about 80 ms capture and scan. G11 stays fail; the budget is unchanged.
 - [ ] Without the Laya reviewer the frozen flow asks before every "Account statements" click (F17 over-asking, round 28), so no run is unattended. The measurement uses the demo configuration with the reviewer on.
 
+**Vision stage in the shipping extension (research rank 3):**
+
+- [x] The root extension ran no vision model, while the problem statement asks for client-side visual perception in the browser. UltraFace RFB-320 now runs on ONNX Runtime Web (WASM) in an offscreen document (`extension/offscreen.html`, `utils/vision.js`, `utils/vision-client.js`). Faces are masked in the capture before anything else sees it; a failed or slow check (1.5 s cap) discards that step's capture, so OmniParser and the panel get none. Nothing new reaches the Warden or the cloud.
+- [x] Measured (`extension-vision-v01.json`, real Chromium, synthetic pages with a public-domain NASA portrait): round trip p50 26.5 ms, p95 43.3 ms; inference p50 11.8 ms; cold start 375 ms; 3 of 3 real steps finished with every sampled face point masked. Re-run on the merged tree: same.
+- [ ] Faces at 128 px and 64 px on a 1280x800 page were not detected (6 of 8 found), so small faces stay unmasked. A tiled or multi-scale pass is the fix. Not an accuracy benchmark.
+- [ ] Chrome only (`chrome.offscreen`, side panel). Renderer memory rises from about 100 MB to 228 MB when the model loads (shared process; not the offscreen document alone).
+
 **Evidence and ledger:**
 
 - [x] G05/G06/G08 scripts re-run at HEAD; the secret scanner no longer scans agent worktrees (2,672 -> 668 files).
