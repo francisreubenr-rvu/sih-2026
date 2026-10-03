@@ -2321,6 +2321,43 @@ def test_a_name_in_a_label_past_the_dom_cut_is_scored(monkeypatch, score, expect
     assert out["elements"][0]["label"] == "Item 1"
 
 
+@pytest.mark.parametrize("path", ["/docs", "/redoc", "/openapi.json"])
+def test_no_interactive_docs_are_served(path):
+    assert TestClient(warden_app.app).get(path).status_code == 404
+
+
+@pytest.mark.parametrize("ctype", ["text/plain", "application/x-www-form-urlencoded", "multipart/form-data", None])
+def test_post_needs_a_json_content_type_even_unpaired(monkeypatch, ctype):
+    """A text/plain POST is a CORS "simple request": a page can send it with no preflight.
+    The pairing escape (WARDEN_PAIRING_DISABLED=1, set by the autouse fixture) must not
+    turn that into a way in."""
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    headers = {"Content-Type": ctype} if ctype else {}
+    res = TestClient(warden_app.app).post("/plan", content=json.dumps(_plan_body()).encode(), headers=headers)
+    assert res.status_code == 415
+
+
+def test_post_accepts_json_with_a_charset(monkeypatch):
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    res = TestClient(warden_app.app).post("/plan", content=json.dumps(_plan_body()).encode(),
+                                          headers={"Content-Type": "application/json; charset=utf-8"})
+    assert res.status_code == 200
+
+
+@pytest.mark.parametrize("host,model", [("http://10.1.2.3:11434", "qwythos-9b:latest"),
+                                        ("http://127.0.0.1:11434", "some-model:cloud")])
+def test_validate_review_refuses_a_non_local_ollama(monkeypatch, host, model):
+    monkeypatch.setattr(config, "OLLAMA_HOST", host)
+    monkeypatch.setattr(config, "OLLAMA_MODEL", model)
+
+    def fail_if_called(*a, **k):
+        raise AssertionError("no request may leave for a non-local reviewer")
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
+    with pytest.raises(ollama_client.OllamaSkipped):
+        ollama_client.review("Open EMAIL#1", {"action": "click", "target_selector": "#go"}, "navigational")
+
+
 def test_a_label_scored_in_the_dom_is_not_scored_twice(monkeypatch):
     name = "Priya Raghunathan"
     dom = _page(3, {2: f"Welcome back {name}"})

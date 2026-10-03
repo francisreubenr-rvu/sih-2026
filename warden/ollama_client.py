@@ -123,6 +123,12 @@ def review(tokenized_task: str, plan: dict, tier: str) -> dict:
     """Returns {"downgrade_to_ask": bool, "question": str|None}. Raises
     OllamaSkipped on any failure to get a usable answer.
     """
+    # The same locality rules as plan_via_ollama (3 October 2026): the review sends the
+    # tokenized task and the plan, and "local reasoning" must not leave the machine.
+    if not config.is_loopback_base(config.OLLAMA_HOST):
+        raise OllamaSkipped("OLLAMA_HOST is not a loopback address; local reasoning was not called")
+    if not config.ollama_model_is_local(config.OLLAMA_MODEL):
+        raise OllamaSkipped("WARDEN_OLLAMA_MODEL is a :cloud tag, not a local model; local reasoning was not called")
     prompt = _build_prompt(tokenized_task, plan, tier)
     try:
         resp = httpx.post(

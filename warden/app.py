@@ -32,7 +32,9 @@ import redactor
 import strip as strip_module
 import validate as validate_module
 
-app = FastAPI(title="Warden", version=config.WARDEN_VERSION)
+# No /docs, /redoc or /openapi.json: a local PII service has no reason to describe itself
+# to whatever can reach the port (3 October 2026).
+app = FastAPI(title="Warden", version=config.WARDEN_VERSION, docs_url=None, redoc_url=None, openapi_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -82,6 +84,12 @@ async def pairing_middleware(request: Request, call_next):
             return _refuse(400, "Content-Length is not a number.")
         if int(declared) > config.MAX_BODY_BYTES:
             return _refuse(413, f"Request body is larger than the Warden accepts ({config.MAX_BODY_BYTES} bytes).")
+        # application/json forces a CORS preflight, which a page origin fails. text/plain and
+        # form types do not, so without this a page could POST here unpaired whenever
+        # WARDEN_PAIRING_DISABLED=1 (3 October 2026).
+        media_type = (request.headers.get("content-type") or "").split(";", 1)[0].strip().lower()
+        if media_type != "application/json":
+            return _refuse(415, "POST requests to the Warden must be Content-Type: application/json.")
     state = config.pairing_state()
     if state == "disabled" or request.method == "OPTIONS":
         return await call_next(request)
