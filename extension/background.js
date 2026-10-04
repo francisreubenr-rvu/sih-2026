@@ -1031,11 +1031,20 @@ async function refreshVault(tokens) {
 // every vault value is replaced with its token first; then the local regex pass runs ONCE per
 // distinct label (labels repeat, e.g. a column of "Edit" links). Computed once per step and reused
 // by every re-plan attempt.
-// The label the planner saw for a plan's target, from the same tokenized element list.
+// How history names a plan's target: the label the planner saw (already tokenized). A control with
+// no label, or one whose label another control shares ("Edit" on every row), is named with its
+// field type and position as well, so the planner can still tell which one was used (code review,
+// 3 October 2026). Positions are page coordinates, never content.
 function planLabelOf(planElements, key) {
   if (!key) return null;
-  const el = (planElements || []).find((e) => e.selector === key);
-  return el && typeof el.label === 'string' && el.label ? el.label : null;
+  const list = planElements || [];
+  const el = list.find((e) => e.selector === key);
+  if (!el) return null;
+  const label = typeof el.label === 'string' ? el.label.trim() : '';
+  const shared = label && list.filter((e) => typeof e.label === 'string' && e.label.trim() === label).length > 1;
+  if (label && !shared) return label;
+  const name = label || el.fieldType || el.tag || 'control';
+  return Number.isFinite(el.x) && Number.isFinite(el.y) ? `${name} at (${el.x}, ${el.y})` : name;
 }
 
 function planElementsFrom(elements, tokens) {

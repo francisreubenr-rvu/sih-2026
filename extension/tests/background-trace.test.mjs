@@ -337,3 +337,16 @@ test('plan history carries a typed vault token, never a literal value', async ()
   assert.equal('value' in body.body.history.at(-1), false, 'a masked literal is left out of history');
   assert.equal(body.raw.includes('hunter2'), false);
 });
+
+// Code review, 3 October 2026: history names a target by label, so an unlabelled control, or one of
+// several sharing a label, needs its position too, or the planner cannot tell which was used.
+test('history names an unlabelled or same-label target with its field type and position', async () => {
+  const unlabelled = { ...FIELD, label: '' };
+  const run = await runSeeded({
+    scan: { elements: [unlabelled, SEND], dom: '1. INPUT selector=#to\n2. BUTTON selector=#send', digest: 'd', piiMaskedCount: 0, piiFields: [], viewport: { width: 800, height: 600 } },
+    warden: { strip: (body) => ({ ...seededStrip(body), elements: body.elements }), plan: planSeq(TYPE_TOKEN, FINISH) },
+    choices: ['proceed'],
+  });
+  const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;
+  assert.equal(second.history.at(-1).target, 'email at (10, 10)');
+});

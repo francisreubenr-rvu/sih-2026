@@ -38,6 +38,19 @@ Security review, consistency audit, Warden and extension code review, side-panel
 - [ ] Faces at 128 px and 64 px on a 1280x800 page were not detected (6 of 8 found), so small faces stay unmasked. A tiled or multi-scale pass is the fix. Not an accuracy benchmark.
 - [ ] Chrome only (`chrome.offscreen`, side panel). Renderer memory rises from about 100 MB to 228 MB when the model loads (shared process; not the offscreen document alone).
 
+**Final code review of the branch (10 findings; 8 fixed, each with a test that fails on the old code where one could be written):**
+
+- [x] Redaction output was the normalised match copy, so a zero-width joiner inside a Hindi conjunct became "-" in labels the planner and the confirmation questions showed. Both layers now render from the original text.
+- [x] `/strip` read fewer digit forms than the egress guard: an Arabic-Indic phone number got a 422 instead of a token. Every BMP decimal digit is now read.
+- [x] Remembered uncertain-PII answers were keyed by the per-call token number: a kept value under a new number was asked again, and a new value under an old number overwrote an answer. Now keyed by (type, value) on both sides.
+- [x] A missing site-access grant was refused as "no address this extension can read" (origin check ran first).
+- [x] A saved `http://localhost` Warden origin was refused on every call after the 127.0.0.1-only rule; it is now migrated, and the panel validates with the worker's rule.
+- [x] Vision: a lost offscreen host was never recreated; a detect abandoned at the 1.5 s cap made the next request fail "busy". Both fixed.
+- [x] History named targets by label only; unlabelled or same-label targets now carry field type and position.
+- [x] CI ran the new loaded-extension tests in branded Google Chrome, which ignores `--load-extension`; CI now uses Playwright's Chromium.
+- [ ] Time of check to time of use between the origin check and SET_VAULT/EXECUTE: a navigation in between delivers the vault to the new document's content script (isolated world; EXECUTE then fails on the stale handle). Binding messages to the scanned document (`documentId`) would close it.
+- [ ] The screenshot mask reads the date-of-birth rule per text node, so `<dt>Date of birth</dt><dd>12-01-2001</dd>` stays visible in the local capture (the Warden still tokenizes the DOM line). Local-only image; not fixed.
+
 **Evidence and ledger:**
 
 - [x] G05/G06/G08 scripts re-run at HEAD; the secret scanner no longer scans agent worktrees (2,672 -> 668 files).
