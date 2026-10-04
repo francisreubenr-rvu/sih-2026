@@ -77,14 +77,22 @@ def _answer_for(resolved: dict, token: str, value: str):
     Token ids restart at #1 on every /strip call, so an answer keyed by token alone
     applied to whatever value held that id on a later page: "keep" for the link label
     "Account statements" kept a real account number that became ACCOUNTNUMBER#1 on the
-    next step (3 October 2026). An answer is now {"decision", "value"} and applies only
-    to the value it was given for. A legacy bare "strip" still applies (it can only
-    remove text); a legacy bare "keep" is ignored, so the user is asked again."""
+    next step (3 October 2026). An answer is {"decision", "value"} and applies only to
+    the value it was given for. A legacy bare "strip" still applies (it can only remove
+    text); a legacy bare "keep" is ignored, so the user is asked again.
+
+    Matched on (type, value), not on the key's number (code review, 3 October 2026): the
+    same value can get a different id on the next page ("Neha" is PERSONNAME#2 once
+    another name comes first), and the extension cannot know the id before this call.
+    The key's TYPE prefix must match the span's type."""
     entry = resolved.get(token)
-    if isinstance(entry, dict):
-        if entry.get("value") == value and entry.get("decision") in ("strip", "keep"):
-            return entry["decision"]
-        return None
+    if isinstance(entry, dict) and entry.get("value") == value and entry.get("decision") in ("strip", "keep"):
+        return entry["decision"]
+    span_type = token.split("#", 1)[0]
+    for key, other in resolved.items():
+        if (isinstance(other, dict) and isinstance(key, str) and key.split("#", 1)[0] == span_type
+                and other.get("value") == value and other.get("decision") in ("strip", "keep")):
+            return other["decision"]
     return "strip" if entry == "strip" else None
 
 
@@ -143,9 +151,11 @@ def _decide(sources: list, minter: TokenMinter, resolved: dict, uncertain: list)
 
             decision = _answer_for(resolved, token, span["value"])
             if decision == "strip":
+                # layer "user": the person stripped it, the model only asked (the extension's
+                # trace reports it so, without having to match token ids).
                 minter.mint(
                     span["type"], span["value"],
-                    score=span["score"], layer="gliner", pattern=span["label"],
+                    score=span["score"], layer="user", pattern=span["label"],
                     token=token, source=name,
                 )
                 planned[name].append((span["start"], span["end"], token))

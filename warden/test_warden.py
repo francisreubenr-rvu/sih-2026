@@ -2550,3 +2550,21 @@ def test_a_label_scored_in_the_dom_is_not_scored_twice(monkeypatch):
     elements = [{"selector": "#nav-2", "label": f"Welcome back {name}", "fieldType": "link", "x": 1, "y": 2}]
     strip_module.strip(task="", dom=dom, elements=elements, resolved={})
     assert f"Welcome back {name}" not in fake.calls
+
+
+def test_an_answer_follows_its_value_to_another_token_number(monkeypatch):
+    """Code review, 3 October 2026: ids are per call, so "Neha" kept as PERSONNAME#1 on one page
+    is PERSONNAME#2 on the next when another name comes first. The answer is matched on type and
+    value, so it still applies, and a different value under the same number is still asked."""
+    monkeypatch.setattr(entities.STATE, "model", _PersonNameModel(["Ravi Kumar", "Neha Joshi"]))
+    kept = {"PERSONNAME#1": {"decision": "keep", "value": "Neha Joshi"}}
+    out = strip_module.strip(task="", dom='1. P label="Ravi Kumar"\n2. P label="Neha Joshi"', elements=[], resolved=kept)
+    assert [u["preview"] for u in out["uncertain"]] == ["Ravi Kumar"]
+    assert "Neha Joshi" in out["sanitizedDom"]
+    stripped = {"PERSONNAME#7": {"decision": "strip", "value": "Neha Joshi"}}
+    out = strip_module.strip(task="", dom='1. P label="Neha Joshi"', elements=[], resolved=stripped)
+    assert out["uncertain"] == [] and "Neha Joshi" not in out["sanitizedDom"]
+    assert [d["layer"] for d in out["decisions"]] == ["user"]
+    wrong_type = {"ACCOUNTNUMBER#1": {"decision": "keep", "value": "Neha Joshi"}}
+    out = strip_module.strip(task="", dom='1. P label="Neha Joshi"', elements=[], resolved=wrong_type)
+    assert [u["preview"] for u in out["uncertain"]] == ["Neha Joshi"]

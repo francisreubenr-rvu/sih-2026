@@ -135,15 +135,24 @@ const state = {
 // never pushed into state.steps, never logged, never placed in a transcript entry.
 let currentVault = null;
 
-// Uncertain-PII decisions the user has already made in this run, keyed by the token id the Warden
-// minted (e.g. "PERSONNAME#1") and sent back as `resolved` on every later /strip call so the same
-// span is not asked about twice: { [token]: { decision: 'strip' | 'keep', value } }. The Warden
-// mints ids per /strip call, so "PERSONNAME#1" can name a different value on the next page; the
-// `value` (the uncertain entry's preview) binds the answer to what the person actually saw, and the
-// Warden applies it only to that value (security review, 3 October 2026). Cleared when a run starts
-// and when it ends. In-memory only; never persisted, never in the trace; goes only to /strip,
-// which already receives the raw page.
-let resolvedAnswers = {};
+// Uncertain-PII decisions the user has already made in this run, keyed by TYPE and value (not by
+// the token id: the Warden mints ids per /strip call, so "Neha" can be PERSONNAME#1 on one page and
+// PERSONNAME#2 on the next; code review, 3 October 2026). Sent on every /strip as `resolved`, one
+// entry per answer under its type ({ "PERSONNAME#1": { decision, value }, ... }); the Warden
+// matches each on type and value, so the same span is not asked about twice and an answer never
+// applies to a different value (security review, 3 October 2026). Cleared when a run starts and
+// when it ends. In-memory only; never persisted, never in the trace; goes only to /strip, which
+// already receives the raw page.
+let resolvedAnswers = new Map();
+function resolvedForWarden() {
+  const out = {};
+  const counts = {};
+  for (const { type, decision, value } of resolvedAnswers.values()) {
+    counts[type] = (counts[type] || 0) + 1;
+    out[`${type}#${counts[type]}`] = { decision, value };
+  }
+  return out;
+}
 
 // Origins this run may act on: the one it started on, plus any a person approved when the task tab
 // moved to another site (security review, 3 October 2026). `stepOrigin` is the origin the current
@@ -863,7 +872,7 @@ async function startAcceptedTask(task) {
   });
   await persistState();
   // Remembered uncertain-PII answers belong to one run (see resolvedAnswers).
-  resolvedAnswers = {};
+  resolvedAnswers = new Map();
   startOrigin = origin;
   runOrigins = new Set([origin]);
   // The previous run's trace (its masked screenshot, its /plan body) ends with that run.
@@ -968,7 +977,7 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
     const proven = await wardenClient.health();
     if (!wardenClient.isPairingVerified(proven)) throw new Error('The Warden did not prove the pairing code before /strip, so the page was not sent.');
     if (aborted(runId)) throw new Error('Stopped');
-    const resp = await wardenClient.strip({ task, dom, elements, resolved: resolvedAnswers });
+    const resp = await wardenClient.strip({ task, dom, elements, resolved: resolvedForWarden() });
     if (!resp || typeof resp !== 'object') throw new Error('warden: /strip returned no object');
     if (!Array.isArray(resp.uncertain) || resp.uncertain.length === 0) return { resp, asked };
 
@@ -991,7 +1000,9 @@ async function resolveUncertainLoop(runId, task, dom, elements, stepNumber) {
     );
     if (aborted(runId)) throw new Error('Stopped');
     for (const item of items) {
-      resolvedAnswers[item.token] = { decision: answers[item.id] === 'keep' ? 'keep' : 'strip', value: String(item.preview ?? '') };
+      const type = String(item.token || '').split('#')[0];
+      const value = String(item.preview ?? '');
+      resolvedAnswers.set(`${type}\u0000${value}`, { type, decision: answers[item.id] === 'keep' ? 'keep' : 'strip', value });
     }
     // Loop back and re-strip with the updated `resolved` map. The same raw input plus the
     // same decisions is deterministic, so every previously-uncertain span now resolves
@@ -1530,7 +1541,7 @@ async function runLoop(runId, secrets) {
 
       const tokenCount = Object.keys(stripResp.tokens || {}).length;
       // Tokens and types only; replacedFromStrip() never reads a value.
-      pipeline.patch('redaction', { replaced: replacedFromStrip(stripResp, resolvedAnswers), uncertainAsked });
+      pipeline.patch('redaction', { replaced: replacedFromStrip(stripResp, resolvedForWarden()), uncertainAsked });
       traceStage('redact', 'done', `${tokenCount} value${tokenCount === 1 ? '' : 's'} replaced${uncertainAsked ? `, ${uncertainAsked} asked` : ''}${uncertainAsked ? ' (time includes your answers)' : ''}`);
       noteStage('STRIP', tokenCount === 0
         ? 'no personal data found, nothing was replaced'
@@ -1757,7 +1768,7 @@ async function runLoop(runId, secrets) {
       chrome.tabs.sendMessage(state.tabId, { type: 'CLEAR_HIGHLIGHTS' }).catch(() => {});
       chrome.tabs.sendMessage(state.tabId, { type: 'END_TASK' }).catch(() => {});
       currentVault = null; // hygiene: the vault must not outlive its run.
-      resolvedAnswers = {}; // nor the answers, which hold the values they were given for.
+      resolvedAnswers = new Map(); // nor the answers, which hold the values they were given for.
       runOrigins = null;
     }
   }

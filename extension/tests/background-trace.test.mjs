@@ -297,6 +297,34 @@ test('an uncertain-PII answer is bound to its value and does not outlive the run
   assert.equal(run.prompts.filter((p) => p.kind === 'uncertain-pii').length, 2, 'the second run asked again');
 });
 
+// Code review, 3 October 2026: ids are per /strip call, so an answered value can come back under a
+// different number on the next step. Answers are kept by type and value and the Warden matches them
+// so; the same value is not asked about twice, and a new value under the old number still is.
+test('an answered value is not asked again when it comes back under another token number', async () => {
+  const stripBodies = [];
+  let plans = 0;
+  const known = (body, value) => Object.values(body.resolved || {}).some((a) => a && a.value === value);
+  // Step 1 shows Ravi as PERSONNAME#1. Step 2 puts Neha first, so Neha is #1 and Ravi #2: answering
+  // Neha under #1 used to overwrite Ravi's answer, and Ravi was asked again.
+  const strip = (body) => {
+    stripBodies.push(structuredClone(body));
+    const resp = seededStrip(body);
+    const names = plans === 0 ? ['Ravi'] : ['Neha', 'Ravi'];
+    const pending = names.map((v, i) => ({ v, token: `PERSONNAME#${i + 1}` })).filter(({ v }) => !known(body, v));
+    if (pending.length) resp.uncertain = pending.map(({ v, token }) => ({ id: token, token, label: 'person', score: 0.5, preview: v, source: 'dom' }));
+    return resp;
+  };
+  const plan = (body, n) => { plans = n; return { model: 'groq/fake-70b', destination: 'cloud', latencyMs: 12, switched: [], plan: n <= 2 ? TYPE_TOKEN : FINISH }; };
+  const run = await runSeeded({
+    warden: { strip, plan },
+    choices: [{ 'PERSONNAME#1': 'keep' }, 'proceed', { 'PERSONNAME#1': 'keep' }, 'proceed'],
+  });
+  assert.equal(run.terminal.status, 'finished');
+  const asked = run.prompts.filter((p) => p.kind === 'uncertain-pii').flatMap((p) => p.items.map((i) => i.preview));
+  assert.deepEqual(asked, ['Ravi', 'Neha'], 'each value asked once');
+  assert.deepEqual(Object.values(stripBodies.at(-1).resolved).map((a) => a.value).sort(), ['Neha', 'Ravi']);
+});
+
 test('plan history carries a typed vault token, never a literal value', async () => {
   const run = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(TYPE_TOKEN, FINISH) } });
   const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;
