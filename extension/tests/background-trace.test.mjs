@@ -178,11 +178,15 @@ test('REVEAL_TOKEN answers the side panel only, from the live vault only', async
   const r = run.hookResults[0];
   assert.deepEqual(r.panel, { token: 'EMAIL#1', value: SECRET });
   assert.deepEqual(r.panelWithQuery, { token: 'EMAIL#1', value: SECRET });
-  for (const key of ['contentScript', 'panelUrlInTab', 'otherPage', 'lookalike', 'unknown', 'malformed']) {
+  for (const key of ['otherPage', 'lookalike', 'unknown', 'malformed']) {
     assert.equal(typeof r[key].error, 'string', `${key} was refused`);
     assert.equal('value' in r[key], false, `${key} carries no value`);
   }
-  assert.equal(r.foreign, undefined, 'a foreign sender gets no answer at all');
+  // A foreign extension, and (since 3 October 2026) any content-script sender, gets no answer at all.
+  for (const key of ['foreign', 'contentScript']) assert.equal(r[key], undefined, `${key} got an answer`);
+  // The panel opened in a tab is still the extension's own page (the browser sets sender.url, and no
+  // web page can load sidepanel.html): the loaded-extension harnesses run it that way.
+  assert.deepEqual(r.panelUrlInTab, { token: 'EMAIL#1', value: SECRET });
   // The vault ends with the run.
   const after = await run.send({ type: 'REVEAL_TOKEN', token: 'EMAIL#1' }, PANEL_SENDER);
   assert.equal(typeof after.error, 'string');
@@ -216,14 +220,133 @@ test('a user-stripped uncertain span is reported with layer user', async () => {
   for (const u of run.traceUpdates) assert.equal(JSON.stringify(u).includes('Ravi'), false);
 });
 
+// Security review, 3 October 2026 (MEDIUM): a confirmation said only the tier, or showed a raw
+// selector. It now names the action, the control's label from the extension's own scan (vault values
+// shown as tokens), the typed value as the planner gave it (tokens, never values) and the tab origin.
+test('a confirmation names the action, the local label, the typed tokens and the tab origin', async () => {
+  const field = { ...FIELD, label: `Mail ${SECRET}` };
+  const run = await runSeeded({ scan: scanOf([field, SEND]), choices: ['stop'] });
+  const text = run.prompts[0].text;
+  assert.match(text, /tier 'state-changing' and requires local confirmation/);
+  assert.match(text, /type "EMAIL#1" into "Mail EMAIL#1"/);
+  assert.match(text, /on https:\/\/bank\.example/);
+  assert.equal(text.includes(SECRET), false, 'no vault value in the question');
+  assert.equal(JSON.stringify(run.runtimeMessages.filter((m) => m.type === 'PROMPT_REQUEST')).includes(SECRET), false);
+});
+
+// Security review, 3 October 2026 (LOW): content.js never messages the worker, so a message from a
+// content script (a tab sender) is a compromised renderer speaking. It must not answer a prompt,
+// start a run, change the Warden origin or pairing, or read the transcript, prompt or trace.
+test('a content-script sender cannot answer a prompt, start a run, change settings or read the session', async () => {
+  const CONTENT = { id: 'dhristi-test', url: 'https://bank.example/home', tab: { id: 7 } };
+  const PANEL_URL_IN_TAB = { ...PANEL_SENDER, tab: { id: 7 } };
+  const run = await runSeeded({
+    choices: ['stop'],
+    onPrompt: async (prompt, { send }) => {
+      const out = {};
+      out.panelUrlInTab = { session: await send({ type: 'GET_SESSION' }, PANEL_URL_IN_TAB) };
+      for (const [name, sender] of [['content', CONTENT]]) {
+        out[name] = {
+          answer: await send({ type: 'PROMPT_RESPONSE', id: prompt.id, answers: { choice: 'proceed' } }, sender),
+          start: await send({ type: 'START_TASK', task: 'another task' }, sender),
+          origin: await send({ type: 'SET_WARDEN_ORIGIN', origin: 'http://127.0.0.1:9999' }, sender),
+          pairing: await send({ type: 'SET_WARDEN_PAIRING', code: 'x'.repeat(43) }, sender),
+          session: await send({ type: 'GET_SESSION' }, sender),
+          pending: await send({ type: 'GET_PROMPT' }, sender),
+          trace: await send({ type: 'GET_TRACE' }, sender),
+          outbound: await send({ type: 'GET_OUTBOUND' }, sender),
+        };
+      }
+      out.stillPending = (await send({ type: 'GET_PROMPT' }, PANEL_SENDER))?.id === prompt.id;
+      return out;
+    },
+  });
+  const r = run.hookResults[0];
+  for (const [key, value] of Object.entries(r.content)) assert.equal(value, undefined, `content ${key} was answered`);
+  // The panel in a tab is the extension's own page and is answered (GET_SESSION as a witness).
+  assert.notEqual(r.panelUrlInTab.session, undefined, 'the panel opened in a tab was refused');
+  assert.equal(r.stillPending, true, 'the prompt was not answered by the content script');
+  assert.equal(run.executed.length, 0, 'the content script could not approve the step');
+  assert.equal(run.terminal.status, 'stopped');
+  assert.equal(run.entries.filter((e) => e.kind === 'user').length, 1, 'no second run started');
+});
+
+// Security review, 3 October 2026 (HIGH): the Warden mints token ids per /strip call, so
+// "PERSONNAME#1" names a different value on another page. A remembered 'keep' keyed by the id alone
+// kept a value nobody was asked about. Each answer now carries the value it was given for, and the
+// remembered answers end with the run.
+test('an uncertain-PII answer is bound to its value and does not outlive the run', async () => {
+  const stripBodies = [];
+  const strip = (body) => {
+    stripBodies.push(structuredClone(body));
+    const resp = seededStrip(body);
+    const decided = body.resolved['PERSONNAME#1'];
+    if (!decided) resp.uncertain = [{ id: 'PERSONNAME#1', token: 'PERSONNAME#1', label: 'person', score: 0.5, preview: 'Ravi', source: 'dom' }];
+    return resp;
+  };
+  const run = await runSeeded({
+    warden: { strip, plan: planSeq(FINISH) },
+    choices: [{ 'PERSONNAME#1': 'keep' }, { 'PERSONNAME#1': 'keep' }],
+    again: ['second task'],
+  });
+  assert.equal(run.laterStarts[0].ok, true);
+  assert.deepEqual(stripBodies[0].resolved, {});
+  assert.deepEqual(stripBodies[1].resolved, { 'PERSONNAME#1': { decision: 'keep', value: 'Ravi' } });
+  const secondRunFirst = stripBodies[2];
+  assert.deepEqual(secondRunFirst.resolved, {}, 'a new run starts with no remembered answers');
+  assert.equal(run.prompts.filter((p) => p.kind === 'uncertain-pii').length, 2, 'the second run asked again');
+});
+
+// Code review, 3 October 2026: ids are per /strip call, so an answered value can come back under a
+// different number on the next step. Answers are kept by type and value and the Warden matches them
+// so; the same value is not asked about twice, and a new value under the old number still is.
+test('an answered value is not asked again when it comes back under another token number', async () => {
+  const stripBodies = [];
+  let plans = 0;
+  const known = (body, value) => Object.values(body.resolved || {}).some((a) => a && a.value === value);
+  // Step 1 shows Ravi as PERSONNAME#1. Step 2 puts Neha first, so Neha is #1 and Ravi #2: answering
+  // Neha under #1 used to overwrite Ravi's answer, and Ravi was asked again.
+  const strip = (body) => {
+    stripBodies.push(structuredClone(body));
+    const resp = seededStrip(body);
+    const names = plans === 0 ? ['Ravi'] : ['Neha', 'Ravi'];
+    const pending = names.map((v, i) => ({ v, token: `PERSONNAME#${i + 1}` })).filter(({ v }) => !known(body, v));
+    if (pending.length) resp.uncertain = pending.map(({ v, token }) => ({ id: token, token, label: 'person', score: 0.5, preview: v, source: 'dom' }));
+    return resp;
+  };
+  const plan = (body, n) => { plans = n; return { model: 'groq/fake-70b', destination: 'cloud', latencyMs: 12, switched: [], plan: n <= 2 ? TYPE_TOKEN : FINISH }; };
+  const run = await runSeeded({
+    warden: { strip, plan },
+    choices: [{ 'PERSONNAME#1': 'keep' }, 'proceed', { 'PERSONNAME#1': 'keep' }, 'proceed'],
+  });
+  assert.equal(run.terminal.status, 'finished');
+  const asked = run.prompts.filter((p) => p.kind === 'uncertain-pii').flatMap((p) => p.items.map((i) => i.preview));
+  assert.deepEqual(asked, ['Ravi', 'Neha'], 'each value asked once');
+  assert.deepEqual(Object.values(stripBodies.at(-1).resolved).map((a) => a.value).sort(), ['Neha', 'Ravi']);
+});
+
 test('plan history carries a typed vault token, never a literal value', async () => {
   const run = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(TYPE_TOKEN, FINISH) } });
   const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;
-  assert.deepEqual(second.history.at(-1), { stepNumber: 1, action: 'type', target: '#to', status: 'ok', value: 'EMAIL#1' });
+  // History names the control by its planner-visible label, not its per-scan key (3 October 2026).
+  assert.deepEqual(second.history.at(-1), { stepNumber: 1, action: 'type', target: 'Recipient', status: 'ok', value: 'EMAIL#1' });
 
   const literal = { ...TYPE_TOKEN, value: 'hunter2' };
   const lit = await runSeeded({ warden: { strip: seededStrip, plan: planSeq(literal, FINISH) } });
   const body = lit.fetchBodies.filter((b) => b.path === '/plan')[1];
   assert.equal('value' in body.body.history.at(-1), false, 'a masked literal is left out of history');
   assert.equal(body.raw.includes('hunter2'), false);
+});
+
+// Code review, 3 October 2026: history names a target by label, so an unlabelled control, or one of
+// several sharing a label, needs its position too, or the planner cannot tell which was used.
+test('history names an unlabelled or same-label target with its field type and position', async () => {
+  const unlabelled = { ...FIELD, label: '' };
+  const run = await runSeeded({
+    scan: { elements: [unlabelled, SEND], dom: '1. INPUT selector=#to\n2. BUTTON selector=#send', digest: 'd', piiMaskedCount: 0, piiFields: [], viewport: { width: 800, height: 600 } },
+    warden: { strip: (body) => ({ ...seededStrip(body), elements: body.elements }), plan: planSeq(TYPE_TOKEN, FINISH) },
+    choices: ['proceed'],
+  });
+  const second = run.fetchBodies.filter((b) => b.path === '/plan')[1].body;
+  assert.equal(second.history.at(-1).target, 'email at (10, 10)');
 });

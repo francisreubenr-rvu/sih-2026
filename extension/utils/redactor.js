@@ -34,6 +34,71 @@ function luhnValid(digits) {
   return sum % 10 === 0;
 }
 
+// IBAN mod-97 check, digit by digit so no BigInt is needed.
+function ibanValid(m) {
+  const compact = m.replace(/ /g, '').toUpperCase();
+  if (compact.length < 15 || compact.length > 34) return false;
+  const rearranged = compact.slice(4) + compact.slice(0, 4);
+  let rem = 0;
+  for (const ch of rearranged) {
+    const v = parseInt(ch, 36);
+    for (const d of String(v)) rem = (rem * 10 + Number(d)) % 97;
+  }
+  return rem === 1;
+}
+
+// ---------------------------------------------------------------------------
+// Match copy (added 3 October 2026, mirrors warden/redactor.py match_copy)
+// ---------------------------------------------------------------------------
+// Every pass matches on a copy where Indian-script digits and full-width ASCII
+// map to ASCII, non-breaking spaces to a space, and zero-width and soft-hyphen
+// characters to "-". Each mapping is one UTF-16 unit for one, so offsets into
+// the copy index the original. Measured leaks it closes: "खाता संख्या
+// 50100234567812" and its Devanagari-digit form, "98765\u200b43210", "ravi＠example.com".
+// Every decimal digit in the Basic Multilingual Plane maps to ASCII (code review, 3 October 2026:
+// the Warden's egress guard reads all of them, so a form this copy missed became a refused /plan).
+// Unicode encodes each decimal digit set as a contiguous run 0..9, so a digit's value is its offset
+// in its run. Digits outside the BMP are two UTF-16 units and cannot map one for one.
+const DIGIT_VALUE = (() => {
+  const values = new Map();
+  let runStart = -1;
+  for (let code = 0x80; code <= 0xffff; code += 1) {
+    if (code >= 0xd800 && code <= 0xdfff) { runStart = -1; continue; }
+    if (/\p{Nd}/u.test(String.fromCharCode(code))) {
+      if (runStart < 0) runStart = code;
+      values.set(code, (code - runStart) % 10);
+    } else {
+      runStart = -1;
+    }
+  }
+  return values;
+})();
+function mapMatchChar(code) {
+  const digit = DIGIT_VALUE.get(code);
+  if (digit !== undefined) return 48 + digit;
+  if (code >= 0xff01 && code <= 0xff5e) return code - 0xfee0;
+  if (code === 0x00a0 || code === 0x2007 || code === 0x202f) return 32;
+  if (code === 0x00ad || (code >= 0x200b && code <= 0x200d) || code === 0x2060 || code === 0xfeff) return 45;
+  return code;
+}
+export function matchCopy(text) {
+  let out = '';
+  for (let i = 0; i < text.length; i += 1) out += String.fromCharCode(mapMatchChar(text.charCodeAt(i)));
+  return out;
+}
+
+// Any other run of 9 to 18 digits is an account number. Groups need 3+ digits
+// except a final group of 2, so pagination ("10 11 12 13 14") and timestamps
+// ("2026-10-03 18:01") cannot add up to one. Runs after the Aadhaar heuristic.
+const ACCOUNT_RE = /(?<![0-9])[0-9]{3,}(?:[ -][0-9]{3,})*(?:[ -][0-9]{2})?(?![0-9])/g;
+const accountValid = (m) => {
+  const n = m.replace(/[ -]/g, '').length;
+  return n >= 9 && n <= 18;
+};
+// A date on a line that names a date of birth (EN or HI) is a date of birth.
+const DOB_KEYWORD_RE = /date of birth|\bdob\b|\bbirth|\bborn\b|जन्म/i;
+const DATE_RE = /(?<![0-9])(?:[0-9]{1,2}[-/.][0-9]{1,2}[-/.][0-9]{2,4}|[0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]{1,2} (?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]* [0-9]{4})(?![0-9])/gi;
+
 // ---------------------------------------------------------------------------
 // Pattern set (single source of truth)
 // ---------------------------------------------------------------------------
@@ -50,6 +115,14 @@ const passes = [
     name: 'email',
     re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
     confidence: 'regex-exact'
+  },
+  {
+    // Before the digit passes, so Aadhaar or card cannot take the digits out of
+    // an IBAN. Validated by the IBAN mod-97 check.
+    name: 'iban',
+    re: /\b[A-Z]{2}[0-9]{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,3})?\b/g,
+    confidence: 'regex-exact',
+    validate: ibanValid
   },
   {
     name: 'pan',
@@ -71,8 +144,10 @@ const passes = [
     }
   },
   {
+    // Not part of a longer grouped number: "3920 1188 2201 76" is one account
+    // number, and taking its first 12 digits as Aadhaar used to leave "76".
     name: 'aadhaar',
-    re: /(?<!\d)\d{4}[ -]\d{4}[ -]\d{4}(?!\d)/g,
+    re: /(?<!\d)(?<!\d[ -])\d{4}[ -]\d{4}[ -]\d{4}(?![ -]?\d)/g,
     confidence: 'regex-exact'
   },
   {
@@ -87,12 +162,12 @@ const passes = [
   },
   {
     name: 'phone',
-    re: /(?<!\d)[6-9]\d{4}[ -]\d{5}(?!\d)/g,
+    re: /(?<!\d)0?[6-9]\d{4}[ -]\d{5}(?!\d)/g,
     confidence: 'regex-exact'
   },
   {
     name: 'phone',
-    re: /(?<!\d)[6-9]\d{9}(?!\d)/g,
+    re: /(?<!\d)0?[6-9]\d{9}(?!\d)/g,
     confidence: 'regex-exact'
   },
   {
@@ -125,47 +200,58 @@ const AADHAAR_BARE_RE = /(?<!\d)\d{12}(?!\d)/g;
 // Text redaction
 // ---------------------------------------------------------------------------
 
-// Apply one regex to `text`, replacing every match with MASK_TOKEN. `validate`
-// (optional) receives the raw match and may veto masking (used by the Luhn
-// gate). Returns the masked text plus per-match decisions.
-function applyPattern(text, regex, pattern, confidence, validate) {
-  const decisions = [];
-  let count = 0;
-  const masked = text.replace(regex, (match) => {
-    if (validate && !validate(match)) return match; // veto: leave intact
-    count += 1;
-    decisions.push({ pattern, matchedLength: match.length, confidence });
-    return MASK_TOKEN;
-  });
-  return { text: masked, count, decisions };
+
+// Every pass matches on matchCopy(text); spans are collected pass by pass (the order above), a later
+// span overlapping an earlier one is discarded, and output is rendered from the ORIGINAL text (code
+// review, 3 October 2026: rendering the copy turned a zero-width joiner inside a Hindi conjunct into
+// "-" in every label the planner and the confirmation question showed).
+function collectSpans(text) {
+  const norm = matchCopy(text);
+  const spans = [];
+  const overlaps = (start, end) => spans.some((s) => start < s.end && s.start < end);
+  const add = (re, name, validate, confidence) => {
+    for (const m of norm.matchAll(re)) {
+      const start = m.index;
+      const end = start + m[0].length;
+      if (validate && !validate(m[0])) continue;
+      if (overlaps(start, end)) continue;
+      spans.push({ start, end, name, confidence });
+    }
+  };
+  for (const pass of passes) add(pass.re, pass.name, pass.validate, pass.confidence);
+  if (AADHAAR_KEYWORD_RE.test(text)) add(AADHAAR_BARE_RE, 'aadhaar', null, 'heuristic-label');
+  add(ACCOUNT_RE, 'accountnumber', accountValid, 'regex-exact');
+  if (DOB_KEYWORD_RE.test(norm)) {
+    let offset = 0;
+    for (const line of norm.split('\n')) {
+      if (DOB_KEYWORD_RE.test(line)) {
+        for (const m of line.matchAll(DATE_RE)) {
+          const start = offset + m.index;
+          const end = start + m[0].length;
+          if (!overlaps(start, end)) spans.push({ start, end, name: 'dateofbirth', confidence: 'heuristic-label' });
+        }
+      }
+      offset += line.length + 1;
+    }
+  }
+  return spans;
+}
+
+function renderSpans(text, spans, replacement) {
+  let out = text;
+  for (const span of [...spans].sort((a, b) => b.start - a.start)) {
+    out = out.slice(0, span.start) + replacement(span) + out.slice(span.end);
+  }
+  return out;
 }
 
 export function redactText(text) {
   if (typeof text !== 'string' || text.length === 0) {
     return { text: text ?? '', count: 0, decisions: [] };
   }
-
-  const decisions = [];
-  let count = 0;
-  let working = text;
-
-  for (const pass of passes) {
-    const result = applyPattern(working, pass.re, pass.name, pass.confidence, pass.validate);
-    working = result.text;
-    count += result.count;
-    decisions.push(...result.decisions);
-  }
-
-  // Aadhaar keyword-proximity (heuristic). See AADHAAR_KEYWORD_RE above for
-  // the tradeoff this encodes.
-  if (AADHAAR_KEYWORD_RE.test(text)) {
-    const result = applyPattern(working, AADHAAR_BARE_RE, 'aadhaar', 'heuristic-label');
-    working = result.text;
-    count += result.count;
-    decisions.push(...result.decisions);
-  }
-
-  return { text: working, count, decisions };
+  const spans = collectSpans(text);
+  const decisions = spans.map((span) => ({ pattern: span.name, matchedLength: span.end - span.start, confidence: span.confidence }));
+  return { text: renderSpans(text, spans, () => MASK_TOKEN), count: spans.length, decisions };
 }
 
 // ---------------------------------------------------------------------------
@@ -181,36 +267,31 @@ export function redactText(text) {
 // AADHAAR#1, PAN#1, CARD#1, PASSPORT#1, ...), numbered per type starting at
 // 1. A match that fails a pass's `validate` predicate is left alone, exactly
 // as in redactText().
+// Values are cut from the ORIGINAL text, so a value keeps the page's own digits and
+// characters; warden/redactor.py regex_strip follows the same algorithm (parity test).
 export function tokenizeText(text) {
   if (typeof text !== 'string' || text.length === 0) {
     return { text: text ?? '', tokens: {} };
   }
-
   const tokens = {};
   const counts = {};
-  let working = text;
-
-  const mint = (match, patternName) => {
-    const type = patternName.toUpperCase();
-    counts[type] = (counts[type] || 0) + 1;
-    const token = `${type}#${counts[type]}`;
-    tokens[token] = match;
-    return token;
-  };
-
-  for (const pass of passes) {
-    working = working.replace(pass.re, (match) => {
-      if (pass.validate && !pass.validate(match)) return match; // veto: leave intact
-      return mint(match, pass.name);
-    });
+  const byValue = new Map(); // one token per (type, value), as the Warden's minter does
+  const spans = collectSpans(text);
+  const tokenOf = new Map();
+  for (const span of spans) { // pass order, so numbering matches warden/redactor.py regex_strip
+    const type = span.name.toUpperCase();
+    const value = text.slice(span.start, span.end);
+    const key = `${type}\u0000${value}`;
+    let token = byValue.get(key);
+    if (!token) {
+      counts[type] = (counts[type] || 0) + 1;
+      token = `${type}#${counts[type]}`;
+      byValue.set(key, token);
+      tokens[token] = value;
+    }
+    tokenOf.set(span, token);
   }
-
-  // Aadhaar keyword-proximity (heuristic), same trigger as redactText().
-  if (AADHAAR_KEYWORD_RE.test(text)) {
-    working = working.replace(AADHAAR_BARE_RE, (match) => mint(match, 'aadhaar'));
-  }
-
-  return { text: working, tokens };
+  return { text: renderSpans(text, spans, (span) => tokenOf.get(span)), tokens };
 }
 
 // ---------------------------------------------------------------------------

@@ -436,15 +436,21 @@ test('type into a target with no value setter is refused, not reported as done',
   await p.close();
 });
 
-test('scan: an id or name that is itself personal data is never used as the selector', async () => {
+test('scan: element keys are opaque per scan, so no page-authored id, name or type text reaches the planner', async () => {
+  // Security review, 3 October 2026: an id such as "contact-neha-joshi" is a name no PII layer reads,
+  // and the selector went to the planner verbatim. Keys are now e1..eN; execute resolves handles.
   const p = await h.open(`<!doctype html><body>
     <button id="priya.r@example.com" type="button">Profile</button>
     <input name="a1234567" type="text">
+    <a id="contact-neha-joshi" href="#c">Message</a>
+    <input type="neha-joshi-custom" aria-label="Odd field">
     <button id="save" type="button">Save</button></body>`);
   const scan = await p.scan();
   const selectors = scan.elements.map((el) => el.selector);
-  assert.equal(selectors.some((s) => /priya|a1234567/.test(s)), false, selectors.join(' | '));
-  assert.ok(selectors.includes('#save'), 'an ordinary id is still used');
+  assert.deepEqual(selectors, scan.elements.map((_, i) => `e${i + 1}`), selectors.join(' | '));
+  assert.equal(JSON.stringify(scan.elements.map(({ selector, type }) => [selector, type])).match(/priya|a1234567|neha|save/), null);
+  assert.equal(scan.elements.find((el) => el.label === 'Odd field').type, 'input', 'an unknown type attribute falls back to the tag');
+  assert.match(scan.dom, /selector=e1 /);
   await p.close();
 });
 
@@ -490,5 +496,56 @@ test('Hindi destructive link scans as destructive, so it always asks', async () 
   const scan = await p.scan();
   assert.deepEqual([byLabel(scan, 'खाता हटाएं').tier, byLabel(scan, 'खाता हटाएं').tierBasis], ['destructive', 'destructive-keyword']);
   assert.deepEqual([byLabel(scan, 'सहायता केंद्र').tier, byLabel(scan, 'सहायता केंद्र').tierBasis], ['state-changing', 'unproven']);
+  await p.close();
+});
+
+test('Hindi pay and send links scan by the submit rule, so a Laya review can never release them', async () => {
+  const p = await h.open(`<meta charset="utf-8"><a id="pay" href="#pay">भुगतान करें</a><a id="send" href="#send">पैसे भेजें</a>
+    <a id="dep" href="#dep">जमा राशि देखें</a>`);
+  const scan = await p.scan();
+  for (const label of ['भुगतान करें', 'पैसे भेजें']) {
+    assert.deepEqual([byLabel(scan, label).tier, byLabel(scan, label).tierBasis], ['state-changing', 'submit-keyword'], label);
+  }
+  assert.equal(byLabel(scan, 'जमा राशि देखें').tierBasis, 'unproven', 'view deposit amount is not a submit');
+  await p.close();
+});
+
+// Settle after an action (3 October 2026): the loop waits until the page's DOM has been quiet for
+// 100 ms instead of sleeping a fixed 250 ms + 400 ms, capped at the old 650 ms.
+test('after a click on a quiet page the action returns once the DOM is quiet, well under the old fixed wait', async () => {
+  const p = await h.open('<button id="b" onclick="document.getElementById(\'s\').textContent=\'done\'">Show</button><p id="s"></p>');
+  const scan = await p.scan();
+  const el = byLabel(scan, 'Show');
+  const t0 = Date.now();
+  const result = await p.execute({ action: 'click', handle: el.handle, plannedTier: el.tier });
+  const ms = Date.now() - t0;
+  assert.equal(result.changed, true);
+  assert.equal(await p.page.textContent('#s'), 'done');
+  assert.ok(ms < 450, `click returned in ${ms} ms`);
+  await p.close();
+});
+
+test('a page that keeps changing is waited for up to the cap, and an update inside the quiet window is seen', async () => {
+  const p = await h.open(`<button id="b" onclick="
+      setTimeout(() => { document.getElementById('s').textContent = 'loaded'; }, 60);
+      window.__tick = setInterval(() => { document.getElementById('t').textContent = Date.now(); }, 30);
+    ">Load</button><p id="s"></p><p id="t"></p>`);
+  const scan = await p.scan();
+  const el = byLabel(scan, 'Load');
+  const t0 = Date.now();
+  await p.execute({ action: 'click', handle: el.handle, plannedTier: el.tier });
+  const ms = Date.now() - t0;
+  assert.equal(await p.page.textContent('#s'), 'loaded', 'an update 60 ms after the click landed before the action returned');
+  assert.ok(ms >= 600, `a page that never goes quiet is waited for up to the cap (${ms} ms)`);
+  assert.ok(ms < 1500, `the cap holds (${ms} ms)`);
+  await p.page.evaluate(() => clearInterval(window.__tick));
+  await p.close();
+});
+
+test('finish does not wait on the page', async () => {
+  const p = await h.open('<p>nothing to do</p>');
+  const t0 = Date.now();
+  await p.execute({ action: 'finish' });
+  assert.ok(Date.now() - t0 < 300, 'finish returned without a settle wait');
   await p.close();
 });

@@ -124,3 +124,67 @@ test('Hindi tasks express destructive intent', () => {
   assert.equal(intentOf('मेरी संगीत सदस्यता रद्द करें'), true);
   assert.equal(intentOf('मेरा बिजली का बिल भरें'), false);
 });
+
+// ---- Navigation labels (security review, 3 October 2026) -------------------------------------------
+// "\blink\b" anywhere made "Link Aadhaar to PAN" navigational (unattended); "open" made opening a new
+// account or deposit navigational. Both are state changes the label does not prove safe.
+test('link-as-a-verb and opening a new account or deposit are not navigational', () => {
+  for (const text of ['Link this device', 'Link account', 'Link Aadhaar to PAN', 'Open new fixed deposit', 'Open a new account', 'Open an account', 'Open account', 'Terms link']) {
+    assert.deepEqual(classifyClickTargetBasis({ visibleText: text }), { tier: 'state-changing', basis: 'unproven' }, text);
+  }
+  for (const text of ['Open settings', 'View statement', 'Go to home', 'Next page', 'Back', 'Menu']) {
+    assert.notEqual(classifyClickTargetBasis({ visibleText: text }).basis, 'unproven', text);
+  }
+});
+
+// ---- Invisible and compatibility characters (security review, 3 October 2026) ----------------------
+// A soft hyphen, a bidi control or a fullwidth letter renders the same word but hid it from the rules.
+test('soft hyphens, bidi controls and fullwidth letters cannot hide a destructive or submit keyword', () => {
+  for (const text of ['Del\u00adete account', 'Re\u200emove card', 'De\u202elete', 'Era\u2066se all', '\uff24\uff45\uff4c\uff45\uff54\uff45 account', 'ह\u00adटाएं', 'खाता\u200f हटाएं']) {
+    assert.equal(classifyClickTargetBasis({ visibleText: text }).basis, 'destructive-keyword', JSON.stringify(text));
+  }
+  for (const text of ['Pa\u00ady now', '\uff30\uff41\uff59', 'भु\u00adगतान करें', 'Se\u2069nd']) {
+    assert.equal(classifyClickTargetBasis({ visibleText: text }).basis, 'submit-keyword', JSON.stringify(text));
+  }
+  assert.equal(intentOf('del\u00adete my account'), true);
+});
+
+// ---- Hindi submit keywords (PLAN item 8, 3 October 2026) --------------------------------------------
+// Hindi pay/send/submit/confirm/order/buy labels must tier by the submit rule, never 'unproven' (only
+// an unproven click can be released by the Laya reviewer). Imperative verb forms count; a bare noun
+// counts only where English counts its equivalent ("pay", "confirm", "checkout", "submit").
+const HI_SUBMIT_LABELS = [
+  'भुगतान करें', 'अभी भुगतान करें', 'भुगतान', '₹500 का भुगतान करें', 'पेमेंट करें', 'पे करें', 'बिल अदा करें',
+  'भेजें', 'पैसे भेजें', 'संदेश भेजो', 'भेज दें', 'सेंड करें', 'पैसे ट्रांसफ़र करें', 'ट्रांसफर करें',
+  'जमा करें', 'फ़ॉर्म जमा करें', 'आवेदन जमा कीजिए', 'सबमिट करें', 'सबमिट', 'प्रस्तुत करें', 'रिटर्न दाखिल करें',
+  'पुष्टि करें', 'भुगतान की पुष्टि करें', 'कन्फर्म करें', 'कन्फ़र्म', 'ऑर्डर करें', 'ऑर्डर दें', 'आर्डर प्लेस करें',
+  'खरीदें', 'अभी खरीदें', 'ख़रीदें', 'चेकआउट', 'सहेजें', 'बदलाव सहेजें', 'सेव करें', 'रिचार्ज करें',
+  'भे‍जें', 'जमा​ करें', 'पु‌ष्टि करें',
+];
+
+test('Hindi pay, send, submit, confirm, order and buy labels tier by the submit rule, never unproven', () => {
+  for (const text of HI_SUBMIT_LABELS) {
+    assert.deepEqual(classifyClickTargetBasis({ visibleText: text }), { tier: 'state-changing', basis: 'submit-keyword' }, text);
+    // Any descriptor the submit rule reads (aria-label, title, value) counts, as in English.
+    assert.equal(classifyClickTargetBasis({ visibleText: '', ariaLabel: text }).basis, 'submit-keyword', `aria ${text}`);
+  }
+});
+
+test('Hindi submit keywords do not over-match nouns, past participles and look-alike words', () => {
+  // View deposit amount; sent messages; customer service (सेवा contains सेव); my orders; continue
+  // shopping; page 2 (पेज starts with पे); fixed deposit; saved items; help centre; "scope".
+  for (const text of ['जमा राशि देखें', 'भेजे गए संदेश', 'ग्राहक सेवा', 'मेरे ऑर्डर', 'खरीदारी जारी रखें', 'पेज 2', 'सावधि जमा', 'सहेजे गए आइटम', 'सहायता केंद्र', 'स्कोप करें']) {
+    assert.deepEqual(classifyClickTargetBasis({ visibleText: text }), { tier: 'state-changing', basis: 'unproven' }, text);
+  }
+});
+
+test('a Hindi destructive keyword still wins over a Hindi submit keyword', () => {
+  for (const text of ['भुगतान विधि हटाएं', 'खाता हटाने की पुष्टि करें', 'सदस्यता रद्द करें और भेजें', 'कार्ड डिलीट करें और सहेजें']) {
+    assert.deepEqual(classifyClickTargetBasis({ visibleText: text }), { tier: 'destructive', basis: 'destructive-keyword' }, text);
+  }
+});
+
+test('accepted over-match: a payment noun reads submit, as English "Payment history" does', () => {
+  assert.equal(classifyClickTargetBasis({ visibleText: 'Payment history' }).basis, 'submit-keyword');
+  assert.equal(classifyClickTargetBasis({ visibleText: 'भुगतान इतिहास' }).basis, 'submit-keyword');
+});

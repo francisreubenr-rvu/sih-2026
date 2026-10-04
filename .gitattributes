@@ -12,3 +12,5 @@ Raw/** -whitespace
 Benchmarks/results/lighthouse*/** -whitespace
 
 Prototype/models/ort/** -whitespace
+
+extension/models/ort/** -whitespace

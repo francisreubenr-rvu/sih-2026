@@ -95,7 +95,10 @@
         "Benchmarks/results/load.json"
       ],
       "status": "pass",
-      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale."
+      "reason": "Wave7 load.json: 20 concurrent health workers sustained 300076ms (\u22655 min), 1000 durable audit rows via API within rate-limit windows (injectable clock), unexpected_failure_rate=0, lost_writes=0; process.memoryUsage() heap snapshots recorded. Scope: local single-host createApp with test-double provider \u2014 not national-scale.",
+      "subjects": [
+        "Prototype/server/"
+      ]
     },
     {
       "id": "G06",
@@ -108,7 +111,16 @@
         "Benchmarks/results/security.json"
       ],
       "status": "pass",
-      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production."
+      "reason": "Server Zod schema validation, auth/origin allowlist, body size and rate limits covered by Prototype unit tests; client assertSanitizedPayload + capture-loop forbid screenshot/pixel/URL fields before network; Wave3 security.json records 0 high secret-scan findings and cites harness sanitize evidence. Malformed payloads return controlled errors in unit coverage. Scope: local prototype, not multi-tenant production. Warden (v5 boundary, added 3 October 2026): warden-hardening-v01.json, 17/17 against a real uvicorn Warden with GLiNER: JSON-only POSTs (415), Content-Length required (411), 2 MiB cap (413), malformed bodies 400 without echo, egress guard refuses a raw value before any planner (422, no echo), synthetic email and account number tokenized by a signed /strip. Synthetic values only.",
+      "subjects": [
+        "Prototype/server/",
+        "Prototype/shared/",
+        "warden/",
+        "extension/"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
+      ]
     },
     {
       "id": "G07",
@@ -122,7 +134,16 @@
         "Benchmarks/results/security.json"
       ],
       "status": "pass",
-      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope."
+      "reason": "Public demo and fixtures are explicitly synthetic; audit SQLite stores counts/timings only (no screen/prompt/token); .env and Prototype/data/ gitignored; Wave3 security scan found 0 high-severity secrets in tracked sources; pairing token is local session/file mode 0600 and not committed. Cross-user multi-tenant auth is out of current single-operator local scope. Warden (added 3 October 2026): pairing required; unsigned, wrong-key and replayed POSTs refused (401), a Warden with no secret refuses every POST (503), responses carry a verifiable proof (warden-hardening-v01.json). The pairing code lives in chrome.storage.local, readable by the extension's own content scripts (security review, 3 October; open in ROAST round 30).",
+      "subjects": [
+        "Prototype/server/",
+        "Prototype/shared/",
+        "warden/",
+        "extension/"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
+      ]
     },
     {
       "id": "G08",
@@ -136,7 +157,16 @@
         "Benchmarks/results/dependency-audit.json"
       ],
       "status": "pass",
-      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification."
+      "reason": "Wave6 hardening.json proves headers, origin allowlist, Bearer auth, 256KiB body limit, rate limit 429+Retry-After, error hygiene, screenshot-field reject. Pages static HTTPS; Node loopback default with HTTPS PUBLIC_ORIGIN gate beyond 127.0.0.1; production debug off for API errors. security.json + dependency-audit.json: 0 high secrets, 0 critical/high npm omit=dev. Scope: local prototype deployment controls \u2014 not multi-tenant production TLS reverse-proxy verification. Warden (added 3 October 2026): loopback bind, Host allow-list against DNS rebinding (421), no /docs or /openapi.json, no CORS grant to web origins (warden-hardening-v01.json). The Warden has no rate limit; not covered.",
+      "subjects": [
+        "Prototype/server/",
+        "warden/app.py",
+        "warden/config.py",
+        "warden/pairing.py"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
+      ]
     },
     {
       "id": "G09",
@@ -176,7 +206,15 @@
         "Benchmarks/results/core-latency.json"
       ],
       "status": "fail",
-      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened."
+      "reason": "core-latency.json (Wave7) keeps planner-inclusive full-flow fail vs 200ms. mergeOverlappingRegions + stride-4 mosaic subsample recorded. Budget not weakened. v5 live (3 October 2026): the frozen flow in the loaded extension with a real Warden and real Groq, 100 runs after 10 warm-ups, extension stage clocks: total p95 3713 ms (core-latency-v5-live-v01.json), 2270 ms after replacing fixed sleeps (v02). Two cloud planner round trips dominate; one alone exceeds 200 ms.",
+      "evidence_refs": [
+        "Benchmarks/results/core-latency-v5-live-v01.json",
+        "Benchmarks/results/core-latency-v5-live-v02.json"
+      ],
+      "subjects": [
+        "extension/",
+        "warden/"
+      ]
     },
     {
       "id": "G12",
@@ -186,10 +224,22 @@
       "acceptance": "For both mobile and desktop, median of 3 runs is strictly >90 in performance, accessibility, best-practices and SEO; no category omitted. Record all runs and environment.",
       "verification_method": "Run production build in clean Chrome profile; preserve JSON/HTML reports and exact URL/version. A rounded 90 fails.",
       "required_evidence": [
-        "Benchmarks/results/lighthouse-dhristi-v02-summary.json"
+        "Benchmarks/results/lighthouse-dhristi-v03-summary.json"
       ],
       "status": "pass",
-      "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance."
+      "reason": "Re-measured 3 October 2026 on the current Website (the v02 runs of 9 September predate the 29 September redesign): six local Lighthouse 12.8.2 runs, medians mobile performance 98, desktop 100, accessibility, best-practices and SEO 100 on both. Chrome run as root with --headless=new --no-sandbox (recorded in the file). Automated site scores only; not WCAG conformance or prototype performance.",
+      "subjects": [
+        "Website/"
+      ],
+      "history": [
+        {
+          "superseded": "2026-10-03",
+          "required_evidence": [
+            "Benchmarks/results/lighthouse-dhristi-v02-summary.json"
+          ],
+          "reason": "Six fresh local Lighthouse 12.8.2 runs after the video addition: mobile performance 99, desktop performance 100, and all accessibility/best-practices/SEO scores 100. Automated site scores only; not WCAG conformance or prototype performance."
+        }
+      ]
     },
     {
       "id": "G13",
@@ -202,7 +252,15 @@
         "Benchmarks/results/recovery.json"
       ],
       "status": "pass",
-      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json."
+      "reason": "Frozen fault scenarios recover with usable next steps: activeTab denial, content-script reinject, restricted pages, sanitize reject, expired reference, user cancel, provider unavailable / privacy-only fallback. Evidence: Benchmarks/results/recovery.json. Warden recovery (added 3 October 2026, partial): planner unreachable gives a controlled 503 with no fall-through, egress refusal 422, pairing refusals 401/503 (warden-hardening-v01.json). Groq 429 chain fallback is covered by Warden unit tests only; extension-side recovery for these is not in recovery.json.",
+      "subjects": [
+        "Prototype/",
+        "extension/",
+        "warden/"
+      ],
+      "evidence_refs": [
+        "Benchmarks/results/warden-hardening-v01.json"
+      ]
     },
     {
       "id": "G14",
@@ -280,7 +338,12 @@
         "Docs/deployment-verification.md"
       ],
       "status": "pass",
-      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API."
+      "reason": "Prototype/README.md covers install, config, run, test, build, extension load, backup/restore, deploy notes and known limits. Docs/deployment-verification.md records Pages verification. No unconfigured contact implies a live Node API.",
+      "subjects": [
+        "Prototype/README.md",
+        "warden/README.md",
+        "extension/README.md"
+      ]
     },
     {
       "id": "G19",

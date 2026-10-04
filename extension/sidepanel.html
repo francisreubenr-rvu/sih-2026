@@ -111,7 +111,9 @@
         <div class="raw-row">
           <button id="outbound-raw-toggle" type="button" class="quiet-btn" aria-expanded="false" aria-controls="outbound-raw" hidden>Show raw JSON</button>
         </div>
-        <div id="outbound-raw" class="body-wrap" hidden><pre id="outbound-body" class="diag-body"></pre></div>
+        <!-- The raw body scrolls inside its own cap, so it takes focus and a name: a keyboard user can
+             scroll it, and a screen reader announces what it is (WCAG 2.1.1). -->
+        <div id="outbound-raw" class="body-wrap" hidden><pre id="outbound-body" class="diag-body" tabindex="0" role="region" aria-label="Raw JSON sent for planning"></pre></div>
       </div>
 
       <div id="panel-kept" class="tab-panel" role="tabpanel" aria-labelledby="tab-kept" tabindex="0" hidden>
@@ -187,19 +189,21 @@
         <div class="key-field">
           <label for="warden-origin">Warden origin</label>
           <div class="key-row">
-            <input id="warden-origin" type="text" autocomplete="off" placeholder="http://127.0.0.1:8756">
+            <input id="warden-origin" type="text" inputmode="url" autocomplete="off" spellcheck="false" aria-describedby="warden-origin-status" placeholder="http://127.0.0.1:8756">
             <button id="warden-origin-save" type="button" class="save-btn">Save origin</button>
           </div>
-          <p id="warden-origin-status" class="key-status">Default: http://127.0.0.1:8756.</p>
+          <!-- role="status": the result of Save is announced without moving focus; the field names this
+               line as its description, and sidepanel.js sets aria-invalid when a value is refused. -->
+          <p id="warden-origin-status" class="key-status" role="status">Default: http://127.0.0.1:8756.</p>
         </div>
 
         <div class="key-field">
           <label for="warden-pairing">Pairing code</label>
           <div class="key-row">
-            <input id="warden-pairing" type="password" autocomplete="off" spellcheck="false" placeholder="WARDEN_PAIRING_SECRET from warden/.env">
+            <input id="warden-pairing" type="password" autocomplete="off" spellcheck="false" aria-describedby="warden-pairing-status" placeholder="WARDEN_PAIRING_SECRET from warden/.env">
             <button id="warden-pairing-save" type="button" class="save-btn">Save code</button>
           </div>
-          <p id="warden-pairing-status" class="key-status">Not paired. Pairing is required: no task runs until a code is saved and the Warden proves it.</p>
+          <p id="warden-pairing-status" class="key-status" role="status">Not paired. Pairing is required: no task runs until a code is saved and the Warden proves it.</p>
         </div>
 
         <dl class="health-detail">

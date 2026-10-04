@@ -14,6 +14,15 @@ Freshness: for every pass, the evidence commit is the rule's explicit `evidence_
 present, else the last commit touching any of its required_evidence / evidence_refs paths.
 `commits_behind` is how far HEAD has moved since. It is reported for every pass and changes a
 status only under --max-behind.
+
+Subjects (added 3 October 2026): a gate may list `subjects`, the code paths its evidence
+certifies (e.g. Website/ for G12, warden/ for G06). For those gates freshness also reports
+`subject_commits_since_evidence`, the commits since the evidence commit that touched a subject,
+and --max-behind demotes on that count instead of commits_behind. A cosmetic commit to an evidence
+document no longer makes a pass look fresh, and a code change the evidence never saw makes it stale.
+
+Evidence status: when a required evidence file is JSON with a top-level `status` of pass, fail or
+unknown that disagrees with the gate, the conflict is reported (never acted on).
 """
 import argparse,json,sys,datetime,csv,subprocess
 from pathlib import Path
@@ -37,7 +46,22 @@ def freshness(rule,head):
   commit=git('log','-1','--format=%H','--',*paths) if paths else None;source='last commit touching evidence'
  if commit is None:return {'evidence_commit':explicit,'commits_behind':None,'source':f'{source} (not resolvable)'}
  behind=git('rev-list','--count',f'{commit}..{head}')
- return {'evidence_commit':commit[:12],'commits_behind':int(behind) if behind else 0,'source':source}
+ out={'evidence_commit':commit[:12],'commits_behind':int(behind) if behind else 0,'source':source}
+ subjects=[p.rstrip('/') for p in rule.get('subjects',[])]
+ if subjects:
+  touched=git('rev-list','--count',f'{commit}..{head}','--',*subjects)
+  out['subject_commits_since_evidence']=int(touched) if touched else 0
+ return out
+
+def evidence_status_conflicts(rule):
+ out=[]
+ for p in rule['required_evidence']:
+  f=R/p
+  if f.suffix!='.json' or not f.is_file():continue
+  try:st=json.loads(f.read_text()).get('status')
+  except (OSError,ValueError,AttributeError):continue
+  if st in ('pass','fail','unknown') and st!=rule['status']:out.append({'path':p,'evidence_status':st})
+ return out
 
 def main():
  ap=argparse.ArgumentParser(description=__doc__.split('\n')[0])
@@ -58,9 +82,11 @@ def main():
    # An explicit pass with missing records fails closed.
    if status=='pass' and missing:status='unknown'
    entry={'id':rule['id'],'name':rule['name'],'status':status,'reason':rule['reason'],'missing_evidence':missing}
+   conflicts=evidence_status_conflicts(rule)
+   if conflicts:entry['evidence_status_conflicts']=conflicts
    if rule['status']=='pass':
     entry['freshness']=fresh=freshness(rule,head)
-    behind=fresh['commits_behind']
+    behind=fresh.get('subject_commits_since_evidence',fresh['commits_behind'])
     if opts.max_behind is not None and status=='pass' and (behind is None or behind>opts.max_behind):
      entry['status']='unknown';stale.append(rule['id'])
    results.append(entry)
@@ -68,6 +94,9 @@ def main():
   record={'timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'head_commit':head,'scope':'complete SIH26171 competition entry','status':overall,'submission_ready':overall=='pass','saturation_achieved':False,'counts':{s:sum(x['status']==s for x in results) for s in ['pass','fail','unknown']},'rules':results,'limitations':['This aggregator checks recorded review states and evidence presence; it does not execute or authenticate all tests.','Website-only measurements do not validate the domain prototype.','Freshness counts commits since evidence last changed; it does not prove the evidence still describes HEAD.']}
   summary={k:record[k] for k in ['status','submission_ready','counts']}
   summary['pass_freshness']={x['id']:x['freshness']['commits_behind'] for x in results if 'freshness' in x}
+  summary['subject_commits_since_evidence']={x['id']:x['freshness']['subject_commits_since_evidence'] for x in results if 'subject_commits_since_evidence' in x.get('freshness',{})}
+  conflicts={x['id']:x['evidence_status_conflicts'] for x in results if x.get('evidence_status_conflicts')}
+  if conflicts:summary['evidence_status_conflicts']=conflicts
   if stale:summary['demoted_stale']=stale
   if opts.dry_run:
    try:

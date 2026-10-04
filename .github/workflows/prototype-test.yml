@@ -60,10 +60,18 @@ jobs:
       - name: G11 Option C harness checks
         run: node --test scripts/g11-warden-option-c-harness.test.mjs
 
+      # Branded Google Chrome (the runner's /usr/bin/google-chrome) ignores --load-extension since
+      # about version 137, so the tests that load the unpacked extension (vision-chromium) cannot
+      # start its service worker there. Playwright's Chromium, matching the pinned playwright-core,
+      # still loads unpacked extensions.
+      - name: Install Chromium for loaded-extension tests
+        working-directory: Prototype
+        run: |
+          npx --no-install playwright-core install --with-deps chromium
+          echo "DHRISTI_CHROMIUM=$(node -e "import('playwright-core').then(m => console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+
       # Root extension/: loopback guard, F17 tier rules, the real background.js gate against a
-      # fake Warden, and content.js target checks in real Chrome (playwright-core from
-      # Prototype/node_modules, the runner's preinstalled /usr/bin/google-chrome).
+      # fake Warden, content.js target checks, and the face stage in a loaded extension, in
+      # Playwright's Chromium (playwright-core from Prototype/node_modules).
       - name: Extension F17 and loopback checks
-        env:
-          DHRISTI_CHROMIUM: /usr/bin/google-chrome
         run: node --test extension/utils/loopback.test.mjs extension/tests/*.test.mjs

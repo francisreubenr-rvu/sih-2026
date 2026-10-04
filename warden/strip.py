@@ -71,6 +71,31 @@ def _merge_spans(regex_spans: list, model_spans: list) -> list:
     return merged
 
 
+def _answer_for(resolved: dict, token: str, value: str):
+    """The user's answer for this uncertain span: "strip", "keep" or None (ask).
+
+    Token ids restart at #1 on every /strip call, so an answer keyed by token alone
+    applied to whatever value held that id on a later page: "keep" for the link label
+    "Account statements" kept a real account number that became ACCOUNTNUMBER#1 on the
+    next step (3 October 2026). An answer is {"decision", "value"} and applies only to
+    the value it was given for. A legacy bare "strip" still applies (it can only remove
+    text); a legacy bare "keep" is ignored, so the user is asked again.
+
+    Matched on (type, value), not on the key's number (code review, 3 October 2026): the
+    same value can get a different id on the next page ("Neha" is PERSONNAME#2 once
+    another name comes first), and the extension cannot know the id before this call.
+    The key's TYPE prefix must match the span's type."""
+    entry = resolved.get(token)
+    if isinstance(entry, dict) and entry.get("value") == value and entry.get("decision") in ("strip", "keep"):
+        return entry["decision"]
+    span_type = token.split("#", 1)[0]
+    for key, other in resolved.items():
+        if (isinstance(other, dict) and isinstance(key, str) and key.split("#", 1)[0] == span_type
+                and other.get("value") == value and other.get("decision") in ("strip", "keep")):
+            return other["decision"]
+    return "strip" if entry == "strip" else None
+
+
 def _decide(sources: list, minter: TokenMinter, resolved: dict, uncertain: list) -> dict:
     """Decide every span of every source together and return, per source name,
     the planned (start, end, token) replacements.
@@ -124,11 +149,13 @@ def _decide(sources: list, minter: TokenMinter, resolved: dict, uncertain: list)
                 planned[name].append((span["start"], span["end"], token))
                 continue
 
-            decision = resolved.get(token)
+            decision = _answer_for(resolved, token, span["value"])
             if decision == "strip":
+                # layer "user": the person stripped it, the model only asked (the extension's
+                # trace reports it so, without having to match token ids).
                 minter.mint(
                     span["type"], span["value"],
-                    score=span["score"], layer="gliner", pattern=span["label"],
+                    score=span["score"], layer="user", pattern=span["label"],
                     token=token, source=name,
                 )
                 planned[name].append((span["start"], span["end"], token))
@@ -161,6 +188,19 @@ def _render(text: str, planned: list) -> str:
     for start, end, token in sorted(planned, key=lambda p: p[0], reverse=True):
         working = working[:start] + token + working[end:]
     return working
+
+
+def _render_each(texts: list, planned: list) -> dict:
+    """Apply replacements planned over "\\n".join(texts) back onto each text on its own.
+    No span crosses a separator: GLiNER scores one line at a time and no regex pattern
+    matches a newline."""
+    out, start = {}, 0
+    for text in texts:
+        end = start + len(text)
+        local = [(s - start, e - start, tok) for s, e, tok in planned if start <= s and e <= end]
+        out[text] = _render(text, local)
+        start = end + 1
+    return out
 
 
 def _apply(text: str, spans: list, minter: TokenMinter, source: str,
@@ -220,13 +260,28 @@ def strip(task: str, dom: str, elements: list, resolved: dict) -> dict:
     task_text = task or ""
     dom_text = dom or ""
 
+    # Labels the DOM text does not carry (3 October 2026). content.js cuts the serialised
+    # DOM at 30 KB, so on a long page the last controls' labels were never scored by
+    # GLiNER: _tokenize_label only applies regex and values minted elsewhere, and a name
+    # there reached /plan in plaintext. Every distinct label not already inside the DOM
+    # text is scored, one line each (so one batched, cached GLiNER call), and decided in
+    # the same pass as the task and DOM: one token per value, one question per value.
+    unscored = []
+    for el in elements:
+        label = el.get("label")
+        if isinstance(label, str) and label.strip() and label not in dom_text and label not in unscored:
+            unscored.append(label)
+    labels_text = "\n".join(unscored)
+
     sources = [
         ("task", _merge_spans(redactor.regex_spans(task_text), entities.gliner_spans(task_text))),
         ("dom", _merge_spans(redactor.regex_spans(dom_text), entities.gliner_spans(dom_text))),
+        ("label", _merge_spans(redactor.regex_spans(labels_text), entities.gliner_spans(labels_text))),
     ]
     planned = _decide(sources, minter, resolved, uncertain)
     tokenized_task = _render(task_text, planned["task"])
     sanitized_dom = _render(dom_text, planned["dom"])
+    rendered_labels = _render_each(unscored, planned["label"])
 
     out_elements = []
     for el in elements:
@@ -234,7 +289,7 @@ def strip(task: str, dom: str, elements: list, resolved: dict) -> dict:
         # the flag means what it always meant: this control names a PII field.
         item = dict(el, pii=_element_is_pii(el))
         if isinstance(el.get("label"), str):
-            item["label"] = _tokenize_label(el["label"], minter)
+            item["label"] = _tokenize_label(rendered_labels.get(el["label"], el["label"]), minter)
         out_elements.append(item)
 
     return {

@@ -32,3 +32,4 @@ _wrap_screenshots/
 _wrap_video/
 .wrap-venv/
 _wrap_harder/
+.claude/worktrees/

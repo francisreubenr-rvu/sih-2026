@@ -12,7 +12,7 @@
 // never has to replay a stream of events it may have missed while the panel was closed.
 
 import { WARDEN_DEFAULT_ORIGIN } from './config.js';
-import { loopbackHttpUrl } from './utils/loopback.js';
+import { migrateWardenOrigin, wardenOriginUrl } from './utils/loopback.js';
 
 const els = {
   healthChip: document.getElementById('health-chip'),
@@ -123,13 +123,15 @@ async function restore() {
   const settings = await chrome.storage.local.get(['wardenOrigin', 'wardenPairing']).catch(() => ({}));
   // Presence only: the saved code is never put back into the page.
   if (settings.wardenPairing) els.wardenPairingStatus.textContent = 'A pairing code is saved. Save an empty field to remove it.';
-  const storedOrigin = settings.wardenOrigin && String(settings.wardenOrigin).trim();
-  if (storedOrigin && !loopbackHttpUrl(storedOrigin)) {
+  // The same rule the worker applies (utils/loopback.js wardenOriginUrl); a localhost origin saved
+  // before 3 October 2026 is shown as the 127.0.0.1 origin the worker now uses for it.
+  const storedOrigin = settings.wardenOrigin && migrateWardenOrigin(String(settings.wardenOrigin).trim());
+  if (storedOrigin && !wardenOriginUrl(storedOrigin)) {
     els.wardenOrigin.value = DEFAULT_WARDEN_ORIGIN;
-    els.wardenOriginStatus.textContent = 'Stored origin was not loopback and is not used. Save 127.0.0.1 or localhost.';
+    els.wardenOriginStatus.textContent = 'The stored origin is not http://127.0.0.1 and is not used. Save http://127.0.0.1:<port>.';
   } else {
     els.wardenOrigin.value = storedOrigin || DEFAULT_WARDEN_ORIGIN;
-    els.wardenOriginStatus.textContent = `Default: ${DEFAULT_WARDEN_ORIGIN}. Loopback only.`;
+    els.wardenOriginStatus.textContent = `Default: ${DEFAULT_WARDEN_ORIGIN}. Only http://127.0.0.1 is accepted.`;
   }
 
   // One transcript, one source. GET_SESSION is the same array SESSION_UPDATE carries.
@@ -290,7 +292,7 @@ function titleRow(text, chipText, chipState) {
   const row = document.createElement('p');
   row.className = 'entry-title';
   const span = document.createElement('span');
-  span.textContent = text;
+  appendText(span, text);
   row.append(span);
   if (chipText) {
     const chip = document.createElement('span');
@@ -306,7 +308,7 @@ function buildUser(entry) {
   const li = baseEntry(entry, 'entry--user');
   const p = document.createElement('p');
   p.className = 'entry-text';
-  p.textContent = entry.text || '';
+  appendText(p, entry.text || '');
   li.append(p);
   return li;
 }
@@ -325,7 +327,7 @@ function buildStage(entry) {
   if (entry.value) {
     const value = document.createElement('span');
     value.className = 'stage-value';
-    value.textContent = entry.value;
+    appendText(value, entry.value);
     li.append(value);
   }
   return li;
@@ -337,7 +339,7 @@ function buildActivity(entry) {
   cell.className = 'entry-cell';
   cell.setAttribute('aria-hidden', 'true');
   const text = document.createElement('span');
-  text.textContent = entry.text || '';
+  appendText(text, entry.text || '');
   li.append(cell, text);
   return li;
 }
@@ -346,7 +348,7 @@ function buildError(entry) {
   const li = baseEntry(entry, 'entry--error');
   li.append(titleRow('Failed', null, null));
   const p = document.createElement('p');
-  p.textContent = entry.text || '';
+  appendText(p, entry.text || '');
   li.append(p);
   return li;
 }
@@ -355,7 +357,7 @@ function buildValidated(entry) {
   const li = baseEntry(entry, 'entry--validated');
   li.append(titleRow('Validated', null, null));
   const p = document.createElement('p');
-  p.textContent = entry.text || '';
+  appendText(p, entry.text || '');
   li.append(p);
   return li;
 }
@@ -377,7 +379,7 @@ function buildBlocked(entry) {
   if (entry.reason) {
     const reason = document.createElement('p');
     reason.className = 'entry-reason';
-    reason.textContent = entry.reason;
+    appendText(reason, entry.reason);
     li.append(reason);
   }
   if (entry.command) {
@@ -413,9 +415,9 @@ function buildUncertain(entry) {
 
   const note = document.createElement('p');
   note.className = 'note';
-  note.textContent = entry.pending
+  appendText(note, entry.pending
     ? (entry.text || 'The Warden was not confident enough to strip these spans automatically. Choose strip or keep for each one.')
-    : 'These spans were decided when the run reached them. The preview shown is real personal data and is not stored.';
+    : 'These spans were decided when the run reached them. The preview shown is real personal data and is not stored.');
   li.append(row, note);
 
   const list = document.createElement('ul');
@@ -427,6 +429,7 @@ function buildUncertain(entry) {
 
   const error = document.createElement('p');
   error.className = 'card-error';
+  error.id = `uncertain-error-${entry.id}`;
   error.setAttribute('role', 'alert');
   error.hidden = true;
   li.append(error);
@@ -456,7 +459,7 @@ function buildUncertainItem(entry, item) {
   head.className = 'item-head';
   const label = document.createElement('span');
   label.className = 'item-label';
-  label.textContent = item.label || item.token || 'unknown span';
+  appendText(label, item.label || item.token || 'unknown span');
   const score = document.createElement('span');
   score.className = 'item-score';
   // A real score from the Warden, or an explicit statement that there is none. Never invented.
@@ -471,7 +474,7 @@ function buildUncertainItem(entry, item) {
   box.dataset.label = item.source || 'detected span';
   const boxValue = document.createElement('span');
   boxValue.className = 'detection-box__value';
-  boxValue.textContent = item.preview != null ? String(item.preview) : '(no preview returned)';
+  appendText(boxValue, item.preview != null ? String(item.preview) : '(no preview returned)');
   box.append(boxValue);
   li.append(box);
 
@@ -511,14 +514,26 @@ async function submitUncertain(card, entry, errorEl) {
     chosen.set(input.dataset.itemId, input.value);
   }
   const answers = {};
+  // Every unanswered decision is marked invalid and described by the card's error line, so a
+  // screen reader names what is missing on each group, not only in the one-off alert.
+  let firstMissing = null;
   for (const item of entry.items || []) {
+    const group = card.querySelector(`input[data-item-id="${cssEscape(item.id)}"]`)?.closest('[role="radiogroup"]');
     if (!chosen.has(item.id)) {
-      errorEl.textContent = 'Choose strip or keep for every item before continuing.';
-      errorEl.hidden = false;
-      card.querySelector(`input[data-item-id="${cssEscape(item.id)}"]`)?.focus();
-      return;
+      group?.setAttribute('aria-invalid', 'true');
+      group?.setAttribute('aria-describedby', errorEl.id);
+      firstMissing = firstMissing || item;
+    } else {
+      group?.removeAttribute('aria-invalid');
+      group?.removeAttribute('aria-describedby');
+      answers[item.id] = chosen.get(item.id);
     }
-    answers[item.id] = chosen.get(item.id);
+  }
+  if (firstMissing) {
+    errorEl.textContent = 'Choose strip or keep for every item before continuing.';
+    errorEl.hidden = false;
+    card.querySelector(`input[data-item-id="${cssEscape(firstMissing.id)}"]`)?.focus();
+    return;
   }
   errorEl.hidden = true;
   lockCard(card);
@@ -535,7 +550,7 @@ function buildQuestion(entry) {
 
   const text = document.createElement('p');
   text.className = 'entry-text';
-  text.textContent = entry.text || '';
+  appendText(text, entry.text || '');
   li.append(text);
 
   // The attempt count is context for the question, one rank below it, so it follows the question.
@@ -552,7 +567,7 @@ function buildQuestion(entry) {
     wrap.className = 'question-reasons';
     for (const reason of reasons) {
       const item = document.createElement('li');
-      item.textContent = String(reason);
+      appendText(item, String(reason));
       wrap.append(item);
     }
     li.append(wrap);
@@ -636,9 +651,10 @@ function refreshPromptState() {
   renderTranscript();
 }
 
-// While a decision blocks the run, Tab must not be able to leave the card. The card is not a
-// dialog, so Escape does not dismiss it: the only way out is to answer, or to press Stop, which
-// stays reachable by pointer on purpose.
+// While a decision blocks the run, Tab cycles through the card's controls and the composer's Stop
+// button, and nothing else. The card is not a dialog, so Escape does not dismiss it: the way out is
+// to answer or to press Stop. Stop is in the cycle so a keyboard user can always end the run, as a
+// pointer user can (WCAG 2.1.2: focus must never be held with no keyboard way out).
 function pendingCardEl() {
   return els.transcript.querySelector('.entry[data-pending="true"]');
 }
@@ -648,19 +664,30 @@ function trapFocusInPendingCard(event) {
   const card = pendingCardEl();
   if (!card) return;
   const focusables = Array.from(card.querySelectorAll('button:not(:disabled), input:not(:disabled), [href], [tabindex]:not([tabindex="-1"])'));
-  if (!focusables.length) {
+  const stop = !els.stop.hidden && !els.stop.disabled ? els.stop : null;
+  if (!focusables.length && !stop) {
     event.preventDefault();
     return;
   }
-  const first = focusables[0];
-  const last = focusables[focusables.length - 1];
+  // Inside the card native Tab order stands (one stop per radio group, arrows within it); only the
+  // two edges are steered. Stop sits after the card's last control, then the cycle wraps.
+  const first = focusables[0] || stop;
+  const last = focusables[focusables.length - 1] || stop;
   const active = document.activeElement;
-  if (event.shiftKey && (active === first || !card.contains(active))) {
+  const onStop = stop && active === stop;
+  const inCard = card.contains(active);
+  let target = null;
+  if (event.shiftKey) {
+    if (onStop) target = last;
+    else if (!inCard || active === first) target = stop || last;
+  } else if (onStop) {
+    target = first;
+  } else if (!inCard || active === last) {
+    target = stop || first;
+  }
+  if (target) {
     event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && (active === last || !card.contains(active))) {
-    event.preventDefault();
-    first.focus();
+    target.focus();
   }
 }
 
@@ -755,9 +782,13 @@ async function savePairing() {
   const response = await send({ type: 'SET_WARDEN_PAIRING', code: value });
   els.wardenPairing.value = '';
   if (!response?.ok) {
+    // The status line is the field's description and a polite live region, so the reason is both
+    // announced now and read again with the field; aria-invalid marks the field itself.
+    els.wardenPairing.setAttribute('aria-invalid', 'true');
     els.wardenPairingStatus.textContent = response?.error || 'Could not save the pairing code.';
     return;
   }
+  els.wardenPairing.removeAttribute('aria-invalid');
   els.wardenPairingStatus.textContent = !response.paired
     ? 'Pairing code removed. No task can run until a code is saved.'
     : response.verified
@@ -767,15 +798,21 @@ async function savePairing() {
 }
 
 async function saveOrigin() {
-  const value = els.wardenOrigin.value.trim() || DEFAULT_WARDEN_ORIGIN;
+  const value = migrateWardenOrigin(els.wardenOrigin.value.trim() || DEFAULT_WARDEN_ORIGIN);
   els.wardenOrigin.value = value;
-  if (!loopbackHttpUrl(value)) {
-    els.wardenOriginStatus.textContent = 'Refused. The Warden origin must be http or https on 127.0.0.1, localhost, or ::1.';
+  if (!wardenOriginUrl(value)) {
+    els.wardenOrigin.setAttribute('aria-invalid', 'true');
+    els.wardenOriginStatus.textContent = 'Refused. The Warden origin must be http://127.0.0.1:<port> (not localhost, ::1 or https).';
     return;
   }
   const response = await send({ type: 'SET_WARDEN_ORIGIN', origin: value });
-  if (response?.ok) els.wardenOriginStatus.textContent = `Saved: ${value}`;
-  else els.wardenOriginStatus.textContent = response?.error || `Could not save ${value}.`;
+  if (response?.ok) {
+    els.wardenOrigin.removeAttribute('aria-invalid');
+    els.wardenOriginStatus.textContent = `Saved: ${value}`;
+  } else {
+    els.wardenOrigin.setAttribute('aria-invalid', 'true');
+    els.wardenOriginStatus.textContent = response?.error || `Could not save ${value}.`;
+  }
   await refreshHealth();
 }
 
@@ -967,7 +1004,9 @@ function renderSent(t) {
   sectionSig.sent = sig;
 
   els.outboundReadable.replaceChildren();
-  els.outboundBody.textContent = raw;
+  // Verbatim JSON, with Devanagari runs marked lang="hi" like every other page-derived text.
+  els.outboundBody.replaceChildren();
+  appendText(els.outboundBody, raw);
   if (!body) {
     els.outboundMeta.textContent = '';
     els.outboundEmpty.hidden = false;
@@ -1056,7 +1095,10 @@ const BY = { regex: 'by pattern', gliner: 'by local model', user: 'by you' };
 function renderKept(t) {
   const stepKey = t ? `${t.runId ?? ''}:${t.step ?? ''}` : '';
   const redaction = t && t.redaction && typeof t.redaction === 'object' ? t.redaction : null;
-  const sig = `${stepKey}|${JSON.stringify(redaction)}`;
+  // Faces are counted only when the masked capture exists, i.e. when they are among the regions.
+  const masked = Boolean(t && t.screenshot && t.screenshot.dataUrl);
+  const faces = masked && t.vision && t.vision.status === 'done' && isCount(t.vision.faces) ? t.vision.faces : null;
+  const sig = `${stepKey}|${JSON.stringify(redaction)}|${faces}`;
   if (sig === sectionSig.kept) return;
   sectionSig.kept = sig;
   // Rebuilding drops every revealed value with the old rows: a value lives only in the DOM of the
@@ -1069,6 +1111,7 @@ function renderKept(t) {
   if (redaction) {
     addCount(els.keptCounts, replaced.length, 'value replaced', 'values replaced');
     if (isCount(redaction.screenMasked)) addCount(els.keptCounts, redaction.screenMasked, 'region masked on screen', 'regions masked on screen');
+    if (faces !== null) addCount(els.keptCounts, faces, 'face among them', 'faces among them');
     if (isCount(redaction.uncertainAsked)) addCount(els.keptCounts, redaction.uncertainAsked, 'asked', 'asked');
   }
   els.keptCounts.hidden = !redaction;
@@ -1128,7 +1171,7 @@ function buildKeptRow(item, index) {
       box.dataset.label = 'real value · this panel only';
       const text = document.createElement('span');
       text.className = 'detection-box__value';
-      text.textContent = String(response.value);
+      appendText(text, String(response.value));
       box.append(text);
       value.append(box);
       button.textContent = 'Hide value';
@@ -1168,13 +1211,18 @@ function renderScreen(t) {
   const shot = t && t.screenshot && typeof t.screenshot === 'object' ? t.screenshot : null;
   const dataUrl = shot && typeof shot.dataUrl === 'string' && /^data:image\//.test(shot.dataUrl) ? shot.dataUrl : null;
   const masked = t && t.redaction && isCount(t.redaction.screenMasked) ? t.redaction.screenMasked : null;
-  const sig = `${dataUrl ? dataUrl.length : 0}|${dataUrl ? dataUrl.slice(-64) : ''}|${masked}|${t ? t.step : ''}`;
+  const vision = t && t.vision && typeof t.vision === 'object' ? t.vision : null;
+  const visionText = faceCheckText(vision);
+  const sig = `${dataUrl ? dataUrl.length : 0}|${dataUrl ? dataUrl.slice(-64) : ''}|${masked}|${t ? t.step : ''}|${visionText}`;
   if (sig === sectionSig.screen) return;
   sectionSig.screen = sig;
   if (!dataUrl) {
     els.screenFigure.hidden = true;
     els.screenImg.removeAttribute('src');
     els.screenEmpty.hidden = false;
+    els.screenEmpty.textContent = vision && vision.status === 'error'
+      ? `No masked capture this step. ${visionText} The capture was discarded.`
+      : 'No masked capture this step.';
     return;
   }
   els.screenEmpty.hidden = true;
@@ -1186,7 +1234,21 @@ function renderScreen(t) {
   els.screenImg.src = dataUrl;
   const maskedText = masked !== null ? ` ${masked} region${masked === 1 ? '' : 's'} masked.` : '';
   els.screenImg.alt = `Masked capture of the page${t && isCount(t.step) ? `, step ${t.step}` : ''}.${maskedText}`;
-  els.screenCaption.textContent = `The masked capture taken on this device.${maskedText} It was not sent anywhere.`;
+  els.screenCaption.textContent = `The masked capture taken on this device.${maskedText}${visionText ? ` ${visionText}` : ''} It was not sent anywhere.`;
+}
+
+// The on-device face check for this step, in words: count and measured time, or why it failed.
+// Nothing when the trace has no vision field (an older background).
+function faceCheckText(vision) {
+  if (!vision) return '';
+  const ms = fmtMs(vision.ms);
+  if (vision.status === 'done' && isCount(vision.faces)) {
+    return `Face check on this device: ${vision.faces} face${vision.faces === 1 ? '' : 's'} found${ms ? ` in ${ms}` : ''}.`;
+  }
+  if (vision.status === 'error') {
+    return `Face check failed${typeof vision.reason === 'string' && vision.reason ? `: ${vision.reason}` : ''}.`;
+  }
+  return '';
 }
 
 // ---- Decision ---------------------------------------------------------------------
@@ -1315,7 +1377,7 @@ function addKv(dl, term, value, kind) {
   const dd = document.createElement('dd');
   if (kind === 'mono') dd.className = 'mono';
   if (kind === 'tok') appendTokenized(dd, String(value));
-  else dd.textContent = String(value);
+  else appendText(dd, String(value));
   row.append(dt, dd);
   dl.append(row);
 }
@@ -1333,8 +1395,28 @@ function appendTokenized(parent, text) {
   const value = String(text);
   let last = 0;
   for (const match of value.matchAll(TOKEN_RE)) {
-    if (match.index > last) parent.append(value.slice(last, match.index));
+    if (match.index > last) appendText(parent, value.slice(last, match.index));
     parent.append(tokenChip(match[0]));
+    last = match.index + match[0].length;
+  }
+  if (last < value.length) appendText(parent, value.slice(last));
+}
+
+// Text from the page, the task or the planner, with every Devanagari run wrapped in lang="hi", so
+// a screen reader switches to a Hindi voice for it and the browser picks a Devanagari face (WCAG
+// 3.1.2, language of parts). The panel's language scope is English and Hindi, so Devanagari is
+// read as Hindi. textContent throughout: nothing is parsed as HTML.
+const DEVANAGARI_RUN = /[\u0900-\u097F\uA8E0-\uA8FF](?:[\u0900-\u097F\uA8E0-\uA8FF\u200C\u200D\s]*[\u0900-\u097F\uA8E0-\uA8FF])?/g;
+
+function appendText(parent, text) {
+  const value = String(text);
+  let last = 0;
+  for (const match of value.matchAll(DEVANAGARI_RUN)) {
+    if (match.index > last) parent.append(value.slice(last, match.index));
+    const span = document.createElement('span');
+    span.lang = 'hi';
+    span.textContent = match[0];
+    parent.append(span);
     last = match.index + match[0].length;
   }
   if (last < value.length) parent.append(value.slice(last));

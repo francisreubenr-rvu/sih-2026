@@ -137,10 +137,31 @@ export function decideLocalGate({ checksPassed, localTier }) {
   return { path: 'unattended', finalTier: localTier, reasons: [] };
 }
 
+// What a step will do, in words a person can check before approving it (security review, 3 October
+// 2026: a question that names only a tier or a raw selector cannot be checked). `label` is the
+// control's label from the extension's OWN scan, with vault values already replaced by their tokens
+// by the caller; never a label the Warden returned, which could name a different control. `origin`
+// is the task tab's origin. A typed value is shown as the planner gave it: tokens (EMAIL#1) stay
+// tokens; content.js rehydrates them only at execute.
+const clip = (text, max) => (text.length > max ? `${text.slice(0, max - 1)}…` : text);
+
+export function describeStep(plan, { label, origin } = {}) {
+  const shown = typeof label === 'string' ? label.replace(/\s+/g, ' ').trim() : '';
+  const target = shown ? `"${clip(shown, 80)}"` : ((plan && plan.target_selector) || 'the selected element');
+  const where = origin ? ` on ${origin}` : '';
+  const action = plan && plan.action;
+  if (action === 'click') return `click ${target}${where}`;
+  if (action === 'type') {
+    const value = plan.value == null || plan.value === '' ? 'an empty value' : `"${clip(String(plan.value), 80)}"`;
+    return `type ${value} into ${target}${where}`;
+  }
+  if (action === 'scroll' || action === 'wait' || action === 'finish') return `${action}${where}`;
+  return `act on ${target}${where}`;
+}
+
 // Question text for the always-ask tier, ported from warden/validate.py question_for_tier().
-export function questionForTier(tier, plan) {
-  const target = (plan && plan.target_selector) || 'the selected element';
-  return `This plan is classified ${tier} and acts on ${target}. It changes state that may not be reversible. Proceed?`;
+export function questionForTier(tier, plan, context = {}) {
+  return `This plan is classified ${tier} and will ${describeStep(plan, context)}. It changes state that may not be reversible. Proceed?`;
 }
 
 // Laya release (Francis, 30 September 2026; Docs/decisions/brain-laya-plan-review.md). The local

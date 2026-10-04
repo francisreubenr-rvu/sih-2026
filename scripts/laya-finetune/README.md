@@ -25,7 +25,7 @@ python scripts/cloud-models/fastpath_bench.py --backends laya --laya-model ./lay
     --llm-from Benchmarks/results/fastpath-bench-v01.json --out Benchmarks/results/fastpath-bench-laya-ft-v01.json
 ```
 
-Use it in the Warden with `WARDEN_FAST_PATH=laya WARDEN_LAYA_MODEL=./laya-dhristi`.
+Benchmark it with `fastpath_bench.py --laya-model ./laya-dhristi` (sets `WARDEN_FAST_PATH_LAYA_MODEL`). The Laya fast path is parked and off in code (`LAYA_FASTPATH_ENABLED = False` in `warden/fastpath.py`, 3 October 2026); serving it needs a new decision.
 
 ## Results so far (1 October 2026)
 

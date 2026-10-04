@@ -1,0 +1,28 @@
+{
+  "name": "hindi-names-probe-v01",
+  "date": "2026-10-03",
+  "question": "Does a drop-in model fix the Devanagari person-name miss recorded in gliner-label-fp-v01..v03?",
+  "set": "8 synthetic lines with a person name (7 Hindi, 1 English control), 16 Hindi UI labels without one; scored alone; person-name threshold 0.3; author-written",
+  "results": [
+    {
+      "model": "urchade/gliner_multi_pii-v1 (shipped)",
+      "names_found": "4/8",
+      "negatives_with_a_person_span": "3/16",
+      "p50_ms": 150,
+      "note": "finds the bare name 'प्रिया शर्मा' at 0.34 when scored alone, but not inside the serialised DOM line (gliner-label-fp-v03)"
+    },
+    {
+      "model": "urchade/gliner_multi-v2.1",
+      "names_found": "4/8",
+      "negatives_with_a_person_span": "1/16",
+      "p50_ms": 82,
+      "note": "two of the four 'hits' are fragments ('शर्मा' alone, 'दव' from 'यादव'); the whole name would still reach the planner"
+    },
+    {
+      "model": "ai4bharat/IndicNER",
+      "names_found": null,
+      "note": "not run: gated repository (403). Accepting its terms needs the account owner (Francis)."
+    }
+  ],
+  "decision": "No model swap: neither GLiNER checkpoint finds Hindi names reliably. Hindi names stay an open privacy gap (ROAST round 30). Options for Francis: accept IndicNER's terms on the Hub so it can be measured as a Devanagari-only second layer, or treat any Devanagari name-shaped text near a name cue as uncertain."
+}

@@ -23,21 +23,21 @@ Do not describe a Groq `/plan` response as the offline planner. Every `/plan` re
 
 ```sh
 cd warden
-export HF_HOME="/Volumes/1TB SSD/LM/hub"
-~/.venvs/data/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8756
+python -m uvicorn app:app --host 127.0.0.1 --port 8756   # the Python of your venv; see Requirements
 ```
 
 `python app.py` uses the same bind: `host="127.0.0.1"` and `config.PORT` (default 8756). Do not bind `0.0.0.0`. Do not use port **9041**. That port belongs to the master Prototype server (`http://127.0.0.1:9041/`).
 
 Load the unpacked side panel from the repository-root `extension/` directory. `Prototype/extension/` is the master measurement popup. It is not this Warden UI.
 
-The imported `extension/background.js` already computes the operation tier on the client (`opTierLocal`) before execute. That F17 gate stays mandatory whenever the execute path is wired. This import does not attach that loop to the Prototype server on 9041, and this port does not claim a live run.
+The extension computes the operation tier itself (`extension/utils/op-tier.js`, re-checked on the live element right before a click) and asks before any state-changing or destructive step (F17). The Warden never decides that a step may run. Real end-to-end runs of this loop are recorded in `../Benchmarks/results/e2e-v5-boundary-v02.json` and `-v04.json` (synthetic fixture only).
 
 ## Why it exists
 
-v3 filtered PII in the browser with regular expressions. `../Benchmarks/results/pii-detection-v1.json`
-measured that filter at string-level micro F1 0.383 over 206 cases, with names, passports and
-addresses undetected in free text. A regular expression cannot recognise a person's name. The Warden
+v3 filtered PII in the browser with regular expressions. An earlier repository measured that filter at
+string-level micro F1 0.383 over 206 cases, with names, passports and addresses undetected in free text;
+that results file (`pii-detection-v1.json`) was not imported into this repository, so treat the figure as
+recorded history, not evidence here. A regular expression cannot recognise a person's name. The Warden
 adds a real named-entity model for the cases regex cannot reach, and keeps the regex layer for the
 cases where a deterministic answer is better than a probabilistic one.
 
@@ -45,9 +45,9 @@ cases where a deterministic answer is better than a probabilistic one.
 
 | Requirement | Detail |
 |---|---|
-| Python | `~/.venvs/data/bin/python` (3.14.7). System Python is externally managed; do not use it. |
-| Packages | gliner, torch, transformers, protobuf, fastapi, uvicorn, all already installed in that venv. Without `protobuf` the mdeberta tokenizer could not load its SentencePiece model and the GLiNER load failed in a fresh Linux venv (29 September 2026), so `/health` reports `loaded:false` and the real-weight tests skip. With it, that CPU-only container with the CPU torch wheel plus these packages loaded the weights in 14.2 s. |
-| Model weights | `urchade/gliner_multi_pii-v1`, cached under `HF_HOME` |
+| Python | 3.11 or newer in a virtual environment (CI uses 3.12; the cloud container 3.11). |
+| Packages | `pip install -r requirements.txt` (runtime: gliner, torch, transformers, protobuf, fastapi, uvicorn, httpx; on a CPU-only machine install torch from `https://download.pytorch.org/whl/cpu`). Tests only: `requirements-test.txt`. Without `protobuf` the mdeberta tokenizer could not load its SentencePiece model and the GLiNER load failed in a fresh Linux venv (29 September 2026), so `/health` reports `loaded:false` and the real-weight tests skip. With it, that CPU-only container with the CPU torch wheel plus these packages loaded the weights in 14.2 s. |
+| Model weights | `urchade/gliner_multi_pii-v1`, in the Hugging Face cache (`HF_HOME` if set, else the library default) |
 | Groq key | Required for `POST /plan` on the default path. Goes in `.env`, never in a tracked file, never in the browser. `GROQ_BASE_URL` (default `https://api.groq.com/openai/v1`) names the OpenAI-compatible endpoint; the key is sent there, so change it only deliberately (the test suite points it at a local fake server). |
 | Ollama | Required for `POST /plan` only when `WARDEN_PLANNER=ollama`. Also used for optional `/validate` reasoning. Host must be loopback (`http://127.0.0.1:11434` unless `OLLAMA_HOST` says otherwise). |
 
@@ -64,16 +64,14 @@ cp .env.example .env
 
 ```sh
 cd warden
-export HF_HOME="/Volumes/1TB SSD/LM/hub"
-~/.venvs/data/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8756
+python -m uvicorn app:app --host 127.0.0.1 --port 8756
 ```
 
 It binds to 127.0.0.1 only, never 0.0.0.0. This service is a PII oracle: anything that can reach it
 can ask it what in a piece of text is personal data, so it must not be exposed to the network.
 
-`HF_HOME` above is the development machine's cache. On any other machine point it at your own cache,
-or leave it unset: the Warden only defaults to that path when the directory exists, otherwise the
-Hugging Face library's own default cache is used.
+The Warden does not set `HF_HOME` (since 3 October 2026 it no longer defaults to a development
+machine's path); set it to use another cache, or leave it unset for the library default.
 
 The model loads at startup. `/health` reports `loaded: false` until it finishes and `/strip` answers
 503 in the meantime. Poll `/health` rather than assuming it is ready.
@@ -96,13 +94,32 @@ confidence interval is claimed.
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/health` | Readiness, model id, regex pattern count, `planner` (`groq`/`ollama`/`invalid`), `destination` (`cloud`/`local`/null), `plannerModel` (first model of `GROQ_MODEL_CHAIN` for Groq, `WARDEN_OLLAMA_MODEL` for Ollama, null if invalid), whether Groq is configured |
+| GET | `/health` | `loaded` (GLiNER ready), model id, regex pattern count, `planner` (`groq`/`ollama`/`invalid`), `destination` (`cloud`/`local`/null), `plannerModel`, `groqConfigured`, `fastPath` (mode, destination, threshold), `reviewer` (`{mode, loaded, error}`), `pairing` (`required`/`missing`/`misconfigured`/`disabled`), `warden` version |
 | POST | `/strip` | Two-layer PII removal, returns tokenized text, tokenized element labels, the token map, uncertain spans and value-free decisions |
 | POST | `/plan` | Egress guard, then planning over sanitised material (Groq with model fallback by default, Ollama when `WARDEN_PLANNER=ollama`) |
-| POST | `/validate` | Deterministic checks, then optional local reasoning |
+| POST | `/validate` | Legacy: deterministic checks, then optional local reasoning. The v5 extension does not call it. |
 
-Request and response shapes are in the frozen spec. `/health` never returns the Groq key, only
-whether one is present.
+Request and response shapes are in the frozen spec, with these additions since v5. `/health` never
+returns a key, only whether one is present.
+
+**Request boundary (3 October 2026).** Checked before the pairing proof or any parsing:
+
+| Refusal | When |
+|---|---|
+| 421 | `Host` is not a loopback name (127.0.0.1, localhost, [::1]): stops DNS rebinding |
+| 411 | a POST without `Content-Length` |
+| 413 | a body over `WARDEN_MAX_BODY_BYTES` (default 2 MiB) |
+| 415 | a POST whose `Content-Type` is not `application/json` |
+| 400 | malformed JSON or a wrong field type; names the field, never the value |
+
+`/docs`, `/redoc` and `/openapi.json` are not served. Evidence against a real uvicorn Warden:
+`../Benchmarks/results/warden-hardening-v01.json` (`../scripts/warden-hardening-evidence.py`).
+
+**Answers to uncertain spans.** `/strip`'s `resolved` maps a token id to
+`{"decision": "strip"|"keep", "value": "<the uncertain entry's preview>"}`. An answer applies only to
+the value it was given for, because token ids restart at `#1` on every call: a "keep" for a link label
+must never keep a different value that gets the same id on the next page. A legacy bare `"strip"` still
+applies; a bare `"keep"` is ignored and the question is asked again.
 
 ## How stripping works
 
@@ -223,24 +240,19 @@ editing: a dead entry costs a wasted request on every call.
 Only the sanitised material crosses the boundary: `tokenizedTask`, `sanitizedDom`, `elements` and
 `history`. Never the token map, never a raw value.
 
-### Decision-model fast path (optional)
+### Decision-model fast path (off in code)
 
-`WARDEN_FAST_PATH=jev` (TypeSafe Jev, cloud, `JEV_API_KEY`) or `WARDEN_FAST_PATH=laya` (Laya on this
-machine, `pip install laya`) puts a decision model in front of the planner (`fastpath.py`). It lists
-the actions the scene allows (click a control, type a task token into a field, finish, or "none of
-these") and asks, in the same call, whether the task needs typed text that is not a token. The step
-goes to the planner as usual when the model picks "none of these", says free text is needed, or its
-chosen action is under `WARDEN_FAST_PATH_MIN_CONFIDENCE` (default 0.9). A backend error also falls
-through to the planner. It runs after the egress guard, on the same sanitized body. Jev is skipped when
-`WARDEN_PLANNER=ollama`, since the offline mode sends nothing off the machine. Off by default.
+`fastpath.py` can put a decision model in front of the planner: it lists the actions the scene allows
+and lets the model pick one when it is at least `WARDEN_FAST_PATH_MIN_CONFIDENCE` (0.9) sure, deferring
+to the planner otherwise. **Both backends are disabled in code** (`JEV_ENABLED = False`, decided by Francis
+on 2 October 2026; `LAYA_FASTPATH_ENABLED = False`, parked after failing Jev's bar). Setting
+`WARDEN_FAST_PATH` has no effect until a recorded decision flips one; `/health.fastPath` reports the
+refusal. The fast path's checkpoint variable is `WARDEN_FAST_PATH_LAYA_MODEL`, separate from the
+reviewer's.
 
-Measured 30 September 2026 (`../Docs/decisions/brain-cloud-models-jev.md`): Jev answered 39 of 89
-held-out steps at 0.9 and was right on all 39, never on a free-text step; in the real extension loop
-it answered every step of the fixture task at a median of about 236 ms. Laya, zero-shot on CPU,
-deferred every step and only added its own time (585 to 847 ms p50). `WARDEN_LAYA_MODEL=<dir>` loads a
-fine-tuned checkpoint (`../scripts/laya-finetune/`) and `WARDEN_LAYA_DEVICE` (default `cpu`) picks the device.
-The two CPU fine-tunes of 30 September underfit, and the second lost the free-text gate, so leave Laya
-off and never run a Laya checkpoint below the 0.9 threshold without re-running the benchmark.
+History, for the record (`../Docs/decisions/brain-cloud-models-jev.md`): on 30 September Jev answered 39
+of 89 held-out steps at 0.9, all right, never a free-text step, at a median of about 236 ms per step in
+the real loop; Laya fine-tunes on CPU and on Colab did not reach Jev's bar.
 
 ## Validation
 
@@ -258,21 +270,22 @@ Ollama is absent the check is recorded as SKIPPED, never as passed.
 [Laya](https://huggingface.co/convaiinnovations/laya) classifier (Apache 2.0, multilingual
 checkpoint, 322M). It answers two typed questions per step in one forward pass: the click's tier
 (navigational / state-changing / destructive) and whether the step serves the task. The contract
-is the reasoning stage's: it can only turn `accept` into `ask`, never lowers a tier, and any
-failure is a SKIPPED check. The default stays `ollama`.
+on `/validate` is the reasoning stage's: it can only turn `accept` into `ask`, never lowers a tier,
+and any failure is a SKIPPED check. On `/plan` its scores can also let the extension release a
+confirmation (below). The default stays `ollama`.
 
 | Variable | Meaning |
 |---|---|
 | `WARDEN_REVIEWER` | `ollama` (default) or `laya` |
-| `WARDEN_LAYA_MODEL` | local checkpoint directory or Hub repo id; unset means SKIPPED |
+| `WARDEN_REVIEWER_MODEL` | local checkpoint directory or Hub repo id; unset means SKIPPED. `WARDEN_LAYA_MODEL` is read as a fallback for the reviewer only |
 | `WARDEN_LAYA_SUBFOLDER`, `WARDEN_LAYA_DEVICE` | optional; device defaults to `cpu` |
 | `WARDEN_LAYA_DESTRUCTIVE_MIN`, `WARDEN_LAYA_OFF_TASK_MIN` | ask thresholds, default 0.5 |
 
 Needs `pip install laya` (pulls torch); it is not a test dependency. Dataset, trainer and evaluator:
 `../scripts/laya/`. Results and limits: `../Benchmarks/results/laya-plan-review-v01.json` and
 `../Docs/decisions/brain-laya-plan-review.md`. The fine-tuned weights are in the private Hub repo
-`francisreubenr/dhristi-laya-plan-review`, so set `WARDEN_LAYA_MODEL` to that id with an `HF_TOKEN` that
-can read it. The model loads on first use (about 11 s on a 4-thread CPU), then scores a step in
+`francisreubenr/dhristi-laya-plan-review`, so set `WARDEN_REVIEWER_MODEL` to that id with an `HF_TOKEN` that
+can read it. The model is warmed at startup in the background (about 11 s on a 4-thread CPU; a failed load is retried after 60 s, and `/health.reviewer` shows the state), then scores a step in
 about 200–260 ms.
 
 With `WARDEN_REVIEWER=laya`, `/plan` also returns `review`: `model`, `fineTuned`, `action`,

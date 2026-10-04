@@ -1,0 +1,184 @@
+{
+  "name": "warden-hardening-v01",
+  "generated_at": "2026-10-03T22:56:51.656968+00:00",
+  "commit": "aefe2799658085d01579e7083338d20685380297",
+  "surface": "warden/app.py under uvicorn on 127.0.0.1 (the v5 product boundary), real GLiNER, no cloud planner call",
+  "scope": "Single local Warden, synthetic values only. Covers request validation, pairing, host and CORS boundary, size limits, egress refusal and planner-failure recovery. Not covered: TLS (loopback only), multi-user auth, a hostile local process with the pairing secret, rate limiting (the Warden has none), the extension side (its own suite).",
+  "passed": 17,
+  "total": 17,
+  "checks": [
+    {
+      "id": "H00",
+      "control": "Health during the cold GLiNER load, polled with the side panel's 3 s timeout",
+      "ok": true,
+      "observed": {
+        "loaded": true,
+        "polls": 15,
+        "timeouts_over_3s": 0,
+        "slowest_ms": 60.1
+      },
+      "expected": "loads; timeouts recorded, not hidden"
+    },
+    {
+      "id": "H01",
+      "control": "GET /health answers on loopback and carries no secret",
+      "ok": true,
+      "observed": {
+        "status": 200,
+        "secrets_in_body": 0,
+        "pairing": "required"
+      },
+      "expected": "200, no secret, pairing required"
+    },
+    {
+      "id": "H02",
+      "control": "Host header outside loopback names (DNS rebinding)",
+      "ok": true,
+      "observed": {
+        "status": 421
+      },
+      "expected": 421
+    },
+    {
+      "id": "H03",
+      "control": "No interactive docs or schema served",
+      "ok": true,
+      "observed": {
+        "/docs": 404,
+        "/redoc": 404,
+        "/openapi.json": 404
+      },
+      "expected": "404 each"
+    },
+    {
+      "id": "H04",
+      "control": "POST with a non-JSON content type (no-preflight cross-site form)",
+      "ok": true,
+      "observed": {
+        "status": 415
+      },
+      "expected": 415
+    },
+    {
+      "id": "H05",
+      "control": "POST without Content-Length",
+      "ok": true,
+      "observed": {
+        "status": 411
+      },
+      "expected": 411
+    },
+    {
+      "id": "H06",
+      "control": "POST larger than WARDEN_MAX_BODY_BYTES (default 2 MiB)",
+      "ok": true,
+      "observed": {
+        "status": 413,
+        "sent_bytes": 3145739
+      },
+      "expected": 413
+    },
+    {
+      "id": "H07",
+      "control": "Unsigned POST /strip",
+      "ok": true,
+      "observed": {
+        "status": 401
+      },
+      "expected": 401
+    },
+    {
+      "id": "H08",
+      "control": "POST signed with a different secret",
+      "ok": true,
+      "observed": {
+        "status": 401
+      },
+      "expected": 401
+    },
+    {
+      "id": "H09",
+      "control": "Signed POST /strip: answered, response proof verifies, synthetic values tokenized",
+      "ok": true,
+      "observed": {
+        "status": 200,
+        "response_proof_verifies": true,
+        "values_left_in_text": 0,
+        "tokens": [
+          "ACCOUNTNUMBER#1",
+          "EMAIL#1"
+        ],
+        "ms": 341.6,
+        "gliner_loaded": true
+      },
+      "expected": "200, proof verifies, 0 values left"
+    },
+    {
+      "id": "H10",
+      "control": "Replayed nonce",
+      "ok": true,
+      "observed": {
+        "status": 401
+      },
+      "expected": 401
+    },
+    {
+      "id": "H11",
+      "control": "Malformed JSON: controlled 400 that does not echo the input",
+      "ok": true,
+      "observed": {
+        "status": 400,
+        "echoes_input": false
+      },
+      "expected": "400, no echo"
+    },
+    {
+      "id": "H12",
+      "control": "Egress guard: a raw personal value in /plan is refused before any planner, without echo",
+      "ok": true,
+      "observed": {
+        "status": 422,
+        "echoes_value": false
+      },
+      "expected": "422, no echo"
+    },
+    {
+      "id": "H13",
+      "control": "Planner unreachable: controlled error, no fall-through to another planner",
+      "ok": true,
+      "observed": {
+        "status": 503
+      },
+      "expected": "502/503/504 with an error message"
+    },
+    {
+      "id": "H14",
+      "control": "CORS preflight from a web origin",
+      "ok": true,
+      "observed": {
+        "status": 400,
+        "allow_origin": null
+      },
+      "expected": "no Access-Control-Allow-Origin"
+    },
+    {
+      "id": "H15",
+      "control": "Health stays responsive (20 sequential GETs)",
+      "ok": true,
+      "observed": {
+        "mean_ms": 42.38
+      },
+      "expected": "informational"
+    },
+    {
+      "id": "H16",
+      "control": "Warden with no pairing secret refuses every POST",
+      "ok": true,
+      "observed": {
+        "status": 503,
+        "pairing": "missing"
+      },
+      "expected": "503, pairing missing"
+    }
+  ]
+}

@@ -38,8 +38,6 @@ LABEL_TO_TYPE = {
 
 MODEL_ID = "urchade/gliner_multi_pii-v1"
 
-_DEV_HF_HOME = "/Volumes/1TB SSD/LM/hub"
-
 STRIP_THRESHOLD = 0.60
 UNCERTAIN_FLOOR = 0.35
 # Ask GLiNER for anything down to the uncertain floor; below that the spec
@@ -67,21 +65,18 @@ STATE = ModelState()
 
 def load_model() -> None:
     """Load GLiNER once. Safe to call from a background thread: sets
-    STATE.model on success, STATE.load_error on failure. Never re-downloads
-    on this machine because HF_HOME already holds the cached weights.
+    STATE.model on success, STATE.load_error on failure. The weights come
+    from the Hugging Face cache: HF_HOME when it is set, otherwise the
+    library's own default.
     """
     with STATE._lock:
         if STATE.model is not None or STATE.loading:
             return
         STATE.loading = True
     try:
-        # The development machine keeps its Hugging Face cache on an external
-        # volume. Defaulting to it unconditionally broke the load on every other
-        # machine (the path does not exist, so from_pretrained fails there), so
-        # it is only a default where it exists; otherwise HF_HOME, or the
-        # library's own default cache, decides.
-        if os.path.isdir(_DEV_HF_HOME):
-            os.environ.setdefault("HF_HOME", _DEV_HF_HOME)
+        # HF_HOME is left to the environment (3 October 2026). It used to default
+        # to one development Mac's external volume whenever that path existed;
+        # warden/README.md's run command exports HF_HOME for that machine.
         from gliner import GLiNER  # imported here so a missing/broken torch
         # install fails inside the background thread, not at module import.
 
@@ -166,6 +161,8 @@ def gliner_spans(text: str) -> list:
             # A field descriptor is a field NAME, not a value. "Delivery address" is
             # what the form calls the box; it is not somebody's address.
             if _is_structural_descriptor(value):
+                continue
+            if not _plausible_value(LABEL_TO_TYPE[label], value):
                 continue
             spans.append({
                 "start": start,
@@ -278,9 +275,18 @@ def _chunk_spans(text: str) -> list:
 _CHUNK_CACHE: "OrderedDict[str, list]" = OrderedDict()
 _CHUNK_CACHE_MAX = 4096
 _CHUNK_CACHE_OWNER = None
+# /strip runs in the server's threadpool since 3 October 2026, so two requests can arrive
+# together. The lock keeps the OrderedDict consistent and runs one inference at a time
+# (on CPU a second concurrent batch only competes for the same cores).
+_PREDICT_LOCK = threading.Lock()
 
 
 def _cached_predict(model, texts: list) -> list:
+    with _PREDICT_LOCK:
+        return _cached_predict_locked(model, texts)
+
+
+def _cached_predict_locked(model, texts: list) -> list:
     global _CHUNK_CACHE_OWNER
     if model is not _CHUNK_CACHE_OWNER:
         _CHUNK_CACHE.clear()
@@ -363,7 +369,15 @@ def _predict_chunks(model, texts: list) -> list:
 # metadata too, and is neutralised since 29 September 2026: scored one line at
 # a time, "99. A type=link ... label=\"Account holder Neha Joshi\"" returned the
 # index "99" as an account number at 0.381, a question about a line number.
-_SCAFFOLDING_RE = re.compile(r"\b(type|selector|position)=[^\s]+|^\d+\.(?= )", re.MULTILINE)
+#
+# The tag word after the index ("12. BUTTON", "3. A") and the STATUS line prefix
+# are our metadata too (3 October 2026): scored one line at a time, "BUTTON" came
+# back as a person name at 0.12 to 0.18 on 4 of 94 ordinary labels
+# (Benchmarks/results/gliner-label-fp-v01.json), each a question about our own markup.
+_SCAFFOLDING_RE = re.compile(
+    r"\b(type|selector|position)=[^\s]+|^\d+\. [A-Z][A-Z0-9-]*(?= )|^\d+\.(?= )|^STATUS(?= )",
+    re.MULTILINE,
+)
 
 _DESCRIPTOR_WORDS = {
     "password", "passwd", "pwd", "passcode", "passphrase", "secret",
@@ -381,6 +395,21 @@ _DESCRIPTOR_WORDS = {
     "zip", "postcode", "postal", "pincode", "code", "street", "line",
     "first", "last", "middle", "full", "given", "family", "surname",
     "company", "organisation", "organization", "title", "display",
+    # Hindi UI vocabulary (added 3 October 2026). The guard used to read only [a-z]
+    # words, so every Devanagari label could fall in the person-name band (floor 0.12):
+    # in the G11 live run the link "खाता हटाएं" (delete account) was asked about as a
+    # person name at 18% on every run; gliner-label-fp-v01.json records "मेरे खाते"
+    # 0.52, "जन्म तिथि" 0.28, "पता बदलें" 0.16 and "सहायता" 0.16 the same way. Field
+    # and action words only, the Hindi counterparts of the words above; a span is
+    # dropped only when EVERY word is one of them, so a name never is. Derived from
+    # observed false positives, like the English list: not a held-out result.
+    "खाता", "खाते", "खातों", "मेरा", "मेरे", "मेरी", "आपका", "आपके", "आपकी",
+    "हटाएं", "हटाएँ", "हटाये", "बंद", "करें", "करे", "करो", "बदलें", "बदले",
+    "पासवर्ड", "प्रोफ़ाइल", "प्रोफाइल", "जन्म", "तिथि", "तारीख", "तारीख़", "पता", "पते",
+    "नाम", "मोबाइल", "फ़ोन", "फोन", "नंबर", "संख्या", "ईमेल", "विवरण", "सहायता",
+    "केंद्र", "लॉग", "इन", "आउट", "साइन", "दस्तावेज़", "दस्तावेज", "खोजें", "सेवा", "सेवाएं",
+    "ग्राहक", "सेटिंग्स", "सेटिंग", "भाषा", "सूचनाएं", "डैशबोर्ड", "विवरणी", "शहर", "राज्य",
+    "पिन", "कोड", "देखें", "बचत", "चालू", "नया", "नई", "पुराना", "पुष्टि",
 }
 
 
@@ -394,7 +423,40 @@ def _neutralise_scaffolding(text: str) -> str:
 def _is_structural_descriptor(value: str) -> bool:
     """True when every word in `value` is a field-descriptor word, which makes
     it a field name rather than a piece of personal data."""
-    words = re.findall(r"[a-z]+", value.lower())
+    # Latin words, and Devanagari words (letters, vowel signs, nukta and virama).
+    words = re.findall(r"[a-z]+|[\u0900-\u0963\u0971-\u097F]+", value.lower())
     if not words:
         return False
     return all(w in _DESCRIPTOR_WORDS for w in words)
+
+
+# ---------------------------------------------------------------------------
+# Type plausibility (added 3 October 2026)
+# ---------------------------------------------------------------------------
+# Measured on 94 ordinary EN/HI labels and tasks (gliner-label-fp-v01.json):
+# "Account statements" 0.40 and "Delete my account" 0.35 were questions, and
+# "My accounts", "Account details", "Savings account" (0.62 to 0.82) were
+# silently replaced by ACCOUNTNUMBER tokens, so the planner could not choose
+# those links. "Change password" (0.88) and the Hindi destructive label
+# "खाता बंद करें" (0.65) were stripped as passwords, the latter hiding a
+# destructive control's name from the planner.
+#
+# Rules, each true of the type itself and not fitted to a label list:
+# - an account number or a date of birth contains a digit (any script; Python's
+#   \d matches Devanagari digits). Spelled-out dates of birth are no longer
+#   model hits; a keyed numeric one is caught by the regex layer as well.
+# - a password is one token: a span with whitespace is a phrase. Trade
+#   accepted and recorded: a passphrase with spaces shown in page text is no
+#   longer a model hit; password inputs stay covered by the fieldType flag and
+#   the screenshot mask.
+# Person names and addresses are untouched: they have no such structural test,
+# and a missed name is the failure this layer exists to prevent.
+_HAS_DIGIT_RE = re.compile(r"\d")
+
+
+def _plausible_value(span_type: str, value: str) -> bool:
+    if span_type in ("ACCOUNTNUMBER", "DATEOFBIRTH"):
+        return bool(_HAS_DIGIT_RE.search(value))
+    if span_type == "PASSWORD":
+        return not re.search(r"\s", value.strip())
+    return True

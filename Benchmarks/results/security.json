@@ -1,9 +1,9 @@
 {
   "wave": 6,
-  "generated_at": "2026-09-14T11:26:55.750Z",
+  "generated_at": "2026-10-03T18:02:00.220Z",
   "scope": "Local prototype + website candidate; not a production multi-tenant threat model completion",
   "secret_scan": {
-    "files_scanned": 482,
+    "files_scanned": 668,
     "high_severity_findings": 0,
     "findings": [
       {

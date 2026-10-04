@@ -28,7 +28,7 @@
 // and only such a response may release a local confirmation (plan-check.js layaRelease).
 
 import { WARDEN_DEFAULT_ORIGIN } from '../config.js';
-import { loopbackHttpUrl } from './loopback.js';
+import { wardenOriginUrl, migrateWardenOrigin } from './loopback.js';
 
 const TIMEOUT_MS = {
   health: 3000,
@@ -114,13 +114,18 @@ async function hmacKey(code) {
 async function getOrigin() {
   try {
     const stored = await chrome.storage.local.get(['wardenOrigin']);
-    const origin = stored.wardenOrigin && String(stored.wardenOrigin).trim();
+    let origin = stored.wardenOrigin && String(stored.wardenOrigin).trim();
     if (!origin) return WARDEN_DEFAULT_ORIGIN;
-    if (!loopbackHttpUrl(origin)) {
+    const migrated = migrateWardenOrigin(origin);
+    if (migrated !== origin && wardenOriginUrl(migrated)) {
+      origin = migrated;
+      await chrome.storage.local.set({ wardenOrigin: origin }).catch(() => {});
+    }
+    if (!wardenOriginUrl(origin)) {
       throw new WardenUnreachableError(
         origin,
         '',
-        'refusing non-loopback wardenOrigin; only 127.0.0.1, localhost, and ::1 are allowed',
+        'refusing this wardenOrigin; only http://127.0.0.1:<port> is allowed (not localhost or ::1)',
       );
     }
     return origin.replace(/\/+$/, '');
@@ -193,9 +198,11 @@ export async function health() {
   return request('/health', { timeoutMs: TIMEOUT_MS.health });
 }
 
-// resolved: { [tokenId]: 'strip' | 'keep' }, decisions already made this session for
-// previously uncertain spans, keyed by the exact token id the Warden minted (e.g.
-// "PERSONNAME#1"), so the same question is never asked twice.
+// resolved: { [tokenId]: { decision: 'strip' | 'keep', value } }, decisions already made in this
+// run for previously uncertain spans, keyed by the token id the Warden minted (e.g.
+// "PERSONNAME#1") and bound to the value the person was shown, because ids are minted per call and
+// can name a different value on another page (security review, 3 October 2026). A Warden that
+// predates the object shape ignores it and asks again, which is the safe direction.
 export async function strip({ task, dom, elements, resolved }) {
   return request('/strip', {
     method: 'POST',

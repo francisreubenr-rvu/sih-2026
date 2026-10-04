@@ -82,6 +82,9 @@ def _pairing_disabled_for_logic_tests(monkeypatch):
     tests below clear it to exercise the real default."""
     monkeypatch.setenv("WARDEN_PAIRING_DISABLED", "1")
     monkeypatch.delenv("WARDEN_PAIRING_SECRET", raising=False)
+    # TestClient sends Host: testserver. Production answers loopback names only
+    # (config.ALLOWED_HOSTNAMES); the test host is added here, never in config.
+    monkeypatch.setattr(config, "ALLOWED_HOSTNAMES", config.ALLOWED_HOSTNAMES | {"testserver"})
 
 REPO_ROOT = WARDEN_DIR.parent
 REDACTOR_JS_PATH = REPO_ROOT / "extension" / "utils" / "redactor.js"
@@ -1123,8 +1126,10 @@ class _WindowedFakeModel:
             return []
         out = []
         for name in self.names:
-            i = text.find(name)
-            if i != -1:
+            # Whole words only, as GLiNER's spans are: it never reports "Ravi" inside "Ravishankar".
+            m = re.search(r"(?<!\w)" + re.escape(name) + r"(?!\w)", text)
+            if m:
+                i = m.start()
                 out.append({"start": i, "end": i + len(name), "text": name, "label": "person name", "score": self.score})
         return out
 
@@ -1213,9 +1218,13 @@ def test_kept_value_stays_in_labels(monkeypatch):
     assert [u["token"] for u in first["uncertain"]] == ["PERSONNAME#1"]
     assert first["elements"][0]["label"] == f"Welcome back {name}"  # undecided: not minted yet
 
-    kept = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "keep"})
+    kept = strip_module.strip(task="", dom=dom, elements=elements,
+                              resolved={"PERSONNAME#1": {"decision": "keep", "value": name}})
     assert kept["elements"][0]["label"] == f"Welcome back {name}"
     assert kept["uncertain"] == []
+    # A bare "keep" names no value, so since 3 October 2026 it is not applied: asked again.
+    legacy = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "keep"})
+    assert [u["token"] for u in legacy["uncertain"]] == ["PERSONNAME#1"]
 
     stripped = strip_module.strip(task="", dom=dom, elements=elements, resolved={"PERSONNAME#1": "strip"})
     assert stripped["elements"][0]["label"] == "Welcome back PERSONNAME#1"
@@ -1400,15 +1409,16 @@ def test_groq_base_url_is_read_from_the_environment():
     assert out.stdout.strip() == "https://api.groq.com/openai/v1"
 
 
-@pytest.mark.parametrize("exists", [True, False])
-def test_hf_home_defaults_to_the_dev_volume_only_when_it_exists(monkeypatch, tmp_path, exists):
+@pytest.mark.parametrize("preset", [None, "/custom/hf-cache"])
+def test_load_model_leaves_hf_home_to_the_environment(monkeypatch, preset):
+    """The Warden used to default HF_HOME to one development Mac's external volume. It now
+    never sets HF_HOME: an exported value wins, otherwise the library's own default cache."""
     import types
 
-    dev = tmp_path / "hub"
-    if exists:
-        dev.mkdir()
-    monkeypatch.setattr(entities, "_DEV_HF_HOME", str(dev))
-    monkeypatch.delenv("HF_HOME", raising=False)
+    if preset is None:
+        monkeypatch.delenv("HF_HOME", raising=False)
+    else:
+        monkeypatch.setenv("HF_HOME", preset)
     monkeypatch.setattr(entities, "STATE", entities.ModelState())
 
     class _NoLoad:
@@ -1419,7 +1429,8 @@ def test_hf_home_defaults_to_the_dev_volume_only_when_it_exists(monkeypatch, tmp
     monkeypatch.setitem(sys.modules, "gliner", types.SimpleNamespace(GLiNER=_NoLoad))
     entities.load_model()
     assert "synthetic" in entities.STATE.load_error
-    assert os.environ.get("HF_HOME") == (str(dev) if exists else None)
+    assert os.environ.get("HF_HOME") == preset
+    assert not hasattr(entities, "_DEV_HF_HOME")
 
 
 def test_chunk_cache_scores_an_unchanged_control_once_across_steps(monkeypatch):
@@ -1552,6 +1563,7 @@ def test_laya_failure_is_a_skipped_check_and_the_tier_rule_still_speaks(monkeypa
 def test_laya_unconfigured_is_skipped_not_an_error(monkeypatch):
     monkeypatch.setenv("WARDEN_REVIEWER", "laya")
     monkeypatch.delenv("WARDEN_LAYA_MODEL", raising=False)
+    monkeypatch.delenv("WARDEN_REVIEWER_MODEL", raising=False)
     monkeypatch.setattr(laya_review, "_agent", None)
     monkeypatch.setattr(laya_review, "_agent_error", None)
     out = validate_module.maybe_apply_local_reasoning("synthetic task", _base_plan(), "navigational", _LAYA_ELEMENTS)
@@ -1577,7 +1589,18 @@ def test_a_link_is_not_navigational_because_it_is_a_link(label):
     assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
 
 
-@pytest.mark.parametrize("label,field_type", [("View statement", "link"), ("Go to settings", "button"), ("  Home", "link")])
+@pytest.mark.parametrize("label", [
+    "Link this device", "Link account", "Link Aadhaar to PAN", "Open new fixed deposit", "Open a new account",
+    "Open an account", "Open account", "Terms link",
+])
+def test_link_verbs_and_opening_an_account_are_not_navigational(label):
+    # Security review, 3 October 2026: "\blink\b" anywhere and a bare "open" tiered these navigational.
+    elements = [{"selector": "#t", "label": label, "fieldType": "button", "filled": False, "x": 1, "y": 2}]
+    assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "state-changing"
+    assert _py_label_basis(label) == "unproven"
+
+
+@pytest.mark.parametrize("label,field_type", [("View statement", "link"), ("Go to settings", "button"), ("  Home", "link"), ("Open settings", "button")])
 def test_navigation_labels_still_tier_navigational(label, field_type):
     elements = [{"selector": "#t", "label": label, "fieldType": field_type, "filled": False, "x": 1, "y": 2}]
     assert tiers.op_tier({"action": "click", "target_selector": "#t"}, elements) == "navigational"
@@ -1679,8 +1702,10 @@ def _fp_env(monkeypatch, backend, answers=None, raises=None):
     monkeypatch.setattr(groq_client, "plan_via_groq", fake_groq)
     monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
     monkeypatch.setenv("WARDEN_FAST_PATH", backend)
-    # Jev is disabled in code (Francis, 2 October 2026); its tests flip the constant to keep coverage.
+    # Jev is disabled in code (Francis, 2 October 2026), and the parked Laya fast path the same
+    # way since 3 October; their tests flip the constants to keep coverage.
     monkeypatch.setattr(fastpath, "JEV_ENABLED", True)
+    monkeypatch.setattr(fastpath, "LAYA_FASTPATH_ENABLED", True)
     monkeypatch.delenv("WARDEN_PLANNER", raising=False)
     monkeypatch.delenv("WARDEN_FAST_PATH_MIN_CONFIDENCE", raising=False)
     return calls
@@ -1781,12 +1806,12 @@ def test_laya_backend_loads_a_local_checkpoint_when_named(monkeypatch):
 
     monkeypatch.setitem(sys.modules, "laya", types.SimpleNamespace(Agent=FakeAgent, Router=FakeRouter))
     monkeypatch.setitem(fastpath._LAYA, "router", None)
-    monkeypatch.setenv("WARDEN_LAYA_MODEL", "/models/laya-dhristi/")
+    monkeypatch.setenv("WARDEN_FAST_PATH_LAYA_MODEL", "/models/laya-dhristi/")
     answers, name = fastpath._ask_laya({}, {})
     assert made == {"agent": ("/models/laya-dhristi/", "cpu")} and name == "laya:laya-dhristi"
     monkeypatch.setitem(fastpath._LAYA, "router", None)
     monkeypatch.setitem(fastpath._LAYA, "name", None)
-    monkeypatch.delenv("WARDEN_LAYA_MODEL")
+    monkeypatch.delenv("WARDEN_FAST_PATH_LAYA_MODEL")
     fastpath._ask_laya({}, {})
     assert made.get("router") is True
 
@@ -1968,6 +1993,85 @@ def test_destructive_rules_match_the_extension():
     assert {l for l, d in zip(_PARITY_LABELS, py_labels) if d} == expected_destructive
 
 
+# Hindi submit keywords (PLAN item 8, 3 October 2026), and the over-match guards. Same lists in
+# extension/tests/op-tier.test.mjs; this compares the real JS basis against tiers.py.
+_HI_SUBMIT_LABELS = [
+    "भुगतान करें", "अभी भुगतान करें", "भुगतान", "₹500 का भुगतान करें", "पेमेंट करें", "पे करें", "बिल अदा करें",
+    "भेजें", "पैसे भेजें", "संदेश भेजो", "भेज दें", "सेंड करें", "पैसे ट्रांसफ़र करें", "ट्रांसफर करें",
+    "जमा करें", "फ़ॉर्म जमा करें", "आवेदन जमा कीजिए", "सबमिट करें", "सबमिट", "प्रस्तुत करें", "रिटर्न दाखिल करें",
+    "पुष्टि करें", "भुगतान की पुष्टि करें", "कन्फर्म करें", "कन्फ़र्म", "ऑर्डर करें", "ऑर्डर दें", "आर्डर प्लेस करें",
+    "खरीदें", "अभी खरीदें", "ख़रीदें", "चेकआउट", "सहेजें", "बदलाव सहेजें", "सेव करें", "रिचार्ज करें",
+    "भे‍जें", "जमा​ करें", "पु‌ष्टि करें", "भुगतान इतिहास",
+]
+_HI_SUBMIT_NOT = [
+    "जमा राशि देखें", "भेजे गए संदेश", "ग्राहक सेवा", "मेरे ऑर्डर", "खरीदारी जारी रखें", "पेज 2", "सावधि जमा",
+    "सहेजे गए आइटम", "सहायता केंद्र", "स्कोप करें",
+]
+# Navigation labels (security review, 3 October 2026), compared in the same node run.
+_NAV_PARITY = [
+    "Link this device", "Link account", "Link Aadhaar to PAN", "Open new fixed deposit", "Open a new account",
+    "Open an account", "Open account", "Terms link", "Open settings", "View statement", "Go to home", "Next page",
+    "Back", "Menu", "Opening hours",
+]
+# Soft hyphens, bidi controls and fullwidth letters must not hide a keyword (security review,
+# 3 October 2026): op-tier.js canonical() and tiers._canonical() strip and NFKC-normalise alike.
+_HIDDEN_DESTRUCTIVE = [
+    "Del\u00adete account", "Re\u200emove card", "De\u202elete", "Era\u2066se all",
+    "\uff24\uff45\uff4c\uff45\uff54\uff45 account", "ह\u00adटाएं", "खाता\u200f हटाएं",
+]
+# State-changing English verbs that used to read unproven (3 October 2026).
+_EN_SUBMIT_ADDED = [
+    "Transfer funds", "Donate now", "Subscribe", "Accept offer", "I agree", "Apply now", "Recharge mobile",
+    "Buy now", "Book now", "Book a ticket", "Sign up", "Register", "Enroll", "Enrol now", "Upgrade plan", "Renew policy",
+]
+_HIDDEN_SUBMIT = ["Pa\u00ady now", "\uff30\uff41\uff59", "भु\u00adगतान करें", "Se\u2069nd"]
+_HI_SUBMIT_BUT_DESTRUCTIVE = ["भुगतान विधि हटाएं", "खाता हटाने की पुष्टि करें", "सदस्यता रद्द करें और भेजें", "कार्ड डिलीट करें और सहेजें"]
+
+
+def _py_label_basis(label):
+    """tiers.py's rules in the order op-tier.js classifyClickTargetBasis applies them to visible text."""
+    text = tiers._canonical(label)
+    words = re.sub(r"[\s\-_/.?=&+#:%]+", " ", text).strip()
+    if tiers.DESTRUCTIVE_LABEL_RE.search(words):
+        return "destructive-keyword"
+    if tiers.SUBMIT_LABEL_RE.search(words):
+        return "submit-keyword"
+    if tiers.NAV_LABEL_RE.search(re.sub(r"\s+", " ", text).strip().lower()):
+        return "navigation-label"
+    return "unproven"
+
+
+def test_hindi_submit_rules_match_the_extension():
+    if which("node") is None:
+        pytest.skip("node is not on PATH; cannot run extension/utils/op-tier.js")
+    labels = (_HI_SUBMIT_LABELS + _HI_SUBMIT_NOT + _HI_SUBMIT_BUT_DESTRUCTIVE + _NAV_PARITY + _HIDDEN_DESTRUCTIVE
+              + _HIDDEN_SUBMIT + _EN_SUBMIT_ADDED)
+    script = (
+        "const m = await import(process.argv[1]);"
+        "const labels = JSON.parse(process.argv[2]);"
+        "console.log(JSON.stringify(labels.map((t) => m.classifyClickTargetBasis({ visibleText: t }).basis)));"
+    )
+    op_tier_js = (REPO_ROOT / "extension" / "utils" / "op-tier.js").as_uri()
+    out = subprocess.run(
+        ["node", "--input-type=module", "-e", script, op_tier_js, json.dumps(labels)],
+        capture_output=True, text=True, check=True,
+    )
+    js = dict(zip(labels, json.loads(out.stdout)))
+    py = {label: _py_label_basis(label) for label in labels}
+    assert py == js
+    assert {label for label in _HI_SUBMIT_LABELS if py[label] != "submit-keyword"} == set()
+    assert {label for label in _HI_SUBMIT_NOT if py[label] != "unproven"} == set()
+    assert {label for label in _HI_SUBMIT_BUT_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
+    assert {label for label in _HIDDEN_DESTRUCTIVE if py[label] != "destructive-keyword"} == set()
+    assert {label for label in _HIDDEN_SUBMIT if py[label] != "submit-keyword"} == set()
+    assert {label for label in _EN_SUBMIT_ADDED if py[label] != "submit-keyword"} == set()
+    # The legacy /validate tier agrees: Hindi submit is state-changing, destructive still wins.
+    for label in _HI_SUBMIT_LABELS:
+        assert tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": label, "fieldType": "button"}]) == "state-changing"
+    for label in _HI_SUBMIT_BUT_DESTRUCTIVE:
+        assert tiers.op_tier({"action": "click", "target_selector": "#t"}, [{"selector": "#t", "label": label, "fieldType": "button"}]) == "destructive"
+
+
 
 def test_jev_fast_path_is_disabled_but_kept(monkeypatch):
     calls = _fp_env(monkeypatch, "jev", _fp_answers("click #save"))
@@ -1978,3 +2082,489 @@ def test_jev_fast_path_is_disabled_but_kept(monkeypatch):
     assert calls["groq"] == 1 and "fastPath" not in result
     assert TestClient(warden_app.app).get("/health").json()["fastPath"]["jevDisabled"] is True
     assert callable(fastpath.plan_or_none), "the code is kept"
+
+
+# ---------------------------------------------------------------------------
+# Code review, 3 October 2026. Each test pins one defect found in review.
+# ---------------------------------------------------------------------------
+@pytest.mark.parametrize("smuggled", [
+    "Pay with X#4111111111111111",   # token-shaped prefix: the whole number was blanked
+    "Pay with A4111111111111111#1",  # digits inside the token's type part
+    "Call PHONE#9876543210",
+])
+def test_egress_guard_is_not_bypassed_by_a_token_shaped_prefix(smuggled):
+    body = _plan_body()
+    body["tokenizedTask"] = smuggled
+    hit = warden_app.egress_guard(body)
+    assert hit is not None and hit["field"] == "tokenizedTask"
+
+
+@pytest.mark.parametrize("mutate,expected", [
+    (lambda b: b["elements"][0].update(x=4111111111111111), {"pattern": "card", "field": "elements[0].x"}),
+    (lambda b: b.update(history=[{"stepNumber": 1, "action": "type", "value": 9876543210}]),
+     {"pattern": "phone", "field": "history[0].value"}),
+])
+def test_egress_guard_scans_numbers(mutate, expected):
+    body = _plan_body()
+    mutate(body)
+    assert warden_app.egress_guard(body) == expected
+
+
+def test_egress_guard_scans_dict_keys_and_never_echoes_them(monkeypatch):
+    _refuse_every_planner(monkeypatch)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.delenv("WARDEN_PLANNER", raising=False)
+    body = _plan_body()
+    body["history"] = [{"jordan.test@example.org": "typed"}]
+    resp = TestClient(warden_app.app).post("/plan", json=body)
+    assert resp.status_code == 422
+    assert resp.json()["egressGuard"]["pattern"] == "email"
+    assert "jordan.test@example.org" not in resp.text
+
+
+@pytest.mark.parametrize("text,pattern", [
+    ("Card ４１１１ １１１１ １１１１ １１１１", "card"),  # full-width
+    ("Call ९८७६५४३२१०", "phone"),  # Devanagari 9876543210
+])
+def test_egress_guard_reads_non_ascii_digits(text, pattern):
+    body = _plan_body()
+    body["sanitizedDom"] = text
+    assert warden_app.egress_guard(body) == {"pattern": pattern, "field": "sanitizedDom"}
+
+
+def test_paired_warden_answers_401_not_500_for_a_non_ascii_auth_header(monkeypatch):
+    client = _paired_client(monkeypatch)
+    raw = json.dumps(_plan_body()).encode()
+    res = TestClient(warden_app.app, raise_server_exceptions=False).post("/plan", content=raw, headers={
+        "Content-Type": "application/json", "X-Dhristi-Nonce": "n" * 24,
+        "X-Dhristi-Auth": "é".encode("latin-1") * 43,
+    })
+    assert res.status_code == 401
+
+
+_BAD_COMMON = [b"{not json", b"[1, 2]", b'"text"', b'{"elements": [1, 2]}', b'{"elements": "x"}',
+               b'{"elements": [{"selector": "#a", "label": 7}]}', b'{"elements": [{"selector": 3}]}']
+_BAD_BODIES = (
+    [("/strip", raw) for raw in _BAD_COMMON + [b'{"task": 5}', b'{"dom": [1]}', b'{"resolved": [1]}']]
+    + [("/plan", raw) for raw in _BAD_COMMON + [b'{"tokenizedTask": 5}', b'{"sanitizedDom": {}}', b'{"history": "x"}']]
+    + [("/validate", raw) for raw in _BAD_COMMON + [b'{"tokenizedTask": 5}', b'{"plan": [1]}']]
+)
+
+
+@pytest.mark.parametrize("path,raw", _BAD_BODIES)
+def test_malformed_bodies_are_400_not_500(monkeypatch, path, raw):
+    monkeypatch.setattr(entities.STATE, "model", _StubGlinerModel([]))
+    _refuse_every_planner(monkeypatch)
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    _ollama_unavailable(monkeypatch)
+    res = TestClient(warden_app.app, raise_server_exceptions=False).post(
+        path, content=raw, headers={"Content-Type": "application/json"})
+    assert res.status_code == 400, res.text
+    assert "error" in res.json()
+
+
+def test_oversized_body_is_413_before_pairing_or_parsing(monkeypatch):
+    client = _paired_client(monkeypatch)
+    monkeypatch.setattr(config, "MAX_BODY_BYTES", 1024, raising=False)
+    big = json.dumps({"tokenizedTask": "jordan.test@example.org " * 100}).encode()
+    res = client.post("/plan", content=big, headers={"Content-Type": "application/json"})
+    assert res.status_code == 413
+    assert "jordan.test@example.org" not in res.text
+    monkeypatch.delenv("WARDEN_PAIRING_SECRET")
+    assert client.post("/strip", content=big, headers={"Content-Type": "application/json"}).status_code == 413
+
+
+def test_post_without_content_length_is_refused():
+    def chunks():
+        yield b'{"tokenizedTask": '
+        yield b'"x"}'
+
+    res = TestClient(warden_app.app).post("/plan", content=chunks(), headers={"Content-Type": "application/json"})
+    assert res.status_code == 411
+
+
+def test_default_body_cap_fits_a_real_extension_request():
+    # content.js caps the DOM at 30 KB; the cap must sit well above a whole request.
+    assert getattr(config, "MAX_BODY_BYTES", 0) >= 1024 * 1024
+
+
+@pytest.mark.parametrize("host,ok", [
+    ("127.0.0.1:8756", True), ("localhost:8756", True), ("[::1]:8756", True), ("LOCALHOST:8756", True),
+    ("127.0.0.1", True),
+    ("evil.example:8756", False), ("127.0.0.1.evil.example:8756", False), ("testserver", False),
+])
+def test_host_header_allow_list_blocks_dns_rebinding(monkeypatch, host, ok):
+    monkeypatch.setattr(config, "ALLOWED_HOSTNAMES", frozenset({"127.0.0.1", "localhost", "::1"}), raising=False)
+    res = TestClient(warden_app.app).get("/health", headers={"Host": host})
+    if ok:
+        assert res.status_code == 200 and res.json()["ok"] is True
+    else:
+        assert res.status_code == 421 and "planner" not in res.text
+
+
+def test_production_host_allow_list_is_loopback_only():
+    code = "import config; print(sorted(config.ALLOWED_HOSTNAMES))"
+    out = subprocess.run([sys.executable, "-c", code], cwd=WARDEN_DIR, capture_output=True, text=True, check=True)
+    assert out.stdout.strip() == "['127.0.0.1', '::1', 'localhost']"
+
+
+def test_a_slow_plan_does_not_block_health(monkeypatch):
+    import asyncio
+    import threading as _threading
+
+    release = _threading.Event()
+    state = {"plan_done": False}
+
+    def slow_plan(body):
+        release.wait(3)
+        state["plan_done"] = True
+        return {"plan": {"action": "finish", "target_selector": None}, "model": "fake"}
+
+    monkeypatch.setenv("WARDEN_PLANNER", "ollama")
+    monkeypatch.setattr(ollama_client, "plan_via_ollama", slow_plan)
+
+    async def scenario():
+        transport = httpx.ASGITransport(app=warden_app.app)
+        async with httpx.AsyncClient(transport=transport, base_url="http://127.0.0.1:8756") as c:
+            plan_task = asyncio.create_task(c.post("/plan", json=_plan_body()))
+            await asyncio.sleep(0.2)
+            health = await c.get("/health")
+            done_when_health_answered = state["plan_done"]
+            release.set()
+            plan = await plan_task
+            return health, done_when_health_answered, plan
+
+    health, done_first, plan = asyncio.run(scenario())
+    assert health.status_code == 200
+    assert done_first is False, "/health waited for /plan: a blocking call ran on the event loop"
+    assert plan.status_code == 200
+
+
+class _GroqResp:
+    status_code = 200
+    text = "x"
+
+    def __init__(self, data):
+        self._data = data
+
+    def json(self):
+        if self._data == "non-json":
+            raise json.JSONDecodeError("bad", "x", 0)
+        return self._data
+
+
+@pytest.mark.parametrize("first", ["non-json", [1], {"choices": [{"message": None}]}, {"choices": []}])
+def test_groq_unparseable_200_body_moves_down_the_chain(monkeypatch, first):
+    good = {"choices": [{"message": {"content": json.dumps({
+        "action": "click", "target_selector": "#go", "coordinates": {"x": 1, "y": 2},
+        "value": None, "reasoning_token": "synthetic"})}}]}
+    responses = iter([_GroqResp(first), _GroqResp(good)])
+    monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+    monkeypatch.setattr(config, "GROQ_MODEL_CHAIN", ["m1", "m2"])
+    monkeypatch.setattr(groq_client, "_post", lambda *a, **k: next(responses), raising=False)
+    result = groq_client.plan_via_groq(_plan_body())
+    assert result["model"] == "m2" and result["switched"] == ["m1"]
+
+
+def test_groq_client_reuses_one_connection_across_calls(monkeypatch):
+    import http.server
+    import threading as _threading
+
+    ports = set()
+
+    class _FakeGroq(http.server.BaseHTTPRequestHandler):
+        protocol_version = "HTTP/1.1"
+
+        def do_POST(self):
+            ports.add(self.client_address[1])
+            self.rfile.read(int(self.headers["Content-Length"]))
+            content = json.dumps({"action": "finish", "target_selector": None, "coordinates": {"x": 0, "y": 0},
+                                  "value": None, "reasoning_token": "synthetic"})
+            payload = json.dumps({"choices": [{"message": {"content": content}}]}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+
+        def log_message(self, *args):
+            pass
+
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _FakeGroq)
+    _threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        monkeypatch.setattr(config, "GROQ_API_KEY", "test-fake-key-not-real")
+        monkeypatch.setattr(config, "GROQ_MODEL_CHAIN", ["fake-model"])
+        monkeypatch.setattr(config, "GROQ_BASE_URL", f"http://127.0.0.1:{server.server_port}/openai/v1")
+        for _ in range(3):
+            groq_client.plan_via_groq(_plan_body())
+    finally:
+        server.shutdown()
+        server.server_close()
+    assert len(ports) == 1, f"each plan opened a new connection: {len(ports)} connections for 3 calls"
+
+
+def test_fast_path_click_keeps_a_selector_that_contains_spaces(monkeypatch):
+    body = {
+        "tokenizedTask": "Open the reports link",
+        "sanitizedDom": "",
+        "elements": [
+            {"selector": "#nav", "label": "Nav", "fieldType": "button", "x": 1, "y": 1},
+            {"selector": "#nav a", "label": "Reports", "fieldType": "link", "x": 5, "y": 6},
+        ],
+        "history": [],
+    }
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("click #nav a"))
+    result = warden_app.dispatch_plan(body)
+    assert calls["fast"] == 1 and calls["groq"] == 0
+    assert result["plan"]["target_selector"] == "#nav a" and result["plan"]["value"] is None
+    assert result["plan"]["coordinates"] == {"x": 5, "y": 6}
+
+
+def test_fast_path_type_keeps_a_selector_that_contains_spaces(monkeypatch):
+    body = {
+        "tokenizedTask": "Set email to EMAIL#1",
+        "sanitizedDom": "",
+        "elements": [{"selector": "form #email", "label": "Email", "fieldType": "email", "x": 3, "y": 4}],
+        "history": [],
+    }
+    calls = _fp_env(monkeypatch, "jev", _fp_answers("type form #email EMAIL#1"))
+    result = warden_app.dispatch_plan(body)
+    assert calls["fast"] == 1 and calls["groq"] == 0
+    assert result["plan"]["target_selector"] == "form #email" and result["plan"]["value"] == "EMAIL#1"
+
+
+class _PersonNameModel:
+    """Scores every listed string as a person name in the uncertain band.
+
+    The exploit was first written with "Account statements" scored as an account number.
+    Since 3 October an account-number hit needs a digit and a bare digit run is a regex
+    hit, so that pair can no longer reach the uncertain band; a person name, which has no
+    structural test, carries the same exploit."""
+
+    def __init__(self, values, score=0.42):
+        self.values = values
+        self.score = score
+
+    def predict_entities(self, text, labels, threshold):
+        out = []
+        for v in self.values:
+            i = text.find(v)
+            if i != -1:
+                out.append({"start": i, "end": i + len(v), "text": v, "label": "person name", "score": self.score})
+        return out
+
+
+def test_a_keep_answer_cannot_carry_over_to_a_different_value(monkeypatch):
+    """Step 1 asks about "Customer Care" and the user keeps it. Step 2 is a new page where
+    PERSONNAME#1 is a real name. The old contract keyed the answer by position token only,
+    so step 2's name went to the planner in plaintext without a question."""
+    label, name = "Customer Care", "Neha Joshi"
+    monkeypatch.setattr(entities.STATE, "model", _PersonNameModel([label, name]))
+    step1 = strip_module.strip(task="", dom=f'1. A label="{label}"', elements=[], resolved={})
+    assert [(u["token"], u["preview"]) for u in step1["uncertain"]] == [("PERSONNAME#1", label)]
+
+    kept = strip_module.strip(task="", dom=f'1. A label="{label}"', elements=[],
+                              resolved={"PERSONNAME#1": {"decision": "keep", "value": label}})
+    assert kept["uncertain"] == [] and label in kept["sanitizedDom"]
+
+    for answer in ({"decision": "keep", "value": label}, "keep"):  # new contract, and a legacy bare keep
+        step2 = strip_module.strip(task="", dom=f'1. P label="{name}"', elements=[],
+                                   resolved={"PERSONNAME#1": answer})
+        assert [(u["token"], u["preview"]) for u in step2["uncertain"]] == [("PERSONNAME#1", name)], answer
+
+
+def test_a_strip_answer_applies_to_its_value_and_legacy_strip_still_strips(monkeypatch):
+    name = "Neha Joshi"
+    monkeypatch.setattr(entities.STATE, "model", _PersonNameModel([name]))
+    dom = f'1. P label="{name}"'
+    for answer in ({"decision": "strip", "value": name}, "strip"):
+        out = strip_module.strip(task="", dom=dom, elements=[], resolved={"PERSONNAME#1": answer})
+        assert name not in out["sanitizedDom"] and out["tokens"] == {"PERSONNAME#1": name}
+    mismatched = strip_module.strip(task="", dom=dom, elements=[],
+                                    resolved={"PERSONNAME#1": {"decision": "strip", "value": "other"}})
+    assert [u["token"] for u in mismatched["uncertain"]] == ["PERSONNAME#1"]
+
+
+def _long_page_elements(n, last_label):
+    elements = []
+    for i in range(1, n + 1):
+        label = last_label if i == n else f"Item {i}"
+        sel = f"#catalogue > div.grid-row:nth-of-type({i}) > div.cell > a.product-link-{i:04d}-" + "x" * 120
+        elements.append({"selector": sel, "label": label, "fieldType": "link", "filled": False, "x": 1, "y": i})
+    return elements
+
+
+def _serialize_truncated(elements, limit=30 * 1024):
+    text = "\n".join(f'{i}. A type=link selector={e["selector"]} label="{e["label"]}" position=1,{i}'
+                     for i, e in enumerate(elements, 1))
+    return text[:limit] + "\n[TRUNCATED]" if len(text) > limit else text
+
+
+@pytest.mark.parametrize("score,expect", [(0.9, "stripped"), (0.4, "asked")])
+def test_a_name_in_a_label_past_the_dom_cut_is_scored(monkeypatch, score, expect):
+    name = "Arjun Mehta"
+    elements = _long_page_elements(180, f"Signed in as {name}")
+    dom = _serialize_truncated(elements)
+    assert name not in dom, "the fixture must put the name past the 30 KB cut"
+    monkeypatch.setattr(entities.STATE, "model", _BatchedFakeModel([name], score=score))
+    out = strip_module.strip(task="", dom=dom, elements=elements, resolved={})
+    if expect == "stripped":
+        assert out["elements"][-1]["label"] == "Signed in as PERSONNAME#1"
+        assert out["tokens"] == {"PERSONNAME#1": name}
+        assert ("PERSONNAME#1", "label") in {(d["token"], d["source"]) for d in out["decisions"]}
+    else:
+        assert [(u["token"], u["preview"], u["source"]) for u in out["uncertain"]] == [("PERSONNAME#1", name, "label")]
+        stripped = strip_module.strip(task="", dom=dom, elements=elements,
+                                      resolved={"PERSONNAME#1": {"decision": "strip", "value": name}})
+        assert stripped["elements"][-1]["label"] == "Signed in as PERSONNAME#1"
+    assert out["elements"][0]["label"] == "Item 1"
+
+
+@pytest.mark.parametrize("path", ["/docs", "/redoc", "/openapi.json"])
+def test_no_interactive_docs_are_served(path):
+    assert TestClient(warden_app.app).get(path).status_code == 404
+
+
+@pytest.mark.parametrize("ctype", ["text/plain", "application/x-www-form-urlencoded", "multipart/form-data", None])
+def test_post_needs_a_json_content_type_even_unpaired(monkeypatch, ctype):
+    """A text/plain POST is a CORS "simple request": a page can send it with no preflight.
+    The pairing escape (WARDEN_PAIRING_DISABLED=1, set by the autouse fixture) must not
+    turn that into a way in."""
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    headers = {"Content-Type": ctype} if ctype else {}
+    res = TestClient(warden_app.app).post("/plan", content=json.dumps(_plan_body()).encode(), headers=headers)
+    assert res.status_code == 415
+
+
+def test_post_accepts_json_with_a_charset(monkeypatch):
+    _fake_planner(monkeypatch, {"action": "finish", "target_selector": None})
+    res = TestClient(warden_app.app).post("/plan", content=json.dumps(_plan_body()).encode(),
+                                          headers={"Content-Type": "application/json; charset=utf-8"})
+    assert res.status_code == 200
+
+
+@pytest.mark.parametrize("host,model", [("http://10.1.2.3:11434", "qwythos-9b:latest"),
+                                        ("http://127.0.0.1:11434", "some-model:cloud")])
+def test_validate_review_refuses_a_non_local_ollama(monkeypatch, host, model):
+    monkeypatch.setattr(config, "OLLAMA_HOST", host)
+    monkeypatch.setattr(config, "OLLAMA_MODEL", model)
+
+    def fail_if_called(*a, **k):
+        raise AssertionError("no request may leave for a non-local reviewer")
+
+    monkeypatch.setattr(ollama_client.httpx, "post", fail_if_called)
+    with pytest.raises(ollama_client.OllamaSkipped):
+        ollama_client.review("Open EMAIL#1", {"action": "click", "target_selector": "#go"}, "navigational")
+
+
+def test_reviewer_and_fast_path_read_separate_checkpoint_names(monkeypatch):
+    """WARDEN_LAYA_MODEL used to feed both the reviewer and the fast path, so pointing the
+    reviewer at its checkpoint also loaded that checkpoint as the fast-path decision model."""
+    for name in ("WARDEN_REVIEWER_MODEL", "WARDEN_LAYA_MODEL", "WARDEN_FAST_PATH_LAYA_MODEL"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("WARDEN_LAYA_MODEL", "org/review-checkpoint")
+    assert config.reviewer_model() == "org/review-checkpoint"  # documented fallback, reviewer only
+    assert config.fast_path_laya_model() is None
+    monkeypatch.setenv("WARDEN_REVIEWER_MODEL", "org/reviewer-v2")
+    monkeypatch.setenv("WARDEN_FAST_PATH_LAYA_MODEL", "/models/fast")
+    assert config.reviewer_model() == "org/reviewer-v2"
+    assert config.fast_path_laya_model() == "/models/fast"
+
+
+def test_laya_fast_path_is_disabled_but_kept(monkeypatch):
+    calls = _fp_env(monkeypatch, "laya", _fp_answers("o1"))
+    monkeypatch.setattr(fastpath, "LAYA_FASTPATH_ENABLED", False)
+    assert fastpath.mode() == "off" and fastpath.laya_disabled_request() is True
+    result = warden_app.dispatch_plan(dict(_FP_BODY))
+    assert calls["fast"] == 0 and calls["groq"] == 1 and "fastPath" not in result
+    assert TestClient(warden_app.app).get("/health").json()["fastPath"]["layaDisabled"] is True
+
+
+def test_laya_review_load_failure_is_retried_after_a_backoff(monkeypatch):
+    import types
+
+    attempts = []
+
+    def flaky_load(model, device=None, subfolder=None):
+        attempts.append(model)
+        if len(attempts) == 1:
+            raise OSError("synthetic: hub unreachable")
+        return _StubLaya()
+
+    monkeypatch.setitem(sys.modules, "laya", types.SimpleNamespace(load=flaky_load))
+    monkeypatch.setenv("WARDEN_REVIEWER_MODEL", "org/reviewer")
+    monkeypatch.setattr(laya_review, "_agent", None)
+    monkeypatch.setattr(laya_review, "_agent_error", None)
+    clock = {"t": 1000.0}
+    monkeypatch.setattr(laya_review, "_agent_error_at", None)
+    monkeypatch.setattr(laya_review, "_clock", lambda: clock["t"])
+    with pytest.raises(laya_review.LayaSkipped):
+        laya_review._load_agent()
+    with pytest.raises(laya_review.LayaSkipped):  # inside the backoff: no new attempt
+        laya_review._load_agent()
+    assert len(attempts) == 1
+    assert laya_review.status() == {"loaded": False, "error": laya_review._agent_error}
+    clock["t"] += laya_review.RETRY_AFTER_S + 1
+    assert isinstance(laya_review._load_agent(), _StubLaya)
+    assert len(attempts) == 2 and laya_review.status() == {"loaded": True, "error": None}
+
+
+@pytest.mark.parametrize("mode", ["ollama", "laya"])
+def test_health_reports_the_reviewer(monkeypatch, mode):
+    monkeypatch.setenv("WARDEN_REVIEWER", mode)
+    monkeypatch.setattr(laya_review, "_agent", None)
+    monkeypatch.setattr(laya_review, "_agent_error", "synthetic: not loaded")
+    reviewer = TestClient(warden_app.app).get("/health").json()["reviewer"]
+    assert reviewer["mode"] == mode
+    if mode == "laya":
+        assert reviewer["loaded"] is False and reviewer["error"] == "synthetic: not loaded"
+
+
+def test_startup_runs_through_lifespan_and_warms_the_reviewer(monkeypatch):
+    called = []
+    monkeypatch.setattr(entities, "load_model", lambda: called.append("gliner"))
+    monkeypatch.setattr(fastpath, "warm", lambda: called.append("fastpath"))
+    monkeypatch.setattr(laya_review, "warm", lambda: called.append("reviewer"))
+    assert not warden_app.app.router.on_startup, "use a lifespan handler, not the deprecated on_event"
+    with TestClient(warden_app.app):
+        deadline = time.monotonic() + 2
+        while len(called) < 3 and time.monotonic() < deadline:
+            time.sleep(0.01)
+    assert sorted(called) == ["fastpath", "gliner", "reviewer"]
+
+
+def test_ollama_timeout_default_agrees_with_its_floor():
+    code = "import config, ollama_client; print(config.OLLAMA_TIMEOUT_S, ollama_client.MIN_TIMEOUT_S)"
+    env = {k: v for k, v in os.environ.items() if k != "WARDEN_OLLAMA_TIMEOUT_S"}
+    out = subprocess.run([sys.executable, "-c", code], cwd=WARDEN_DIR, env=env, capture_output=True, text=True, check=True)
+    configured, floor = (float(x) for x in out.stdout.split())
+    assert configured >= floor
+
+
+def test_a_label_scored_in_the_dom_is_not_scored_twice(monkeypatch):
+    name = "Priya Raghunathan"
+    dom = _page(3, {2: f"Welcome back {name}"})
+    fake = _WindowedFakeModel([name], score=0.9)
+    monkeypatch.setattr(entities.STATE, "model", fake)
+    elements = [{"selector": "#nav-2", "label": f"Welcome back {name}", "fieldType": "link", "x": 1, "y": 2}]
+    strip_module.strip(task="", dom=dom, elements=elements, resolved={})
+    assert f"Welcome back {name}" not in fake.calls
+
+
+def test_an_answer_follows_its_value_to_another_token_number(monkeypatch):
+    """Code review, 3 October 2026: ids are per call, so "Neha" kept as PERSONNAME#1 on one page
+    is PERSONNAME#2 on the next when another name comes first. The answer is matched on type and
+    value, so it still applies, and a different value under the same number is still asked."""
+    monkeypatch.setattr(entities.STATE, "model", _PersonNameModel(["Ravi Kumar", "Neha Joshi"]))
+    kept = {"PERSONNAME#1": {"decision": "keep", "value": "Neha Joshi"}}
+    out = strip_module.strip(task="", dom='1. P label="Ravi Kumar"\n2. P label="Neha Joshi"', elements=[], resolved=kept)
+    assert [u["preview"] for u in out["uncertain"]] == ["Ravi Kumar"]
+    assert "Neha Joshi" in out["sanitizedDom"]
+    stripped = {"PERSONNAME#7": {"decision": "strip", "value": "Neha Joshi"}}
+    out = strip_module.strip(task="", dom='1. P label="Neha Joshi"', elements=[], resolved=stripped)
+    assert out["uncertain"] == [] and "Neha Joshi" not in out["sanitizedDom"]
+    assert [d["layer"] for d in out["decisions"]] == ["user"]
+    wrong_type = {"ACCOUNTNUMBER#1": {"decision": "keep", "value": "Neha Joshi"}}
+    out = strip_module.strip(task="", dom='1. P label="Neha Joshi"', elements=[], resolved=wrong_type)
+    assert [u["preview"] for u in out["uncertain"]] == ["Neha Joshi"]

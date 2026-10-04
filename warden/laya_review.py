@@ -8,15 +8,25 @@ state in one forward pass. Here it answers two questions about one proposed
 step, and nothing else:
 
   tier         for a click: is the control navigational, state-changing or
-               destructive? The regex tier in tiers.py only knows English
-               keywords; this catches wording it misses ("Wipe all data",
-               "खाता बंद करें").
+               destructive? The keyword tier in tiers.py (English and Hindi)
+               only knows the wording it lists; this catches wording it
+               misses ("Wipe all data").
   serves_task  for a click or a type: does the step move the task forward?
                The deterministic checks have no general version of this.
 
-The same contract as ollama_client.review, and the same guarantee: this can
-only turn accept into ask. It never produces reject, never lowers a tier and
-never lets a step through that the deterministic rule would stop.
+Two uses, two contracts:
+
+  review()          POST /validate: the reasoning stage's contract, same as
+                    ollama_client.review. It can only turn accept into ask,
+                    never produces reject, never lowers a tier.
+  release_scores()  POST /plan, attached as `review`. The Warden only scores;
+                    the extension (extension/utils/plan-check.js layaRelease)
+                    may skip a local confirmation for an `unproven` click on a
+                    verified, fine-tuned review under its own thresholds.
+
+The checkpoint is WARDEN_REVIEWER_MODEL (WARDEN_LAYA_MODEL as a fallback),
+read through config.reviewer_model. A load failure is retried after
+RETRY_AFTER_S rather than remembered for the life of the process.
 
 Only already-tokenized text reaches the model: the tokenized task, the
 action, the target's tokenized label and fieldType, and a type action's
@@ -28,6 +38,9 @@ shape the Warden sends at run time.
 import math
 import os
 import threading
+import time
+
+import config
 
 TIER_OPTIONS = ("navigational", "state-changing", "destructive")
 
@@ -107,27 +120,38 @@ def _threshold(name: str, default: float) -> float:
 
 _agent = None
 _agent_error = None
+_agent_error_at = None
 _agent_lock = threading.Lock()
+
+# A failed load (Hub unreachable, token not yet set) used to be cached until restart, so one
+# transient error disabled the reviewer for good. It is retried after this many seconds.
+RETRY_AFTER_S = 60.0
+
+
+def _clock() -> float:
+    return time.monotonic()
 
 
 def _load_agent():
     """Lazy, once per process. laya and torch are optional dependencies: a
     Warden without them keeps working and reports the review as skipped."""
-    global _agent, _agent_error
+    global _agent, _agent_error, _agent_error_at
     with _agent_lock:
         if _agent is not None:
             return _agent
-        if _agent_error is not None:
+        if _agent_error is not None and _agent_error_at is not None \
+                and _clock() - _agent_error_at < RETRY_AFTER_S:
             raise LayaSkipped(_agent_error)
-        model = os.environ.get("WARDEN_LAYA_MODEL", "").strip()
+        model = config.reviewer_model()
         if not model:
-            _agent_error = "WARDEN_LAYA_MODEL is not set (a local directory or a Hub repo id)"
+            _agent_error, _agent_error_at = (
+                "WARDEN_REVIEWER_MODEL (or WARDEN_LAYA_MODEL) is not set (a local directory or a Hub repo id)", None)
             raise LayaSkipped(_agent_error)
         os.environ.setdefault("USE_TF", "0")
         try:
             import laya  # noqa: PLC0415 -- optional dependency, imported on first use
         except ImportError as exc:
-            _agent_error = f"laya is not installed: {exc}"
+            _agent_error, _agent_error_at = f"laya is not installed: {exc}", _clock()
             raise LayaSkipped(_agent_error) from exc
         try:
             subfolder = os.environ.get("WARDEN_LAYA_SUBFOLDER", "").strip() or None
@@ -135,8 +159,24 @@ def _load_agent():
             _agent = laya.load(model, device=device, subfolder=subfolder)
         except Exception as exc:  # noqa: BLE001 -- optional component, never load-bearing
             _agent_error = f"laya model failed to load: {type(exc).__name__}: {exc}"
+            _agent_error_at = _clock()
             raise LayaSkipped(_agent_error) from exc
+        _agent_error = _agent_error_at = None
         return _agent
+
+
+def status() -> dict:
+    """For /health: whether the reviewer checkpoint is loaded, and the last load error."""
+    return {"loaded": _agent is not None, "error": _agent_error}
+
+
+def warm() -> None:
+    """Load the reviewer ahead of the first step, off the request path (WARDEN_REVIEWER=laya)."""
+    if config.reviewer_mode() == "laya":
+        try:
+            _load_agent()
+        except LayaSkipped:
+            pass  # recorded in _agent_error and reported by /health
 
 
 def review(tokenized_task: str, plan: dict, tier: str, elements: list, agent=None) -> dict:
